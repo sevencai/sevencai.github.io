@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ES6," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="ECMAScript 5 出了一个【属性描述符】，主要是为了【给属性增加更多的控制】。下面我们就谈论这样一个新的特性-Object.defineProperty()。  Object.defineProperty() 方法直接在一个对象上定义一个新属性，或者修改一个已经存在的属性， 并返回这个对象。   语法定义 Object.defineProperty(obj, prop, descripto">
+<meta name="keywords" content="ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ECMAScript Object.defineProperty 属性描述符">
+<meta property="og:url" content="http://sevencai.github.io/2016/08/19/ECMAScript-Object-defineProperty-属性描述符/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="ECMAScript 5 出了一个【属性描述符】，主要是为了【给属性增加更多的控制】。下面我们就谈论这样一个新的特性-Object.defineProperty()。  Object.defineProperty() 方法直接在一个对象上定义一个新属性，或者修改一个已经存在的属性， 并返回这个对象。   语法定义 Object.defineProperty(obj, prop, descripto">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T02:59:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ECMAScript Object.defineProperty 属性描述符">
+<meta name="twitter:description" content="ECMAScript 5 出了一个【属性描述符】，主要是为了【给属性增加更多的控制】。下面我们就谈论这样一个新的特性-Object.defineProperty()。  Object.defineProperty() 方法直接在一个对象上定义一个新属性，或者修改一个已经存在的属性， 并返回这个对象。   语法定义 Object.defineProperty(obj, prop, descripto">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/08/19/ECMAScript-Object-defineProperty-属性描述符/"/>
+
+
+
+
+
+  <title>ECMAScript Object.defineProperty 属性描述符 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/08/19/ECMAScript-Object-defineProperty-属性描述符/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ECMAScript Object.defineProperty 属性描述符</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-19T19:14:08+08:00">
+                2016-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/19/ECMAScript-Object-defineProperty-属性描述符/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/19/ECMAScript-Object-defineProperty-属性描述符/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>ECMAScript 5 出了一个【属性描述符】，主要是为了【给属性增加更多的控制】。下面我们就谈论这样一个新的特性-<code>Object.defineProperty()</code>。</p>
+<blockquote>
+<p>Object.defineProperty() <strong>方法直接在一个对象上定义一个新属性，或者修改一个已经存在的属性， 并返回这个对象</strong>。</p>
+</blockquote>
+<hr>
+<h4 id="语法定义"><a href="#语法定义" class="headerlink" title="语法定义"></a><strong>语法定义</strong></h4><blockquote>
+<p>Object.defineProperty(obj, prop, descriptor)</p>
+</blockquote>
+<ul>
+<li>obj : 需要定义属性的对象</li>
+<li>prop : 需被定义或修改的属性名</li>
+<li>descriptor : 需被定义或修改的属性的描述符</li>
+</ul>
+<hr>
+<h4 id="为什么我们要用这个新特性？"><a href="#为什么我们要用这个新特性？" class="headerlink" title="为什么我们要用这个新特性？"></a><strong>为什么我们要用这个新特性？</strong></h4><p>我们给对象创建属性有下面这样几种方法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;&#125;;</span><br><span class="line"><span class="comment">//第一种方式</span></span><br><span class="line">person.name = <span class="string">'Seven'</span>;</span><br><span class="line"><span class="comment">//第二种方式</span></span><br><span class="line">person[name] = <span class="string">'Seven'</span>;</span><br><span class="line"><span class="comment">//第三种方式</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(person, <span class="string">'name'</span>, &#123;</span><br><span class="line">    value : <span class="string">'Seven'</span></span><br><span class="line">&#125;)</span><br><span class="line">person.name   <span class="comment">//Seven</span></span><br></pre></td></tr></table></figure></p>
+<p>看起来好像最后一种新方法最麻烦，那我们为什么还要用最后一种方法呢？因为后面的descriptor可以让我们制定更多对对象属性的策略。</p>
+<hr>
+<h4 id="descriptor数据描述符-writable"><a href="#descriptor数据描述符-writable" class="headerlink" title="descriptor数据描述符-writable"></a><strong>descriptor数据描述符-writable</strong></h4><p>上面我们提到了更多策略，其实这个更多策略就是让属性可以更多不同的权限，比如让它只能读，不能写。</p>
+<blockquote>
+<p>当属性特性（property attribute） writable 设置为false时，表示 non-writable，属性不能被修改。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(person,<span class="string">'sex'</span>&#123;</span><br><span class="line">	value:<span class="string">'girl'</span>,</span><br><span class="line">	writable:<span class="literal">false</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">person.sex <span class="comment">// 'girl'</span></span><br><span class="line">person.sex = <span class="string">'boy'</span></span><br><span class="line">person.sex <span class="comment">//girl</span></span><br></pre></td></tr></table></figure>
+<p>当我们设置了descriptor里面的writable为false的时候，这个sex就不可以更改了。虽然你可以设置，但是设置后结果还是girl不会变的。</p>
+<p>有人会说，这样不是很不好吗？如果我们在不知情的情况下改写了，连报错都不报。会造成很多bug。很难排查出到底是哪里出了bug。</p>
+<p>解决方法是写上<code>use strict</code>。这样就会报错了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义严格模式</span></span><br><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">var</span> obj = &#123; &#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'attr'</span>, &#123;</span><br><span class="line">    value: <span class="number">1</span>,</span><br><span class="line">    writable: <span class="literal">false</span></span><br><span class="line">&#125;);</span><br><span class="line">obj.attr = <span class="number">2</span>;  <span class="comment">// throw exception</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="descriptor数据描述符-enumerable"><a href="#descriptor数据描述符-enumerable" class="headerlink" title="descriptor数据描述符-enumerable"></a><strong>descriptor数据描述符-enumerable</strong></h4><p>上面已经提到了一个<code>writable</code>,表示是否可写。现在在看一个数据描述符<code>enumerable</code>。</p>
+<blockquote>
+<p>属性特性 enumerable 定义了对象的属性是否可以在 for…in 循环和 Object.keys() 中被枚举。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123;&#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"a"</span>, &#123;</span><br><span class="line">	value : <span class="number">1</span>,</span><br><span class="line">	enumerable:<span class="literal">true</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"b"</span>, &#123;</span><br><span class="line">	value : <span class="number">2</span>, <span class="attr">enumerable</span>:<span class="literal">false</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// enumerable defaults to false</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"c"</span>, &#123;</span><br><span class="line">	value : <span class="number">3</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果使用直接赋值的方式创建对象的属性，则这个属性的enumerable为true</span></span><br><span class="line">o.d = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i <span class="keyword">in</span> o) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 打印 'a' 和 'd' (in undefined order)</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.keys(o); <span class="comment">// ["a", "d"]</span></span><br><span class="line"></span><br><span class="line">o.propertyIsEnumerable(<span class="string">'a'</span>); <span class="comment">// true</span></span><br><span class="line">o.propertyIsEnumerable(<span class="string">'b'</span>); <span class="comment">// false</span></span><br><span class="line">o.propertyIsEnumerable(<span class="string">'c'</span>); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>相当于定义了<code>enumerable</code>后，<code>enumerable</code>可以将其“藏”起来，不被循环看见。</p>
+<p><strong>那么属性描述符可以修改吗？比如原来我设置了writable为false,我现在想改变了。那我可以更改吗？这就又有一个专门的属性描述符。</strong></p>
+<hr>
+<h4 id="descriptor数据描述符-configurable"><a href="#descriptor数据描述符-configurable" class="headerlink" title="descriptor数据描述符-configurable"></a><strong>descriptor数据描述符-configurable</strong></h4><blockquote>
+<p>如果属性已经存在，Object.defineProperty()将尝试根据描述符中的值以及对象当前的配置来修改这个属性。如果描述符的 configurable 特性为false（即该特性为non-configurable），那么除了 writable 外，其他特性都不能被修改，并且数据和存取描述符也不能相互切换。</p>
+<p><strong>如果一个属性的 configurable 为 false，则其 writable 特性也只能修改为 false。</strong></p>
+<p>如果尝试修改 non-configurable 属性特性（除 writable 以外），将会产生一个TypeError 异常，除非当前值与修改值相同。</p>
+</blockquote>
+<p><strong>configurable 特性表示对象的属性是否可以被删除，以及除 writable 特性外的其他特性是否可以被修改。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123; &#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'attr'</span>, &#123;</span><br><span class="line">    value: <span class="number">1</span>,</span><br><span class="line">    writable: <span class="literal">false</span>,</span><br><span class="line">    configurable: <span class="literal">true</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'attr'</span>, &#123;</span><br><span class="line">    writable: <span class="literal">true</span></span><br><span class="line">&#125;);</span><br><span class="line">obj.attr = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+<p>因为configurable是true，所以writable可以更改。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123;&#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"a"</span>, &#123;</span><br><span class="line">	get : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="keyword">return</span> <span class="number">1</span>;&#125;,</span><br><span class="line">    configurable : <span class="literal">false</span></span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line"><span class="comment">//因为上面已经对a属性定义了configurable为false,所以下面的都是错误的</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// throws a TypeError</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"a"</span>, &#123;</span><br><span class="line">	configurable : <span class="literal">true</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// throws a TypeError</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"a"</span>, &#123;</span><br><span class="line">	enumerable : <span class="literal">true</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// throws a TypeError (set was undefined previously)</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"a"</span>, &#123;</span><br><span class="line">	set : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// throws a TypeError (even though the new get does exactly the same thing)</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"a"</span>, &#123;</span><br><span class="line">	get : <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="keyword">return</span> <span class="number">1</span>;&#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// throws a TypeError</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"a"</span>, &#123;</span><br><span class="line">	value : <span class="number">12</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(o.a); <span class="comment">// logs 1</span></span><br><span class="line"><span class="keyword">delete</span> o.a; <span class="comment">// Nothing happens</span></span><br><span class="line"><span class="built_in">console</span>.log(o.a); <span class="comment">// logs 1</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="存取描述符"><a href="#存取描述符" class="headerlink" title="存取描述符"></a><strong>存取描述符</strong></h4><p>上面介绍的是数据描述符，现在介绍下存取描述符。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123; &#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'attr'</span>, &#123;</span><br><span class="line">    set: <span class="function"><span class="keyword">function</span>(<span class="params">val</span>) </span>&#123; <span class="keyword">this</span>._attr = <span class="built_in">Math</span>.max(<span class="number">0</span>, val); &#125;,</span><br><span class="line">    get: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>._attr; &#125;</span><br><span class="line">&#125;);</span><br><span class="line">obj.attr = <span class="number">-1</span>;</span><br><span class="line"><span class="built_in">console</span>.log(obj.attr); <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+<p><strong>就是说我们可以利用get/set来对属性进行一定的控制和更改。我们最后通过obj.attr得到的值其实就是通过get返回的值。而我们通过obj.attr = value，设置的值其实就是set的值。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pattern = &#123;</span><br><span class="line">    get: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'I alway return this string,whatever you have assigned'</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">    set: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.myname = <span class="string">'this is my name string'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">TestDefineSetAndGet</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">Object</span>.defineProperty(<span class="keyword">this</span>, <span class="string">'myproperty'</span>, pattern);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> instance = <span class="keyword">new</span> TestDefineSetAndGet();</span><br><span class="line">instance.myproperty = <span class="string">'test'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 'I alway return this string,whatever you have assigned'</span></span><br><span class="line"><span class="built_in">console</span>.log(instance.myproperty);</span><br><span class="line"><span class="comment">// 'this is my name string'</span></span><br><span class="line"><span class="built_in">console</span>.log(instance.myname);</span><br></pre></td></tr></table></figure>
+<p>上面一个例子是从mdn上面学习到的，仔细看，如果能看明白，应该就能明白这个set/get的用法了。</p>
+<hr>
+<h4 id="获取对象描述符"><a href="#获取对象描述符" class="headerlink" title="获取对象描述符"></a><strong>获取对象描述符</strong></h4><p><code>Object.getOwnPropertyDescriptor</code> 可以帮助我们获得对象描述符。比如我们定义：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, attr, &#123;</span><br><span class="line">	value : <span class="string">'a'</span>,</span><br><span class="line">	writable : <span class="literal">false</span>,</span><br><span class="line">	configurable : <span class="literal">true</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> descriptor = <span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, attr);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.dir(descriptor);</span><br></pre></td></tr></table></figure></p>
+<p>结果是：<br><code>{ value: &#39;a&#39;, writable: false, enumerable: false, configurable: true }</code>。这是<code>console.log</code> 的结果。<code>console.dir</code> 会显示的很好看。</p>
+<hr>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a><strong>注意事项</strong></h4><p>数据描述符和存取描述符不能混合使用,否则会报错：<code>TypeError: property descriptors must not specify a value or be writable when a getter or setter has been specified</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"conflict"</span>, &#123;</span><br><span class="line">	value: <span class="string">'a'</span>,</span><br><span class="line">    get: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="string">'b'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="定义多个属性"><a href="#定义多个属性" class="headerlink" title="定义多个属性"></a><strong>定义多个属性</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line"><span class="built_in">Object</span>.defineProperties(obj, &#123;</span><br><span class="line">  <span class="string">"property1"</span>: &#123;</span><br><span class="line">    value: <span class="literal">true</span>,</span><br><span class="line">    writable: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"property2"</span>: &#123;</span><br><span class="line">    value: <span class="string">"Hello"</span>,</span><br><span class="line">    writable: <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// etc. etc.</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="用途"><a href="#用途" class="headerlink" title="用途"></a><strong>用途</strong></h4><p>这一部分是我觉得最有价值的一部分了。是我在<a href="http://imweb.io/topic/56d40adc0848801a4ba198ce" target="_blank" rel="noopener">这篇</a>文章里看到并学习的。感谢。可以优化对象获取和修改属性的方式。下面我就直接引用这个文章里的描述了。</p>
+<p>这个优化对象获取和修改属性方式，是什么意思呢？ 过去我们在设置dom节点transform时是这样的。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//加入有一个目标节点， 我们想设置其位移时是这样的</span></span><br><span class="line"><span class="keyword">var</span> targetDom = <span class="built_in">document</span>.getElementById(<span class="string">'target'</span>);</span><br><span class="line"><span class="keyword">var</span> transformText = <span class="string">'translateX('</span> + <span class="number">10</span> + <span class="string">'px)'</span>;</span><br><span class="line">targetDom.style.webkitTransform = transformText;</span><br><span class="line">targetDom.style.transform = transformText;</span><br></pre></td></tr></table></figure></p>
+<p>通过上面，可以看到如果页面是需要许多动画时，我们这样编写transform属性是十分蛋疼的。</p>
+<p>但如果通过Object.defineProperty， 我们则可以<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里只是简单设置下translateX的属性，其他如scale等属性可自己去尝试</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(dom, <span class="string">'translateX'</span>, &#123;</span><br><span class="line">	set: <span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">	    <span class="keyword">var</span> transformText = <span class="string">'translateX('</span> + value + <span class="string">'px)'</span>;</span><br><span class="line">	    dom.style.webkitTransform = transformText;</span><br><span class="line">	    dom.style.transform = transformText;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这样再后面调用的时候, 十分简单</span></span><br><span class="line">dom.translateX = <span class="number">10</span>;</span><br><span class="line">dom.translateX = <span class="number">-10</span>;</span><br><span class="line"><span class="comment">//甚至可以拓展设置如scale, originX, translateZ,等各个属性，达到下面的效果</span></span><br><span class="line">dom.scale = <span class="number">1.5</span>;  <span class="comment">//放大1.5倍</span></span><br><span class="line">dom.originX = <span class="number">5</span>;  <span class="comment">//设置中心点X</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h4><p>主要就是学习了<code>Object.defineProperty</code>这个新的特性。先前知道这个，但是没有仔细去学习，最近在了解<code>vue</code>的时候，忽然感觉这个要好好学下了。因为这些<code>MVVM</code>大都是通过这个新特性来实现数据绑定的。当然<code>angular</code>不是的，<code>angular</code>是通过脏数据。下面推荐和感谢几篇文章：</p>
+<ol>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">MDN-defineProperty</a></li>
+<li><a href="http://heeroluo.net/article/detail/117/es5-property-descriptors" target="_blank" rel="noopener">es5-property-descriptors</a></li>
+<li><a href="http://imweb.io/topic/56d40adc0848801a4ba198ce" target="_blank" rel="noopener">IMWEB-不会Object.defineProperty你就out了</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6/" rel="tag"># ES6</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/10/用Nodejs进行文件上传-下载-浏览-横扫File-System-API/" rel="next" title="用Nodejs进行文件上传-下载-浏览-横扫File-System-API">
+                <i class="fa fa-chevron-left"></i> 用Nodejs进行文件上传-下载-浏览-横扫File-System-API
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/19/ECMAScript2015-对象扩展/" rel="prev" title="ECMAScript2015 对象扩展">
+                ECMAScript2015 对象扩展 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#语法定义"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x8BED;&#x6CD5;&#x5B9A;&#x4E49;" class="headerlink" title="&#x8BED;&#x6CD5;&#x5B9A;&#x4E49;"></a><strong>&#x8BED;&#x6CD5;&#x5B9A;&#x4E49;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么我们要用这个新特性？"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x6211;&#x4EEC;&#x8981;&#x7528;&#x8FD9;&#x4E2A;&#x65B0;&#x7279;&#x6027;&#xFF1F;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x6211;&#x4EEC;&#x8981;&#x7528;&#x8FD9;&#x4E2A;&#x65B0;&#x7279;&#x6027;&#xFF1F;"></a><strong>&#x4E3A;&#x4EC0;&#x4E48;&#x6211;&#x4EEC;&#x8981;&#x7528;&#x8FD9;&#x4E2A;&#x65B0;&#x7279;&#x6027;&#xFF1F;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#descriptor数据描述符-writable"><span class="nav-number">3.</span> <span class="nav-text"><a href="#descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-writable" class="headerlink" title="descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-writable"></a><strong>descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-writable</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#descriptor数据描述符-enumerable"><span class="nav-number">4.</span> <span class="nav-text"><a href="#descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-enumerable" class="headerlink" title="descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-enumerable"></a><strong>descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-enumerable</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#descriptor数据描述符-configurable"><span class="nav-number">5.</span> <span class="nav-text"><a href="#descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-configurable" class="headerlink" title="descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-configurable"></a><strong>descriptor&#x6570;&#x636E;&#x63CF;&#x8FF0;&#x7B26;-configurable</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存取描述符"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x5B58;&#x53D6;&#x63CF;&#x8FF0;&#x7B26;" class="headerlink" title="&#x5B58;&#x53D6;&#x63CF;&#x8FF0;&#x7B26;"></a><strong>&#x5B58;&#x53D6;&#x63CF;&#x8FF0;&#x7B26;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取对象描述符"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x83B7;&#x53D6;&#x5BF9;&#x8C61;&#x63CF;&#x8FF0;&#x7B26;" class="headerlink" title="&#x83B7;&#x53D6;&#x5BF9;&#x8C61;&#x63CF;&#x8FF0;&#x7B26;"></a><strong>&#x83B7;&#x53D6;&#x5BF9;&#x8C61;&#x63CF;&#x8FF0;&#x7B26;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注意事项"><span class="nav-number">8.</span> <span class="nav-text"><a href="#&#x6CE8;&#x610F;&#x4E8B;&#x9879;" class="headerlink" title="&#x6CE8;&#x610F;&#x4E8B;&#x9879;"></a><strong>&#x6CE8;&#x610F;&#x4E8B;&#x9879;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定义多个属性"><span class="nav-number">9.</span> <span class="nav-text"><a href="#&#x5B9A;&#x4E49;&#x591A;&#x4E2A;&#x5C5E;&#x6027;" class="headerlink" title="&#x5B9A;&#x4E49;&#x591A;&#x4E2A;&#x5C5E;&#x6027;"></a><strong>&#x5B9A;&#x4E49;&#x591A;&#x4E2A;&#x5C5E;&#x6027;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用途"><span class="nav-number">10.</span> <span class="nav-text"><a href="#&#x7528;&#x9014;" class="headerlink" title="&#x7528;&#x9014;"></a><strong>&#x7528;&#x9014;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">11.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a><strong>&#x603B;&#x7ED3;</strong></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/08/19/ECMAScript-Object-defineProperty-属性描述符/';
+          this.page.identifier = '2016/08/19/ECMAScript-Object-defineProperty-属性描述符/';
+          this.page.title = 'ECMAScript Object.defineProperty 属性描述符';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

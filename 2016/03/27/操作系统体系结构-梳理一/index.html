@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="other," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近慢慢的把操作系统那块的东西捡起来，看的比较快了，因为里面的东西都没有全部忘记。为了方便每次查找和遗忘，我想把这个整体简单的一些知识做一些梳理，细节不会讲很多，因为这样才会每次去想这个到底是什么。具体的知识梳理我看的就是学校发的教材《操作系统原理分析》。先前看到了winter大神的【这篇】文章，觉得里面说的建立自己的知识体系结构等等，我觉得特别棒。   操作系统的概述先问自己几个问题： 操作系">
+<meta name="keywords" content="other">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统体系结构-梳理一">
+<meta property="og:url" content="http://sevencai.github.io/2016/03/27/操作系统体系结构-梳理一/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="最近慢慢的把操作系统那块的东西捡起来，看的比较快了，因为里面的东西都没有全部忘记。为了方便每次查找和遗忘，我想把这个整体简单的一些知识做一些梳理，细节不会讲很多，因为这样才会每次去想这个到底是什么。具体的知识梳理我看的就是学校发的教材《操作系统原理分析》。先前看到了winter大神的【这篇】文章，觉得里面说的建立自己的知识体系结构等等，我觉得特别棒。   操作系统的概述先问自己几个问题： 操作系">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T02:54:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="操作系统体系结构-梳理一">
+<meta name="twitter:description" content="最近慢慢的把操作系统那块的东西捡起来，看的比较快了，因为里面的东西都没有全部忘记。为了方便每次查找和遗忘，我想把这个整体简单的一些知识做一些梳理，细节不会讲很多，因为这样才会每次去想这个到底是什么。具体的知识梳理我看的就是学校发的教材《操作系统原理分析》。先前看到了winter大神的【这篇】文章，觉得里面说的建立自己的知识体系结构等等，我觉得特别棒。   操作系统的概述先问自己几个问题： 操作系">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/03/27/操作系统体系结构-梳理一/"/>
+
+
+
+
+
+  <title>操作系统体系结构-梳理一 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/03/27/操作系统体系结构-梳理一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">操作系统体系结构-梳理一</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-27T08:52:31+08:00">
+                2016-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/other/" itemprop="url" rel="index">
+                    <span itemprop="name">other</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/27/操作系统体系结构-梳理一/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/27/操作系统体系结构-梳理一/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>最近慢慢的把操作系统那块的东西捡起来，看的比较快了，因为里面的东西都没有全部忘记。为了方便每次查找和遗忘，我想把这个整体简单的一些知识做一些梳理，细节不会讲很多，因为这样才会每次去想这个到底是什么。具体的知识梳理我看的就是学校发的教材《操作系统原理分析》。先前看到了winter大神的【<a href="http://mp.weixin.qq.com/s?__biz=MzIzMzEzODYwOA==&amp;mid=416695997&amp;idx=1&amp;sn=f57f073bcb3a9559f0575d0a7584a246&amp;scene=2&amp;srcid=0322wNBBxRLm1j1TxpnSZmX2" target="_blank" rel="noopener">这篇</a>】文章，觉得里面说的建立自己的知识体系结构等等，我觉得特别棒。</p>
+</blockquote>
+<hr>
+<h3 id="操作系统的概述"><a href="#操作系统的概述" class="headerlink" title="操作系统的概述"></a>操作系统的概述</h3><p>先问自己几个问题：</p>
+<pre><code>操作系统是什么？
+操作系统的功能是什么？
+操作系统是怎么发展的？
+操作系统有哪些类型？
+linux的优越性能？
+</code></pre><p>如果都答出来了，下面的就可以忽略啦。</p>
+<hr>
+<h3 id="操作系统是什么？"><a href="#操作系统是什么？" class="headerlink" title="操作系统是什么？"></a>操作系统是什么？</h3><p>操作系统是一组<strong>控制和管理</strong>计算机系统<strong>资源</strong>的程序集合，它控制和协调并发起活动，为用户提供良好的接口。</p>
+<p>操作系统有4个特征：并发性，共享性，不确定性，虚拟性。下面是具体的这几个特点的解释。</p>
+<hr>
+<h4 id="并发性"><a href="#并发性" class="headerlink" title="并发性"></a>并发性</h4><p><strong>并发性</strong>是指计算机中若存在干个程序的运行，系统中多个活动同时进行，I/O操作和计算机操作重叠。<strong>目的是</strong>改善系统资源的利用率，提高了系统的吞吐量，但是它也使系统复杂话了，操作系统必须具有控制和管理各种并发活动的能力。</p>
+<hr>
+<h4 id="共享性"><a href="#共享性" class="headerlink" title="共享性"></a>共享性</h4><p><strong>共享性</strong>是指多个计算机任务对系统资源的共同享用，操作系统程序与多个用户程序公用系统中的各个资源，比如中央处理器,内外存储器，外部设备，文件等。</p>
+<hr>
+<h4 id="不确定性"><a href="#不确定性" class="headerlink" title="不确定性"></a>不确定性</h4><p>在多道程序中环境下，操作系统的运行实在随机的环境下运行的。</p>
+<p><strong>这里的随机是指</strong>：操作系统不可能对所运行的程序的行为和硬件设备的情况作出任何事先假定。</p>
+<hr>
+<h4 id="虚拟性"><a href="#虚拟性" class="headerlink" title="虚拟性"></a>虚拟性</h4><p>所谓的<strong>虚拟，是指的把一个物理上的实体变为若干的逻辑上的对应物</strong>。物理实体是实的，而后者是虚的，相应的，用于实现虚拟的技术，成为虚拟技术。</p>
+<p>比如在操作系统中，分别用来实现虚拟处理机，虚拟内存，虚拟外部设备和虚拟信道。</p>
+<hr>
+<h3 id="操作系统的功能"><a href="#操作系统的功能" class="headerlink" title="操作系统的功能"></a>操作系统的功能</h3><pre><code>处理机管理
+存储管理
+设备管理
+文件管理
+作业管理
+</code></pre><hr>
+<h4 id="处理机管理"><a href="#处理机管理" class="headerlink" title="处理机管理"></a>处理机管理</h4><p>为了准确的描述多道系统中多个作业的运行情况，以及系统资源分配的情况，采用什么可以反映与描述计算机程序的执行过程和资源共享和用户随机的特点呢？</p>
+<p>操作系统引入了进程的概念，进程是资源分配和独立运行的基本单位和基本实体。</p>
+<p>所以我们这里把<strong>处理机管理可归结为进程管理</strong>。</p>
+<p>具体的操作系统其他功能包括进程管理等，下一篇文章单独做记录。</p>
+<hr>
+<h3 id="操作系统的发展"><a href="#操作系统的发展" class="headerlink" title="操作系统的发展"></a>操作系统的发展</h3><pre><code>无操作系统的计算机系统
+早期简单批处理操纵系统
+多道批处理系统
+</code></pre><hr>
+<h3 id="操作系统的类型"><a href="#操作系统的类型" class="headerlink" title="操作系统的类型"></a>操作系统的类型</h3><p>下面只列举了针对不同的使用环境和对作业的处理方式来分的情况：</p>
+<pre><code>单用户操作系统
+批处理操作系统
+分时操作系统
+实时操作系统
+通用操作系统
+网络操作系统
+分布式操作系统
+</code></pre><hr>
+<h4 id="单用户操作系统"><a href="#单用户操作系统" class="headerlink" title="单用户操作系统"></a>单用户操作系统</h4><p>一次只能支持一个用户程序的运行。单用户操作系统向用户提供练级的交互环境。比如MS-DOS就是一个典型的单用户操作系统。</p>
+<hr>
+<h4 id="批处理操作系统"><a href="#批处理操作系统" class="headerlink" title="批处理操作系统"></a>批处理操作系统</h4><blockquote>
+<p>顾名思义：批处理操作系统就是对多个用户的作业进行成批的处理，批处理系统的设计目标是提到系统资源的使用率和作业吞吐量。</p>
+</blockquote>
+<p>这里面又分为了<strong>单道批处理系统</strong>和<strong>多道批处理系统</strong>。</p>
+<p>多道批处理系统是每一次把一批经过合理搭配的作业通过输入设备提交给操作系统，并暂时存入外存，等待运行。</p>
+<p>当系统需要调度新的作业的时候，就根据运行的情况和用户要求，<strong>按照某种调度原则</strong>，从外存中挑选一个或者几个作业装入内存运行。</p>
+<p>此过程的最大特点就是<strong>脱机处理</strong>，系统运行的过程中不允许用户与作业交互作业，用户不能直接干预自己的作业的运行，知道运行作业运行完毕。</p>
+<p>这是早期的一种大型机用的操作系统。无交互性。</p>
+<hr>
+<h4 id="分时操作系统"><a href="#分时操作系统" class="headerlink" title="分时操作系统"></a>分时操作系统</h4><p>为克服多道批处理系统的缺点，出现了分时系统。</p>
+<p><strong>分时系统</strong>是指一台计算机主机<strong>连接着多个终端机</strong>，可以被多个用户同时处理使用，每个用户通过自己使用的终端采用人机对话的形式控制自己的程序，<strong>系统将cpu分成时间片</strong>为多个终端用户服务。</p>
+<p>目标是：及时响应，并在可能的情况下提高资源的利用率。</p>
+<hr>
+<h4 id="实时操作系统"><a href="#实时操作系统" class="headerlink" title="实时操作系统"></a>实时操作系统</h4><p>是指对计算机的特定输入做出快速的反应，以控制发出实时信号的对象，即计算机及时响应外部的请求，在规定的短时间内完成这个事情。</p>
+<p>实时就是<strong>立即，现在</strong>的意思。</p>
+<hr>
+<h4 id="网络操作系统"><a href="#网络操作系统" class="headerlink" title="网络操作系统"></a>网络操作系统</h4><p>是使网络上各计算机能方便而有效的共享网络的资源，为网络用户提供各种软件和规程（如协议）的集合。</p>
+<p><strong>信息交换，资源共享，自治，分散</strong>。是其特点。</p>
+<hr>
+<h4 id="分布式操作系统"><a href="#分布式操作系统" class="headerlink" title="分布式操作系统"></a>分布式操作系统</h4><p>由多台计算机组成。这些计算机系统资源可以分布在不同的地理位置，但在逻辑上是一个完整的计算机系统。</p>
+<p>统一性，共享性，透明性，自治性，独立性。</p>
+<p>与网络操作系统不同，分布式操作系统网络的概念被淡化了，所有资源都用同一方式进行管理和访问，用户不需要知道资源在哪里或者是怎么存储的。</p>
+<p>注意这里的透明。<strong>网络操作系统的资源是透明的吗？当然不是了</strong>。</p>
+<hr>
+<h3 id="linux的优越性能"><a href="#linux的优越性能" class="headerlink" title="linux的优越性能"></a>linux的优越性能</h3><p>首先linux第一个肯定是最好的就是开源和免费。并且支持多用户，多任务。还有非常好的界面，同时具有字符界面和图形界面。还有很强大的网络功能。支持多种文件系统，支持多种硬件平台。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/other/" rel="tag"># other</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/24/Date对象/" rel="next" title="Date对象">
+                <i class="fa fa-chevron-left"></i> Date对象
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/27/操作系统体系结构-梳理二-处理机管理/" rel="prev" title="操作系统体系结构-梳理二-处理机管理">
+                操作系统体系结构-梳理二-处理机管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统的概述"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x6982;&#x8FF0;" class="headerlink" title="&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x6982;&#x8FF0;"></a>&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x6982;&#x8FF0;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统是什么？"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x662F;&#x4EC0;&#x4E48;&#xFF1F;" class="headerlink" title="&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x662F;&#x4EC0;&#x4E48;&#xFF1F;"></a>&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x662F;&#x4EC0;&#x4E48;&#xFF1F;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#并发性"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x5E76;&#x53D1;&#x6027;" class="headerlink" title="&#x5E76;&#x53D1;&#x6027;"></a>&#x5E76;&#x53D1;&#x6027;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#共享性"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x5171;&#x4EAB;&#x6027;" class="headerlink" title="&#x5171;&#x4EAB;&#x6027;"></a>&#x5171;&#x4EAB;&#x6027;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不确定性"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x4E0D;&#x786E;&#x5B9A;&#x6027;" class="headerlink" title="&#x4E0D;&#x786E;&#x5B9A;&#x6027;"></a>&#x4E0D;&#x786E;&#x5B9A;&#x6027;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟性"><span class="nav-number">2.4.</span> <span class="nav-text"><a href="#&#x865A;&#x62DF;&#x6027;" class="headerlink" title="&#x865A;&#x62DF;&#x6027;"></a>&#x865A;&#x62DF;&#x6027;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统的功能"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x529F;&#x80FD;" class="headerlink" title="&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x529F;&#x80FD;"></a>&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x529F;&#x80FD;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#处理机管理"><span class="nav-number">3.1.</span> <span class="nav-text"><a href="#&#x5904;&#x7406;&#x673A;&#x7BA1;&#x7406;" class="headerlink" title="&#x5904;&#x7406;&#x673A;&#x7BA1;&#x7406;"></a>&#x5904;&#x7406;&#x673A;&#x7BA1;&#x7406;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统的发展"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x53D1;&#x5C55;" class="headerlink" title="&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x53D1;&#x5C55;"></a>&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x53D1;&#x5C55;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统的类型"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x7C7B;&#x578B;" class="headerlink" title="&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x7C7B;&#x578B;"></a>&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x7C7B;&#x578B;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单用户操作系统"><span class="nav-number">5.1.</span> <span class="nav-text"><a href="#&#x5355;&#x7528;&#x6237;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;" class="headerlink" title="&#x5355;&#x7528;&#x6237;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;"></a>&#x5355;&#x7528;&#x6237;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#批处理操作系统"><span class="nav-number">5.2.</span> <span class="nav-text"><a href="#&#x6279;&#x5904;&#x7406;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;" class="headerlink" title="&#x6279;&#x5904;&#x7406;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;"></a>&#x6279;&#x5904;&#x7406;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分时操作系统"><span class="nav-number">5.3.</span> <span class="nav-text"><a href="#&#x5206;&#x65F6;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;" class="headerlink" title="&#x5206;&#x65F6;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;"></a>&#x5206;&#x65F6;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实时操作系统"><span class="nav-number">5.4.</span> <span class="nav-text"><a href="#&#x5B9E;&#x65F6;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;" class="headerlink" title="&#x5B9E;&#x65F6;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;"></a>&#x5B9E;&#x65F6;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络操作系统"><span class="nav-number">5.5.</span> <span class="nav-text"><a href="#&#x7F51;&#x7EDC;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;" class="headerlink" title="&#x7F51;&#x7EDC;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;"></a>&#x7F51;&#x7EDC;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分布式操作系统"><span class="nav-number">5.6.</span> <span class="nav-text"><a href="#&#x5206;&#x5E03;&#x5F0F;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;" class="headerlink" title="&#x5206;&#x5E03;&#x5F0F;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;"></a>&#x5206;&#x5E03;&#x5F0F;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linux的优越性能"><span class="nav-number">6.</span> <span class="nav-text"><a href="#linux&#x7684;&#x4F18;&#x8D8A;&#x6027;&#x80FD;" class="headerlink" title="linux&#x7684;&#x4F18;&#x8D8A;&#x6027;&#x80FD;"></a>linux&#x7684;&#x4F18;&#x8D8A;&#x6027;&#x80FD;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/03/27/操作系统体系结构-梳理一/';
+          this.page.identifier = '2016/03/27/操作系统体系结构-梳理一/';
+          this.page.title = '操作系统体系结构-梳理一';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

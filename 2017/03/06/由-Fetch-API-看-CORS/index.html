@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近在看 react 获取服务器数据时， 看到了一新的 API fetch， 上手来用了用，觉得十分好用。但是使用的过程中遇到了一些问题，还是决定整体的记录下。 fetch 类似于 Ajax, 区别自在与 fetch 结合了 promise 的友好调用方式，有效的防止了 callback hell。  fetch() allows you to make network requests simi">
+<meta name="keywords" content="javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="由 Fetch 跨域 看 CORS">
+<meta property="og:url" content="http://sevencai.github.io/2017/03/06/由-Fetch-API-看-CORS/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="最近在看 react 获取服务器数据时， 看到了一新的 API fetch， 上手来用了用，觉得十分好用。但是使用的过程中遇到了一些问题，还是决定整体的记录下。 fetch 类似于 Ajax, 区别自在与 fetch 结合了 promise 的友好调用方式，有效的防止了 callback hell。  fetch() allows you to make network requests simi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/corswrong.png">
+<meta property="og:image" content="http://cailidan.cn/images/accesscontrol.png">
+<meta property="og:image" content="http://cailidan.cn/images/ajax12.png">
+<meta property="og:updated_time" content="2017-07-11T09:31:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="由 Fetch 跨域 看 CORS">
+<meta name="twitter:description" content="最近在看 react 获取服务器数据时， 看到了一新的 API fetch， 上手来用了用，觉得十分好用。但是使用的过程中遇到了一些问题，还是决定整体的记录下。 fetch 类似于 Ajax, 区别自在与 fetch 结合了 promise 的友好调用方式，有效的防止了 callback hell。  fetch() allows you to make network requests simi">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/corswrong.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2017/03/06/由-Fetch-API-看-CORS/"/>
+
+
+
+
+
+  <title>由 Fetch 跨域 看 CORS | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2017/03/06/由-Fetch-API-看-CORS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">由 Fetch 跨域 看 CORS</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-06T15:59:49+08:00">
+                2017-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/06/由-Fetch-API-看-CORS/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/06/由-Fetch-API-看-CORS/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在看 react 获取服务器数据时， 看到了一新的 API <a href="https://fetch.spec.whatwg.org/" target="_blank" rel="noopener">fetch</a>， 上手来用了用，觉得十分好用。但是使用的过程中遇到了一些问题，还是决定整体的记录下。 fetch 类似于 Ajax, 区别自在与 fetch 结合了 promise 的友好调用方式，有效的防止了 callback hell。</p>
+<blockquote>
+<p>fetch() allows you to make network requests similar to XMLHttpRequest (XHR). The main difference is that the Fetch API uses Promises, which enables a simpler and cleaner API, avoiding callback hell and having to remember the complex API of XMLHttpRequest.</p>
+</blockquote>
+<hr>
+<h3 id="对比传统方式与-fetch"><a href="#对比传统方式与-fetch" class="headerlink" title="对比传统方式与 fetch"></a><strong>对比传统方式与 fetch</strong></h3><p>先感受下好用在哪儿：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">fetch(<span class="string">'./api/some.json'</span>)  </span><br><span class="line">  .then(  </span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;  </span><br><span class="line">      <span class="keyword">if</span> (response.status !== <span class="number">200</span>) &#123;  </span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Looks like there was a problem. Status Code: '</span> +  </span><br><span class="line">          response.status);  </span><br><span class="line">        <span class="keyword">return</span>;  </span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Examine the text in the response  </span></span><br><span class="line">      response.json().then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;  </span><br><span class="line">        <span class="built_in">console</span>.log(data);  </span><br><span class="line">      &#125;);  </span><br><span class="line">    &#125;  </span><br><span class="line">  )  </span><br><span class="line">  .catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;  </span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Fetch Error :-S'</span>, err);  </span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>相比于传统的 <code>XMLHttpRequest</code> 的如下写法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reqListener</span>(<span class="params"></span>) </span>&#123;  </span><br><span class="line">  <span class="keyword">var</span> data = <span class="built_in">JSON</span>.parse(<span class="keyword">this</span>.responseText);  </span><br><span class="line">  <span class="built_in">console</span>.log(data);  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reqError</span>(<span class="params">err</span>) </span>&#123;  </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Fetch Error :-S'</span>, err);  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> oReq = <span class="keyword">new</span> XMLHttpRequest();  </span><br><span class="line">oReq.onload = reqListener;  </span><br><span class="line">oReq.onerror = reqError;  </span><br><span class="line">oReq.open(<span class="string">'get'</span>, <span class="string">'./api/some.json'</span>, <span class="literal">true</span>);  </span><br><span class="line">oReq.send();</span><br></pre></td></tr></table></figure>
+<p>传统的 <code>XMLHttpRequest</code> 需要使用两个回调函数，分别在 onload 和 onerror 的时候使用。并且使用 open 和 send 两个 api, 这么看来 fetch 是不是很好用。</p>
+<hr>
+<h3 id="fetch-跨域"><a href="#fetch-跨域" class="headerlink" title="fetch 跨域"></a><strong>fetch 跨域</strong></h3><p>在用 fetch 的时候，跟普通 ajax 一样，经常会遇到 跨域的情况，那么跨域应该如何解决呢？</p>
+<p>分为下面两种情况，也可以看我在<a href="https://www.zhihu.com/question/47029864/answer/150069385" target="_blank" rel="noopener">知乎</a>上的回答：</p>
+<p><strong>1. 如果服务器不支持 CORS， 则不用使用 Fetch Api 了。</strong></p>
+<p>因为此时如果你设置了 <code>{mode: &#39; cors &#39;}</code>，就会报错告诉你你请求的服务器不支持 CORS。大概会报下面的错误：</p>
+<blockquote>
+<p>Response to preflight request doesn’t pass access control check: No ‘Access-Control-Allow-Origin’ header is present on the requested resource.</p>
+</blockquote>
+<p>如果设置成 <code>{mode: &#39; no-cors &#39;}</code>, 虽然不会报错，但是结果会 返回被标记了为 <code>opaque</code> 的数据，表明你没有权限访问。<br><img src="http://www.cailidan.cn/images/corswrong.png" alt="opaque"></p>
+<p>这种情况下可以使用 <code>JSONP</code>。</p>
+<p><strong>2. 如果服务器支持 CORS, 则在客户端设置相应的  <code>Access-Control-Allow-Origin</code>  即可得到数据。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> myHeaders = <span class="keyword">new</span> Headers(&#123;</span><br><span class="line">    <span class="string">'Access-Control-Allow-Origin'</span>: <span class="string">'*'</span>,</span><br><span class="line">    <span class="string">'Content-Type'</span>: <span class="string">'text/plain'</span></span><br><span class="line">&#125;);</span><br><span class="line">fetch(url, &#123;</span><br><span class="line">    method: <span class="string">'GET'</span>,</span><br><span class="line">    headers: myHeaders,</span><br><span class="line">    mode: <span class="string">'cors'</span></span><br><span class="line">&#125;) .then(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// TODO </span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>回到刚刚的第一种情况， 如果 设置 <code>{mode: &#39;no-cors&#39;}</code> 返回的数据都是 opaque 的，那还要这种 mode 干嘛呢？ </p>
+<blockquote>
+<p>no-cors is intended to make requests to other origins that do not have CORS headers and result in an opaque response, but as stated, this isn’t possible in the window global scope at the moment.</p>
+</blockquote>
+<p><a href="https://developers.google.com/web/updates/2015/03/introduction-to-fetch" target="_blank" rel="noopener">introduction-to-fetch</a>这篇文章给了我们解释，就是比如你发送一些 log_data 的数据， 上报一些数据，这个时候你是不需要返回的，那利用 <code>no-cors</code> 就是没问题的了。也就是说 {mode: ‘no-cors’} 模式允许来自 CDN 的脚本、其他域的图片和其他一些跨域资源或者不需要返回资源的, 但是 cors 模式一般用来跨域请求，从而从第三方提供的 API 获取数据。</p>
+<hr>
+<h3 id="缺点与优点"><a href="#缺点与优点" class="headerlink" title="缺点与优点"></a><strong>缺点与优点</strong></h3><p>优点上面已经讲到了，比如支持 <code>primise</code> 的方式，比如简介的 API, 多样的设置。 但是还有一种情况可能会使用到：</p>
+<p>比如你需要的传给服务器的数据很大，这时候用传统的 JSONP 不太合适，因为 JSONP 只支持 GET, 不支持 POST, 这个时候也可以用 Fetch, 给相应的服务器设置一下 CORS 即可。</p>
+<p>有一个缺点是浏览器不兼容，还有一个缺点 和 promise 一样，一旦发生了就不能取消。</p>
+<hr>
+<h3 id="其他注意的地方"><a href="#其他注意的地方" class="headerlink" title="其他注意的地方"></a><strong>其他注意的地方</strong></h3><p>1.在 Firefox 39, Chrome 42 以上都支持了， 对于其他浏览器，建议使用 <a href="https://github.com/github/fetch" target="_blank" rel="noopener">Fetch Polyfil</a> </p>
+<p>2.Fetch 引入了 3 个接口，分别是 <code>Headers</code>，<code>Request</code> 和 <code>Response</code>， 这里就不讲解具体怎么用了。</p>
+<hr>
+<h3 id="理解CORS"><a href="#理解CORS" class="headerlink" title="理解CORS"></a><strong>理解CORS</strong></h3><p>在用 fetch 的过程中， 发现自己对 CORS 的理解还是不完全，又学习了下：</p>
+<blockquote>
+<p>跨来源资源共享（CORS）是一份浏览器技术的规范，提供了 Web 服务从不同网域传来沙盒脚本的方法，以避开浏览器的同源策略[1]，是 JSONP 模式的现代版。与 JSONP 不同，CORS 除了 GET 要求方法以外也支持其他的 HTTP 要求。用 CORS 可以让网页设计师用一般的 XMLHttpRequest，这种方式的错误处理比 JSONP 要来的好。另一方面，JSONP 可以在不支持 CORS 的老旧浏览器上运作。现代的浏览器都支持 CORS</p>
+</blockquote>
+<p><strong>简单的说，我们只需要在服务器上发送一个响应标头， 就可以允许一个域上的网络向另外一个域提交跨域请求。  这种方法就是 CORS ,是一种跨域的访问机制。</strong></p>
+<p>比如在我的 php 代码中 header 一下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">header(<span class="string">"Access-Control-Allow-Origin: *"</span>);</span><br></pre></td></tr></table></figure>
+<p>然后再浏览器返回给我们的 Response Headers 里面就有下面的信息：</p>
+<p><img src="http://cailidan.cn/images/accesscontrol.png" alt="结果"></p>
+<p>CORS 的请求又包括了 两类，有简单请求以及非简单请求两种。两种具体不同在于对服务器请求的不同。</p>
+<p>如果是简单的 <code>HEAD、GET、POST</code> ，Content-Type只限于三个值：<code>application/x-www-form-urlencoded、multipart/form-data、text/plain</code>，这种情况就是简单请求。</p>
+<p>如果有请求方法是<code>PUT</code>或<code>DELETE</code>，或者<code>Content-Type</code>字段的类型是<code>application/json</code> 的时候，那么可以认为是复杂请求。</p>
+<p>两者的区别在于 后者（复杂请求）回去在真正的请求服务器资源前， 先发一次预检请求，浏览器先询问服务器，当前网页所在的域名是否在服务器的许可名单之中，以及可以使用哪些HTTP动词和头信息字段。只有得到肯定答复，浏览器才会发出正式的XMLHttpRequest请求，否则就报错。<strong>而第一种就是不管怎么样都会先发一次 XMLHttpRequest。</strong></p>
+<p>更加具体的可以参考文章<a href="https://spring.io/understanding/CORS" target="_blank" rel="noopener">understanding/CORS</a>和文章<a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank" rel="noopener">from 软老师的cors</a></p>
+<hr>
+<h3 id="other-tips"><a href="#other-tips" class="headerlink" title="other tips"></a><strong>other tips</strong></h3><p>在学习 fetch 的过程中， 看到了一篇文章<a href="http://andrewhfarmer.com/ajax-libraries/" target="_blank" rel="noopener">javascript ajax libraries</a>, 这篇文章里面总结了下我们发起 http 请求时，用到的一些库的对比。我觉得总结的很好。附文章中的一个图。</p>
+<p><img src="http://cailidan.cn/images/ajax12.png" alt=""></p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>总体来说就是学习了一个新的 API, 然后又进一步了解了下 CORS, 了解了什么时候该用 Fetch, CORS 又是场合下用，并且分为哪些中情况。</p>
+<p>阅读并推荐资源如下，十分感谢：</p>
+<ul>
+<li><a href="http://bubkoo.com/2015/05/08/introduction-to-fetch/#cors" target="_blank" rel="noopener">introduction-to-fetch</a></li>
+<li><a href="https://developers.google.com/web/updates/2015/03/introduction-to-fetch" target="_blank" rel="noopener">introduction-to-fetch</a></li>
+<li><a href="https://hacks.mozilla.org/2015/03/this-api-is-so-fetching/" target="_blank" rel="noopener">fetch的具体使用方法</a></li>
+<li><a href="https://spring.io/understanding/CORS" target="_blank" rel="noopener">CORS的两种处理方式</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/27/深度探索Promise机制/" rel="next" title="探索Promise用法和机制">
+                <i class="fa fa-chevron-left"></i> 探索Promise用法和机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/11/Understanding-Vuex/" rel="prev" title="Understanding Vuex">
+                Understanding Vuex <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#对比传统方式与-fetch"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5BF9;&#x6BD4;&#x4F20;&#x7EDF;&#x65B9;&#x5F0F;&#x4E0E;-fetch" class="headerlink" title="&#x5BF9;&#x6BD4;&#x4F20;&#x7EDF;&#x65B9;&#x5F0F;&#x4E0E; fetch"></a><strong>&#x5BF9;&#x6BD4;&#x4F20;&#x7EDF;&#x65B9;&#x5F0F;&#x4E0E; fetch</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fetch-跨域"><span class="nav-number">2.</span> <span class="nav-text"><a href="#fetch-&#x8DE8;&#x57DF;" class="headerlink" title="fetch &#x8DE8;&#x57DF;"></a><strong>fetch &#x8DE8;&#x57DF;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点与优点"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x7F3A;&#x70B9;&#x4E0E;&#x4F18;&#x70B9;" class="headerlink" title="&#x7F3A;&#x70B9;&#x4E0E;&#x4F18;&#x70B9;"></a><strong>&#x7F3A;&#x70B9;&#x4E0E;&#x4F18;&#x70B9;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他注意的地方"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x5176;&#x4ED6;&#x6CE8;&#x610F;&#x7684;&#x5730;&#x65B9;" class="headerlink" title="&#x5176;&#x4ED6;&#x6CE8;&#x610F;&#x7684;&#x5730;&#x65B9;"></a><strong>&#x5176;&#x4ED6;&#x6CE8;&#x610F;&#x7684;&#x5730;&#x65B9;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解CORS"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x7406;&#x89E3;CORS" class="headerlink" title="&#x7406;&#x89E3;CORS"></a><strong>&#x7406;&#x89E3;CORS</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#other-tips"><span class="nav-number">6.</span> <span class="nav-text"><a href="#other-tips" class="headerlink" title="other tips"></a><strong>other tips</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a><strong>&#x603B;&#x7ED3;</strong></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2017/03/06/由-Fetch-API-看-CORS/';
+          this.page.identifier = '2017/03/06/由-Fetch-API-看-CORS/';
+          this.page.title = '由 Fetch 跨域 看 CORS';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

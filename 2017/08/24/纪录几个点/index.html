@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="other," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Object.create()创建Object的实例有下面三种方法：123var o1 = Object.create(Object.prototype);var o2 = new Object;var o3 = &amp;#123;&amp;#125;; 通过：var o4 = Object.create(null);可以创建没有原型的Object,这个对象不能使用 toString,valueOf等函数。">
+<meta name="keywords" content="other">
+<meta property="og:type" content="article">
+<meta property="og:title" content="纪录几个点">
+<meta property="og:url" content="http://sevencai.github.io/2017/08/24/纪录几个点/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="Object.create()创建Object的实例有下面三种方法：123var o1 = Object.create(Object.prototype);var o2 = new Object;var o3 = &amp;#123;&amp;#125;; 通过：var o4 = Object.create(null);可以创建没有原型的Object,这个对象不能使用 toString,valueOf等函数。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://cailidan.cn/images/bijinode.jpg">
+<meta property="og:updated_time" content="2017-08-25T02:56:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="纪录几个点">
+<meta name="twitter:description" content="Object.create()创建Object的实例有下面三种方法：123var o1 = Object.create(Object.prototype);var o2 = new Object;var o3 = &amp;#123;&amp;#125;; 通过：var o4 = Object.create(null);可以创建没有原型的Object,这个对象不能使用 toString,valueOf等函数。">
+<meta name="twitter:image" content="http://cailidan.cn/images/bijinode.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2017/08/24/纪录几个点/"/>
+
+
+
+
+
+  <title>纪录几个点 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2017/08/24/纪录几个点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">纪录几个点</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-24T16:24:32+08:00">
+                2017-08-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/08/24/纪录几个点/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/08/24/纪录几个点/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://cailidan.cn/images/bijinode.jpg" alt="纪录最近想纪录的几个点"></p>
+<hr>
+<h3 id="Object-create"><a href="#Object-create" class="headerlink" title="Object.create()"></a>Object.create()</h3><p>创建Object的实例有下面三种方法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o1 = <span class="built_in">Object</span>.create(<span class="built_in">Object</span>.prototype);</span><br><span class="line"><span class="keyword">var</span> o2 = <span class="keyword">new</span> <span class="built_in">Object</span>;</span><br><span class="line"><span class="keyword">var</span> o3 = &#123;&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>通过：<code>var o4 = Object.create(null);</code>可以创建没有原型的Object,这个对象不能使用 <code>toString,valueOf</code>等函数。</p>
+<p>创建一个以另一个空对象为原型,且拥有一个属性p的对象<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o = <span class="built_in">Object</span>.create(&#123;&#125;, &#123; <span class="attr">p</span>: &#123; <span class="attr">value</span>: <span class="number">42</span> &#125; &#125;)</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="字符串判断"><a href="#字符串判断" class="headerlink" title="字符串判断"></a>字符串判断</h3><p>在涉及其它运算符（译注：如下面的减号’-‘）时，JavaScript语言不会把数字变为字符串。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"37"</span> - <span class="number">7</span> <span class="comment">// 30</span></span><br><span class="line"><span class="string">"37"</span> + <span class="number">7</span> <span class="comment">// "377"</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="单目加法运算符"><a href="#单目加法运算符" class="headerlink" title="单目加法运算符"></a>单目加法运算符</h3><p>将字符串转换为数字的另一种方法是使用单目加法运算符。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"1.1"</span> + <span class="string">"1.1"</span> = <span class="string">"1.11.1"</span></span><br><span class="line">(+<span class="string">"1.1"</span>) + (+<span class="string">"1.1"</span>) = <span class="number">2.2</span>   <span class="comment">// 注：加入括号为清楚起见，不是必需的。</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="false-判断"><a href="#false-判断" class="headerlink" title="false 判断"></a>false 判断</h3><p>当传递给条件语句时，所有其他值，包括所有对象会被计算为 true 。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">false</span></span><br><span class="line"><span class="literal">undefined</span></span><br><span class="line"><span class="literal">null</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="literal">NaN</span></span><br><span class="line">空字符串 (<span class="string">""</span>)</span><br></pre></td></tr></table></figure></p>
+<p>请不要混淆原始的布尔值true和false 与 布尔对象的值true和false.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>);</span><br><span class="line"><span class="keyword">if</span> (b) <span class="comment">// this condition evaluates to true</span></span><br><span class="line"><span class="keyword">if</span> (b == <span class="literal">true</span>) <span class="comment">// this condition evaluates to false</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="promise-catch-error"><a href="#promise-catch-error" class="headerlink" title="promise catch error"></a>promise catch error</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">imgLoad</span>(<span class="params">url</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> request = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    request.open(<span class="string">'GET'</span>, url);</span><br><span class="line">    request.responseType = <span class="string">'blob'</span>;</span><br><span class="line">    request.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (request.status === <span class="number">200</span>) &#123;</span><br><span class="line">        resolve(request.response);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        reject(<span class="built_in">Error</span>(<span class="string">'Image didn\'t load successfully; error code:'</span></span><br><span class="line">                     + request.statusText));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    request.onerror = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      reject(<span class="built_in">Error</span>(<span class="string">'There was a network error.'</span>));</span><br><span class="line">    &#125;;</span><br><span class="line">    request.send();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="for…of-statement"><a href="#for…of-statement" class="headerlink" title="for…of statement"></a>for…of statement</h3><p>该新特性属于 ECMAScript 2015（ES6）规范，在使用时请注意浏览器兼容性。<br>下面的这个例子展示了 for…of 和 for…in 两种循环语句之间的区别。与 for…in 循环遍历的结果是数组元素的下标不同的是， for…of 遍历的结果是元素的值：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>];</span><br><span class="line">arr.foo = <span class="string">"hello"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> arr) &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(i); <span class="comment">// logs "0", "1", "2", "foo"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> arr) &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(i); <span class="comment">// logs "3", "5", "7" // 注意这里没有 hello</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="剩余参数-rest-parameters"><a href="#剩余参数-rest-parameters" class="headerlink" title="剩余参数(rest parameters)"></a>剩余参数(rest parameters)</h3><p>剩余参数语法允许将不确定数量的参数表示为数组。在下面的例子中，使用剩余参数收集从第二个到最后参数。然后，我们将这个数组的每一个数与第一个参数相乘。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multiply</span>(<span class="params">multiplier, ...theArgs</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> theArgs.map(<span class="function"><span class="params">x</span> =&gt;</span> multiplier * x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = multiply(<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="built_in">console</span>.log(arr); <span class="comment">// [2, 4, 6]</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="列举对象属性"><a href="#列举对象属性" class="headerlink" title="列举对象属性"></a>列举对象属性</h3><p>从 ECMAScript 5 开始，有三种原生的方法用于列出或枚举对象的属性：</p>
+<p>1.<code>for...in</code> 循环<br>该方法依次访问一个对象及其原型链中所有可枚举的属性。</p>
+<p>2.<code>Object.keys(o)</code><br>该方法返回一个对象 o 自身包含（不包括原型中）的所有属性的名称的数组。</p>
+<p>3.<code>Object.getOwnPropertyNames(o)</code><br>该方法返回一个数组，它包含了对象 o 所有拥有的属性（无论是否可枚举）的名称。</p>
+<hr>
+<h3 id="使用-defineProperty-为已存在的对象定义-setter"><a href="#使用-defineProperty-为已存在的对象定义-setter" class="headerlink" title="使用 defineProperty 为已存在的对象定义 setter"></a>使用 defineProperty 为已存在的对象定义 setter</h3><p>set  语法将对象属性绑定到要调用的一个函数上， <strong>当尝试设置该属性时</strong>。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123; <span class="attr">a</span>:<span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperties(o, &#123;</span><br><span class="line">    <span class="string">"b"</span>: &#123; <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>.a + <span class="number">1</span>; &#125; &#125;,</span><br><span class="line">    <span class="string">"c"</span>: &#123; <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">x</span>) </span>&#123; <span class="keyword">this</span>.a = x / <span class="number">2</span>; &#125; &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">o.c = <span class="number">10</span> <span class="comment">// Runs the setter, which assigns 10 / 2 (5) to the 'a' property</span></span><br><span class="line"><span class="built_in">console</span>.log(o.b) <span class="comment">// Runs the getter, which yields a + 1 or 6</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="使用defineProperty在存在的对象上定义-getter"><a href="#使用defineProperty在存在的对象上定义-getter" class="headerlink" title="使用defineProperty在存在的对象上定义 getter"></a>使用defineProperty在存在的对象上定义 getter</h3><p>get 语法将一个对象属性绑定到<strong>查询该属性时</strong>将被调用的一个函数上。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123; <span class="attr">a</span>:<span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(o, <span class="string">"b"</span>, &#123; <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>.a + <span class="number">1</span>; &#125; &#125;);</span><br><span class="line"><span class="built_in">console</span>.log(o.b) <span class="comment">// Runs the getter, which yields a + 1 (which is 1)</span></span><br></pre></td></tr></table></figure></p>
+<p>defineProperty 的 getter/setter 方法就是 Vue 双向绑定的一部分机制。</p>
+<hr>
+<h3 id="判断浏览器高度"><a href="#判断浏览器高度" class="headerlink" title="判断浏览器高度"></a>判断浏览器高度</h3><p>注意，navigator的信息可以很容易地被用户修改，所以JavaScript读取的值不一定是正确的。很多初学者为了针对不同浏览器编写不同的代码，喜欢用if判断浏览器版本，例如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> width;</span><br><span class="line"><span class="keyword">if</span> (getIEVersion(navigator.userAgent) &lt; <span class="number">9</span>) &#123;</span><br><span class="line">    width = <span class="built_in">document</span>.body.clientWidth;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    width = <span class="built_in">window</span>.innerWidth;</span><br><span class="line">&#125;</span><br><span class="line">但这样既可能判断不准确，也很难维护代码。正确的方法是充分利用JavaScript对不存在属性返回<span class="literal">undefined</span>的特性，直接用短路运算符||计算：</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> width = <span class="built_in">window</span>.innerWidth || <span class="built_in">document</span>.body.clientWidth;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="几个高度"><a href="#几个高度" class="headerlink" title="几个高度"></a>几个高度</h3><p>1.window对象不但充当全局作用域，而且表示浏览器窗口。</p>
+<p>2.window对象有innerWidth和innerHeight属性，可以获取浏览器窗口的内部宽度和高度。内部宽高是指除去菜单栏、工具栏、边框等占位元素后，用于显示网页的净宽高。</p>
+<p>3.outerWidth和outerHeight属性，可以获取浏览器窗口的整个宽高。</p>
+<p>4.screen对象表示屏幕的信息，常用的属性有：screen.width：屏幕宽度，以像素为单位；screen.height：屏幕高度，以像素为单位；</p>
+<hr>
+<h3 id="location-对象"><a href="#location-对象" class="headerlink" title="location 对象"></a>location 对象</h3><p>location对象表示当前页面的URL信息。例如，一个完整的URL：<br><code>http://www.example.com:8080/path/index.html?a=1&amp;b=2#TOP</code>可以用<code>location.href</code>获取。要获得URL各个部分的值，可以这么写：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">location.protocol; <span class="comment">// 'http'</span></span><br><span class="line">location.host; <span class="comment">// 'www.example.com'</span></span><br><span class="line">location.port; <span class="comment">// '8080'</span></span><br><span class="line">location.pathname; <span class="comment">// '/path/index.html'</span></span><br><span class="line">location.search; <span class="comment">// '?a=1&amp;b=2'</span></span><br><span class="line">location.hash; <span class="comment">// 'TOP'</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="DOM-对象"><a href="#DOM-对象" class="headerlink" title="DOM 对象"></a>DOM 对象</h3><p>低版本的IE&lt;8不支持querySelector和querySelectorAll。IE8仅有限支持。</p>
+<hr>
+<h3 id="JSON-stringify"><a href="#JSON-stringify" class="headerlink" title="JSON.stringify"></a>JSON.stringify</h3><p>哈哈， 今天才知道 <code>JSON.stringify</code> 有第二个参数和第三个参数，是不是很菜。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"小明"</span>,</span><br><span class="line">  <span class="string">"age"</span>: <span class="number">14</span>,</span><br><span class="line">  <span class="string">"skills"</span>: [</span><br><span class="line">    <span class="string">"JavaScript"</span>,</span><br><span class="line">    <span class="string">"Java"</span>,</span><br><span class="line">    <span class="string">"Python"</span>,</span><br><span class="line">    <span class="string">"Lisp"</span></span><br><span class="line">  ]</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 传入数组，用于筛选需要得到的key和value，传入key</span></span><br><span class="line"><span class="built_in">JSON</span>.stringify(obj, [<span class="string">"name"</span>, <span class="string">"skills"</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; "&#123;"name":"小明","skills":["JavaScript","Java","Python","Lisp"]&#125;"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 传入函数， 用于在序列化之前对每对键值进行处理</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">convert</span>(<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(<span class="keyword">typeof</span> value === <span class="string">"string"</span>) &#123;</span><br><span class="line">     <span class="keyword">return</span> value.toUpperCase();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">JSON</span>.stringify(obj, convert);</span><br></pre></td></tr></table></figure>
+<p>同样， <code>JSON.parse</code> 也有第二个参数，用来处理得到后的JSON串。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">JSON</span>.parse(obj, <span class="function"><span class="keyword">function</span> (<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(key === <span class="string">"name"</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> value + <span class="string">"小朋友"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h3><p>filter 一般可能我们只用第一个参数，其实还有第二个，第三个参数。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>];</span><br><span class="line"><span class="keyword">var</span> r = arr.filter(<span class="function"><span class="keyword">function</span> (<span class="params">element, index, self</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(element); <span class="comment">// 依次打印'A', 'B', 'C'</span></span><br><span class="line">    <span class="built_in">console</span>.log(index); <span class="comment">// 依次打印0, 1, 2</span></span><br><span class="line">    <span class="built_in">console</span>.log(self); <span class="comment">// self就是变量arr</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>利用 filter 去除里面未定义元素或者空字符串：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="string">'A'</span>, <span class="string">''</span>, <span class="literal">null</span>, <span class="literal">undefined</span>, <span class="string">'R'</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> newArr = arr.filter(<span class="function"><span class="keyword">function</span> (<span class="params">ele</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ele &amp;&amp; ele.trim();</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; ["A", "R"]</span></span><br></pre></td></tr></table></figure></p>
+<p>利用 filter 去重：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fruits = [<span class="string">'apple'</span>, <span class="string">'orange'</span>, <span class="string">'banana'</span>, <span class="string">'apple'</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> r = fruits.filter(<span class="function"><span class="keyword">function</span> (<span class="params">ele, index, self</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> self.indexOf(ele) === index;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; ["apple", "orange", "banana"]</span></span><br></pre></td></tr></table></figure></p>
+<p>利用 filter 去除偶数：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> r =  arr.filter(<span class="function"><span class="keyword">function</span> (<span class="params">ele</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ele % <span class="number">2</span> !== <span class="number">0</span>;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// =&gt; [1, 3, 5, 7]</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="千万不要直接用-JS-里的-Sort"><a href="#千万不要直接用-JS-里的-Sort" class="headerlink" title="千万不要直接用 JS 里的 Sort"></a>千万不要直接用 JS 里的 Sort</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 看上去正常的结果:</span></span><br><span class="line">[<span class="string">'Google'</span>, <span class="string">'Apple'</span>, <span class="string">'Microsoft'</span>].sort(); <span class="comment">// ['Apple', 'Google', 'Microsoft'];</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// apple排在了最后:</span></span><br><span class="line">[<span class="string">'Google'</span>, <span class="string">'apple'</span>, <span class="string">'Microsoft'</span>].sort(); <span class="comment">// ['Google', 'Microsoft", 'apple']</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 无法理解的结果:</span></span><br><span class="line">[<span class="number">10</span>, <span class="number">20</span>, <span class="number">1</span>, <span class="number">2</span>].sort(); <span class="comment">// [1, 10, 2, 20]</span></span><br></pre></td></tr></table></figure>
+<p>字符串都是按照 ASCII 码来排列，所以1,2 没问题，只是平常要注意这个地方。后面一个一定要记住 Array.sort 默认都会把元素转换为 字符串，再来排序。所以连基本的数字排序他都没做好。</p>
+<p>但是 sort 可以传入一个 function 用来自定义排序：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从小到大</span></span><br><span class="line"><span class="keyword">var</span> r = arr.sort(<span class="function"><span class="keyword">function</span> (<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(x &gt; y) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(x = y) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(x &lt; y) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// sort 方法会对原数组进行修改，并且返回的也是修改后的数组</span></span><br><span class="line"><span class="comment">// arr =&gt;  [1, 2, 10, 20]</span></span><br><span class="line"><span class="comment">// r =&gt;  [1, 2, 10, 20]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> r = arr.sort(<span class="function"><span class="keyword">function</span> (<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(x &lt; y) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(x = y) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(x &gt; y) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// arr =&gt; [20, 10, 2, 1]</span></span><br><span class="line"><span class="comment">// r =&gt; [20, 10, 2, 1]</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/other/" rel="tag"># other</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/11/Understanding-Vuex/" rel="next" title="Understanding Vuex">
+                <i class="fa fa-chevron-left"></i> Understanding Vuex
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/01/纪录最近遇到的坑/" rel="prev" title="纪录最近遇到的坑">
+                纪录最近遇到的坑 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Object-create"><span class="nav-number">1.</span> <span class="nav-text"><a href="#Object-create" class="headerlink" title="Object.create()"></a>Object.create()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串判断"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5B57;&#x7B26;&#x4E32;&#x5224;&#x65AD;" class="headerlink" title="&#x5B57;&#x7B26;&#x4E32;&#x5224;&#x65AD;"></a>&#x5B57;&#x7B26;&#x4E32;&#x5224;&#x65AD;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单目加法运算符"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5355;&#x76EE;&#x52A0;&#x6CD5;&#x8FD0;&#x7B97;&#x7B26;" class="headerlink" title="&#x5355;&#x76EE;&#x52A0;&#x6CD5;&#x8FD0;&#x7B97;&#x7B26;"></a>&#x5355;&#x76EE;&#x52A0;&#x6CD5;&#x8FD0;&#x7B97;&#x7B26;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#false-判断"><span class="nav-number">4.</span> <span class="nav-text"><a href="#false-&#x5224;&#x65AD;" class="headerlink" title="false &#x5224;&#x65AD;"></a>false &#x5224;&#x65AD;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#promise-catch-error"><span class="nav-number">5.</span> <span class="nav-text"><a href="#promise-catch-error" class="headerlink" title="promise catch error"></a>promise catch error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for…of-statement"><span class="nav-number">6.</span> <span class="nav-text"><a href="#for&#x2026;of-statement" class="headerlink" title="for&#x2026;of statement"></a>for&#x2026;of statement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#剩余参数-rest-parameters"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x5269;&#x4F59;&#x53C2;&#x6570;-rest-parameters" class="headerlink" title="&#x5269;&#x4F59;&#x53C2;&#x6570;(rest parameters)"></a>&#x5269;&#x4F59;&#x53C2;&#x6570;(rest parameters)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列举对象属性"><span class="nav-number">8.</span> <span class="nav-text"><a href="#&#x5217;&#x4E3E;&#x5BF9;&#x8C61;&#x5C5E;&#x6027;" class="headerlink" title="&#x5217;&#x4E3E;&#x5BF9;&#x8C61;&#x5C5E;&#x6027;"></a>&#x5217;&#x4E3E;&#x5BF9;&#x8C61;&#x5C5E;&#x6027;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-defineProperty-为已存在的对象定义-setter"><span class="nav-number">9.</span> <span class="nav-text"><a href="#&#x4F7F;&#x7528;-defineProperty-&#x4E3A;&#x5DF2;&#x5B58;&#x5728;&#x7684;&#x5BF9;&#x8C61;&#x5B9A;&#x4E49;-setter" class="headerlink" title="&#x4F7F;&#x7528; defineProperty &#x4E3A;&#x5DF2;&#x5B58;&#x5728;&#x7684;&#x5BF9;&#x8C61;&#x5B9A;&#x4E49; setter"></a>&#x4F7F;&#x7528; defineProperty &#x4E3A;&#x5DF2;&#x5B58;&#x5728;&#x7684;&#x5BF9;&#x8C61;&#x5B9A;&#x4E49; setter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用defineProperty在存在的对象上定义-getter"><span class="nav-number">10.</span> <span class="nav-text"><a href="#&#x4F7F;&#x7528;defineProperty&#x5728;&#x5B58;&#x5728;&#x7684;&#x5BF9;&#x8C61;&#x4E0A;&#x5B9A;&#x4E49;-getter" class="headerlink" title="&#x4F7F;&#x7528;defineProperty&#x5728;&#x5B58;&#x5728;&#x7684;&#x5BF9;&#x8C61;&#x4E0A;&#x5B9A;&#x4E49; getter"></a>&#x4F7F;&#x7528;defineProperty&#x5728;&#x5B58;&#x5728;&#x7684;&#x5BF9;&#x8C61;&#x4E0A;&#x5B9A;&#x4E49; getter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判断浏览器高度"><span class="nav-number">11.</span> <span class="nav-text"><a href="#&#x5224;&#x65AD;&#x6D4F;&#x89C8;&#x5668;&#x9AD8;&#x5EA6;" class="headerlink" title="&#x5224;&#x65AD;&#x6D4F;&#x89C8;&#x5668;&#x9AD8;&#x5EA6;"></a>&#x5224;&#x65AD;&#x6D4F;&#x89C8;&#x5668;&#x9AD8;&#x5EA6;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几个高度"><span class="nav-number">12.</span> <span class="nav-text"><a href="#&#x51E0;&#x4E2A;&#x9AD8;&#x5EA6;" class="headerlink" title="&#x51E0;&#x4E2A;&#x9AD8;&#x5EA6;"></a>&#x51E0;&#x4E2A;&#x9AD8;&#x5EA6;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#location-对象"><span class="nav-number">13.</span> <span class="nav-text"><a href="#location-&#x5BF9;&#x8C61;" class="headerlink" title="location &#x5BF9;&#x8C61;"></a>location &#x5BF9;&#x8C61;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM-对象"><span class="nav-number">14.</span> <span class="nav-text"><a href="#DOM-&#x5BF9;&#x8C61;" class="headerlink" title="DOM &#x5BF9;&#x8C61;"></a>DOM &#x5BF9;&#x8C61;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-stringify"><span class="nav-number">15.</span> <span class="nav-text"><a href="#JSON-stringify" class="headerlink" title="JSON.stringify"></a>JSON.stringify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filter"><span class="nav-number">16.</span> <span class="nav-text"><a href="#filter" class="headerlink" title="filter"></a>filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#千万不要直接用-JS-里的-Sort"><span class="nav-number">17.</span> <span class="nav-text"><a href="#&#x5343;&#x4E07;&#x4E0D;&#x8981;&#x76F4;&#x63A5;&#x7528;-JS-&#x91CC;&#x7684;-Sort" class="headerlink" title="&#x5343;&#x4E07;&#x4E0D;&#x8981;&#x76F4;&#x63A5;&#x7528; JS &#x91CC;&#x7684; Sort"></a>&#x5343;&#x4E07;&#x4E0D;&#x8981;&#x76F4;&#x63A5;&#x7528; JS &#x91CC;&#x7684; Sort</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2017/08/24/纪录几个点/';
+          this.page.identifier = '2017/08/24/纪录几个点/';
+          this.page.title = '纪录几个点';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

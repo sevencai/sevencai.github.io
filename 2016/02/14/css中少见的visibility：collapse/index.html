@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Css," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="visibility 属性设置元素是否应该是可见的，允许作者显示或隐藏一个元素。 与display属性类似但仍有很重要的区别。display:none;隐藏元素并且不占据原有的空间。visibility内容不可见，但元素原来的空间，位置，大小仍占据。  visibility所具有的值 visible:默认。元素是可见的。 hidden:元素是不可见的，但仍然影响布局占据空间。 collapse：对">
+<meta name="keywords" content="Css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="css中少见的visibility：collapse">
+<meta property="og:url" content="http://sevencai.github.io/2016/02/14/css中少见的visibility：collapse/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="visibility 属性设置元素是否应该是可见的，允许作者显示或隐藏一个元素。 与display属性类似但仍有很重要的区别。display:none;隐藏元素并且不占据原有的空间。visibility内容不可见，但元素原来的空间，位置，大小仍占据。  visibility所具有的值 visible:默认。元素是可见的。 hidden:元素是不可见的，但仍然影响布局占据空间。 collapse：对">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T02:59:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="css中少见的visibility：collapse">
+<meta name="twitter:description" content="visibility 属性设置元素是否应该是可见的，允许作者显示或隐藏一个元素。 与display属性类似但仍有很重要的区别。display:none;隐藏元素并且不占据原有的空间。visibility内容不可见，但元素原来的空间，位置，大小仍占据。  visibility所具有的值 visible:默认。元素是可见的。 hidden:元素是不可见的，但仍然影响布局占据空间。 collapse：对">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/02/14/css中少见的visibility：collapse/"/>
+
+
+
+
+
+  <title>css中少见的visibility：collapse | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/14/css中少见的visibility：collapse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">css中少见的visibility：collapse</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-14T19:43:15+08:00">
+                2016-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/14/css中少见的visibility：collapse/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/14/css中少见的visibility：collapse/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>visibility 属性设置元素是否应该是可见的，允许作者显示或隐藏一个元素。</p>
+<p>与display属性类似但仍有很重要的区别。display:none;隐藏元素并且不占据原有的空间。visibility内容不可见，但元素原来的空间，位置，大小仍占据。</p>
+<hr>
+<h3 id="visibility所具有的值"><a href="#visibility所具有的值" class="headerlink" title="visibility所具有的值"></a>visibility所具有的值</h3><ol>
+<li>visible:默认。元素是可见的。</li>
+<li>hidden:元素是不可见的，但仍然影响布局占据空间。</li>
+<li>collapse：对于一般的元素，它的表现跟 hidden 是一样的。但例外的是，如果这个元素是table相关的元素，例如table行，table group，table列，table column group，它的表现却跟 display: none 一样，也就是说，它们占用的空间也会释放。 </li>
+<li>inherit：visibility 属性的值从父元素继承。</li>
+</ol>
+<hr>
+<h3 id="js设置visibility的值"><a href="#js设置visibility的值" class="headerlink" title="js设置visibility的值"></a>js设置visibility的值</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">document.getElementById(<span class="string">"p1"</span>).style.visibility=<span class="string">"hidden"</span>;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="demo测试代码"><a href="#demo测试代码" class="headerlink" title="demo测试代码"></a>demo测试代码</h3><p><strong><a href="http://8.ghostbuttons.applinzi.com/" target="_blank" rel="noopener">测试地址</a></strong><br>css代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">	.dn&#123;</span><br><span class="line">		display: none;</span><br><span class="line">	&#125;</span><br><span class="line">	.vh&#123;</span><br><span class="line">		visibility: hidden;</span><br><span class="line">	&#125;</span><br><span class="line">	.vc&#123;</span><br><span class="line">		visibility: collapse;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure></p>
+<p>html代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;h3&gt;测试display和visibility&lt;/h3&gt;</span><br><span class="line">&lt;p&gt;</span><br><span class="line">	当使用&lt;b&gt;display:none;&lt;/b&gt;属性,	元素会隐藏，并不占据空间。&lt;button&gt;点击测试&lt;/button&gt;</span><br><span class="line">&lt;/p&gt;</span><br><span class="line">&lt;p&gt;</span><br><span class="line">	当使用&lt;b&gt;visibility:hidden&lt;/b&gt;属性,元素会被隐藏,但是占据空间。&lt;button&gt;点击测试&lt;/button&gt;</span><br><span class="line">&lt;/p&gt;	</span><br><span class="line">&lt;hr&gt;</span><br><span class="line"></span><br><span class="line">&lt;h3&gt;测试visibility的collapse在不同的地方用处不同&lt;/h3&gt;</span><br><span class="line">&lt;p&gt;当在普通元素中使用&lt;b&gt;visibility:collapse;&lt;/b&gt;时，跟visibility:hidden表现相同</span><br><span class="line">&lt;button&gt;点击测试&lt;/button&gt;&lt;/p&gt;</span><br><span class="line">&lt;p&gt;当在table中使用visibility:collapse;时，跟display:none相同,如下&lt;button&gt;点击测试&lt;/button&gt;&lt;/p&gt;</span><br><span class="line">&lt;p&gt;当在table中使用visibility:hidden;时,一样的占据空间,如下&lt;button&gt;点击测试&lt;/button&gt;&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">&lt;table border=<span class="string">"1"</span>&gt;</span><br><span class="line">  &lt;tr&gt;</span><br><span class="line">    &lt;th&gt;Fruits&lt;/th&gt;</span><br><span class="line">    &lt;th&gt;Vegetables&lt;/th&gt;</span><br><span class="line">    &lt;th&gt;Rocks&lt;/th&gt;</span><br><span class="line">  &lt;/tr&gt;</span><br><span class="line">  &lt;tr&gt;</span><br><span class="line">    &lt;td&gt;Apple&lt;/td&gt;</span><br><span class="line">    &lt;td&gt;Celery&lt;/td&gt;</span><br><span class="line">    &lt;td&gt;Granite&lt;/td&gt;</span><br><span class="line">  &lt;/tr&gt;</span><br><span class="line">  &lt;tr&gt;</span><br><span class="line">    &lt;td&gt;Orange&lt;/td&gt;</span><br><span class="line">    &lt;td&gt;Cabbage&lt;/td&gt;</span><br><span class="line">    &lt;td&gt;Flint&lt;/td&gt;</span><br><span class="line">  &lt;/tr&gt;</span><br><span class="line">&lt;/table&gt;</span><br></pre></td></tr></table></figure></p>
+<p>js代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.getElementsByTagName(<span class="string">'button'</span>);</span><br><span class="line">var b = document.getElementsByTagName(<span class="string">'b'</span>);</span><br><span class="line">var rows = document.getElementsByTagName(<span class="string">'tr'</span>);</span><br><span class="line"></span><br><span class="line">btn[0].onclick = <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">	b[0].className = <span class="string">'dn'</span>;</span><br><span class="line">&#125;</span><br><span class="line">btn[1].onclick = <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">	b[1].className = <span class="string">'vh'</span>;</span><br><span class="line">&#125;</span><br><span class="line">btn[2].onclick = <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">	b[2].className = <span class="string">'vh'</span>;</span><br><span class="line">&#125;</span><br><span class="line">btn[3].onclick = <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">	rows[1].className = <span class="string">'vc'</span>;</span><br><span class="line">&#125;</span><br><span class="line">btn[4].onclick = <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">	rows[1].className = <span class="string">'vh'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Css/" rel="tag"># Css</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/13/JavaScript数据类型–基本类型和引用类型/" rel="next" title="JavaScript数据类型–基本类型和引用类型">
+                <i class="fa fa-chevron-left"></i> JavaScript数据类型–基本类型和引用类型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/15/css做三角形原理/" rel="prev" title="css做三角形原理">
+                css做三角形原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#visibility所具有的值"><span class="nav-number">1.</span> <span class="nav-text"><a href="#visibility&#x6240;&#x5177;&#x6709;&#x7684;&#x503C;" class="headerlink" title="visibility&#x6240;&#x5177;&#x6709;&#x7684;&#x503C;"></a>visibility&#x6240;&#x5177;&#x6709;&#x7684;&#x503C;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js设置visibility的值"><span class="nav-number">2.</span> <span class="nav-text"><a href="#js&#x8BBE;&#x7F6E;visibility&#x7684;&#x503C;" class="headerlink" title="js&#x8BBE;&#x7F6E;visibility&#x7684;&#x503C;"></a>js&#x8BBE;&#x7F6E;visibility&#x7684;&#x503C;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demo测试代码"><span class="nav-number">3.</span> <span class="nav-text"><a href="#demo&#x6D4B;&#x8BD5;&#x4EE3;&#x7801;" class="headerlink" title="demo&#x6D4B;&#x8BD5;&#x4EE3;&#x7801;"></a>demo&#x6D4B;&#x8BD5;&#x4EE3;&#x7801;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/02/14/css中少见的visibility：collapse/';
+          this.page.identifier = '2016/02/14/css中少见的visibility：collapse/';
+          this.page.title = 'css中少见的visibility：collapse';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

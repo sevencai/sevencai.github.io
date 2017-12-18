@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="思考这样一个题目，有一个人他想注册一个网名叫做&amp;lt;script&amp;gt;alert(1);&amp;lt;/script&amp;gt;。怎么样实现呢？一般情况下，我们在注册登陆或者评论或与用户有数据交互的时候，都是会把这些给过滤掉的，当我们不允许用户这么做的时候，是为了可以防止部分xss。但如果网站允许这么叫，那怎么实现呢？也就是说我们既要输出相应的标签，又要防止xss。。  Web是一个集众多不同环境同时开">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如果想用script做自己的网名？">
+<meta property="og:url" content="http://sevencai.github.io/2016/03/31/如果想用script做自己的网名？/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="思考这样一个题目，有一个人他想注册一个网名叫做&amp;lt;script&amp;gt;alert(1);&amp;lt;/script&amp;gt;。怎么样实现呢？一般情况下，我们在注册登陆或者评论或与用户有数据交互的时候，都是会把这些给过滤掉的，当我们不允许用户这么做的时候，是为了可以防止部分xss。但如果网站允许这么叫，那怎么实现呢？也就是说我们既要输出相应的标签，又要防止xss。。  Web是一个集众多不同环境同时开">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/zz.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/azkdf.png">
+<meta property="og:updated_time" content="2016-12-12T03:01:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如果想用script做自己的网名？">
+<meta name="twitter:description" content="思考这样一个题目，有一个人他想注册一个网名叫做&amp;lt;script&amp;gt;alert(1);&amp;lt;/script&amp;gt;。怎么样实现呢？一般情况下，我们在注册登陆或者评论或与用户有数据交互的时候，都是会把这些给过滤掉的，当我们不允许用户这么做的时候，是为了可以防止部分xss。但如果网站允许这么叫，那怎么实现呢？也就是说我们既要输出相应的标签，又要防止xss。。  Web是一个集众多不同环境同时开">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/zz.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/03/31/如果想用script做自己的网名？/"/>
+
+
+
+
+
+  <title>如果想用script做自己的网名？ | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/03/31/如果想用script做自己的网名？/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">如果想用script做自己的网名？</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-31T22:46:54+08:00">
+                2016-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/31/如果想用script做自己的网名？/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/31/如果想用script做自己的网名？/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>思考这样一个题目，有一个人他想注册一个网名叫做<code>&lt;script&gt;alert(1);&lt;/script&gt;</code>。怎么样实现呢？一般情况下，我们在注册登陆或者评论或与用户有数据交互的时候，都是会把这些给过滤掉的，当我们不允许用户这么做的时候，是为了可以防止部分xss。但如果网站允许这么叫，那怎么实现呢？<strong>也就是说我们既要输出相应的标签，又要防止xss。</strong>。</p>
+<blockquote>
+<p>Web是一个集众多不同环境同时开发的平台，我们经常要夸平台传输数据。比如客户端与服务器的通信就是在客户端和服务器这两个不同的环境上传输数据。如果我们传输的数据没经过过滤就有可能在各种环节被注入攻击，所以在传输过程中的字符转义是很重要的。 </p>
+</blockquote>
+<hr>
+<h3 id="先看看怎么解决这个问题"><a href="#先看看怎么解决这个问题" class="headerlink" title="先看看怎么解决这个问题"></a>先看看怎么解决这个问题</h3><h4 id="方法一-自定义转义后输出"><a href="#方法一-自定义转义后输出" class="headerlink" title="方法一-自定义转义后输出"></a>方法一-自定义转义后输出</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box2"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">pre</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">""</span>&gt;</span>baidu<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">pre</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">pre</span>&gt;</span></span><br><span class="line">	&amp;nbsp;&amp;lt;a&amp;gt;alert('1');<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">		afdfs</span><br><span class="line">		adsfas fdsfafdasf </span><br><span class="line">		dafdsS</span><br><span class="line">	<span class="tag">&lt;/<span class="name">pre</span>&gt;</span></span><br><span class="line">	&amp;nbsp;&amp;lt;a&amp;gt;alert('1');<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">		afdfs</span><br><span class="line">		ttttt </span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>大家猜猜上面这会输出一种什么样的效果：<br><img src="http://www.cailidan.cn/images/zz.png" alt="zyzf"><br>正常情况下，我们所有的html标签如果直接输出的话，是不可能显示出来的，那些标签都是经过浏览器解析然后显示到页面上的，所以我们要通过转义这样一种方法来实现。</p>
+<p><strong>也就是说比如小明要注册一个网站，他注册的是<code>&lt;script&gt;alert(1);&lt;/script&gt;</code>这样一个名字，我们可以不用对script标签进行完全过滤，我们只需要进行一下转义，把里面的&lt;&gt;这种全部转义成实体。并存到数据库，当我们要显示小明的网名的时候，我们输出到浏览器的不是script标签，而是被转义了以后的，这样也就不会造成安全问题。</strong></p>
+<blockquote>
+<p>但是这样也可能存的问题：【数据传输最普遍的形式就是字符串传输，这也是最容易被注入的。要保证在解析时候不被注入，字符的转义就很有必要！做字符转义除了可以避开注入外还可以解决双字节字符的编码问题。】<strong>但是转义之后数据的量会变大，所以在传输的带宽方面会有一定的开销</strong>。 </p>
+</blockquote>
+<h4 id="方法二-方法优化利用白名单"><a href="#方法二-方法优化利用白名单" class="headerlink" title="方法二-方法优化利用白名单"></a>方法二-方法优化利用白名单</h4><p>刚刚我们提到了，如果我们把所有的都转义后数据量会变大，所以很占据带宽，所以虑数字、字母，空格，这些可能会被大量使用，因此把他们加入白名单，在白名单之外的字符一律转义。想想为啥叫做白名单，黑名单与之对应。</p>
+<hr>
+<h3 id="再看看一般我们是怎么转义过滤的"><a href="#再看看一般我们是怎么转义过滤的" class="headerlink" title="再看看一般我们是怎么转义过滤的"></a>再看看一般我们是怎么转义过滤的</h3><h4 id="删除所有的HTML-TAG"><a href="#删除所有的HTML-TAG" class="headerlink" title="删除所有的HTML TAG"></a>删除所有的HTML TAG</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">rmHtmlTab</span>(<span class="params">tab</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> tab.replace(<span class="regexp">/&lt;\/?[^&gt;]*&gt;/g</span>,<span class="string">''</span>);<span class="comment">//删除所有HTML标签</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(rmHtmlTab(<span class="string">"&lt;script&gt;alert('1');&lt;/script&gt;"</span>));</span><br></pre></td></tr></table></figure>
+<p>输出：<code>alert(&#39;1&#39;);</code>,稍微解释下这个正则的意思：匹配&lt;&gt;或者&lt;/&gt;，中间啥都可以，但是不能有&gt;。这样就可以把所有的这样的标签全部过滤掉，只输出文本。</p>
+<hr>
+<h4 id="不删除所有的TAG-全部转义"><a href="#不删除所有的TAG-全部转义" class="headerlink" title="不删除所有的TAG,全部转义"></a>不删除所有的TAG,全部转义</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">escape</span>(<span class="params">str</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> str.replace(<span class="regexp">/[&lt;&gt;&amp;"]/g</span>,<span class="function"><span class="keyword">function</span>(<span class="params">c</span>)</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> obj = &#123;<span class="string">'&lt;'</span>:<span class="string">'&amp;lt;'</span>,<span class="string">'&gt;'</span>:<span class="string">'&amp;gt;'</span>,<span class="string">'&amp;'</span>:<span class="string">'&amp;amp;'</span>,<span class="string">'"'</span>:<span class="string">'&amp;quot;'</span>&#125;;</span><br><span class="line">		<span class="keyword">return</span> obj[c];</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">escape</span>(<span class="string">"&lt;a&gt;alert('1');&lt;/a&gt;"</span>));</span><br></pre></td></tr></table></figure>
+<p><code>lt;a&amp;gt;alert(&#39;1&#39;);&amp;lt;/a&amp;gt;</code>最后转义成了你想要的样子。如果是要将转义符换成普通字符，就把obj里的属性和值差不多换一下就行啦。如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">entityEscape</span>(<span class="params">str</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> obj = &#123;<span class="string">'lt'</span>:<span class="string">'&lt;'</span>,<span class="string">'gt'</span>:<span class="string">'&gt;'</span>,<span class="string">'nbsp'</span>:<span class="string">' '</span>,<span class="string">'amp'</span>:<span class="string">'&amp;'</span>,<span class="string">'quot'</span>:<span class="string">'"'</span>&#125;;</span><br><span class="line">	<span class="keyword">return</span> str.replace(<span class="regexp">/&amp;(lt|gt|nbsp|amp|quot);/ig</span>,<span class="function"><span class="keyword">function</span>(<span class="params">all,t</span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(all);</span><br><span class="line">		<span class="keyword">return</span> obj[t];</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> <span class="built_in">console</span>.log(entityEscape(<span class="string">"&amp;nbsp;&amp;lt;a&amp;gt;alert('1');&lt;/a&gt;"</span>));</span><br></pre></td></tr></table></figure></p>
+<p>最后结果为：<br><img src="http://www.cailidan.cn/images/azkdf.png" alt="转义"></p>
+<p>这里顺便总结下replace的回调函数：<strong>当replace方法执行的时候每次都会调用该函数，返回值作为替换的新值。</strong></p>
+<pre><code>1. 第一个参数为每次匹配的全文本（$&amp;）。
+2. 中间参数为子表达式匹配字符串，个数不限.( $i (i:1-99))
+3. 倒数第二个参数为匹配文本字符串的匹配下标位置。
+4. 最后一个参数表示字符串本身。
+</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">entityEscape</span>(<span class="params">str</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> obj = &#123;<span class="string">'lt'</span>:<span class="string">'&lt;'</span>,<span class="string">'gt'</span>:<span class="string">'&gt;'</span>,<span class="string">'nbsp'</span>:<span class="string">' '</span>,<span class="string">'amp'</span>:<span class="string">'&amp;'</span>,<span class="string">'quot'</span>:<span class="string">'"'</span>&#125;;</span><br><span class="line">	<span class="keyword">return</span> str.replace(<span class="regexp">/&amp;(lt|gt|nbsp|amp|quot);/ig</span>,<span class="function"><span class="keyword">function</span>(<span class="params">a,b,d,c</span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(a+<span class="string">" "</span>+d+<span class="string">" "</span>+b+<span class="string">" "</span>+c);</span><br><span class="line">		<span class="comment">//return obj[c];</span></span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上就会输出这样的格式：<code>&amp;nbsp; 0 nbsp &amp;nbsp;&amp;lt;a&amp;gt;alert(&#39;1&#39;);&lt;/a&gt;</code></p>
+<hr>
+<h3 id="再看个小例子"><a href="#再看个小例子" class="headerlink" title="再看个小例子"></a>再看个小例子</h3><p>这个例子跟我们的问题关系其实并不是很大，只是我在做上面的总结时，发现了下列问题：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"box1"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>大家想想下面两种不同的情况会输出什么呢？<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//情形一</span></span><br><span class="line"><span class="keyword">var</span> box = <span class="built_in">document</span>.getElementById(<span class="string">"box1"</span>);</span><br><span class="line">box.innerHTML = <span class="string">"&lt;script&gt;alert('a');&lt;/script&gt;"</span>;</span><br><span class="line"><span class="comment">//情形二</span></span><br><span class="line"><span class="keyword">var</span> box = <span class="built_in">document</span>.getElementById(<span class="string">"box1"</span>);</span><br><span class="line">box.innerHTML = <span class="string">"&amp;lt;script&amp;gt;alert('a');&amp;lt/script&amp;gt"</span>;</span><br><span class="line"><span class="comment">//情形三</span></span><br><span class="line"><span class="keyword">var</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line"><span class="keyword">var</span> text = <span class="built_in">document</span>.createTextNode(<span class="string">'alert(1)'</span>);</span><br><span class="line">script.appendChild(text);</span><br><span class="line"><span class="keyword">var</span> box1 = <span class="built_in">document</span>.getElementById(<span class="string">'box1'</span>);</span><br><span class="line">box1.appendChild(script);</span><br><span class="line"><span class="comment">//情形四</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">escape</span>(<span class="string">"&amp;nbsp;&amp;lt;a&amp;gt;alert('1');&lt;/a&gt;"</span>));</span><br></pre></td></tr></table></figure></p>
+<p>答案是第一种情况不会输出alert(a),第二种情况会输出alert(a),第三种情况会输出alert(1)。想想这是为啥呢？</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>以前虽然知道转义这种东西，但是实际项目里用过的，都是直接把所有的标签给过滤了，也就没有实际操作过，涨知识了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/31/正向代理与反向代理/" rel="next" title="正向代理与反向代理">
+                <i class="fa fa-chevron-left"></i> 正向代理与反向代理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/02/学习HTML5-API-（pushState-replaceState）/" rel="prev" title="学习HTML5 API （pushState/replaceState）">
+                学习HTML5 API （pushState/replaceState） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#先看看怎么解决这个问题"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5148;&#x770B;&#x770B;&#x600E;&#x4E48;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;" class="headerlink" title="&#x5148;&#x770B;&#x770B;&#x600E;&#x4E48;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;"></a>&#x5148;&#x770B;&#x770B;&#x600E;&#x4E48;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方法一-自定义转义后输出"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x65B9;&#x6CD5;&#x4E00;-&#x81EA;&#x5B9A;&#x4E49;&#x8F6C;&#x4E49;&#x540E;&#x8F93;&#x51FA;" class="headerlink" title="&#x65B9;&#x6CD5;&#x4E00;-&#x81EA;&#x5B9A;&#x4E49;&#x8F6C;&#x4E49;&#x540E;&#x8F93;&#x51FA;"></a>&#x65B9;&#x6CD5;&#x4E00;-&#x81EA;&#x5B9A;&#x4E49;&#x8F6C;&#x4E49;&#x540E;&#x8F93;&#x51FA;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法二-方法优化利用白名单"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x65B9;&#x6CD5;&#x4E8C;-&#x65B9;&#x6CD5;&#x4F18;&#x5316;&#x5229;&#x7528;&#x767D;&#x540D;&#x5355;" class="headerlink" title="&#x65B9;&#x6CD5;&#x4E8C;-&#x65B9;&#x6CD5;&#x4F18;&#x5316;&#x5229;&#x7528;&#x767D;&#x540D;&#x5355;"></a>&#x65B9;&#x6CD5;&#x4E8C;-&#x65B9;&#x6CD5;&#x4F18;&#x5316;&#x5229;&#x7528;&#x767D;&#x540D;&#x5355;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#再看看一般我们是怎么转义过滤的"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x518D;&#x770B;&#x770B;&#x4E00;&#x822C;&#x6211;&#x4EEC;&#x662F;&#x600E;&#x4E48;&#x8F6C;&#x4E49;&#x8FC7;&#x6EE4;&#x7684;" class="headerlink" title="&#x518D;&#x770B;&#x770B;&#x4E00;&#x822C;&#x6211;&#x4EEC;&#x662F;&#x600E;&#x4E48;&#x8F6C;&#x4E49;&#x8FC7;&#x6EE4;&#x7684;"></a>&#x518D;&#x770B;&#x770B;&#x4E00;&#x822C;&#x6211;&#x4EEC;&#x662F;&#x600E;&#x4E48;&#x8F6C;&#x4E49;&#x8FC7;&#x6EE4;&#x7684;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#删除所有的HTML-TAG"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x5220;&#x9664;&#x6240;&#x6709;&#x7684;HTML-TAG" class="headerlink" title="&#x5220;&#x9664;&#x6240;&#x6709;&#x7684;HTML TAG"></a>&#x5220;&#x9664;&#x6240;&#x6709;&#x7684;HTML TAG</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不删除所有的TAG-全部转义"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x4E0D;&#x5220;&#x9664;&#x6240;&#x6709;&#x7684;TAG-&#x5168;&#x90E8;&#x8F6C;&#x4E49;" class="headerlink" title="&#x4E0D;&#x5220;&#x9664;&#x6240;&#x6709;&#x7684;TAG,&#x5168;&#x90E8;&#x8F6C;&#x4E49;"></a>&#x4E0D;&#x5220;&#x9664;&#x6240;&#x6709;&#x7684;TAG,&#x5168;&#x90E8;&#x8F6C;&#x4E49;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#再看个小例子"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x518D;&#x770B;&#x4E2A;&#x5C0F;&#x4F8B;&#x5B50;" class="headerlink" title="&#x518D;&#x770B;&#x4E2A;&#x5C0F;&#x4F8B;&#x5B50;"></a>&#x518D;&#x770B;&#x4E2A;&#x5C0F;&#x4F8B;&#x5B50;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/03/31/如果想用script做自己的网名？/';
+          this.page.identifier = '2016/03/31/如果想用script做自己的网名？/';
+          this.page.title = '如果想用script做自己的网名？';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

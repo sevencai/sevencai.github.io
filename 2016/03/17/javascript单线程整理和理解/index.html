@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="异步的另外一种含义是计算机多线程的异步处理。与同步处理相对，异步处理不用阻塞当前线程来等待处理完成，而是允许后续操作，直至其它线程将处理完成，并回调通知此线程。异步与多线程与并行不是同一个概念。  先问自己几个问题 javascript是单线程的吗? javascript如果是单线程为什么能让ajax异步发送和回调请求？ setTimeout一定是按照它定的时间发生的吗？ 浏览器是多线程的吗？ e">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="javascript单线程整理和理解">
+<meta property="og:url" content="http://sevencai.github.io/2016/03/17/javascript单线程整理和理解/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="异步的另外一种含义是计算机多线程的异步处理。与同步处理相对，异步处理不用阻塞当前线程来等待处理完成，而是允许后续操作，直至其它线程将处理完成，并回调通知此线程。异步与多线程与并行不是同一个概念。  先问自己几个问题 javascript是单线程的吗? javascript如果是单线程为什么能让ajax异步发送和回调请求？ setTimeout一定是按照它定的时间发生的吗？ 浏览器是多线程的吗？ e">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T03:00:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="javascript单线程整理和理解">
+<meta name="twitter:description" content="异步的另外一种含义是计算机多线程的异步处理。与同步处理相对，异步处理不用阻塞当前线程来等待处理完成，而是允许后续操作，直至其它线程将处理完成，并回调通知此线程。异步与多线程与并行不是同一个概念。  先问自己几个问题 javascript是单线程的吗? javascript如果是单线程为什么能让ajax异步发送和回调请求？ setTimeout一定是按照它定的时间发生的吗？ 浏览器是多线程的吗？ e">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/03/17/javascript单线程整理和理解/"/>
+
+
+
+
+
+  <title>javascript单线程整理和理解 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/03/17/javascript单线程整理和理解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">javascript单线程整理和理解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-17T19:23:17+08:00">
+                2016-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/17/javascript单线程整理和理解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/17/javascript单线程整理和理解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>异步的另外一种含义是计算机多线程的异步处理。与同步处理相对，异步处理不用阻塞当前线程来等待处理完成，而是允许后续操作，直至其它线程将处理完成，并回调通知此线程。异步与多线程与并行不是同一个概念。</p>
+<hr>
+<h4 id="先问自己几个问题"><a href="#先问自己几个问题" class="headerlink" title="先问自己几个问题"></a>先问自己几个问题</h4><ol>
+<li>javascript是单线程的吗?</li>
+<li>javascript如果是单线程为什么能让ajax异步发送和回调请求？</li>
+<li>setTimeout一定是按照它定的时间发生的吗？</li>
+<li>浏览器是多线程的吗？</li>
+<li>event loop是什么呢？</li>
+<li>下面这段代码的结果是什么？</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">"inner"</span>);</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"outer"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>;i &lt; <span class="number">10</span>;i++)&#123;</span><br><span class="line">	foo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="javascript是单线程"><a href="#javascript是单线程" class="headerlink" title="javascript是单线程"></a>javascript是单线程</h4><p>方便理解，可以这么想，如果js不是单线程的，那么当我们要可能在操作一个DOM的时候（比如修改，删除，添加），另一个线程可能也在对这个DOM节点进行操作。这么肯定是不行的。</p>
+<p>这跟javascript最初的用途是有关的，js本来设计就是为了更好交互效果，更方便操作DOM，这一特点某种程度上决定了他的单线程。</p>
+<blockquote>
+<p>js运行在浏览器中是单线程的。每一个window一个js线程。<br>由于是单线程，那么在一个时刻只能够执行某个特定的代码，并且阻塞其他的代码。这也就意味着如果前面一个任务耗时很长的时候，后一个任务就会一直等待。<br>js的单线程机制其实是:有两个队列，一个是主线程。一个是任务队列。</p>
+</blockquote>
+<hr>
+<h4 id="浏览器不是单线程的"><a href="#浏览器不是单线程的" class="headerlink" title="浏览器不是单线程的"></a>浏览器不是单线程的</h4><p>js运行在浏览器中，是单线程的，每个window一个js线程，但是浏览器不是单线程的。他可能有很多线程，比如js引擎线程，界面渲染线程，浏览器事件触发线程，http请求线程。</p>
+<hr>
+<h4 id="单线程的机制"><a href="#单线程的机制" class="headerlink" title="单线程的机制"></a>单线程的机制</h4><p>刚刚提到了javascript的单线程的机制其实是有两个队列，一个是主线程队列，一个是任务队列。</p>
+<p>之所以要有这么两个队列：</p>
+<blockquote>
+<p>JavaScript语言的设计者意识到，这时主线程完全可以不管IO设备，挂起处于等待中的任务，先运行排在后面的任务。等到IO设备返回了结果，再回过头，把挂起的任务继续执行下去。</p>
+<p>于是，所有任务可以分成两种，一种是同步任务（synchronous），另一种是异步任务（asynchronous）。–from ruanyifeng</p>
+</blockquote>
+<p><strong>同步任务指的是，在主线程上排队执行的任务，只有前一个任务执行完毕，才能执行后一个任务；</strong></p>
+<p><strong>异步任务指的是，不进入主线程、而进入”任务队列”（task queue）的任务，只有”任务队列”通知主线程，某个异步任务可以执行了，该任务才会进入主线程执行。</strong></p>
+<p><strong>js都是先执行同步任务，再执行异步任务</strong>。</p>
+<p>那么上面的第六个问题就很清楚了，答案是先输出10个outer,再输出10个inner。因为outer是位于主线程上，inner是位于任务队列中，js在执行的时候必须先把主线程的做完，再执行任务队列。在主线程和任务队列这两个队列里又是又是阻塞的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">setTimeout( <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">while</span>(<span class="literal">true</span>)&#123;&#125; &#125; , <span class="number">100</span>);</span><br><span class="line">setTimeout( <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; alert(<span class="string">'你好!'</span>); &#125; , <span class="number">200</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"hello"</span>);</span><br></pre></td></tr></table></figure>
+<p>上面这个的结果里是可以输出hello的，跟我们想的一样，但是alert的你好，是永远都没有办法出来的。原因上面说了。</p>
+<hr>
+<h4 id="异步事件驱动"><a href="#异步事件驱动" class="headerlink" title="异步事件驱动"></a>异步事件驱动</h4><p>浏览器是事件驱动的（Event driven），浏览器中很多行为是异步（Asynchronized）的，例如：鼠标点击事件、窗口大小拖拉事件、定时器触发事件、XMLHttpRequest完成回调等。当一个异步事件发生的时候，它就进入事件队列。浏览器有一个内部大消息循环，Event Loop（事件循环），会轮询大的事件队列并处理事件。例如，浏览器当前正在忙于处理onclick事件，这时另外一个事件发生了（如：window onSize），这个异步事件就被放入事件队列等待处理，只有前面的处理完毕了，空闲了才会执行这个事件。setTimeout也是一样，当调用的时候，js引擎会启动定时器timer，大约xxms以后执行xxx，当定时器时间到，就把该事件放到主事件队列等待处理（浏览器不忙的时候才会真正执行）。</p>
+<hr>
+<h4 id="setTimeout-func-0-一定是0s就执行吗？"><a href="#setTimeout-func-0-一定是0s就执行吗？" class="headerlink" title="setTimeout(func, 0)一定是0s就执行吗？"></a>setTimeout(func, 0)一定是0s就执行吗？</h4><p>上面说了必须要等主线程的所有事件被完成时，才能够执行任务队列上的事件。<br>setTimeout(func, 0）这句话，告诉了js引擎，要在0s之后吧func函数放到主事件队列里面，等待当前其他的所有的主线程任务完成了，就开始执行。之所以有用，是因为当前并没有主线程上并没有其他的任务。如果当前的主线程上有其他的任务，那么其实func的执行时间，绝对不会是0s。因为它还要排队。</p>
+<hr>
+<h4 id="总结异步执行的运行机制"><a href="#总结异步执行的运行机制" class="headerlink" title="总结异步执行的运行机制"></a>总结异步执行的运行机制</h4><pre><code>（1）所有同步任务都在主线程上执行，形成一个执行栈（execution context stack）。
+
+（2）主线程之外，还存在一个&quot;任务队列&quot;（task queue）。只要异步任务有了运行结果，就在&quot;任务队列&quot;之中放置一个事件。
+
+（3）一旦&quot;执行栈&quot;中的所有同步任务执行完毕，系统就会读取&quot;任务队列&quot;，看看里面有哪些事件。那些对应的异步任务，于是结束等待状态，进入执行栈，开始执行。
+
+（4）主线程不断重复上面的第三步。
+</code></pre><p>总的来说就是，<strong>任务队列里的任务都是必须等主线程的执行栈空了才去执行的</strong>。我们通常说的同步也就是没有上面的异步任务。</p>
+<hr>
+<h4 id="Event-Loop是啥子？"><a href="#Event-Loop是啥子？" class="headerlink" title="Event Loop是啥子？"></a>Event Loop是啥子？</h4><p>主线程从“任务队列”中读取事件，这个过程是循环不断的，所以整个的这种运行机制又称为Event Loop（事件循环）。</p>
+<hr>
+<h4 id="为什么会看见下面这种现象？"><a href="#为什么会看见下面这种现象？" class="headerlink" title="为什么会看见下面这种现象？"></a>为什么会看见下面这种现象？</h4><p>现在想想以前写xhr的时候就在书上这么看过，但是当时也没多想，虽然知道是异步没关系。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//写法一</span></span><br><span class="line"><span class="keyword">var</span> req = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">req.open(<span class="string">'GET'</span>, url);    </span><br><span class="line">req.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;&#125;;    </span><br><span class="line">req.onerror = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;&#125;;    </span><br><span class="line">req.send();</span><br><span class="line"><span class="comment">//写法二</span></span><br><span class="line"><span class="keyword">var</span> req = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">req.open(<span class="string">'GET'</span>, url);</span><br><span class="line">req.send();</span><br><span class="line">req.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;&#125;;    </span><br><span class="line">req.onerror = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这两种写法是一样的，为什么呢？因为send是一个异步执行过程，那么他会等当前所有的非异步执行完再去执行。它被放入了任务队列。</p>
+<hr>
+<h4 id="再来看看异步，多线程，并行的概念"><a href="#再来看看异步，多线程，并行的概念" class="headerlink" title="再来看看异步，多线程，并行的概念"></a>再来看看异步，多线程，并行的概念</h4><p><strong>并行</strong>，一般指并行计算，是说同一<strong>时刻</strong>（注意并发是同一时间段）有多条指令同时被执行，这些指令可能执行于同一CPU的多核上，或者多个CPU上,或者多个物理主机甚至多个网络中.</p>
+<p><strong>异步</strong>，与同步相对应，异步指的是让CPU暂时搁置当前请求的响应,处理下一个请求,当通过轮询或其他方式得到回调通知后,开始运行。</p>
+<p><strong>线程</strong>，是程序中一个单一的顺序控制流程。进程内一个相对独立的、可调度的执行单元，是系统独立调度和分派CPU的基本单位指运行中的程序的调度单位。在单个程序中同时运行多个线程完成不同的工作，称为多线程。</p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>了解了js单线程，知道什么是异步事件驱动，知道了有主线程的执行栈和任务队列这两个机制。还有setTimout不一定就是在它设置的时间执行呦。学习和整理自<a href="http://www.ruanyifeng.com/blog/2014/10/event-loop.html" target="_blank" rel="noopener">ruanyifeng的文章</a>，感谢。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/15/解析和整理this的指向问题/" rel="next" title="解析和整理this的指向问题">
+                <i class="fa fa-chevron-left"></i> 解析和整理this的指向问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/18/冒泡排序vs归并排序vs选择排序vs插入排序/" rel="prev" title="冒泡排序vs归并排序vs选择排序vs插入排序">
+                冒泡排序vs归并排序vs选择排序vs插入排序 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#先问自己几个问题"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5148;&#x95EE;&#x81EA;&#x5DF1;&#x51E0;&#x4E2A;&#x95EE;&#x9898;" class="headerlink" title="&#x5148;&#x95EE;&#x81EA;&#x5DF1;&#x51E0;&#x4E2A;&#x95EE;&#x9898;"></a>&#x5148;&#x95EE;&#x81EA;&#x5DF1;&#x51E0;&#x4E2A;&#x95EE;&#x9898;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#javascript是单线程"><span class="nav-number">2.</span> <span class="nav-text"><a href="#javascript&#x662F;&#x5355;&#x7EBF;&#x7A0B;" class="headerlink" title="javascript&#x662F;&#x5355;&#x7EBF;&#x7A0B;"></a>javascript&#x662F;&#x5355;&#x7EBF;&#x7A0B;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#浏览器不是单线程的"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x6D4F;&#x89C8;&#x5668;&#x4E0D;&#x662F;&#x5355;&#x7EBF;&#x7A0B;&#x7684;" class="headerlink" title="&#x6D4F;&#x89C8;&#x5668;&#x4E0D;&#x662F;&#x5355;&#x7EBF;&#x7A0B;&#x7684;"></a>&#x6D4F;&#x89C8;&#x5668;&#x4E0D;&#x662F;&#x5355;&#x7EBF;&#x7A0B;&#x7684;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单线程的机制"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x5355;&#x7EBF;&#x7A0B;&#x7684;&#x673A;&#x5236;" class="headerlink" title="&#x5355;&#x7EBF;&#x7A0B;&#x7684;&#x673A;&#x5236;"></a>&#x5355;&#x7EBF;&#x7A0B;&#x7684;&#x673A;&#x5236;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#异步事件驱动"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x5F02;&#x6B65;&#x4E8B;&#x4EF6;&#x9A71;&#x52A8;" class="headerlink" title="&#x5F02;&#x6B65;&#x4E8B;&#x4EF6;&#x9A71;&#x52A8;"></a>&#x5F02;&#x6B65;&#x4E8B;&#x4EF6;&#x9A71;&#x52A8;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#setTimeout-func-0-一定是0s就执行吗？"><span class="nav-number">6.</span> <span class="nav-text"><a href="#setTimeout-func-0-&#x4E00;&#x5B9A;&#x662F;0s&#x5C31;&#x6267;&#x884C;&#x5417;&#xFF1F;" class="headerlink" title="setTimeout(func, 0)&#x4E00;&#x5B9A;&#x662F;0s&#x5C31;&#x6267;&#x884C;&#x5417;&#xFF1F;"></a>setTimeout(func, 0)&#x4E00;&#x5B9A;&#x662F;0s&#x5C31;&#x6267;&#x884C;&#x5417;&#xFF1F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结异步执行的运行机制"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;&#x5F02;&#x6B65;&#x6267;&#x884C;&#x7684;&#x8FD0;&#x884C;&#x673A;&#x5236;" class="headerlink" title="&#x603B;&#x7ED3;&#x5F02;&#x6B65;&#x6267;&#x884C;&#x7684;&#x8FD0;&#x884C;&#x673A;&#x5236;"></a>&#x603B;&#x7ED3;&#x5F02;&#x6B65;&#x6267;&#x884C;&#x7684;&#x8FD0;&#x884C;&#x673A;&#x5236;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Event-Loop是啥子？"><span class="nav-number">8.</span> <span class="nav-text"><a href="#Event-Loop&#x662F;&#x5565;&#x5B50;&#xFF1F;" class="headerlink" title="Event Loop&#x662F;&#x5565;&#x5B50;&#xFF1F;"></a>Event Loop&#x662F;&#x5565;&#x5B50;&#xFF1F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么会看见下面这种现象？"><span class="nav-number">9.</span> <span class="nav-text"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x770B;&#x89C1;&#x4E0B;&#x9762;&#x8FD9;&#x79CD;&#x73B0;&#x8C61;&#xFF1F;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x770B;&#x89C1;&#x4E0B;&#x9762;&#x8FD9;&#x79CD;&#x73B0;&#x8C61;&#xFF1F;"></a>&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x770B;&#x89C1;&#x4E0B;&#x9762;&#x8FD9;&#x79CD;&#x73B0;&#x8C61;&#xFF1F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#再来看看异步，多线程，并行的概念"><span class="nav-number">10.</span> <span class="nav-text"><a href="#&#x518D;&#x6765;&#x770B;&#x770B;&#x5F02;&#x6B65;&#xFF0C;&#x591A;&#x7EBF;&#x7A0B;&#xFF0C;&#x5E76;&#x884C;&#x7684;&#x6982;&#x5FF5;" class="headerlink" title="&#x518D;&#x6765;&#x770B;&#x770B;&#x5F02;&#x6B65;&#xFF0C;&#x591A;&#x7EBF;&#x7A0B;&#xFF0C;&#x5E76;&#x884C;&#x7684;&#x6982;&#x5FF5;"></a>&#x518D;&#x6765;&#x770B;&#x770B;&#x5F02;&#x6B65;&#xFF0C;&#x591A;&#x7EBF;&#x7A0B;&#xFF0C;&#x5E76;&#x884C;&#x7684;&#x6982;&#x5FF5;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">11.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/03/17/javascript单线程整理和理解/';
+          this.page.identifier = '2016/03/17/javascript单线程整理和理解/';
+          this.page.title = 'javascript单线程整理和理解';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

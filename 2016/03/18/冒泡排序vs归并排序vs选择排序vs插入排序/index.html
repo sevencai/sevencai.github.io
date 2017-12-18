@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="算法," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="今天写了几个小排序，记录下来，都是比较简单的。  归并排序归并排序的思想是分治，我们先来看下分治的思想。  分治：分而治之。就是把一个复杂的问题分成两个或者更多的相同的货相似的子问题，再把子问题分成更小的子问题。一直到最后子问题可以简单的直接求解。原问题的解即为子问题的合并。  比如快速排序，归并排序，傅里叶变换都是利用的分而治之的思想。 分治的策略是： 对于一个规模为n的问题，若该问题可以容易的">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="冒泡排序vs归并排序vs选择排序vs插入排序">
+<meta property="og:url" content="http://sevencai.github.io/2016/03/18/冒泡排序vs归并排序vs选择排序vs插入排序/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="今天写了几个小排序，记录下来，都是比较简单的。  归并排序归并排序的思想是分治，我们先来看下分治的思想。  分治：分而治之。就是把一个复杂的问题分成两个或者更多的相同的货相似的子问题，再把子问题分成更小的子问题。一直到最后子问题可以简单的直接求解。原问题的解即为子问题的合并。  比如快速排序，归并排序，傅里叶变换都是利用的分而治之的思想。 分治的策略是： 对于一个规模为n的问题，若该问题可以容易的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/paixu.png">
+<meta property="og:updated_time" content="2016-03-18T05:02:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="冒泡排序vs归并排序vs选择排序vs插入排序">
+<meta name="twitter:description" content="今天写了几个小排序，记录下来，都是比较简单的。  归并排序归并排序的思想是分治，我们先来看下分治的思想。  分治：分而治之。就是把一个复杂的问题分成两个或者更多的相同的货相似的子问题，再把子问题分成更小的子问题。一直到最后子问题可以简单的直接求解。原问题的解即为子问题的合并。  比如快速排序，归并排序，傅里叶变换都是利用的分而治之的思想。 分治的策略是： 对于一个规模为n的问题，若该问题可以容易的">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/paixu.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/03/18/冒泡排序vs归并排序vs选择排序vs插入排序/"/>
+
+
+
+
+
+  <title>冒泡排序vs归并排序vs选择排序vs插入排序 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/03/18/冒泡排序vs归并排序vs选择排序vs插入排序/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">冒泡排序vs归并排序vs选择排序vs插入排序</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-18T12:47:05+08:00">
+                2016-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/18/冒泡排序vs归并排序vs选择排序vs插入排序/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/18/冒泡排序vs归并排序vs选择排序vs插入排序/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天写了几个小排序，记录下来，都是比较简单的。</p>
+<hr>
+<h4 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h4><p>归并排序的思想是分治，我们先来看下分治的思想。</p>
+<blockquote>
+<p>分治：分而治之。就是把一个复杂的问题分成两个或者更多的相同的货相似的子问题，再把子问题分成更小的子问题。一直到最后子问题可以简单的直接求解。原问题的解即为子问题的合并。</p>
+</blockquote>
+<p>比如快速排序，归并排序，傅里叶变换都是利用的分而治之的思想。</p>
+<pre><code>分治的策略是：
+对于一个规模为n的问题，若该问题可以容易的解决，则直接解决。
+若不能直接解决，将其分解为K个规模比较小的子问题。
+
+这些子问题互相独立与原问题形式相同，递归的解这些子问题，然后将各子问题的解合并得到原问题的解。
+</code></pre><hr>
+<p><strong>归并排序</strong>：<br>将待排序元素分成大小大致相同的2个子集合(递归直到最小的排序单元），分别对2个子集合进行排序，最终将排好序的子集合合并成为所要求的排好序的集合。</p>
+<p>归并排序算法的时间复杂度是O（nlogn）,对于冒泡排序的O(n*n),效率还有有比较好的提高。js代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">merge</span>(<span class="params">left,right</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> resultArr = [];</span><br><span class="line">	<span class="keyword">while</span>(left.length&gt;<span class="number">0</span> &amp;&amp; right.length&gt;<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>(left[<span class="number">0</span>]&lt;right[<span class="number">0</span>])&#123;</span><br><span class="line">			resultArr.push(left.shift());</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			resultArr.push(right.shift());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> resultArr.concat(left).concat(right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mergeSort</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(arr.length&lt;=<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="keyword">return</span> arr;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> mid = <span class="built_in">parseInt</span>(arr.length/<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> left = arr.slice(<span class="number">0</span>,mid);</span><br><span class="line">	<span class="keyword">var</span> right = arr.slice(mid);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> merge(mergeSort(left),mergeSort(right));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">4</span>];</span><br><span class="line"><span class="built_in">console</span>.log(mergeSort(arr));</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h4><p>将数据分为两部分，有序部分与无序部分，一开始有序部分包含第1个元素，依次将无序的元素插入到有序部分，直到所有元素有序。插入排序又分为直接插入排序、二分插入排序、链表插入等，这里只讨论直接插入排序。它是稳定的排序算法，时间复杂度为O(n^2)。</p>
+<p>注意与选择排序的区别，插入排序是把后面的每一个数插入到前面已经排好序的队列中。而选择排序是每次在后面选择最小的或者最大的，插入到已经有序的队列后面。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">insertSort</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">1</span>;i&lt;arr.length;i++)&#123;</span><br><span class="line">		<span class="keyword">var</span> j=i<span class="number">-1</span>;</span><br><span class="line">		<span class="keyword">var</span> value = arr[i];</span><br><span class="line">		<span class="keyword">while</span>(j&gt;<span class="number">-1</span> &amp;&amp; value&lt;arr[j])&#123;</span><br><span class="line">			arr[j+<span class="number">1</span>] = arr[j]; </span><br><span class="line">			j--;</span><br><span class="line">		&#125;</span><br><span class="line">		arr[j+<span class="number">1</span>] = value;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">4</span>];</span><br><span class="line"><span class="built_in">console</span>.log(insertSort(arr));</span><br></pre></td></tr></table></figure>
+<p>前面已经排好序了，要把后面最小的数插入到前面，所以是要从j=i-1开始找。然后如果该数一直比前面的有序的小，就把比他大的数往后移动，最后找到该点后，再把元素插入到该地方。</p>
+<hr>
+<h4 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h4><p>冒泡排序可谓是最经典的,最简单的排序算法了，它是基于比较的排序算法，时间复杂度为O(n^2)，其优点是实现简单，n较小时性能较好。</p>
+<p>相邻的数据进行两两比较，小数放在前面，大数放在后面，这样一趟下来，最小的数就被排在了第一位，第二趟也是如此，如此类推，直到所有的数据排序完成。下面是js完成冒泡排序。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bubbleSort</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> len = arr.length;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;len;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">var</span> j=len<span class="number">-1</span>;j&gt;i;j--)&#123;</span><br><span class="line">			<span class="keyword">if</span>(arr[j]&lt;arr[j<span class="number">-1</span>])&#123;</span><br><span class="line">				<span class="keyword">var</span> temp = arr[j];</span><br><span class="line">				arr[j] = arr[j<span class="number">-1</span>];</span><br><span class="line">				arr[j<span class="number">-1</span>] = temp;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">4</span>];</span><br><span class="line"><span class="built_in">console</span>.log(bubbleSort(arr));</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h4><p>有两个序列，一个是已经排序的序列，一个是暂未排序的序列。每次都从后面选出一个最大的或者最小的插入到前面已经排序好的末尾。依次类推，知道所有的元素排列完毕。</p>
+<p>先把第一个定位基准，往后面未排序的找到最小的并且记录下index。如果index是不等于原来的i，说明这一趟已经找到了比他小的数，就可以讲这两个数交换了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">selectSort</span> (<span class="params">arr</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> len = arr.length;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;len;i++)&#123;</span><br><span class="line">		<span class="keyword">var</span> index = i;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">var</span> j=i+<span class="number">1</span>;j&lt;len;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(arr[index]&gt;arr[j])&#123;</span><br><span class="line">				index = j;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(index!=i)&#123;</span><br><span class="line">			<span class="keyword">var</span> temp = arr[index];</span><br><span class="line">			arr[index] = arr[i];</span><br><span class="line">			arr[i] = temp;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> arr = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">1</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">4</span>];</span><br><span class="line"><span class="built_in">console</span>.log(selectSort(arr));</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="事件复杂度"><a href="#事件复杂度" class="headerlink" title="事件复杂度"></a>事件复杂度</h4><p><img src="http://www.cailidan.cn/images/paixu.png" alt="排序"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/17/javascript单线程整理和理解/" rel="next" title="javascript单线程整理和理解">
+                <i class="fa fa-chevron-left"></i> javascript单线程整理和理解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/20/BFC-Block-Formatting-Context/" rel="prev" title="BFC-Block Formatting Context">
+                BFC-Block Formatting Context <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#归并排序"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5F52;&#x5E76;&#x6392;&#x5E8F;" class="headerlink" title="&#x5F52;&#x5E76;&#x6392;&#x5E8F;"></a>&#x5F52;&#x5E76;&#x6392;&#x5E8F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#插入排序"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x63D2;&#x5165;&#x6392;&#x5E8F;" class="headerlink" title="&#x63D2;&#x5165;&#x6392;&#x5E8F;"></a>&#x63D2;&#x5165;&#x6392;&#x5E8F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#冒泡排序"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5192;&#x6CE1;&#x6392;&#x5E8F;" class="headerlink" title="&#x5192;&#x6CE1;&#x6392;&#x5E8F;"></a>&#x5192;&#x6CE1;&#x6392;&#x5E8F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选择排序"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x9009;&#x62E9;&#x6392;&#x5E8F;" class="headerlink" title="&#x9009;&#x62E9;&#x6392;&#x5E8F;"></a>&#x9009;&#x62E9;&#x6392;&#x5E8F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#事件复杂度"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x4E8B;&#x4EF6;&#x590D;&#x6742;&#x5EA6;" class="headerlink" title="&#x4E8B;&#x4EF6;&#x590D;&#x6742;&#x5EA6;"></a>&#x4E8B;&#x4EF6;&#x590D;&#x6742;&#x5EA6;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/03/18/冒泡排序vs归并排序vs选择排序vs插入排序/';
+          this.page.identifier = '2016/03/18/冒泡排序vs归并排序vs选择排序vs插入排序/';
+          this.page.title = '冒泡排序vs归并排序vs选择排序vs插入排序';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

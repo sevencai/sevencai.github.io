@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ES6," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近要好好学下ES6,下文主要是对箭头函数和const,let的稍微详细点的理解。里面我主要的学习方法是写小例子，然后去分析ES6通过babel转码后有什么区别和和两者的对比。babel的使用可以看下：bable install，这里不涉及babel的使用。  箭头函数（Arrow Functions）箭头函数最好的一点当然是箭头函数preserve the context of this fro">
+<meta name="keywords" content="ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6的箭头函数和块级作用域">
+<meta property="og:url" content="http://sevencai.github.io/2016/05/24/ES6的箭头函数和块级作用域/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="最近要好好学下ES6,下文主要是对箭头函数和const,let的稍微详细点的理解。里面我主要的学习方法是写小例子，然后去分析ES6通过babel转码后有什么区别和和两者的对比。babel的使用可以看下：bable install，这里不涉及babel的使用。  箭头函数（Arrow Functions）箭头函数最好的一点当然是箭头函数preserve the context of this fro">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T02:59:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6的箭头函数和块级作用域">
+<meta name="twitter:description" content="最近要好好学下ES6,下文主要是对箭头函数和const,let的稍微详细点的理解。里面我主要的学习方法是写小例子，然后去分析ES6通过babel转码后有什么区别和和两者的对比。babel的使用可以看下：bable install，这里不涉及babel的使用。  箭头函数（Arrow Functions）箭头函数最好的一点当然是箭头函数preserve the context of this fro">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/05/24/ES6的箭头函数和块级作用域/"/>
+
+
+
+
+
+  <title>ES6的箭头函数和块级作用域 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/05/24/ES6的箭头函数和块级作用域/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6的箭头函数和块级作用域</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-24T18:59:05+08:00">
+                2016-05-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/05/24/ES6的箭头函数和块级作用域/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/05/24/ES6的箭头函数和块级作用域/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近要好好学下ES6,下文主要是对箭头函数和const,let的稍微详细点的理解。里面我主要的学习方法是写小例子，然后去分析ES6通过babel转码后有什么区别和和两者的对比。babel的使用可以看下：<a href="http://babeljs.io/docs/setup/#installation" target="_blank" rel="noopener">bable install</a>，这里不涉及babel的使用。</p>
+<hr>
+<h3 id="箭头函数（Arrow-Functions）"><a href="#箭头函数（Arrow-Functions）" class="headerlink" title="箭头函数（Arrow Functions）"></a>箭头函数（Arrow Functions）</h3><p>箭头函数最好的一点当然是箭头函数<strong>preserve the context of this from its lexical scope，保存我们上下文作用域中的this的指向</strong>。因为一般我们可能会遇到下面这些问题：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name</span><br><span class="line">&#125;</span><br><span class="line">Person.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name+item</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> arr=[<span class="string">'cld'</span>,<span class="string">'seven'</span>]</span><br><span class="line"><span class="keyword">var</span> person = <span class="keyword">new</span> Person(<span class="string">'n6303-'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(person.add(arr))</span><br></pre></td></tr></table></figure>
+<p><code>[ &#39;undefinedcld&#39;, &#39;undefinedseven&#39; ]</code>，最后结果是这个。因为当我们使用<code>nested functions</code>的时候，this的指向会发生变化。所以，我们没有箭头函数以前，是这样解决的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span>  arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name + item</span><br><span class="line">    &#125;,<span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者是通过bind,这样解决的：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span>  arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.name + item</span><br><span class="line">    &#125;.bind(<span class="keyword">this</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>或者是这样解决的，通过：that=this:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> that = <span class="keyword">this</span></span><br><span class="line">    <span class="keyword">return</span> arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> that.name + item</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上三种方法都能够解决。但是当我们有了箭头函数，就更加容易了：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Person.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params">arr</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> arr.map(<span class="function">(<span class="params">item</span>)=&gt;</span><span class="keyword">this</span>.name+item)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>而且最好的就是箭头函数大部分浏览器都支持啦。<br>而且<strong>对于返回值只有一个的时候，箭头函数非常简洁</strong>，比如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>&#123;<span class="keyword">return</span> item*item&#125;))</span><br><span class="line"><span class="built_in">console</span>.log(arr.map(<span class="function">(<span class="params">item</span>)=&gt;</span>item*item))</span><br></pre></td></tr></table></figure></p>
+<p>通过babel转码后，箭头函数是这样的,跟自己写的一样：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>&#123;<span class="keyword">return</span> item*item&#125;))</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="let-and-const"><a href="#let-and-const" class="headerlink" title="let and const"></a>let and const</h3><h4 id="let与var之变量提升的区别"><a href="#let与var之变量提升的区别" class="headerlink" title="let与var之变量提升的区别"></a>let与var之变量提升的区别</h4><p>ES6新增了let命令，用来声明变量。它的用法类似于var，但是所声明的变量，只在let命令所在的代码块内有效。<strong>相当于增加了块级作用域</strong>。</p>
+<p>先看下下面的输出结果：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> global = <span class="string">"global"</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test1</span>(<span class="params">para</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(para)&#123;</span><br><span class="line">        <span class="keyword">var</span> global = <span class="string">"inner"</span></span><br><span class="line">        <span class="keyword">return</span> global</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> global</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test2</span>(<span class="params">para</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(para)&#123;</span><br><span class="line">        <span class="keyword">let</span> global = <span class="string">"inner"</span></span><br><span class="line">        <span class="keyword">return</span> global</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> global</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(test1(<span class="literal">false</span>))</span><br><span class="line"><span class="built_in">console</span>.log(test2(<span class="literal">false</span>))</span><br></pre></td></tr></table></figure></p>
+<p>结果分别是：undefined,global。第一个是因为var 有变量提升，而let没有变量提升。我们可以看一下当我们通过babel编译以后会得到什么结果：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"><span class="keyword">var</span> global = <span class="string">"global"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test1</span>(<span class="params">para</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (para) &#123;</span><br><span class="line">        <span class="keyword">var</span> global = <span class="string">"inner"</span>;</span><br><span class="line">        <span class="keyword">return</span> global;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> global;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test2</span>(<span class="params">para</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (para) &#123;</span><br><span class="line">        <span class="keyword">var</span> _global = <span class="string">"inner"</span>;</span><br><span class="line">        <span class="keyword">return</span> _global;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> global;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(test1(<span class="literal">false</span>));</span><br><span class="line"><span class="built_in">console</span>.log(test2(<span class="literal">false</span>));</span><br></pre></td></tr></table></figure></p>
+<p>babel把我们的let变成了var,并且把变量名称换了。正是因为let不存在变量提升，所以我们要先声明再使用。否则会报错，而不是输出undefined。</p>
+<p>再来看下面这个例子：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">let</span> b =<span class="number">4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>会被编译成下面这样。所以最后会报错。因为我们在外部打印b的时候，是<code>ReferenceError: b is not defined</code>。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> a = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">var</span> _b = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(a)</span><br><span class="line"><span class="built_in">console</span>.log(b)</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="let和var在闭包中的作用"><a href="#let和var在闭包中的作用" class="headerlink" title="let和var在闭包中的作用"></a>let和var在闭包中的作用</h4><p>由于i是var声明的。所以是全局变量。全局范围内都有效。所以当我们不管是调用哪一个a，都是输出最后一个i,也就是3。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = []</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++)&#123;</span><br><span class="line">    a[i] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">a[<span class="number">2</span>]()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = []</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">4</span>;i++)&#123;</span><br><span class="line">    b[i] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">b[<span class="number">2</span>]()</span><br></pre></td></tr></table></figure></p>
+<p>我看了下babel编译后的结果。编译后它处理的方法是把函数声明提到了外面。我们通常也可以用里面(function(i){})(i)这中方法。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">    a[i] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = [];</span><br><span class="line"><span class="keyword">var</span> _loop = <span class="function"><span class="keyword">function</span> <span class="title">_loop</span>(<span class="params">_i</span>) </span>&#123;</span><br><span class="line">    b[_i] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(_i);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> _i = <span class="number">0</span>; _i &lt; <span class="number">4</span>; _i++) &#123;</span><br><span class="line">    _loop(_i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可惜了，我现在用谷歌来测试还是不能用。期待那么一天。火狐还是很好的。</p>
+<hr>
+<h4 id="let不允许重复声明"><a href="#let不允许重复声明" class="headerlink" title="let不允许重复声明"></a>let不允许重复声明</h4><p>我们用var 的时候，都可以一直就重新声明。想重新声明就重新声明。<strong>但是let不允许在相同作用域内，重复声明同一个变量。</strong>比如先var a=1,再let a=2，这是不行的。再比如let a=1;let a=2这也是不行的。那比如说，我在一个函数内传入了一个param,我们let param = other值，这也是不行的。但是注意这前提室相同作用域如果是不同作用域肯定就是可以了，比如先let a=1,然后{let a=1},这样开辟了一个新的作用域。肯定是可以重复声明的。内层作用域可以定义外层作用域的同名变量。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">let</span> x;</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">// okay, block scoped name</span></span><br><span class="line">      <span class="keyword">const</span> x = <span class="string">"sneaky"</span>;</span><br><span class="line">      <span class="comment">// error, const</span></span><br><span class="line">      x = <span class="string">"foo"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// okay, declared with let</span></span><br><span class="line">    x = <span class="string">"bar"</span>;</span><br><span class="line">    <span class="comment">// error, already declared in block</span></span><br><span class="line">    <span class="keyword">let</span> x = <span class="string">"inner"</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="需要块级作用域let的原因"><a href="#需要块级作用域let的原因" class="headerlink" title="需要块级作用域let的原因"></a>需要块级作用域let的原因</h4><ol>
+<li>由于var是可以随时重新声明赋值的，又因为有变量提升这么回事，所以经常就会出现undefined的错误。内部变量覆盖了外部变量。</li>
+<li>消除刚才我们提到的，由于循环计数的原因，导致了变量泄露成了全局变量。</li>
+</ol>
+<p><strong>我在想是不是可以这么理解，当我们使用了{}这个的时候，{}内部的和{}外部的元素就形成了两个不同的块级作用域。无论是我们直接{}还是通过if(){}或者function(){}这样。我不知道我这样总结的是不是太绝对了。</strong></p>
+<p>我们先前的是：内部作用域可以访问外部作用域。因为作用域链的存在。外部作用域不能访问内部作用域。因为作用域链只能向上查找。let的出现并没有影响这一点。</p>
+<p>而且正是因为let的出现，以后估计我们的<strong>匿名函数</strong>（用于保护全局变量）用的也就会少很多了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> food = <span class="string">'meat'</span>;</span><br><span class="line">&#125;());</span><br><span class="line"><span class="built_in">console</span>.log(food); <span class="comment">// Reference Error</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> food = <span class="string">'vegetables;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">console.log(food); // Reference Error</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="const是single-assignment"><a href="#const是single-assignment" class="headerlink" title="const是single-assignment"></a>const是single-assignment</h4><p><strong>const与我们先前学习别的语言一样，代表常量，一旦赋值就不可以改变。这也意味着必须在声明的时候赋值，否则后面不管再怎么赋值，都是错误的了。</strong></p>
+<p>这又包括两种情况，一种是普通模式，也就是没有用use strict,这种情况是重新赋值不会报错，但是值是不会变的，一直都是你最开始赋的初值。第二种情况是用了use strick，这种情况，是会报错的。</p>
+<p>还有一点要注意，就是const的作用域是跟let一样，在当前的块级作用域里面的。外部作用域无法访问当前定义的const的作用域。</p>
+<p>并且const也是不存在变量提升。这是个好事，让我们形成先定义，再使用的习惯，并且也可以有效的避免undefined这种情况发生。</p>
+<p>还有一点，是我以前没有注意到的。感谢<a href="http://es6.ruanyifeng.com/#docs/let#let命令" target="_blank" rel="noopener">阮一峰老师</a>的这个书。真棒。<strong>就是如果const定义的常量指向的是一个对象。这个时候，它实际上指向的是当前对象的地址。这个地址是在栈里面的，而这个真实的对象是在堆里面的。所以，我们使用const定义这个对象后，是可以改变对象的内容的。</strong>但是这个地址是不可以变的。意思也就是不可以给这个对象重新赋值，比如const foo={},foo = {},即使是这样foo好像什么都没有改变，但还是错误的。（然而我在普通模式下，并没有报错。。。）而foo.username=’cld’,这是完全可以的。这跟javascript存储引用对象的值的方式有密切的关系。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = <span class="built_in">Object</span>.freeze(&#123;&#125;)</span><br><span class="line"><span class="keyword">const</span> b = &#123;&#125;</span><br><span class="line"></span><br><span class="line">obj.name = <span class="string">"cld"</span></span><br><span class="line">b.name = <span class="string">"seven"</span></span><br></pre></td></tr></table></figure>
+<p>这段代码会在babel下转成这样：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = <span class="built_in">Object</span>.freeze(&#123;&#125;);</span><br><span class="line"><span class="keyword">var</span> b = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">obj.name = <span class="string">"cld"</span>;</span><br><span class="line">b.name = <span class="string">"seven"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>事实是不管我们是以const 然后freeze object，或者是不freeze,babel都是会把它转成var这种形势。因为babel本身的作用就是transform我们的es6的代码的。当然我们运行的话，会报错：<code>TypeError: Can&#39;t add property name, object is not extensible</code>。</p>
+<p>在阮一峰老师的书里，我看到了他写的这样一块代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> constantize = <span class="function">(<span class="params">obj</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">Object</span>.freeze(obj);</span><br><span class="line">  <span class="built_in">Object</span>.keys(obj).forEach( <span class="function">(<span class="params">key, value</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> ( <span class="keyword">typeof</span> obj[key] === <span class="string">'object'</span> ) &#123;</span><br><span class="line">      constantize( obj[key] );</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>看到了以后，眼睛亮了，因为记得前1，2个月面试的时候，有个面试官问我，知不知道有一个函数，可以直接获得所有obj的key值。我确实没用过js里的这个，只知道php里面有类似的函数是array_keys(),后来下去查，也没查到。就一直记在心里。今天一看这段代码就知道了是Object.keys()，真好。比如下面这个测试：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="string">'username'</span>:[<span class="string">'name1'</span>,<span class="string">'name2'</span>],<span class="string">'password'</span>:<span class="string">'seven'</span>&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.keys(obj))</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.keys(obj).forEach(<span class="function"><span class="keyword">function</span>(<span class="params">key,value</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">typeof</span> obj[key] == <span class="string">'object'</span>)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(obj[key])</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>打印结果是：<br>[ ‘username’, ‘password’ ]<br>[ ‘name1’, ‘name2’ ]</p>
+<p>有点偏题了。上面我的那段阮一峰老师的代码是为了让除了将对象本身冻结，对象的属性也冻结。</p>
+<p>然后看下babel转码后，会得到啥样的结果：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> constanize = <span class="function"><span class="keyword">function</span> <span class="title">constanize</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">Object</span>.freeze(obj);</span><br><span class="line">    <span class="built_in">Object</span>.keys(obj).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (_typeof(obj[key]) == <span class="string">'object'</span>) &#123;</span><br><span class="line">            constanize(obj[key]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>babel把箭头函数给转了，然后加了引号。但是typeof前面加_下划线是什么呢？我知道一般来说加下划线的变量为私有变量。。？？</p>
+<p>还有就是加入let后，就算let是在window环境下声明的。通过let定义的属性，也不能通过window获得。var声明的可以通过window对象获得。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6/" rel="tag"># ES6</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/22/用node写小爬虫/" rel="next" title="用node写小爬虫">
+                <i class="fa fa-chevron-left"></i> 用node写小爬虫
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/26/闭包深入理解阅读笔记/" rel="prev" title="闭包深入理解阅读笔记">
+                闭包深入理解阅读笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#箭头函数（Arrow-Functions）"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x7BAD;&#x5934;&#x51FD;&#x6570;&#xFF08;Arrow-Functions&#xFF09;" class="headerlink" title="&#x7BAD;&#x5934;&#x51FD;&#x6570;&#xFF08;Arrow Functions&#xFF09;"></a>&#x7BAD;&#x5934;&#x51FD;&#x6570;&#xFF08;Arrow Functions&#xFF09;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#let-and-const"><span class="nav-number">2.</span> <span class="nav-text"><a href="#let-and-const" class="headerlink" title="let and const"></a>let and const</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#let与var之变量提升的区别"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#let&#x4E0E;var&#x4E4B;&#x53D8;&#x91CF;&#x63D0;&#x5347;&#x7684;&#x533A;&#x522B;" class="headerlink" title="let&#x4E0E;var&#x4E4B;&#x53D8;&#x91CF;&#x63D0;&#x5347;&#x7684;&#x533A;&#x522B;"></a>let&#x4E0E;var&#x4E4B;&#x53D8;&#x91CF;&#x63D0;&#x5347;&#x7684;&#x533A;&#x522B;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#let和var在闭包中的作用"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#let&#x548C;var&#x5728;&#x95ED;&#x5305;&#x4E2D;&#x7684;&#x4F5C;&#x7528;" class="headerlink" title="let&#x548C;var&#x5728;&#x95ED;&#x5305;&#x4E2D;&#x7684;&#x4F5C;&#x7528;"></a>let&#x548C;var&#x5728;&#x95ED;&#x5305;&#x4E2D;&#x7684;&#x4F5C;&#x7528;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#let不允许重复声明"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#let&#x4E0D;&#x5141;&#x8BB8;&#x91CD;&#x590D;&#x58F0;&#x660E;" class="headerlink" title="let&#x4E0D;&#x5141;&#x8BB8;&#x91CD;&#x590D;&#x58F0;&#x660E;"></a>let&#x4E0D;&#x5141;&#x8BB8;&#x91CD;&#x590D;&#x58F0;&#x660E;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#需要块级作用域let的原因"><span class="nav-number">2.4.</span> <span class="nav-text"><a href="#&#x9700;&#x8981;&#x5757;&#x7EA7;&#x4F5C;&#x7528;&#x57DF;let&#x7684;&#x539F;&#x56E0;" class="headerlink" title="&#x9700;&#x8981;&#x5757;&#x7EA7;&#x4F5C;&#x7528;&#x57DF;let&#x7684;&#x539F;&#x56E0;"></a>&#x9700;&#x8981;&#x5757;&#x7EA7;&#x4F5C;&#x7528;&#x57DF;let&#x7684;&#x539F;&#x56E0;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#const是single-assignment"><span class="nav-number">2.5.</span> <span class="nav-text"><a href="#const&#x662F;single-assignment" class="headerlink" title="const&#x662F;single-assignment"></a>const&#x662F;single-assignment</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/05/24/ES6的箭头函数和块级作用域/';
+          this.page.identifier = '2016/05/24/ES6的箭头函数和块级作用域/';
+          this.page.title = 'ES6的箭头函数和块级作用域';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

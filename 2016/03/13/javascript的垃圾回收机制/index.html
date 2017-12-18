@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="和java,c#一样，javascript也有自动垃圾回收的机制，比如说c++和c就没有自动垃圾回收机制。可能有这么一种倾向，垃圾回收机制必须有一种平台来进行回收。比如说下面将的javascript的执行环境V8就会负责管理代码执行过程中的垃圾回收。 javascript具有自动垃圾回收机制，执行环境会负责管理代码执行过程中使用的内存。原理就是找出那些不再继续使用的变量，然后释放其占有内存。这整个">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="javascript的垃圾回收机制">
+<meta property="og:url" content="http://sevencai.github.io/2016/03/13/javascript的垃圾回收机制/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="和java,c#一样，javascript也有自动垃圾回收的机制，比如说c++和c就没有自动垃圾回收机制。可能有这么一种倾向，垃圾回收机制必须有一种平台来进行回收。比如说下面将的javascript的执行环境V8就会负责管理代码执行过程中的垃圾回收。 javascript具有自动垃圾回收机制，执行环境会负责管理代码执行过程中使用的内存。原理就是找出那些不再继续使用的变量，然后释放其占有内存。这整个">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T03:00:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="javascript的垃圾回收机制">
+<meta name="twitter:description" content="和java,c#一样，javascript也有自动垃圾回收的机制，比如说c++和c就没有自动垃圾回收机制。可能有这么一种倾向，垃圾回收机制必须有一种平台来进行回收。比如说下面将的javascript的执行环境V8就会负责管理代码执行过程中的垃圾回收。 javascript具有自动垃圾回收机制，执行环境会负责管理代码执行过程中使用的内存。原理就是找出那些不再继续使用的变量，然后释放其占有内存。这整个">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/03/13/javascript的垃圾回收机制/"/>
+
+
+
+
+
+  <title>javascript的垃圾回收机制 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/03/13/javascript的垃圾回收机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">javascript的垃圾回收机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-13T13:48:14+08:00">
+                2016-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/13/javascript的垃圾回收机制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/13/javascript的垃圾回收机制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>和java,c#一样，javascript也有自动垃圾回收的机制，比如说c++和c就没有自动垃圾回收机制。可能有这么一种倾向，垃圾回收机制必须有一种平台来进行回收。比如说下面将的javascript的执行环境V8就会负责管理代码执行过程中的垃圾回收。</p>
+<p>javascript具有自动垃圾回收机制，执行环境会负责管理代码执行过程中使用的内存。<strong>原理就是找出那些不再继续使用的变量，然后释放其占有内存</strong>。这整个过程也会按照一个固定的事件周期性的整形（时时的话开销太大）。</p>
+<hr>
+<h3 id="变量的声明周期"><a href="#变量的声明周期" class="headerlink" title="变量的声明周期"></a>变量的声明周期</h3><p>刚刚原理中提到要找出不再使用的变量，什么是不再使用的对象呢？不再使用的变量也就是生命周期结束的变量。目前javascript有两种变量，全局变量和在函数中产生的局部变量（暂不考虑ES6中的块级作用域）。</p>
+<p>全局变量的声明周期一直持续到浏览器关闭页面才会清除，而局部变量只是在函数执行器存在，而在这个过程中会为局部变量在栈或者堆上分配相应的空间，来存储他们的值，然后当函数要使用这些变量的值时再取出来使用。一直到函数结束（闭包会不同）。</p>
+<p>一旦函数结束，局部变量就不需要了，这时候就可以释放他们的内存。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> globalVariable = <span class="string">"I'm global"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> localVariable = <span class="string">"I'm local"</span>;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure></p>
+<p>这个例子里面，global在关闭浏览器时释放，local在函数test结束后，释放。</p>
+<p>具体看下垃圾回收的两种回收机制。</p>
+<hr>
+<h3 id="js的两种回收机制"><a href="#js的两种回收机制" class="headerlink" title="js的两种回收机制"></a>js的两种回收机制</h3><h4 id="标记清除（mark-and-sweep）"><a href="#标记清除（mark-and-sweep）" class="headerlink" title="标记清除（mark and sweep）"></a>标记清除（mark and sweep）</h4><p>从语义上理解就比较好理解了，大概就是当变量进入到某个环境中的时候就把这个变量标记一下，比如标记为“进入环境”，当离开的时候就把这个变量的标记给清除掉，比如是“离开环境”。而在这后面还有标记的变量将被视为准备删除的变量。</p>
+<blockquote>
+<p>垃圾收集器在运行的时候会给存储在内存中的所有变量都加上标记（可以使用任何标记方式）。然后，<strong>它会去掉环境中的变量以及被环境中的变量引用的变量的标记</strong>。而在此之后再被加上的标记的变量将被视为准备删除的变量，原因是环境中的变量已经无法访问到这些变量了。最后，垃圾收集器完成内存清除工作。销毁那些带标记的值并回收它们所占用的内存空间。</p>
+</blockquote>
+<p>这是javascript最常见的垃圾回收方式。至于上面有说道的标记，到底该如何标记？好像是有很多方法，比如特殊位翻转，维护一个列表什么的。</p>
+<hr>
+<h4 id="引用计数（reference-counting）"><a href="#引用计数（reference-counting）" class="headerlink" title="引用计数（reference counting）"></a>引用计数（reference counting）</h4><p>引用计数的含义是跟踪记录每个值被引用的次数，当声明一个变量并将一个引用类型的值赋给该变量时，这个时候的引用类型的值就会是引用次数+1了。如果同一个值又被赋给另外一个变量，则该值的引用次数又+1。</p>
+<p>相反如果包含这个值的引用的变量又取得另外一个值，即被重新赋了值，那么这个值的引用就减一。当这个值的引用次数编程0时，表示没有用到这个值，这个值也无法访问，因此环境就会收回这个值所占用的内存空间回收。这样，当垃圾收集器下次再运行时，它就会释放引用次数为0的值所占用的内存。</p>
+<p>但是刚刚也说了，第一种标记清除是最经常用到的，那么这个看起来这么好的引用计数为啥不被别人用了呢？</p>
+<p><strong>因为这个过程中会出现一个循环引用的问题!</strong></p>
+<p>简单点来说就是一个对象小a的属性，引用了对象小b。小b对象也有一个属性引用了小a,那么小a,小b互相引用对方，也就造成了循环引用的问题啦。</p>
+<p>煮个栗子：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> a = &#123;&#125;;</span><br><span class="line">	<span class="keyword">var</span> b = &#123;&#125;;</span><br><span class="line">	a.property = b;</span><br><span class="line">	b.property = a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这就是一个很明显的循环引用了，小a和小b通过各自的属性互相引用，<strong>导致了内存无法释放</strong>。（有那么一点点的感觉像死锁。。。。）即使是再test()执行完后，如果使用标记清除是没有问题的，离开环境的时候就会被清除。但是引用计数不行，因为这两个对象的引用次数还是存在，不会变成0，所以其占用空间也不会清理，如果这个函数被调用多次，就会不断有内存被占用。造成了内存泄露。</p>
+<blockquote>
+<p>IE中有一部分对象并不是原生JavaScript对象。例如，其BOM和DOM中的对象就是使用C++以COM(Component Object Model)对象的形式实现的，而COM对象的垃圾收集机制采用的就是引用计数策略。 </p>
+</blockquote>
+<p><strong>因此即使IE的js引擎是用的标记清除来实现的，但是js访问COM对象如BOM,DOM还是基于引用计数的策略的</strong>，也就是说只要在IE中设计到COM对象，也就会存在循环引用的问题。</p>
+<p><strong>比如说第一种情况：一个DOM元素和一个原生的js对象之间的循环引用</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ele = <span class="built_in">document</span>.getElementById(<span class="string">"ele"</span>);</span><br><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line">obj.property = ele;</span><br><span class="line">ele.property = obj;</span><br><span class="line"><span class="comment">//这种情况应该手动设置，在不适用的时候手工断开js和dom元素之间的连接</span></span><br><span class="line">obj.property = <span class="literal">null</span>;</span><br><span class="line">ele.property = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure></p>
+<p><strong>比如第二种情况是闭包的作用域链中包含着一个html元素，那么这个元素无法被销毁</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span> <span class="title">outerFunction</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> ele= <span class="built_in">document</span>.getElementById(<span class="string">"element"</span>);</span><br><span class="line">	ele.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(ele.id);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面这个代码创建了一个作为ele元素处理程序的闭包，而这个闭包则又创建了一个循环引用。y匿名函数中保存了一个outerFunction()的活动对象的引用，因此就会导致无法减少ele的引用。可以改成下面这个：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span> <span class="title">outerFunction</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> ele= <span class="built_in">document</span>.getElementById(<span class="string">"element"</span>);</span><br><span class="line">	<span class="keyword">var</span> id = ele.id;</span><br><span class="line">	ele.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(id);</span><br><span class="line">	&#125;</span><br><span class="line">	ele = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，通过把ele.id 的一个副本保存在一个变量中，并且在闭包中引用改变量消除了循环引用。</p>
+<blockquote>
+<p>必须要记住：闭包会引用包含函数的整个活动对象，而其中包含着elem。即使闭包不直接引用ele（比如上面的例子我们不用id），包含函数的多动对象中也依旧会保存一个引用。因此，有必要把ele变量设置为null。这样就能够解除对DOM对象的引用，顺利地减少其引用数，确保正常回收其占用的内存。</p>
+</blockquote>
+<p>将变量设置为null意味着切断变量与它此前引用的值之间的连接。当垃圾收集器下次运行时，就会删除这些值并回收它们占用的内存。</p>
+<p><strong>为了解决上述问题，IE9把BOM和DOM对象都转换成了真正的JavaScript对象。</strong></p>
+<hr>
+<h3 id="javascript与V8引擎"><a href="#javascript与V8引擎" class="headerlink" title="javascript与V8引擎"></a>javascript与V8引擎</h3><h4 id="垃圾回收机制的好处和坏处"><a href="#垃圾回收机制的好处和坏处" class="headerlink" title="垃圾回收机制的好处和坏处"></a>垃圾回收机制的好处和坏处</h4><p>好处：大幅简化程序的内存管理代码，减轻程序猿负担，并且减少因为长时间运转而带来的内存泄露问题。</p>
+<p>坏处：自动回收意味着程序猿无法掌控内存。ECMAScript中没有暴露垃圾回收的借口，我们无法强迫其进行垃圾回收，更加无法干预内存管理。</p>
+<hr>
+<h4 id="node内存管理问题"><a href="#node内存管理问题" class="headerlink" title="node内存管理问题"></a>node内存管理问题</h4><p>在浏览器中，V8引擎实例的生命周期不会很长（因为我们使用完网站就会把网站关闭），而且运行在用户的机器上。如果不幸发生内存泄露等问题，仅仅会影响到一个终端用户。且无论这个V8实例占用了多少内存，最终在关闭页面时内存都会被释放，几乎没有太多管理的必要（当然并不代表一些大型Web应用不需要管理内存）。但如果使用Node作为服务器，就需要关注内存问题了，一旦内存发生泄漏，久而久之整个服务将会瘫痪（服务器不会频繁的重启）。</p>
+<hr>
+<h4 id="涨知识之V8内存限制"><a href="#涨知识之V8内存限制" class="headerlink" title="涨知识之V8内存限制"></a>涨知识之V8内存限制</h4><p>Node与其他语言不同的一个地方，就是其限制了JavaScript所能使用的内存（64位为1.4GB，32位为0.7GB），这也就意味着将无法直接操作一些大内存对象。这很令人匪夷所思，因为很少有其他语言会限制内存的使用。</p>
+<p>V8之所以限制了内存的大小，表面上的原因是V8最初是作为浏览器的JavaScript引擎而设计，不太可能遇到大量内存的场景，而深层次的原因则是由于V8的垃圾回收机制的限制。由于V8需要保证JavaScript应用逻辑与垃圾回收器所看到的不一样，<strong>V8在执行垃圾回收时会阻塞JavaScript应用逻辑，直到垃圾回收结束再重新执行JavaScript应用逻辑，这种行为被称为“全停顿”</strong>（stop-the-world）。若V8的堆内存为1.5GB，V8做一次小的垃圾回收需要50ms以上，做一次非增量式的垃圾回收甚至要1秒以上。这样浏览器将在1s内失去对用户的响应，造成<strong>假死现象</strong>。如果有动画效果的话，动画的展现也将显著受到影响。</p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>对js的垃圾回收机制有所了解了，也明白了平常自己写代码的时候肯能会有这些问题，比如COM的循环引用。但是看到IE9的已经把COM变成了真正的js对象，以后应该会越来越好。主要学习和整理自：<a href="https://segmentfault.com/a/1190000000440270" target="_blank" rel="noopener">segmentfault</a>和javascript的高级程序设计。感谢。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/12/总结圣杯布局和双飞翼布局/" rel="next" title="总结圣杯布局和双飞翼布局">
+                <i class="fa fa-chevron-left"></i> 总结圣杯布局和双飞翼布局
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/15/解析和整理this的指向问题/" rel="prev" title="解析和整理this的指向问题">
+                解析和整理this的指向问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#变量的声明周期"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x53D8;&#x91CF;&#x7684;&#x58F0;&#x660E;&#x5468;&#x671F;" class="headerlink" title="&#x53D8;&#x91CF;&#x7684;&#x58F0;&#x660E;&#x5468;&#x671F;"></a>&#x53D8;&#x91CF;&#x7684;&#x58F0;&#x660E;&#x5468;&#x671F;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js的两种回收机制"><span class="nav-number">2.</span> <span class="nav-text"><a href="#js&#x7684;&#x4E24;&#x79CD;&#x56DE;&#x6536;&#x673A;&#x5236;" class="headerlink" title="js&#x7684;&#x4E24;&#x79CD;&#x56DE;&#x6536;&#x673A;&#x5236;"></a>js&#x7684;&#x4E24;&#x79CD;&#x56DE;&#x6536;&#x673A;&#x5236;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#标记清除（mark-and-sweep）"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x6807;&#x8BB0;&#x6E05;&#x9664;&#xFF08;mark-and-sweep&#xFF09;" class="headerlink" title="&#x6807;&#x8BB0;&#x6E05;&#x9664;&#xFF08;mark and sweep&#xFF09;"></a>&#x6807;&#x8BB0;&#x6E05;&#x9664;&#xFF08;mark and sweep&#xFF09;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引用计数（reference-counting）"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x5F15;&#x7528;&#x8BA1;&#x6570;&#xFF08;reference-counting&#xFF09;" class="headerlink" title="&#x5F15;&#x7528;&#x8BA1;&#x6570;&#xFF08;reference counting&#xFF09;"></a>&#x5F15;&#x7528;&#x8BA1;&#x6570;&#xFF08;reference counting&#xFF09;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javascript与V8引擎"><span class="nav-number">3.</span> <span class="nav-text"><a href="#javascript&#x4E0E;V8&#x5F15;&#x64CE;" class="headerlink" title="javascript&#x4E0E;V8&#x5F15;&#x64CE;"></a>javascript&#x4E0E;V8&#x5F15;&#x64CE;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#垃圾回收机制的好处和坏处"><span class="nav-number">3.1.</span> <span class="nav-text"><a href="#&#x5783;&#x573E;&#x56DE;&#x6536;&#x673A;&#x5236;&#x7684;&#x597D;&#x5904;&#x548C;&#x574F;&#x5904;" class="headerlink" title="&#x5783;&#x573E;&#x56DE;&#x6536;&#x673A;&#x5236;&#x7684;&#x597D;&#x5904;&#x548C;&#x574F;&#x5904;"></a>&#x5783;&#x573E;&#x56DE;&#x6536;&#x673A;&#x5236;&#x7684;&#x597D;&#x5904;&#x548C;&#x574F;&#x5904;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#node内存管理问题"><span class="nav-number">3.2.</span> <span class="nav-text"><a href="#node&#x5185;&#x5B58;&#x7BA1;&#x7406;&#x95EE;&#x9898;" class="headerlink" title="node&#x5185;&#x5B58;&#x7BA1;&#x7406;&#x95EE;&#x9898;"></a>node&#x5185;&#x5B58;&#x7BA1;&#x7406;&#x95EE;&#x9898;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#涨知识之V8内存限制"><span class="nav-number">3.3.</span> <span class="nav-text"><a href="#&#x6DA8;&#x77E5;&#x8BC6;&#x4E4B;V8&#x5185;&#x5B58;&#x9650;&#x5236;" class="headerlink" title="&#x6DA8;&#x77E5;&#x8BC6;&#x4E4B;V8&#x5185;&#x5B58;&#x9650;&#x5236;"></a>&#x6DA8;&#x77E5;&#x8BC6;&#x4E4B;V8&#x5185;&#x5B58;&#x9650;&#x5236;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/03/13/javascript的垃圾回收机制/';
+          this.page.identifier = '2016/03/13/javascript的垃圾回收机制/';
+          this.page.title = 'javascript的垃圾回收机制';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

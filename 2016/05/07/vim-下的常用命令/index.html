@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="工具/配置," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="系统管理员癿重要工作就是得要修改不设定某些重要软件的配置文件，因此至少得要学会一种以上癿文字接口的文书编辑器。 在所有的Linux distributions 上央都会有的一套文书编辑器就是 vi ，而且很多软件默讣也是使用 vi 做为他们编辑的接口， 因此鸟哥建议您务必要学会使用 vi 这个正规的文书编辑器。此外，vim 是进阶版的 vi ， vim 不但可以用丌同颜色显示文字内容，还能够进行">
+<meta name="keywords" content="工具&#x2F;配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vim 下的常用命令">
+<meta property="og:url" content="http://sevencai.github.io/2016/05/07/vim-下的常用命令/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="系统管理员癿重要工作就是得要修改不设定某些重要软件的配置文件，因此至少得要学会一种以上癿文字接口的文书编辑器。 在所有的Linux distributions 上央都会有的一套文书编辑器就是 vi ，而且很多软件默讣也是使用 vi 做为他们编辑的接口， 因此鸟哥建议您务必要学会使用 vi 这个正规的文书编辑器。此外，vim 是进阶版的 vi ， vim 不但可以用丌同颜色显示文字内容，还能够进行">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/vim.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/vim2.png">
+<meta property="og:updated_time" content="2016-12-12T02:31:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vim 下的常用命令">
+<meta name="twitter:description" content="系统管理员癿重要工作就是得要修改不设定某些重要软件的配置文件，因此至少得要学会一种以上癿文字接口的文书编辑器。 在所有的Linux distributions 上央都会有的一套文书编辑器就是 vi ，而且很多软件默讣也是使用 vi 做为他们编辑的接口， 因此鸟哥建议您务必要学会使用 vi 这个正规的文书编辑器。此外，vim 是进阶版的 vi ， vim 不但可以用丌同颜色显示文字内容，还能够进行">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/vim.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/05/07/vim-下的常用命令/"/>
+
+
+
+
+
+  <title>vim 下的常用命令 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/05/07/vim-下的常用命令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vim 下的常用命令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-07T23:15:54+08:00">
+                2016-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具-配置/" itemprop="url" rel="index">
+                    <span itemprop="name">工具/配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/05/07/vim-下的常用命令/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/05/07/vim-下的常用命令/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>系统管理员癿重要工作就是得要修改不设定某些重要软件的配置文件，因此至少得要学会一种以上癿文字接口的文书编辑器。 在所有的Linux distributions 上央都会有的一套文书编辑器就是 vi ，而且很多软件默讣也是使用 vi 做为他们编辑的接口， 因此鸟哥建议您务必要学会使用 vi 这个正规的文书编辑器。此外，vim 是进阶版的 vi ， vim 不但可以用丌同颜色显示文字内容，还能够进行诸如 shell script, C program 等程序编辑功能， 你可以将 vim 规为一种程序编辑器！ – from 鸟哥</p>
+</blockquote>
+<p>以前学习linux的时候，就是只用那些常用的命令，完全没有体会到vim的好处，现在想整个系统的学下。因为命令很多，记录如下，主要是便于回头查找。也分享给大家。我看的是《鸟哥的私房菜这本书》，讲的不能再好了。我分享的书里面有这个电子书。但是还是建议买一个正版的。</p>
+<p>vi 一共分为三种模式：<strong>一般模式，编辑模式，指令命令模式。</strong></p>
+<p><strong>一般模式</strong>：以vi打开一个文件的时候，默认就是进入这个模式。这个模式中，可以使用上下左右按键移动光标，可以删除，复制，粘贴。</p>
+<p><strong>编辑模式</strong>：一般模式中可以进行复制，粘贴，删除，移动。但是没有办法编辑文件。这个时候，我们要通过[i,I,o,O,r,R]这些字母进入编辑模式。你会在下面看到[insert][replace]的字样，退出这个模式，请使用[esc]。</p>
+<p><strong>指令行命令模式</strong>：输入[:/?]三个中的任意一个，就可以移动到光标最底下一行。可以搜索，而读取，存盘，大量取代字符，离开vi,显示行号，这些都是这个模式达成的。</p>
+<p>最常用的是：i,esc,a,:wq,:q!,vi filename….等等。</p>
+<hr>
+<p><img src="http://www.cailidan.cn/images/vim.png" alt="vim切换模式"></p>
+<hr>
+<h3 id="一般模式"><a href="#一般模式" class="headerlink" title="一般模式"></a><strong>一般模式</strong></h3><h4 id="光标移动"><a href="#光标移动" class="headerlink" title="光标移动"></a><strong>光标移动</strong></h4><p><code>h:(←)</code> 光标向左边移动一个字符<br><code>j:(↓)</code> 光标向下边移动一个字符<br><code>k:(↑)</code> 光标向上边移动一个字符<br><code>l:(→)</code> 光标向右边移动一个字符  </p>
+<p><code>hjkl</code>是在键盘上连在一起的，<code>30j,30h</code>都可以。</p>
+<p><code>ctrl+f</code> : 屏幕向下移动一页 == <code>pagedown</code><br><code>ctrl+b</code> : 屏幕向上移动一页 == <code>pageup</code></p>
+<p>还有不是很常用的</p>
+<p><code>ctrl+d</code> : 屏幕向下移动半页<br><code>ctrl+u</code>: 屏幕向上移动半页<br><code>+</code> 光标移动到非空格的下一列<br><code>-</code> 光标移动到非空格的上一列</p>
+<p><code>n&lt;space&gt;</code> : 如 20（空格） 表示光标向右移动这一行的n个字符。</p>
+<p><strong>0 == [home]</strong><br><strong>$ == [end]</strong></p>
+<p><strong>G 移动到此文件最后一行</strong><br><strong>gg 移动到这个档案的第一行</strong><br><strong>nG n表示数字，移动到这个档案的第n行</strong><br><strong>1G 自然代表移动到这个档案的第一行 == gg</strong><br><strong><code>n&lt;enter&gt;</code> n表示数字，光标向下移动n行</strong></p>
+<hr>
+<h4 id="搜寻与取代"><a href="#搜寻与取代" class="headerlink" title="搜寻与取代"></a><strong>搜寻与取代</strong></h4><p><strong><code>/word</code> 向光标之下寻找一个名称为word的字符串</strong>  如<code>/seven</code> 向下寻找<code>seven</code>这个字符串<br><code>?word</code> 向光标之上寻找一个名称伪word的字符串</p>
+<p><code>n</code> 注意这里的n代表的不是数字，是n英文按键，代表[重复前一个搜寻的动作]<br>比如上面我<code>/seven</code>了，表示我要向下搜寻seven这个字符串，如果我此时按下n，代表继续向下搜寻下一个字符串。如果是<code>?seven</code>，同样的道理喽。</p>
+<p><code>N</code> 这个N是英文按键。与n刚好相反，比如刚才先按下<code>/seven</code>，再按下N，代表，会向上搜寻seven,此时作用等同于<code>?seven</code>。</p>
+<p><code>/?n</code> 的配合，可以重复的找到一些你搜寻的关键字。</p>
+<p><code>:n1,n2s/word1/word2/g</code> n1,n2为数字，word1,查询字符串，word2为<strong>替换字符串</strong><br><code>:100,200s/seven/Seven/g</code> </p>
+<p><code>:1,$s/word1/word2/g</code> 从第一行到最后一行寻找word1,并且替换成word2.</p>
+<p><code>:1,$s/word1/word2/gc</code> 从第一行到最后一行寻找word1，并且取代为word2,并且在替换前提示用户，confirm一下，是否替换。</p>
+<hr>
+<h4 id="删除，复制，粘贴"><a href="#删除，复制，粘贴" class="headerlink" title="删除，复制，粘贴"></a><strong>删除，复制，粘贴</strong></h4><p><strong><code>x,X</code> : x向后删除一个字符，X向前删除一个字符。x=del,X=backspace</strong><br><strong><code>nx</code> : n为数字，连续向后删除n个字符。10x,向后删除10个字符</strong><br><strong><code>dd</code> : 删除游标所在的那一列</strong><br><strong><code>ndd</code> : 向下删除n列。</strong><br><strong><code>d1G</code> : 删除光标所在到第一行的所有数据</strong><br><strong><code>dG</code>: 删除光标所在到最后一行的所有数据</strong></p>
+<p>如果只删除一个字符，我倒觉得del,和backspace比较方便，因为不用从编辑模式，切换到命令模式。但是后面的dd,ndd,d1G,dG的好处就很明显体现出来了。</p>
+<p><code>d$</code> : 删除游标所在处，到该行的最后一个字符<br><code>d0</code> : 删除光标所在处，到该行的第一个字符</p>
+<p><strong><code>yy</code> : 复制游标所在的那一行</strong><br><strong><code>nyy</code> : n为数字，复制光标所在的向下n行，20yy,向下复制20列</strong></p>
+<p><code>y1G</code> : 复制光标所在列到第一列的所有数据<br><code>yG</code> : 复制光标所在列到最后一列的所有数据<br><code>y0</code> : 复制光标所在的那个字符到该行行首的所有数据<br><code>y$</code> : 复制光标所在的哪个字符到该行行尾的所有数据</p>
+<p><strong><code>p,P</code> : p将已经复制的数据在光标下一行粘贴，P为上一行。</strong><br><code>J</code> : 将光标所在列与下一列的数据合成同一列<br><code>c</code> : 重复删除多个数据，例如向下删除10行 10cj</p>
+<p><strong><code>u</code> : 复原前一个动作 == windows下面的ctrl+z</strong><br><strong><code>ctrl+r</code> : 重做前一个动作 == windows下面的ctrl+y</strong></p>
+<p>这两个很常用。</p>
+<p><code>.</code> : 重复前一个动作，比如重复删除，重复粘贴，就一直按下小数点就行啦。</p>
+<hr>
+<h3 id="一般模式切换到编辑模式"><a href="#一般模式切换到编辑模式" class="headerlink" title="一般模式切换到编辑模式"></a><strong>一般模式切换到编辑模式</strong></h3><p><code>i,I</code> :  插入模式，i为从光标所在处插入，I为在目前所在行的第一个非空格处插入<br><code>a,A</code> : a为从光标所在的下一个字符开始插入，A为从光标所在行的最后一个字符插入<br><strong><code>o,O</code> : o为在光标所在行的下一行插入，O为上一行插入。</strong><br><code>r,R</code> : 前面三个都是插入模式，这个是取代模式：r会取代光标所在的哪个字符一次，R会一直取代光标所在的文字，一直到esc</p>
+<p><code>esc</code> : 退出编辑模式，回到一般模式</p>
+<p>上面那些按键，都会在左下角出现insert或者replace的字样</p>
+<hr>
+<h3 id="一般模式切换到指令模式"><a href="#一般模式切换到指令模式" class="headerlink" title="一般模式切换到指令模式"></a><strong>一般模式切换到指令模式</strong></h3><p><code>:w</code> 将编辑癿数据写入硬盘档案中(常用)<br><code>:W</code> 若文件属性为『只读』时,强制写入该档案。不过,到底能不能写入, 还是跟你对该档案的案权限有关<br><code>:q</code> 离开 vi (常用)<br><code>:q!</code> 若曾修改过档案,又不储存,使用 ! 为强制离开当前文件。<br>注意一下啊,那个惊叹号 (!) 在 vi 当中,常常具有『强制』的意思~<br><code>:wq</code> 存储后离开，:wq!存储后强制离开<br><strong><code>ZZ</code> 若文档没有更改，则不存储离开，若改动，则存储离开</strong><br><code>:w [filename]</code> 另存为另一个filenane<br><code>:r [filename]</code> 将filename这个档案的内容加到游标的行后面</p>
+<p><strong><code>:n1,n2 w [filename]</code> 将 n1 到 n2 的内容储存成 filename 这个档案。</strong><br><code>:! command</code> 暂时离开 vi 到指令列模式下执行 command 癿显示结果!例如『:! ls /home』即可在 vi 当中察看 /home 底下以 ls 输出癿档案信息!</p>
+<p><code>:set nu</code> 显示行号<br><code>:set nonu</code> 不显示行号</p>
+<hr>
+<h3 id="多窗口功能"><a href="#多窗口功能" class="headerlink" title="多窗口功能"></a><strong>多窗口功能</strong></h3><p>如果想要对比一个文件或者多个文件的数据的时候，是否需要ctrl+f或者ctrl+b前后查看数据呢？不需要，<strong>vim支持多窗口功能，也就是窗口的分割</strong>：</p>
+<p><strong>比如 <code>vi 1.txt -&gt; 1G -&gt; :sp -&gt; G</code>两个同样的文件，一个文件开头，一个文件结尾，可以一起看。</strong></p>
+<p>比如再输入<code>[:sp /etc/hosts]</code>又会多了一个窗口了。</p>
+<p><strong><code>:sp [filename]</code> 开启一个新窗口</strong><br><code>ctrl+w+j ([ctrl]+w+↓)</code> 按键的按法是:先按下 [ctrl] 丌放, 再按下 w 后放开所有癿按键,然后再按下 j (戒向下箭央键),则光标可移劢到下方的窗口。</p>
+<p><code>[ctrl]+w+k ([ctrl]+w+↑)</code>: 同上,丌过光标移劢到上面的窗口。</p>
+<p><code>[ctrl]+w+q</code> 其实就是 :q 结束离开啦! 丼例来说,如果我想要结束下方癿窗口，那么利用<br>用 <code>[ctrl]+w+↓</code> 移劢到下方窗口后,按下 :q 即可离开, 也可以按下[ctrl]+w+q</p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>下面的图片来自鸟哥的书。有时候模糊不清，会看的更认真是不是？=。=</p>
+<p><img src="http://www.cailidan.cn/images/vim2.png" alt="vim切换简略图"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工具-配置/" rel="tag"># 工具/配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/04/基于Socket-IO的node聊天室，支持私聊/" rel="next" title="基于Socket.IO的node聊天室，支持私聊">
+                <i class="fa fa-chevron-left"></i> 基于Socket.IO的node聊天室，支持私聊
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/19/防火墙简单知识/" rel="prev" title="防火墙简单知识">
+                防火墙简单知识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一般模式"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x4E00;&#x822C;&#x6A21;&#x5F0F;" class="headerlink" title="&#x4E00;&#x822C;&#x6A21;&#x5F0F;"></a><strong>&#x4E00;&#x822C;&#x6A21;&#x5F0F;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#光标移动"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x5149;&#x6807;&#x79FB;&#x52A8;" class="headerlink" title="&#x5149;&#x6807;&#x79FB;&#x52A8;"></a><strong>&#x5149;&#x6807;&#x79FB;&#x52A8;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#搜寻与取代"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x641C;&#x5BFB;&#x4E0E;&#x53D6;&#x4EE3;" class="headerlink" title="&#x641C;&#x5BFB;&#x4E0E;&#x53D6;&#x4EE3;"></a><strong>&#x641C;&#x5BFB;&#x4E0E;&#x53D6;&#x4EE3;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除，复制，粘贴"><span class="nav-number">1.3.</span> <span class="nav-text"><a href="#&#x5220;&#x9664;&#xFF0C;&#x590D;&#x5236;&#xFF0C;&#x7C98;&#x8D34;" class="headerlink" title="&#x5220;&#x9664;&#xFF0C;&#x590D;&#x5236;&#xFF0C;&#x7C98;&#x8D34;"></a><strong>&#x5220;&#x9664;&#xFF0C;&#x590D;&#x5236;&#xFF0C;&#x7C98;&#x8D34;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一般模式切换到编辑模式"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x4E00;&#x822C;&#x6A21;&#x5F0F;&#x5207;&#x6362;&#x5230;&#x7F16;&#x8F91;&#x6A21;&#x5F0F;" class="headerlink" title="&#x4E00;&#x822C;&#x6A21;&#x5F0F;&#x5207;&#x6362;&#x5230;&#x7F16;&#x8F91;&#x6A21;&#x5F0F;"></a><strong>&#x4E00;&#x822C;&#x6A21;&#x5F0F;&#x5207;&#x6362;&#x5230;&#x7F16;&#x8F91;&#x6A21;&#x5F0F;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一般模式切换到指令模式"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x4E00;&#x822C;&#x6A21;&#x5F0F;&#x5207;&#x6362;&#x5230;&#x6307;&#x4EE4;&#x6A21;&#x5F0F;" class="headerlink" title="&#x4E00;&#x822C;&#x6A21;&#x5F0F;&#x5207;&#x6362;&#x5230;&#x6307;&#x4EE4;&#x6A21;&#x5F0F;"></a><strong>&#x4E00;&#x822C;&#x6A21;&#x5F0F;&#x5207;&#x6362;&#x5230;&#x6307;&#x4EE4;&#x6A21;&#x5F0F;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多窗口功能"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x591A;&#x7A97;&#x53E3;&#x529F;&#x80FD;" class="headerlink" title="&#x591A;&#x7A97;&#x53E3;&#x529F;&#x80FD;"></a><strong>&#x591A;&#x7A97;&#x53E3;&#x529F;&#x80FD;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a><strong>&#x603B;&#x7ED3;</strong></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/05/07/vim-下的常用命令/';
+          this.page.identifier = '2016/05/07/vim-下的常用命令/';
+          this.page.title = 'vim 下的常用命令';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

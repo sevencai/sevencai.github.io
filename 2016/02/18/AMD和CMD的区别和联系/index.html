@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Nodejs," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="模块化是指在解决某一个复杂问题或者一系列的杂糅问题时，依照一种分类的思维把问题进行系统性的分解以之处理。模块化是一种处理复杂系统分解为代码结构更合理，可维护性更高的可管理的模块的方式。可以想象一个巨大的系统代码，被整合优化分割成逻辑性很强的模块时，对于软件是一种何等意义的存在。对于软件行业来说：解耦软件系统的复杂性，使得不管多么大的系统，也可以将管理，开发，维护变得“有理可循”。  javasc">
+<meta name="keywords" content="Nodejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AMD和CMD的区别和联系">
+<meta property="og:url" content="http://sevencai.github.io/2016/02/18/AMD和CMD的区别和联系/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="模块化是指在解决某一个复杂问题或者一系列的杂糅问题时，依照一种分类的思维把问题进行系统性的分解以之处理。模块化是一种处理复杂系统分解为代码结构更合理，可维护性更高的可管理的模块的方式。可以想象一个巨大的系统代码，被整合优化分割成逻辑性很强的模块时，对于软件是一种何等意义的存在。对于软件行业来说：解耦软件系统的复杂性，使得不管多么大的系统，也可以将管理，开发，维护变得“有理可循”。  javasc">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T02:58:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AMD和CMD的区别和联系">
+<meta name="twitter:description" content="模块化是指在解决某一个复杂问题或者一系列的杂糅问题时，依照一种分类的思维把问题进行系统性的分解以之处理。模块化是一种处理复杂系统分解为代码结构更合理，可维护性更高的可管理的模块的方式。可以想象一个巨大的系统代码，被整合优化分割成逻辑性很强的模块时，对于软件是一种何等意义的存在。对于软件行业来说：解耦软件系统的复杂性，使得不管多么大的系统，也可以将管理，开发，维护变得“有理可循”。  javasc">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/02/18/AMD和CMD的区别和联系/"/>
+
+
+
+
+
+  <title>AMD和CMD的区别和联系 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/18/AMD和CMD的区别和联系/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">AMD和CMD的区别和联系</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-18T14:17:27+08:00">
+                2016-02-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/18/AMD和CMD的区别和联系/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/18/AMD和CMD的区别和联系/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>模块化是指在解决某一个复杂问题或者一系列的杂糅问题时，依照一种分类的思维把问题进行系统性的分解以之处理。模块化是一种处理复杂系统分解为代码结构更合理，可维护性更高的可管理的模块的方式。可以想象一个巨大的系统代码，被整合优化分割成逻辑性很强的模块时，对于软件是一种何等意义的存在。对于软件行业来说：解耦软件系统的复杂性，使得不管多么大的系统，也可以将管理，开发，维护变得“有理可循”。</p>
+</blockquote>
+<p>javascript并不具有传统意义上的类，继承，模块。但Javascript社区做了很多努力，在现有的运行环境中，实现”模块”的效果。</p>
+<hr>
+<h3 id="AMD-CMD出现的原因"><a href="#AMD-CMD出现的原因" class="headerlink" title="AMD|CMD出现的原因"></a>AMD|CMD出现的原因</h3><p>node出现时，跟随node出现的还有commonjs，这是一种js模块化解决方案，像Node.js主要用于服务器的编程，<strong>加载的模块文件一般都已经存在本地硬盘，所以加载起来比较快，其等待时间就是硬盘的读取时间。不用考虑异步加载的方式</strong>，CommonJS 加载模块是同步的，所以只有加载完成才能执行后面的操作。</p>
+<p>但是浏览器环境不同于Node，<strong>浏览器中获取一个资源必须要发送http请求，从服务器端获取，采用同步模式必然会阻塞浏览器进程出现假死现象</strong>。</p>
+<p>比如下面这个例子中，由于浏览器加载js默认是阻塞的，那么后面的add过程就必须等前面require完成，这个时候就会造成假死现象：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var math = require(math);</span><br><span class="line">math.add(5,6);</span><br></pre></td></tr></table></figure></p>
+<p>因此，浏览器端的模块，不能采用”同步加载”（synchronous），只能采用”异步加载”（asynchronous）。后来出现无阻塞加载脚本方式在开发中广泛应用，在此基础结合commonjs规范，前端模块化迎来了两种方案：AMD、CMD。这就是两种规范诞生的背景。</p>
+<hr>
+<h3 id="AMD-CMD的定义"><a href="#AMD-CMD的定义" class="headerlink" title="AMD|CMD的定义"></a>AMD|CMD的定义</h3><p>AMD（Asynchronous Module Definition），CMD（Common Module Definition）</p>
+<p>AMD 是 RequireJS 在推广过程中对模块定义的规范化产出，CMD是SeaJS 在推广过程中被广泛认知。RequireJs出自dojo加载器的作者James Burke，SeaJs出自国内前端大师玉伯。</p>
+<hr>
+<h4 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h4><blockquote>
+<p>Asynchronous Module Definition，用白话文讲就是 异步模块定义，，所有的模块将被异步加载，模块加载不影响后面语句运行。所有依赖这个模块的语句，都定义在一个回调函数中，等到加载完成之后，这个回调函数才会运行。</p>
+</blockquote>
+<p>它包含三个参数<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">define(id?, dependencies?, factory);</span><br></pre></td></tr></table></figure></p>
+<p>第一个参数， id 为字符串类型，表示了模块标识，为可选参数。若不存在则模块标识应该默认定义为在加载器中被请求脚本的标识。如果存在，那么模块标识必须为顶层的或者一个绝对的标识。</p>
+<p>第二个参数，dependencies ，是一个当前模块依赖的，已被模块定义的模块标识的数组字面量。</p>
+<p>第三个参数，factory，是一个需要进行实例化的函数或者一个对象。 </p>
+<hr>
+<p><strong>下面例子来自官方文档</strong></p>
+<p>创建模块标识为 alpha 的模块，依赖于 require， export，和标识为 beta 的模块<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="string">"alpha"</span>, [<span class="string">"require"</span>, <span class="string">"exports"</span>, <span class="string">"beta"</span>], <span class="keyword">function</span> (require, exports, beta) &#123;</span><br><span class="line">   exports.verb = <span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">       <span class="built_in">return</span> beta.verb();</span><br><span class="line">       //Or:</span><br><span class="line">       <span class="built_in">return</span> require(<span class="string">"beta"</span>).verb();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>一个返回对象字面量的异步模块<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define([<span class="string">"alpha"</span>], <span class="keyword">function</span>( alpha )&#123;</span><br><span class="line">    <span class="built_in">return</span> &#123;</span><br><span class="line">        verb : <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">            <span class="built_in">return</span> alpha.verb() + 1 ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>无依赖模块可以直接使用对象字面量来定义<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define( &#123;</span><br><span class="line">    add : <span class="keyword">function</span>( x, y )&#123;</span><br><span class="line">        <span class="built_in">return</span> x + y ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; );</span><br></pre></td></tr></table></figure></p>
+<p>类似与 CommonJS 方式定义<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define( <span class="keyword">function</span>( require, exports, module)&#123;</span><br><span class="line">    var a = require(<span class="string">'a'</span>),</span><br><span class="line">          b = require(<span class="string">'b'</span>);</span><br><span class="line">    exports.action = <span class="function"><span class="title">function</span></span>()&#123;&#125;;</span><br><span class="line">&#125; );</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h4><p>先来看看commonJS</p>
+<blockquote>
+<p>CommonJS定义的模块分为:{模块引用(require)} {模块定义(exports)} {模块标识(module)}<br>require用来引入外部模块；exports对象用于导出当前模块的方法或变量，唯一的导出口；module对象就代表模块本身。</p>
+</blockquote>
+<p>大名远扬的玉伯写了seajs，提出的CMD规范,格式为：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">define(factory);</span><br></pre></td></tr></table></figure></p>
+<p>define 接受 factory 参数,factory 可以是一个函数,也可以是一个对象或字符串。</p>
+<p>factory 为对象、字符串时，表示模块的接口就是该对象、字符串。比如可以如下定义一个 JSON 数据模块：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">define(&#123; <span class="string">"foo"</span>: <span class="string">"bar"</span> &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>factory 为函数时，表示是模块的构造方法。执行该构造方法，可以得到模块向外提供的接口。</p>
+<p>factory 方法在执行时，默认会传入三个参数：require、exports 和 module(是不是跟上面提到的commonJS很像呢)：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="keyword">function</span>(require, exports, module) &#123;</span><br><span class="line">  // 模块代码</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p><strong>define(function (require, exports, module)和exports(是一个对象，用来向外提供模块接口)详解</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="keyword">function</span>(require, exports) &#123;</span><br><span class="line">  // 对外提供 foo 属性</span><br><span class="line">  exports.foo = <span class="string">'bar'</span>;</span><br><span class="line">  // 对外提供 doSomething 方法</span><br><span class="line">  exports.doSomething = <span class="function"><span class="title">function</span></span>() &#123;&#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>除了给 exports 对象增加成员，还可以使用 return 直接向外提供接口。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="keyword">function</span>(require) &#123;</span><br><span class="line">  // 通过 <span class="built_in">return</span> 直接提供接口</span><br><span class="line">  <span class="built_in">return</span> &#123;</span><br><span class="line">    foo: <span class="string">'bar'</span>,</span><br><span class="line">    doSomething: <span class="function"><span class="title">function</span></span>() &#123;&#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p> 特别注意：下面这种写法是错误的！<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="keyword">function</span>(require, exports) &#123;</span><br><span class="line">  // 错误用法！！!</span><br><span class="line">  exports = &#123;</span><br><span class="line">    foo: <span class="string">'bar'</span>,</span><br><span class="line">    doSomething: <span class="function"><span class="title">function</span></span>() &#123;&#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>正确的写法是用 return 或者给 module.exports 赋值：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="keyword">function</span>(require, exports, module) &#123;</span><br><span class="line">  // 正确写法</span><br><span class="line">  module.exports = &#123;</span><br><span class="line">    foo: <span class="string">'bar'</span>,</span><br><span class="line">    doSomething: <span class="function"><span class="title">function</span></span>() &#123;&#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>exports 仅仅是 module.exports 的一个引用。在 factory 内部给 exports 重新赋值时，并不会改变module.exports 的值。因此给 exports 赋值是无效的，不能用来更改模块接口。</p>
+<hr>
+<h3 id="AMD-CMD的区别"><a href="#AMD-CMD的区别" class="headerlink" title="AMD|CMD的区别"></a>AMD|CMD的区别</h3><p>知乎上玉伯对于 AMD 与 CMD <a href="https://www.zhihu.com/question/20351507" target="_blank" rel="noopener">区别的解释</a>。</p>
+<ol>
+<li>对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。CMD 推崇 as lazy as possible.</li>
+<li><p>CMD 推崇依赖就近，AMD 推崇依赖前置。看代码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// CMD</span><br><span class="line">define(<span class="keyword">function</span>(require, exports, module) &#123;</span><br><span class="line">    var a = require(<span class="string">'./a'</span>)</span><br><span class="line">    a.doSomething()</span><br><span class="line">    // 此处略去 100 行</span><br><span class="line">    var b = require(<span class="string">'./b'</span>) // 依赖可以就近书写</span><br><span class="line">    b.doSomething()</span><br><span class="line">    // ...</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">// AMD 默认推荐的是</span><br><span class="line">define([<span class="string">'./a'</span>, <span class="string">'./b'</span>], <span class="keyword">function</span>(a, b) &#123; // 依赖必须一开始就写好</span><br><span class="line">    a.doSomething()</span><br><span class="line">    // 此处略去 100 行</span><br><span class="line">    b.doSomething()</span><br><span class="line">    // ...</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>AMD 的 API 默认是一个当多个用，CMD 的 API 严格区分，推崇职责单一。比如 AMD 里，require 分全局 require 和局部 require，都叫 require。CMD 里，没有全局 require，而是根据模块系统的完备性，提供 seajs.use 来实现模块系统的加载启动。CMD 里，每个 API 都简单纯粹。</p>
+</li>
+<li>AMD擅长在浏览器端、CMD擅长在服务器端。这是因为浏览器加载一个功能不像服务器那么快，有大量的网络消耗。所以一个异步loader是更接地气的。</li>
+<li>总结：AMD | 速度快 | 会浪费资源 | 预先加载所有的依赖，直到使用的时候才执行</li>
+<li>总结：CMD | 只有真正需要才加载依赖 | 性能较差 | 直到使用的时候才定义依赖</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/17/Flex-布局语法及实例/" rel="next" title="Flex 布局语法及实例">
+                <i class="fa fa-chevron-left"></i> Flex 布局语法及实例
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/18/JS模块化工具RequireJS/" rel="prev" title="JS模块化工具requirejs">
+                JS模块化工具requirejs <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#AMD-CMD出现的原因"><span class="nav-number">1.</span> <span class="nav-text"><a href="#AMD-CMD&#x51FA;&#x73B0;&#x7684;&#x539F;&#x56E0;" class="headerlink" title="AMD|CMD&#x51FA;&#x73B0;&#x7684;&#x539F;&#x56E0;"></a>AMD|CMD&#x51FA;&#x73B0;&#x7684;&#x539F;&#x56E0;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMD-CMD的定义"><span class="nav-number">2.</span> <span class="nav-text"><a href="#AMD-CMD&#x7684;&#x5B9A;&#x4E49;" class="headerlink" title="AMD|CMD&#x7684;&#x5B9A;&#x4E49;"></a>AMD|CMD&#x7684;&#x5B9A;&#x4E49;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AMD"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CMD"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMD-CMD的区别"><span class="nav-number">3.</span> <span class="nav-text"><a href="#AMD-CMD&#x7684;&#x533A;&#x522B;" class="headerlink" title="AMD|CMD&#x7684;&#x533A;&#x522B;"></a>AMD|CMD&#x7684;&#x533A;&#x522B;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/02/18/AMD和CMD的区别和联系/';
+          this.page.identifier = '2016/02/18/AMD和CMD的区别和联系/';
+          this.page.title = 'AMD和CMD的区别和联系';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

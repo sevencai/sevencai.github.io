@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="ajax大家都很熟悉了，我们知道ajax会有一些弊端，H5出来了两个新的API叫做pushState和replaceState，这两个可以很好的解决ajax不能历史返回的问题。先推荐一个博客，推荐的原因是要知其所以然，知道历史才能够更好的理解。下面是我的整理，由于是自己的整理，所以很多无关这两个API的，可以直接忽略，跳过直接看后面重点部分和demo。。  前言-ajax与传统web应用的比较简单">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习HTML5 API （pushState&#x2F;replaceState）">
+<meta property="og:url" content="http://sevencai.github.io/2016/04/02/学习HTML5-API-（pushState-replaceState）/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="ajax大家都很熟悉了，我们知道ajax会有一些弊端，H5出来了两个新的API叫做pushState和replaceState，这两个可以很好的解决ajax不能历史返回的问题。先推荐一个博客，推荐的原因是要知其所以然，知道历史才能够更好的理解。下面是我的整理，由于是自己的整理，所以很多无关这两个API的，可以直接忽略，跳过直接看后面重点部分和demo。。  前言-ajax与传统web应用的比较简单">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/ajaxyq.png">
+<meta property="og:updated_time" content="2016-12-12T03:01:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="学习HTML5 API （pushState&#x2F;replaceState）">
+<meta name="twitter:description" content="ajax大家都很熟悉了，我们知道ajax会有一些弊端，H5出来了两个新的API叫做pushState和replaceState，这两个可以很好的解决ajax不能历史返回的问题。先推荐一个博客，推荐的原因是要知其所以然，知道历史才能够更好的理解。下面是我的整理，由于是自己的整理，所以很多无关这两个API的，可以直接忽略，跳过直接看后面重点部分和demo。。  前言-ajax与传统web应用的比较简单">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/ajaxyq.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/04/02/学习HTML5-API-（pushState-replaceState）/"/>
+
+
+
+
+
+  <title>学习HTML5 API （pushState/replaceState） | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/02/学习HTML5-API-（pushState-replaceState）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">学习HTML5 API （pushState/replaceState）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-02T21:20:26+08:00">
+                2016-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/02/学习HTML5-API-（pushState-replaceState）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/02/学习HTML5-API-（pushState-replaceState）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>ajax大家都很熟悉了，我们知道ajax会有一些弊端，H5出来了两个新的API叫做pushState和replaceState，这两个可以很好的解决ajax不能历史返回的问题。先推荐一个<a href="http://blog.sina.com.cn/s/blog_657bbff00100i23q.html" target="_blank" rel="noopener">博客</a>，推荐的原因是要知其所以然，知道历史才能够更好的理解。下面是我的整理，由于是自己的整理，所以很多无关这两个API的，可以直接忽略，跳过直接看后面重点部分和demo。。</p>
+<hr>
+<h4 id="前言-ajax与传统web应用的比较"><a href="#前言-ajax与传统web应用的比较" class="headerlink" title="前言-ajax与传统web应用的比较"></a>前言-ajax与传统web应用的比较</h4><p>简单来说：<br>第一：是局部刷新，传统web应用要请求并重新读取一个整个页面。<br>第二：仅仅向服务器发送并取回必要的数据，不会像传统的web应用一样浪费很多带宽。<br>第三：减少了数据交换，减少了响应时间,响应的更快。</p>
+<p><strong>用户体验好，用户体验好，用户体验好</strong></p>
+<blockquote>
+<p>传统的Web应用交互由用户触发一个HTTP请求到服务器,服务器对其进行处理后再返回一个新的HTHL页到客户端, 每当服务器处理客户端提交的请求时,客户都只能空闲等待,并且哪怕只是一次很小的交互、只需从服务器端得到很简单的一个数据,都要返回一个完整的HTML页,而用户每次都要浪费时间和带宽去重新读取整个页面。这个做法浪费了许多带宽，由于每次应用的交互都需要向服务器发送请求，应用的响应时间就依赖于服务器的响应时间。这导致了用户界面的响应比本地应用慢得多。<br>与此不同，AJAX应用可以仅向服务器发送并取回必需的数据，它使用SOAP或其它一些基于XML的Web Service接口，并在客户端采用JavaScript处理来自服务器的响应。因为在服务器和浏览器之间交换的数据大量减少，结果我们就能看到响应更快的应用。同时很多的处理工作可以在发出请求的客户端机器上完成，所以Web服务器的处理时间也减少了。</p>
+</blockquote>
+<hr>
+<h4 id="ajax的工作原理"><a href="#ajax的工作原理" class="headerlink" title="ajax的工作原理"></a>ajax的工作原理</h4><p>Ajax的工作原理相当于在用户和服务器之间加了—个中间层(AJAX引擎),使用户操作与服务器响应异步化。并不是所有的用户请求都提交给服务器,像—些数据验证和数据处理等都交给Ajax引擎自己来做, 只有确定需要从服务器读取新数据时再由Ajax引擎代为向服务器提交请求。<br><img src="http://www.cailidan.cn/images/ajaxyq.png" alt=""></p>
+<p><strong>其实Ajax主要就是通过XMLHttpRequest对象来向服务器发送异步请求，然后从服务器端获得相应的数据，利用相应的数据来局部更新相应的页面。</strong></p>
+<hr>
+<h4 id="ajax的缺点和优点"><a href="#ajax的缺点和优点" class="headerlink" title="ajax的缺点和优点"></a>ajax的缺点和优点</h4><p>咱们先讲优点：</p>
+<ol>
+<li><strong>无刷新更新数据</strong>避免修改了那些不需要改变的信息，从而减少等待时间，用户体验很好。</li>
+<li><strong>异步通信</strong>中途不会阻止用户操作，具有更加迅速的响应能力。优化了b/s的沟通。</li>
+<li><strong>前后端负载均衡</strong>，后面的ajax的工作原理会讲到，ajax可以吧以前必须要服务器承担的工作留给客户端。利用客户端闲置的能力来处理，减轻服务器和带宽的负担，节约空间和宽带租用成本。并且减轻服务器的负担，ajax的原则是“按需取数据”，可以最大程度的减少冗余请求，和响应对服务器造成的负担。</li>
+<li><strong>基于标准，被支持</strong></li>
+<li><strong>数据与呈现分离</strong>有利于分工合作。减少非技术人员对web应用程序错误。</li>
+</ol>
+<p>再来看看缺点：</p>
+<ol>
+<li><strong>ajax破坏了浏览器本身的机制</strong>，不能够有back和history的功能。</li>
+<li><strong>ajax的安全问题</strong>，这使得开发者在不经意间会暴露更多的数据和服务器逻辑。ajax也难以避免一些一直的安全弱点，sql注入，xss等等。</li>
+<li><strong>破坏程序的异常处理机制</strong>（这一点在怎么理解？）</li>
+<li><strong>违背URL和资源定位的初衷</strong>，例如，我给你一个URL地址，如果采用了Ajax技术，也许你在该URL地址下面看到的和我在这个URL地址下看到的内容是不同的。这个和资源定位的初衷是相背离的。</li>
+<li><strong>对搜索引擎支持较弱</strong>。对搜索引擎的支持比较弱。如果使用不当，AJAX会增大网络数据的流量，从而降低整个系统的性能。</li>
+<li>还有不容易调试那些问题。</li>
+</ol>
+<hr>
+<h3 id="重点：怎么解决不能有back和history这一问题？"><a href="#重点：怎么解决不能有back和history这一问题？" class="headerlink" title="重点：怎么解决不能有back和history这一问题？"></a>重点：怎么解决不能有back和history这一问题？</h3><h4 id="先来看看history对象："><a href="#先来看看history对象：" class="headerlink" title="先来看看history对象："></a>先来看看history对象：</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.history.back();</span><br><span class="line"><span class="built_in">window</span>.history.forward();</span><br><span class="line"><span class="built_in">window</span>.history.go(<span class="number">-1</span>);</span><br><span class="line"><span class="built_in">window</span>.history.go(<span class="number">2</span>);</span><br><span class="line"><span class="comment">//通过检查浏览器历史记录的length属性来找到历史记录堆栈中的页面总数</span></span><br><span class="line"><span class="keyword">var</span> num = <span class="built_in">window</span>.history.length;</span><br></pre></td></tr></table></figure>
+<p>H5引入了<code>history.pushState()</code>,<code>history.replaceState()</code>这两个API，他们允许添加和修改history实体。需要和<code>window.onpopstate</code>事件一起工作。这两个方法用来修改referrer，可以被用在修改状态后而为XMLHttpRequest对象创建的http header中。</p>
+<p>pushState就是向history添加当前页面的记录，replaceState的参数和用法和pushState相同，区别在于replaceState是用于修改当前页面在history中的记录。这个我们后面也会在例子中用到。</p>
+<p>其实pushState就是一个往堆栈添加一条历史记录。可以形象的理解成push。</p>
+<p><code>pushState(data,title,[,url])</code>：data为一个对象或者为null,它会在触发window的popstate事件时，作为参数的state属性传递过去，title为页面的标题，现在的浏览器忽略掉了这个参数，所以写啥都没用，url为页面的URL，如果不写的话，就是当前页了。</p>
+<p><code>replaceState(data,title,[,url])</code>：参数时相同的，这种更改不会访问该URL。也就是不会刷新。会让用户看到的url发生变化，如果我们需要访问该URL，还要去手动的触发。</p>
+<blockquote>
+<p>replaceState不会在window.history里新增历史记录点，其效果类似于window.location.replace(url)，都是不会在历史记录点里新增一个记录点的。当你为了响应用户的某些操作，而要更新当前历史记录条目的状态对象或URL时，使用replaceState()方法会特别合适。</p>
+</blockquote>
+<hr>
+<h4 id="PJAX"><a href="#PJAX" class="headerlink" title="PJAX"></a>PJAX</h4><p>刚刚我们已经说到了那两个API,我们的PJAX就是基于上面新特性来的。PJAX是别人开发的一个项目，地址是：<a href="https://github.com/defunkt/jquery-pjax。" target="_blank" rel="noopener">https://github.com/defunkt/jquery-pjax。</a></p>
+<p><strong>它不仅仅支持了局部刷新这一特点，而且在刷新页面的同时，浏览器地址栏上面的地址是会更改的，用浏览器回退功能也能够回退回去，正常我们用ajax是实现不了的。</strong>。</p>
+<blockquote>
+<p><strong>PJAX的基本思路是，当用户点击一个链接，通过ajax更新页面变化的部分，然后使用HTML5的pushState修改浏览器的URL地址，这样有效地避免了整个页面的重新加载。如果浏览器不支持history的两个新API或者JS被禁用了，那这个链接就只能跳转并重新刷新整个页面了。和传统的ajax设计稍微不同，ajax通常是从后台获取JSON数据，然后由前端解析渲染，而PJAX请求的是一个在服务器上生成好的HTML碎片</strong></p>
+</blockquote>
+<p>看看如果我们自己写是怎么样利用这两个API的。</p>
+<hr>
+<h4 id="先来看一个完整的例子"><a href="#先来看一个完整的例子" class="headerlink" title="先来看一个完整的例子"></a>先来看一个完整的例子</h4><p>demo的地址我放在了<a href="http://cailidan.cn/web/demo/testajax" target="_blank" rel="noopener">http://cailidan.cn/web/demo/testajax</a>这里。<br>一个很简单的php文件，通过接收不同的id，并且返回不同的数据。显示到textarea上。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> 	</span><br><span class="line">	$id = <span class="keyword">isset</span>($_POST[<span class="string">'id'</span>])?$_POST[<span class="string">'id'</span>]:<span class="number">1</span>;	</span><br><span class="line">	<span class="keyword">switch</span>($id)&#123;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">			<span class="keyword">echo</span> <span class="string">"这是一个ajax请求---page1"</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">			<span class="keyword">echo</span> <span class="string">"这是一个ajax请求---page2"</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">			<span class="keyword">echo</span> <span class="string">"这是一个ajax请求---page3"</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">		    <span class="keyword">echo</span> <span class="string">"default ajax"</span>;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>下面的例子是这样一个过程:</p>
+<ol>
+<li>当我们访问index.html的时候，会自动显示成<code>http://localhost:801/testajax/index.html?page=1</code>,原因就是我们使用了用history.replaceState更改当前的浏览器历史;并且在textarea部分显示<code>这是一个ajax请求---page1</code></li>
+<li>当我们点击每一个li的时候，对应的textarea会发生变化，这没有什么新奇的，但当我们看浏览器的URL，发现对应的url也会发生变化，如<code>http://localhost:801/testajax/index.html?page=2</code>这个是我们利用replaceState来做到的。</li>
+<li>然后我们试一下点击回退，发现是可以回到上一级哒。是不是很棒呢？</li>
+<li>我们的思路是，先给每个li绑定一个事件，然后当我们点击这个li的时候，调用ajax，并把当前的url拼凑后pushState。当我们首次访问的时候<code>query=undefined</code>,我们获取到undefined后，就默认是第一个，此时我们利用replaceState改变状态栏的信息。若状态栏的query有值。，则判断query对应的li是哪个。如果找到了该li，触发其click事件，如果没有的话，证明query传参错误。然后默认去触发第一个。</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>测试pjax<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"list"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"test.php?page=1"</span> <span class="attr">data-id</span>=<span class="string">"1"</span>&gt;</span>page1<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"test.php?page=2"</span> <span class="attr">data-id</span>=<span class="string">"2"</span>&gt;</span>page2<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"test.php?page=3"</span> <span class="attr">data-id</span>=<span class="string">"3"</span>&gt;</span>page3<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"test.php?page=4"</span> <span class="attr">data-id</span>=<span class="string">"4"</span>&gt;</span>page4<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">textarea</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">id</span>=<span class="string">"textarea"</span> <span class="attr">cols</span>=<span class="string">"30"</span> <span class="attr">rows</span>=<span class="string">"10"</span>&gt;</span></span><br><span class="line">		</span><br><span class="line">	<span class="tag">&lt;/<span class="name">textarea</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"./jquery-1.12.0.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">		$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">			<span class="keyword">var</span> list = $(<span class="string">"#list a"</span>).bind(<span class="string">"click"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">				<span class="keyword">var</span> id = $(e.target).attr(<span class="string">'href'</span>).split(<span class="string">'?'</span>)[<span class="number">1</span>].split(<span class="string">"="</span>)[<span class="number">1</span>];</span></span><br><span class="line"><span class="javascript">				<span class="keyword">var</span> query = <span class="keyword">this</span>.href.split(<span class="string">"?"</span>)[<span class="number">1</span>];</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">				<span class="comment">//调用ajax,返回相应的值入textarea</span></span></span><br><span class="line"><span class="javascript">				<span class="keyword">if</span>(history.pushState &amp;&amp; query)&#123;</span></span><br><span class="line"><span class="javascript">					$.ajax(&#123;</span></span><br><span class="line"><span class="javascript">						type:<span class="string">"POST"</span>,</span></span><br><span class="line"><span class="undefined">						data:&#123;id:id&#125;,</span></span><br><span class="line"><span class="javascript">						url:<span class="string">"test.php"</span>,</span></span><br><span class="line"><span class="javascript">						success:<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">							$(<span class="string">"#textarea"</span>).html(data);</span></span><br><span class="line"><span class="undefined">						&#125;</span></span><br><span class="line"><span class="undefined">					&#125;)</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">					<span class="keyword">var</span> title = <span class="string">"测试page"</span>+$(<span class="keyword">this</span>).text();</span></span><br><span class="line"><span class="javascript">					<span class="built_in">document</span>.title = title;</span></span><br><span class="line"><span class="javascript">					<span class="keyword">if</span>(e)&#123;</span></span><br><span class="line"><span class="javascript">						history.pushState(&#123;<span class="attr">title</span>:title&#125;,title,location.href.split(<span class="string">'?'</span>)[<span class="number">0</span>]+<span class="string">"?"</span>+query);</span></span><br><span class="line"><span class="undefined">					&#125;</span></span><br><span class="line"><span class="undefined">				&#125;				</span></span><br><span class="line"><span class="javascript">				<span class="keyword">return</span> <span class="literal">false</span>;</span></span><br><span class="line"><span class="undefined">			&#125;);</span></span><br><span class="line"><span class="undefined">			</span></span><br><span class="line"><span class="javascript">			<span class="keyword">var</span> trigger = <span class="function"><span class="keyword">function</span>(<span class="params">target</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">				<span class="keyword">var</span> query = location.href.split(<span class="string">"?"</span>)[<span class="number">1</span>];</span></span><br><span class="line"><span class="javascript">				<span class="keyword">var</span> target = target || <span class="literal">null</span>;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">				<span class="comment">//开始时query为空，就让target为第一个li选项</span></span></span><br><span class="line"><span class="javascript">				<span class="keyword">if</span>(<span class="keyword">typeof</span> query == <span class="string">"undefined"</span>)&#123;</span></span><br><span class="line"><span class="undefined">					target = list[0];</span></span><br><span class="line"><span class="javascript">					<span class="comment">//把url状态栏中的内容显示为如http://localhost:801/testajax/index.html?page=1</span></span></span><br><span class="line"><span class="javascript">					history.replaceState(<span class="literal">null</span>, <span class="built_in">document</span>.title, location.href.split(<span class="string">"#"</span>)[<span class="number">0</span>] + <span class="string">"?"</span> + target.href.split(<span class="string">"?"</span>)[<span class="number">1</span>]) + location.hash;    </span></span><br><span class="line"><span class="undefined">            		trigger(target);			</span></span><br><span class="line"><span class="javascript">				&#125;<span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="javascript">					<span class="comment">//如果已经有query了，获取里面的query值找到对应的li,并设置target为相应的li</span></span></span><br><span class="line"><span class="javascript">					list.each(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">						<span class="keyword">if</span>(target === <span class="literal">null</span> &amp;&amp; <span class="keyword">this</span>.href.split(<span class="string">"?"</span>)[<span class="number">1</span>] === query)&#123;</span></span><br><span class="line"><span class="javascript">							target = <span class="keyword">this</span>;</span></span><br><span class="line"><span class="undefined">						&#125;</span></span><br><span class="line"><span class="undefined">					&#125;);</span></span><br><span class="line"><span class="javascript">					<span class="comment">//如果上面target没有赋值，也就是说query找不到对应的li，证明query不存在相应的记录</span></span></span><br><span class="line"><span class="javascript">					<span class="comment">//此时就设置为如http://localhost:801/testajax/index.html</span></span></span><br><span class="line"><span class="javascript">					<span class="comment">//如果target有值，则触发click事件，调用ajax.</span></span></span><br><span class="line"><span class="javascript">					<span class="keyword">if</span>(!target)&#123;</span></span><br><span class="line"><span class="javascript">						history.replaceState(<span class="literal">null</span>,<span class="built_in">document</span>.title,location.href.split(<span class="string">'?'</span>)[<span class="number">0</span>]);</span></span><br><span class="line"><span class="undefined">						trigger();</span></span><br><span class="line"><span class="javascript">					&#125;<span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="javascript">						$(target).trigger(<span class="string">"click"</span>);</span></span><br><span class="line"><span class="undefined">					&#125;</span></span><br><span class="line"><span class="undefined">				&#125;</span></span><br><span class="line"><span class="undefined">			&#125;</span></span><br><span class="line"><span class="undefined"></span></span><br><span class="line"><span class="javascript">			<span class="keyword">if</span>(history.pushState)&#123;</span></span><br><span class="line"><span class="undefined">				trigger();</span></span><br><span class="line"><span class="javascript">				<span class="comment">//每次浏览器前进或者后退的时候触发</span></span></span><br><span class="line"><span class="javascript">				$(<span class="built_in">window</span>).bind(<span class="string">"popstate"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="undefined">					trigger();</span></span><br><span class="line"><span class="undefined">				&#125;);</span></span><br><span class="line"><span class="undefined">			&#125;				</span></span><br><span class="line"><span class="undefined">		&#125;)</span></span><br><span class="line"><span class="undefined">	</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="顺便记录几个XMLHttpRequest的属性"><a href="#顺便记录几个XMLHttpRequest的属性" class="headerlink" title="顺便记录几个XMLHttpRequest的属性"></a>顺便记录几个XMLHttpRequest的属性</h4><p>onreadystatechange 每次状态改变所触发事件的事件处理程序。</p>
+<p>responseText 从服务器进程返回数据的字符串形式。</p>
+<p>responseXML 从服务器进程返回的DOM兼容的文档数据对象。</p>
+<p>status 从服务器返回的数字代码，比如常见的404（未找到）和200（已就绪）</p>
+<p>status Text 伴随状态码的字符串信息</p>
+<p>readyState 对象状态值</p>
+<pre><code>0 (未初始化) 对象已建立，但是尚未初始化（尚未调用open方法）
+
+1 (初始化) 对象已建立，尚未调用send方法
+
+2 (发送数据) send方法已调用，但是当前的状态及http头未知
+
+3 (数据传送中) 已接收部分数据，因为响应及http头不全，这时通过responseBody和responseText获取部分数据会出现错误，
+
+4 (完成) 数据接收完毕,此时可以通过通过responseXml和responseText获取完整的回应数据。
+</code></pre><hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>感谢<a href="http://my.oschina.net/sub/blog/123447" target="_blank" rel="noopener">osChina</a>和<a href="http://www.zhangxinxu.com/wordpress/2013/06/html5-history-api-pushstate-replacestate-ajax/" target="_blank" rel="noopener">张鑫旭的这篇文章</a>。了解了H5新的API,也大致的知道是怎么用的了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/31/如果想用script做自己的网名？/" rel="next" title="如果想用script做自己的网名？">
+                <i class="fa fa-chevron-left"></i> 如果想用script做自己的网名？
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/10/Workerman-chat学习之路一（基本概念了解）/" rel="prev" title="Workerman-chat学习之路一（基本概念了解）">
+                Workerman-chat学习之路一（基本概念了解） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言-ajax与传统web应用的比较"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x524D;&#x8A00;-ajax&#x4E0E;&#x4F20;&#x7EDF;web&#x5E94;&#x7528;&#x7684;&#x6BD4;&#x8F83;" class="headerlink" title="&#x524D;&#x8A00;-ajax&#x4E0E;&#x4F20;&#x7EDF;web&#x5E94;&#x7528;&#x7684;&#x6BD4;&#x8F83;"></a>&#x524D;&#x8A00;-ajax&#x4E0E;&#x4F20;&#x7EDF;web&#x5E94;&#x7528;&#x7684;&#x6BD4;&#x8F83;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ajax的工作原理"><span class="nav-number">2.</span> <span class="nav-text"><a href="#ajax&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;" class="headerlink" title="ajax&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;"></a>ajax&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ajax的缺点和优点"><span class="nav-number">3.</span> <span class="nav-text"><a href="#ajax&#x7684;&#x7F3A;&#x70B9;&#x548C;&#x4F18;&#x70B9;" class="headerlink" title="ajax&#x7684;&#x7F3A;&#x70B9;&#x548C;&#x4F18;&#x70B9;"></a>ajax&#x7684;&#x7F3A;&#x70B9;&#x548C;&#x4F18;&#x70B9;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重点：怎么解决不能有back和history这一问题？"><span class="nav-number"></span> <span class="nav-text"><a href="#&#x91CD;&#x70B9;&#xFF1A;&#x600E;&#x4E48;&#x89E3;&#x51B3;&#x4E0D;&#x80FD;&#x6709;back&#x548C;history&#x8FD9;&#x4E00;&#x95EE;&#x9898;&#xFF1F;" class="headerlink" title="&#x91CD;&#x70B9;&#xFF1A;&#x600E;&#x4E48;&#x89E3;&#x51B3;&#x4E0D;&#x80FD;&#x6709;back&#x548C;history&#x8FD9;&#x4E00;&#x95EE;&#x9898;&#xFF1F;"></a>&#x91CD;&#x70B9;&#xFF1A;&#x600E;&#x4E48;&#x89E3;&#x51B3;&#x4E0D;&#x80FD;&#x6709;back&#x548C;history&#x8FD9;&#x4E00;&#x95EE;&#x9898;&#xFF1F;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#先来看看history对象："><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5148;&#x6765;&#x770B;&#x770B;history&#x5BF9;&#x8C61;&#xFF1A;" class="headerlink" title="&#x5148;&#x6765;&#x770B;&#x770B;history&#x5BF9;&#x8C61;&#xFF1A;"></a>&#x5148;&#x6765;&#x770B;&#x770B;history&#x5BF9;&#x8C61;&#xFF1A;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PJAX"><span class="nav-number">2.</span> <span class="nav-text"><a href="#PJAX" class="headerlink" title="PJAX"></a>PJAX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#先来看一个完整的例子"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5148;&#x6765;&#x770B;&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684;&#x4F8B;&#x5B50;" class="headerlink" title="&#x5148;&#x6765;&#x770B;&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684;&#x4F8B;&#x5B50;"></a>&#x5148;&#x6765;&#x770B;&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684;&#x4F8B;&#x5B50;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#顺便记录几个XMLHttpRequest的属性"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x987A;&#x4FBF;&#x8BB0;&#x5F55;&#x51E0;&#x4E2A;XMLHttpRequest&#x7684;&#x5C5E;&#x6027;" class="headerlink" title="&#x987A;&#x4FBF;&#x8BB0;&#x5F55;&#x51E0;&#x4E2A;XMLHttpRequest&#x7684;&#x5C5E;&#x6027;"></a>&#x987A;&#x4FBF;&#x8BB0;&#x5F55;&#x51E0;&#x4E2A;XMLHttpRequest&#x7684;&#x5C5E;&#x6027;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number"></span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/04/02/学习HTML5-API-（pushState-replaceState）/';
+          this.page.identifier = '2016/04/02/学习HTML5-API-（pushState-replaceState）/';
+          this.page.title = '学习HTML5 API （pushState/replaceState）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

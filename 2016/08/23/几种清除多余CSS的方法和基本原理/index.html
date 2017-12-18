@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Css," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近遇到一个坑，重构给了重构代码，但是没有分离好，导致我引入了很多无用的css。这些css又引入了很多无用的图片，使整个的非常重而且很无用。我需要想办法把整个无用css都去掉。下面是几种方法。  gulp-uncssgulp-uncss是一个gulp插件，和普通gulp插件没有区别。先引入gulp。然后利用uncss方法传入需要优化的css所在的页面。注意这里支持本地文件，正则匹配和url匹配。">
+<meta name="keywords" content="Css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="几种清除多余CSS的方法和基本原理">
+<meta property="og:url" content="http://sevencai.github.io/2016/08/23/几种清除多余CSS的方法和基本原理/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="最近遇到一个坑，重构给了重构代码，但是没有分离好，导致我引入了很多无用的css。这些css又引入了很多无用的图片，使整个的非常重而且很无用。我需要想办法把整个无用css都去掉。下面是几种方法。  gulp-uncssgulp-uncss是一个gulp插件，和普通gulp插件没有区别。先引入gulp。然后利用uncss方法传入需要优化的css所在的页面。注意这里支持本地文件，正则匹配和url匹配。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/audit2.png">
+<meta property="og:updated_time" content="2016-12-12T03:01:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="几种清除多余CSS的方法和基本原理">
+<meta name="twitter:description" content="最近遇到一个坑，重构给了重构代码，但是没有分离好，导致我引入了很多无用的css。这些css又引入了很多无用的图片，使整个的非常重而且很无用。我需要想办法把整个无用css都去掉。下面是几种方法。  gulp-uncssgulp-uncss是一个gulp插件，和普通gulp插件没有区别。先引入gulp。然后利用uncss方法传入需要优化的css所在的页面。注意这里支持本地文件，正则匹配和url匹配。">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/audit2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/08/23/几种清除多余CSS的方法和基本原理/"/>
+
+
+
+
+
+  <title>几种清除多余CSS的方法和基本原理 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/08/23/几种清除多余CSS的方法和基本原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">几种清除多余CSS的方法和基本原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-23T21:09:19+08:00">
+                2016-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/23/几种清除多余CSS的方法和基本原理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/23/几种清除多余CSS的方法和基本原理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近遇到一个坑，重构给了重构代码，但是没有分离好，导致我引入了很多无用的css。这些css又引入了很多无用的图片，使整个的非常重而且很无用。我需要想办法把整个无用css都去掉。下面是几种方法。</p>
+<hr>
+<h4 id="gulp-uncss"><a href="#gulp-uncss" class="headerlink" title="gulp-uncss"></a><strong>gulp-uncss</strong></h4><p><a href="https://github.com/ben-eb/gulp-uncss" target="_blank" rel="noopener">gulp-uncss</a>是一个<code>gulp</code>插件，和普通<code>gulp</code>插件没有区别。先引入<code>gulp</code>。然后利用<code>uncss</code>方法传入需要优化的<code>css</code>所在的页面。注意这里支持本地文件，正则匹配和<code>url</code>匹配。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>);</span><br><span class="line"><span class="keyword">var</span> uncss = <span class="built_in">require</span>(<span class="string">'gulp-uncss'</span>);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'default'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">'site.css'</span>)</span><br><span class="line">        .pipe(uncss(&#123;</span><br><span class="line">            html: [<span class="string">'index.html'</span>, <span class="string">'posts/**/*.html'</span>, <span class="string">'http://example.com'</span>]</span><br><span class="line">        &#125;))</span><br><span class="line">        .pipe(gulp.dest(<span class="string">'./out'</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>当然，也可以和其他插件一起用。如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>);</span><br><span class="line"><span class="keyword">var</span> uncss = <span class="built_in">require</span>(<span class="string">'gulp-uncss'</span>);</span><br><span class="line"><span class="keyword">var</span> sass = <span class="built_in">require</span>(<span class="string">'gulp-sass'</span>);</span><br><span class="line"><span class="keyword">var</span> concat = <span class="built_in">require</span>(<span class="string">'gulp-concat'</span>);</span><br><span class="line"><span class="keyword">var</span> nano = <span class="built_in">require</span>(<span class="string">'gulp-cssnano'</span>);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'default'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">'styles/**/*.scss'</span>)</span><br><span class="line">        .pipe(sass())</span><br><span class="line">        .pipe(concat(<span class="string">'main.css'</span>))</span><br><span class="line">        .pipe(uncss(&#123;</span><br><span class="line">            html: [<span class="string">'index.html'</span>, <span class="string">'posts/**/*.html'</span>, <span class="string">'http://example.com'</span>]</span><br><span class="line">        &#125;))</span><br><span class="line">        .pipe(nano())</span><br><span class="line">        .pipe(gulp.dest(<span class="string">'./out'</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>我觉得很方便，最后项目里就是采用的这个方法。</p>
+<hr>
+<h4 id="chrome浏览器audits"><a href="#chrome浏览器audits" class="headerlink" title="chrome浏览器audits"></a><strong>chrome浏览器audits</strong></h4><p>利用chrome的自带审计功能。打开chrome浏览器，然后点击Audits审计功能。然后点击run,就可以分析出咱们这个页面可以优化的地方了。</p>
+<p><img src="http://www.cailidan.cn/images/audit2.png" alt="图片指示"></p>
+<p>但是这有一个缺陷，就是它只能找到你的有多少样式是不需要的，不能够自动把清理后的css给你。你还是需要手动去你的文件里对比，然后删除。对于比较少的可以这么用。要是本来就有很多很多无用的，那么就很不好使了。这个时候，火狐出来了。</p>
+<hr>
+<h4 id="firefox浏览器css-usage"><a href="#firefox浏览器css-usage" class="headerlink" title="firefox浏览器css usage"></a><strong>firefox浏览器css usage</strong></h4><p>下载css usage这个火狐插件并安装，地址在<a href="https://addons.mozilla.org/en-US/firefox/addon/css-usage/" target="_blank" rel="noopener"> https://addons.mozilla.org/en-US/firefox/addon/css-usage/</a>。然后f12,切到<code>CSS Usage</code> 选项卡<br>点击 scan 按钮，稍后会分析出哪些<code>css</code>规则未使用。然后点击 <code>export cleaned css</code> 按钮，导出清理好的<code>css</code>文件，将在新页面打开新的<code>css</code>源文件。即可。是不是很方便。步骤是<code>(Scan-&gt;Clear-&gt;AutoScan)</code>。</p>
+<p>Scan: 通过字面意思我们就能知道,这是一个扫描当前页面的工具,如果我们的站点只有一个页面或者几个页面,我们可以通过使用此功能按键来查看页面的css实用情况.</p>
+<p>Clear: 清除扫描结果,但我们查看完网页,并对CSS 进行了修改后,我们就不需要以前的扫描结果了,那么我们就可以使用Clear功能键,清除以前的扫描结果缓存,重新开始我们的扫描.</p>
+<p>AutoScan: 我们的网站可能会有很多的页面,更有可能有很多的弹出层,如果我们每次都点击扫描的话,会占用我们大量的时间,AutoScan功能键可以使我们的扫描工作更自动化,提高我们的工作效率.</p>
+<hr>
+<h4 id="tidycss-nodejs插件"><a href="#tidycss-nodejs插件" class="headerlink" title="tidycss-nodejs插件"></a><strong>tidycss-nodejs插件</strong></h4><blockquote>
+<p>经常看到有童鞋问，有没有什么工具能快速分析出站点的CSS冗余，于是就有了这个项目。本质上，这个工具是为了解决我们 腾讯课堂 在多人开发与快速迭代下的CSS冗余问题，为代码Review提供可行的工具。-from tidycss github</p>
+</blockquote>
+<p>install tidycss后，使用nodejs运行，之后并会生成报表。基本原理思想跟上面几个都差不多。源码也是利用selector。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> tidy = <span class="built_in">require</span>(<span class="string">'tidycss'</span>);</span><br><span class="line"></span><br><span class="line">tidy(</span><br><span class="line">    <span class="comment">// 你要检测冗余的url</span></span><br><span class="line">    <span class="string">'http://ke.qq.com'</span>,</span><br><span class="line">    <span class="comment">// 可选参数</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 不对common.xxxx.css检测冗余，因为这个是站点公共文件</span></span><br><span class="line">        ignore: <span class="regexp">/common\..*\.css/</span>,</span><br><span class="line">        <span class="comment">// 忽略的选择器列表, 即这里的选择器是被review后可冗余项，</span></span><br><span class="line">        <span class="comment">// 比如有通过javascript动态生成的DOM树</span></span><br><span class="line">        unchecks: [<span class="string">'.mod-nav__course-all span:hover'</span>]</span><br><span class="line">    &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="可能的坑"><a href="#可能的坑" class="headerlink" title="可能的坑"></a><strong>可能的坑</strong></h4><p><strong>这中间可能就是要尽量的把用到的css功能都拉出来。比如有一个模块，是我点击按钮才能出现列表。那么如果你不点击按钮，这些插件就获取不到列表这些css对应的dom，也就会认为这些css选择器是无用的。就会把这些选择器给删掉。那么真正的你是缺少这些css的。</strong>这个可能结合后面基本原理理解会更清楚。</p>
+<hr>
+<h4 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a><strong>基本原理</strong></h4><p>那么这些工具是如何做到识别没有使用过的css呢？</p>
+<p><strong>一个 css 选择器是无效的，也就是说我们是无法通过这个css选择器找到dom元素。所以，我们可以使用querySelector判断改css选择器对应的dom是否为空。从而知道哪些是没有使用的。</strong></p>
+<p>其实上面这个gulp的插件gulp-uncss是利用的另外一个别人写好的模块uncss,只不过把它打包成了gulp的插件格式。</p>
+<p>我去看了下它的（uncss）源码，基本上就是上面那个思想，找出unused的selector,找出used过了的selector。然后看了下别人写的代码，就觉得还要好好努力，差的太多。下面放出核心代码，方便以后我经常学习。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> promise = <span class="built_in">require</span>(<span class="string">'bluebird'</span>),</span><br><span class="line">    phantom = <span class="built_in">require</span>(<span class="string">'./phantom.js'</span>),</span><br><span class="line">    postcss = <span class="built_in">require</span>(<span class="string">'postcss'</span>),</span><br><span class="line">    _ = <span class="built_in">require</span>(<span class="string">'lodash'</span>);</span><br><span class="line">    </span><br><span class="line"><span class="comment">/* Some styles are applied only with user interaction, and therefore its</span></span><br><span class="line"><span class="comment"> *   selectors cannot be used with querySelectorAll.</span></span><br><span class="line"><span class="comment"> * http://www.w3.org/TR/2001/CR-css3-selectors-20011113/</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> dePseudify = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> ignoredPseudos = [</span><br><span class="line">            <span class="comment">/* link */</span></span><br><span class="line">            <span class="string">':link'</span>, <span class="string">':visited'</span>,</span><br><span class="line">            <span class="comment">/* user action */</span></span><br><span class="line">            <span class="string">':hover'</span>, <span class="string">':active'</span>, <span class="string">':focus'</span>,</span><br><span class="line">            <span class="comment">/* UI element states */</span></span><br><span class="line">            <span class="string">':enabled'</span>, <span class="string">':disabled'</span>, <span class="string">':checked'</span>, <span class="string">':indeterminate'</span>,</span><br><span class="line">            <span class="comment">/* pseudo elements */</span></span><br><span class="line">            <span class="string">'::first-line'</span>, <span class="string">'::first-letter'</span>, <span class="string">'::selection'</span>, <span class="string">'::before'</span>, <span class="string">'::after'</span>,</span><br><span class="line">            <span class="comment">/* pseudo classes */</span></span><br><span class="line">            <span class="string">':target'</span>,</span><br><span class="line">            <span class="comment">/* CSS2 pseudo elements */</span></span><br><span class="line">            <span class="string">':before'</span>, <span class="string">':after'</span>,</span><br><span class="line">            <span class="comment">/* Vendor-specific pseudo-elements:</span></span><br><span class="line"><span class="comment">             * https://developer.mozilla.org/ja/docs/Glossary/Vendor_Prefix</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="string">'::?-(?:moz|ms|webkit|o)-[a-z0-9-]+'</span></span><br><span class="line">        ],</span><br><span class="line">        pseudosRegex = <span class="keyword">new</span> <span class="built_in">RegExp</span>(ignoredPseudos.join(<span class="string">'|'</span>), <span class="string">'g'</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">selector</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> selector.replace(pseudosRegex, <span class="string">''</span>);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;());</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Private function used in filterUnusedRules.</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125; selectors      CSS selectors created by the CSS parser</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125; ignore         List of selectors to be ignored</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125; usedSelectors  List of Selectors found in the PhantomJS pages</span></span><br><span class="line"><span class="comment"> * @return &#123;Array&#125;                The selectors matched in the DOMs</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filterUnusedSelectors</span>(<span class="params">selectors, ignore, usedSelectors</span>) </span>&#123;</span><br><span class="line">    <span class="comment">/* There are some selectors not supported for matching, like</span></span><br><span class="line"><span class="comment">     *   :before, :after</span></span><br><span class="line"><span class="comment">     * They should be removed only if the parent is not found.</span></span><br><span class="line"><span class="comment">     * Example: '.clearfix:before' should be removed only if there</span></span><br><span class="line"><span class="comment">     *          is no '.clearfix'</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">return</span> selectors.filter(<span class="function"><span class="keyword">function</span> (<span class="params">selector</span>) </span>&#123;</span><br><span class="line">        selector = dePseudify(selector);</span><br><span class="line">        <span class="comment">/* <span class="doctag">TODO:</span> process @-rules */</span></span><br><span class="line">        <span class="keyword">if</span> (selector[<span class="number">0</span>] === <span class="string">'@'</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, len = ignore.length; i &lt; len; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (_.isRegExp(ignore[i]) &amp;&amp; ignore[i].test(selector)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (ignore[i] === selector) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> usedSelectors.indexOf(selector) !== <span class="number">-1</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Find which animations are used</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125; css             The postcss.Root node</span></span><br><span class="line"><span class="comment"> * @return &#123;Array&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getUsedAnimations</span>(<span class="params">css</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> usedAnimations = [];</span><br><span class="line">    css.walkDecls(<span class="function"><span class="keyword">function</span> (<span class="params">decl</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (_.endsWith(decl.prop, <span class="string">'animation-name'</span>)) &#123;</span><br><span class="line">            <span class="comment">/* Multiple animations, separated by comma */</span></span><br><span class="line">            usedAnimations.push.apply(usedAnimations, postcss.list.comma(decl.value));</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (_.endsWith(decl.prop, <span class="string">'animation'</span>)) &#123;</span><br><span class="line">            <span class="comment">/* Support multiple animations */</span></span><br><span class="line">            postcss.list.comma(decl.value).forEach(<span class="function"><span class="keyword">function</span> (<span class="params">anim</span>) </span>&#123;</span><br><span class="line">                <span class="comment">/* If declared as animation, it should be in the form 'name Xs etc..' */</span></span><br><span class="line">                usedAnimations.push(postcss.list.space(anim)[<span class="number">0</span>]);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> usedAnimations;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Filter @keyframes that are not used</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125; css             The postcss.Root node</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125;  animations</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125;  unusedRules</span></span><br><span class="line"><span class="comment"> * @return &#123;Array&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filterKeyframes</span>(<span class="params">css, animations, unusedRules</span>) </span>&#123;</span><br><span class="line">    css.walkAtRules(<span class="regexp">/keyframes$/</span>, <span class="function"><span class="keyword">function</span> (<span class="params">atRule</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (animations.indexOf(atRule.params) === <span class="number">-1</span>) &#123;</span><br><span class="line">            unusedRules.push(atRule);</span><br><span class="line">            atRule.remove();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Filter rules with no selectors remaining</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125; css             The postcss.Root node</span></span><br><span class="line"><span class="comment"> * @return &#123;Array&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filterEmptyAtRules</span>(<span class="params">css</span>) </span>&#123;</span><br><span class="line">    <span class="comment">/* Filter media queries with no remaining rules */</span></span><br><span class="line">    css.walkAtRules(<span class="function"><span class="keyword">function</span> (<span class="params">atRule</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (atRule.name === <span class="string">'media'</span> &amp;&amp; atRule.nodes.length === <span class="number">0</span>) &#123;</span><br><span class="line">            atRule.remove();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Find which selectors are used in &#123;pages&#125;</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125;    pages         List of PhantomJS pages</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125;   css           The postcss.Root node</span></span><br><span class="line"><span class="comment"> * @return &#123;promise&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getUsedSelectors</span>(<span class="params">page, css</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> usedSelectors = [];</span><br><span class="line">    css.walkRules(<span class="function"><span class="keyword">function</span> (<span class="params">rule</span>) </span>&#123;</span><br><span class="line">        usedSelectors = _.concat(usedSelectors, rule.selectors.map(dePseudify));</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Can this be written in a more straightforward fashion?</span></span><br><span class="line">    <span class="keyword">return</span> promise.map(usedSelectors, <span class="function"><span class="keyword">function</span> (<span class="params">selector</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> selector;</span><br><span class="line">    &#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params">selector</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> phantom.findAll(page, selector);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Get all the selectors mentioned in &#123;css&#125;</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125; css        The postcss.Root node</span></span><br><span class="line"><span class="comment"> * @return &#123;Array&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getAllSelectors</span>(<span class="params">css</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> selectors = [];</span><br><span class="line">    css.walkRules(<span class="function"><span class="keyword">function</span> (<span class="params">rule</span>) </span>&#123;</span><br><span class="line">        selectors = _.concat(selectors, rule.selector);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> selectors;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Remove css rules not used in the dom</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125;  pages           List of PhantomJS pages</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125; css             The postcss.Root node</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125;  ignore          List of selectors to be ignored</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125;  usedSelectors   List of selectors that are found in &#123;pages&#125;</span></span><br><span class="line"><span class="comment"> * @return &#123;Object&#125;                 A css_parse-compatible stylesheet</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filterUnusedRules</span>(<span class="params">pages, css, ignore, usedSelectors</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> ignoreNextRule = <span class="literal">false</span>,</span><br><span class="line">        unusedRules = [],</span><br><span class="line">        unusedRuleSelectors,</span><br><span class="line">        usedRuleSelectors;</span><br><span class="line">    <span class="comment">/* Rule format:</span></span><br><span class="line"><span class="comment">     *  &#123; selectors: [ '...', '...' ],</span></span><br><span class="line"><span class="comment">     *    declarations: [ &#123; property: '...', value: '...' &#125; ]</span></span><br><span class="line"><span class="comment">     *  &#125;,.</span></span><br><span class="line"><span class="comment">     * Two steps: filter the unused selectors for each rule,</span></span><br><span class="line"><span class="comment">     *            filter the rules with no selectors</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ignoreNextRule = <span class="literal">false</span>;</span><br><span class="line">    css.walk(<span class="function"><span class="keyword">function</span> (<span class="params">rule</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (rule.type === <span class="string">'comment'</span>) &#123;</span><br><span class="line">            <span class="comment">// ignore next rule while using comment `/* uncss:ignore */`</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="regexp">/^!?\s?uncss:ignore\s?$/</span>.test(rule.text)) &#123;</span><br><span class="line">                ignoreNextRule = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (rule.type === <span class="string">'rule'</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (rule.parent.type === <span class="string">'atrule'</span> &amp;&amp; _.endsWith(rule.parent.name, <span class="string">'keyframes'</span>)) &#123;</span><br><span class="line">                <span class="comment">// Don't remove animation keyframes that have selector names of '30%' or 'to'</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (ignoreNextRule) &#123;</span><br><span class="line">                ignoreNextRule = <span class="literal">false</span>;</span><br><span class="line">                ignore = ignore.concat(rule.selectors);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            usedRuleSelectors = filterUnusedSelectors(</span><br><span class="line">                rule.selectors,</span><br><span class="line">                ignore,</span><br><span class="line">                usedSelectors</span><br><span class="line">            );</span><br><span class="line">            unusedRuleSelectors = rule.selectors.filter(<span class="function"><span class="keyword">function</span> (<span class="params">selector</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> usedRuleSelectors.indexOf(selector) &lt; <span class="number">0</span>;</span><br><span class="line">            &#125;);</span><br><span class="line">            <span class="keyword">if</span> (unusedRuleSelectors &amp;&amp; unusedRuleSelectors.length) &#123;</span><br><span class="line">                unusedRules.push(&#123;</span><br><span class="line">                    type: <span class="string">'rule'</span>,</span><br><span class="line">                    selectors: unusedRuleSelectors,</span><br><span class="line">                    position: rule.source</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (usedRuleSelectors.length === <span class="number">0</span>) &#123;</span><br><span class="line">                rule.remove();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                rule.selectors = usedRuleSelectors;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Filter the @media rules with no rules */</span></span><br><span class="line">    filterEmptyAtRules(css);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Filter unused @keyframes */</span></span><br><span class="line">    filterKeyframes(css, getUsedAnimations(css), unusedRules);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> css;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Main exposed function</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125;   pages      List of PhantomJS pages</span></span><br><span class="line"><span class="comment"> * @param  &#123;Object&#125;  css        The postcss.Root node</span></span><br><span class="line"><span class="comment"> * @param  &#123;Array&#125;   ignore     List of selectors to be ignored</span></span><br><span class="line"><span class="comment"> * @return &#123;promise&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> <span class="title">uncss</span>(<span class="params">pages, css, ignore</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> promise.map(pages, <span class="function"><span class="keyword">function</span> (<span class="params">page</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getUsedSelectors(page, css);</span><br><span class="line">    &#125;).then(<span class="function"><span class="keyword">function</span> (<span class="params">usedSelectors</span>) </span>&#123;</span><br><span class="line">        usedSelectors = _.flatten(usedSelectors);</span><br><span class="line">        <span class="keyword">var</span> filteredCss = filterUnusedRules(pages, css, ignore, usedSelectors);</span><br><span class="line">        <span class="keyword">var</span> allSelectors = getAllSelectors(css);</span><br><span class="line">        <span class="keyword">return</span> [filteredCss, &#123;</span><br><span class="line">            <span class="comment">/* Get the selectors for the report */</span></span><br><span class="line">            all: allSelectors,</span><br><span class="line">            unused: _.difference(allSelectors, usedSelectors),</span><br><span class="line">            used: usedSelectors</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h4><p>所以，如果是只是要一个整理后的文件，就用火狐就好。如果是工程化项目，用gulp的插件比较好。主要是整理了几种方法。中间也学到了不少东西，比如审计audits以前就没有关注过。现在知道是分析页面性能的一个好方法了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Css/" rel="tag"># Css</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/19/ECMAScript2015-对象扩展/" rel="next" title="ECMAScript2015 对象扩展">
+                <i class="fa fa-chevron-left"></i> ECMAScript2015 对象扩展
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/24/fis3基本用法介绍/" rel="prev" title="fis3基本用法介绍">
+                fis3基本用法介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#gulp-uncss"><span class="nav-number">1.</span> <span class="nav-text"><a href="#gulp-uncss" class="headerlink" title="gulp-uncss"></a><strong>gulp-uncss</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#chrome浏览器audits"><span class="nav-number">2.</span> <span class="nav-text"><a href="#chrome&#x6D4F;&#x89C8;&#x5668;audits" class="headerlink" title="chrome&#x6D4F;&#x89C8;&#x5668;audits"></a><strong>chrome&#x6D4F;&#x89C8;&#x5668;audits</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#firefox浏览器css-usage"><span class="nav-number">3.</span> <span class="nav-text"><a href="#firefox&#x6D4F;&#x89C8;&#x5668;css-usage" class="headerlink" title="firefox&#x6D4F;&#x89C8;&#x5668;css usage"></a><strong>firefox&#x6D4F;&#x89C8;&#x5668;css usage</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tidycss-nodejs插件"><span class="nav-number">4.</span> <span class="nav-text"><a href="#tidycss-nodejs&#x63D2;&#x4EF6;" class="headerlink" title="tidycss-nodejs&#x63D2;&#x4EF6;"></a><strong>tidycss-nodejs&#x63D2;&#x4EF6;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可能的坑"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x53EF;&#x80FD;&#x7684;&#x5751;" class="headerlink" title="&#x53EF;&#x80FD;&#x7684;&#x5751;"></a><strong>&#x53EF;&#x80FD;&#x7684;&#x5751;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基本原理"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x57FA;&#x672C;&#x539F;&#x7406;" class="headerlink" title="&#x57FA;&#x672C;&#x539F;&#x7406;"></a><strong>&#x57FA;&#x672C;&#x539F;&#x7406;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a><strong>&#x603B;&#x7ED3;</strong></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/08/23/几种清除多余CSS的方法和基本原理/';
+          this.page.identifier = '2016/08/23/几种清除多余CSS的方法和基本原理/';
+          this.page.title = '几种清除多余CSS的方法和基本原理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="主要弄清楚几个概念：异步加载（async loading），延迟加载（lazy loading），延迟执行（lazy execution），async 属性， defer 属性。 javascript的同步，异步，延迟加载 加载的网络 timeline 是瀑布模型，而异步加载的 timeline 是并发模型。 同步加载同步模式，又称阻塞模式。javascript在默认情况下是会阻塞加载的。当前面的">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="javascript同步和异步加载及async和differ区别">
+<meta property="og:url" content="http://sevencai.github.io/2016/02/16/javascript同步和异步加载及async和differ区别/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="主要弄清楚几个概念：异步加载（async loading），延迟加载（lazy loading），延迟执行（lazy execution），async 属性， defer 属性。 javascript的同步，异步，延迟加载 加载的网络 timeline 是瀑布模型，而异步加载的 timeline 是并发模型。 同步加载同步模式，又称阻塞模式。javascript在默认情况下是会阻塞加载的。当前面的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/ad.png">
+<meta property="og:updated_time" content="2016-12-12T03:00:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="javascript同步和异步加载及async和differ区别">
+<meta name="twitter:description" content="主要弄清楚几个概念：异步加载（async loading），延迟加载（lazy loading），延迟执行（lazy execution），async 属性， defer 属性。 javascript的同步，异步，延迟加载 加载的网络 timeline 是瀑布模型，而异步加载的 timeline 是并发模型。 同步加载同步模式，又称阻塞模式。javascript在默认情况下是会阻塞加载的。当前面的">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/ad.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/02/16/javascript同步和异步加载及async和differ区别/"/>
+
+
+
+
+
+  <title>javascript同步和异步加载及async和differ区别 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/16/javascript同步和异步加载及async和differ区别/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">javascript同步和异步加载及async和differ区别</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-16T22:04:49+08:00">
+                2016-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/16/javascript同步和异步加载及async和differ区别/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/16/javascript同步和异步加载及async和differ区别/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>主要弄清楚几个概念：异步加载（async loading），延迟加载（lazy loading），延迟执行（lazy execution），async 属性， defer 属性。</p>
+<h3 id="javascript的同步，异步，延迟加载"><a href="#javascript的同步，异步，延迟加载" class="headerlink" title="javascript的同步，异步，延迟加载"></a>javascript的同步，异步，延迟加载</h3><hr>
+<p>加载的网络 timeline 是瀑布模型，而异步加载的 timeline 是并发模型。</p>
+<h4 id="同步加载"><a href="#同步加载" class="headerlink" title="同步加载"></a>同步加载</h4><p>同步模式，又称阻塞模式。javascript在默认情况下是会阻塞加载的。当前面的javascript请求没有处理和执行完时，会阻止浏览器的后续处理，如文件加载（图像），DOM tree的渲染，代码的执行。</p>
+<p>js之所以要同步执行，是因为 js 中可能有输出 document 内容、修改dom、重定向等行为，所以默认同步执行才是安全的。<br>以前的一般建议是把script放在页面末尾之前，这样尽可能减少这种阻塞行为，而先让页面展示出来。</p>
+<h4 id="异步加载"><a href="#异步加载" class="headerlink" title="异步加载"></a>异步加载</h4><p>异步加载又叫非阻塞，浏览器在下载执行 js 同时，还会继续进行后续页面的处理。<br>有很多种方式可以实现异步加载。下面是其中的几种。</p>
+<h4 id="延迟加载"><a href="#延迟加载" class="headerlink" title="延迟加载"></a>延迟加载</h4><p>延迟加载：有些 js 代码并不是页面初始化的时候就立刻需要的，而稍后的某些情况才需要的。延迟加载就是一开始并不加载这些暂时不用的js，而是在需要的时候或稍后再通过js 的控制来异步加载。</p>
+<p>也就是将 js 切分成许多模块，页面初始化时只加载需要立即执行的 js ，然后其它 js 的加载延迟到第一次需要用到的时候再加载。</p>
+<p>特别是页面有大量不同的模块组成，很多可能暂时不用或根本就没用到。<br>就像图片的延迟加载，在图片出现在可视区域内时（在滚动条下拉）才加载显示图片。</p>
+<h3 id="异步加载的几种方法"><a href="#异步加载的几种方法" class="headerlink" title="异步加载的几种方法"></a>异步加载的几种方法</h3><hr>
+<h4 id="Script-DOM-Element方法"><a href="#Script-DOM-Element方法" class="headerlink" title="Script DOM Element方法"></a>Script DOM Element方法</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">     var s = document.createElement(<span class="string">'script'</span>);</span><br><span class="line">     s.type = <span class="string">'text/javascript'</span>;</span><br><span class="line">     s.async = <span class="literal">true</span>;</span><br><span class="line">     s.src = <span class="string">'http://yourdomain.com/script.js'</span>;</span><br><span class="line">     var x = document.getElementsByTagName(<span class="string">'script'</span>)[0];</span><br><span class="line">     x.parentNode.insertBefore(s, x);</span><br><span class="line"> &#125;)();</span><br></pre></td></tr></table></figure>
+<p>这种方法是在页面中script标签内，用 js 创建一个 script 元素并插入到 document 中。这样就做到了非阻塞的下载 js 代码。将js代码包裹在匿名函数中并立即执行的方式是为了保护变量名泄露到外部可见，这是很常见的方式，尤其是在 js 库中被普遍使用。我的博客就用了百度统计，里面脚本也是通过这种方式。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">var _hmt = _hmt || [];</span><br><span class="line">(<span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">  var hm = document.createElement(<span class="string">"script"</span>);</span><br><span class="line">  hm.src = <span class="string">"******"</span>;</span><br><span class="line">  var s = document.getElementsByTagName(<span class="string">"script"</span>)[0]; </span><br><span class="line">  s.parentNode.insertBefore(hm, s);</span><br><span class="line">&#125;)();</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>但是，这种加载方式在加载执行完之前会阻止 onload 事件的触发，而现在很多页面的代码都在 onload 时还要执行额外的渲染工作等，所以还是会阻塞部分页面的初始化处理。</p>
+<h4 id="onload时的异步加载"><a href="#onload时的异步加载" class="headerlink" title="onload时的异步加载"></a>onload时的异步加载</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">     <span class="keyword">function</span> <span class="function"><span class="title">async_load</span></span>()&#123;</span><br><span class="line">         var s = document.createElement(<span class="string">'script'</span>);</span><br><span class="line">         s.type = <span class="string">'text/javascript'</span>;</span><br><span class="line">         s.async = <span class="literal">true</span>;</span><br><span class="line">         s.src = <span class="string">'http://yourdomain.com/script.js'</span>;</span><br><span class="line">         var x = document.getElementsByTagName(<span class="string">'script'</span>)[0];</span><br><span class="line">         x.parentNode.insertBefore(s, x);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span> (window.attachEvent)</span><br><span class="line">         window.attachEvent(<span class="string">'onload'</span>, async_load);</span><br><span class="line">     <span class="keyword">else</span></span><br><span class="line">         window.addEventListener(<span class="string">'load'</span>, async_load, <span class="literal">false</span>);</span><br><span class="line"> &#125;)();</span><br></pre></td></tr></table></figure>
+<p>这和前面的方式差不多，但关键是它不是立即开始异步加载 js ，而是在 onload 时才开始异步加载。这样就解决了阻塞 onload 事件触发的问题。这种方法也是google最推荐的方法。因为它完全解决在web页面完全加载后，再加载外部js的问题。</p>
+<h4 id="defer和async"><a href="#defer和async" class="headerlink" title="defer和async"></a>defer和async</h4><p>在看这两个的作用和区别之前，一定要先理解下面内容。</p>
+<blockquote>
+<p>JS的加载其实是由两阶段组成：<strong>下载内容</strong>（download bytes）和<strong>执行</strong>（parse and execute）。我们都知道通过网络下载 script 需要明显的时间，但容易忽略了第二阶段，解析和执行也是需要时间的。script的解析和执行所花的时间比我们想象的要多，尤其是script 很多很大的时候。有些是需要立刻执行，而有些则不需要（比如只是在展示某个界面或执行某个操作时才需要）。</p>
+</blockquote>
+<p>这两种方法都可以实现异步加载，那么有什么区别呢？<br>下面来看一张图：(非常感谢(sf的这篇文章)[<a href="https://segmentfault.com/q/1010000000640869" target="_blank" rel="noopener">https://segmentfault.com/q/1010000000640869</a>])<br><img src="http://www.cailidan.cn/images/ad.png" alt="defer&amp;&amp;async"><br>蓝色线代表网络读取，红色线代表执行时间，这俩都是针对脚本的；绿色线代表 HTML 解析。</p>
+<p><strong>第一种</strong>，没有 defer 或 async，按正常情况加载。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"script.js"</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>没有 defer 或 async，浏览器会立即加载并执行指定的脚本，“立即”指的是在渲染该 script 标签之下的文档元素之前，也就是说不等待后续载入的文档元素，读到就加载并执行。这种也就是为什么我们会出现白页的原因。</p>
+<p><strong>第二种</strong>，有 async<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script async src=<span class="string">"script.js"</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>有 async，加载和渲染后续文档元素的过程将和 script.js 的加载与执行并行进行（异步）。async属性是HTML5新增的。作用和defer类似，但是它将在下载后尽快执行，不能保证脚本会按顺序执行。它们将在onload 事件之前完成。</p>
+<p><strong>第三种</strong>，有defer<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script defer src=<span class="string">"myscript.js"</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>加载后续文档元素的过程将和 script.js 的加载并行进行（异步），但是 script.js 的执行要在所有元素解析完成之后，DOMContentLoaded 事件触发之前完成。</p>
+<p>这时候就回想，这个onload和DOMContentLoaded到底什么区别呢？补充：DOMContentLoaded 与 OnLoad 事件</p>
+<blockquote>
+<p>DOMContentLoaded : 页面(document)已经解析完成，页面中的dom元素已经可用。但是页面中引用的图片、subframe可能还没有加载完。</p>
+<p>OnLoad：页面的所有资源都加载完毕（包括图片）。浏览器的载入进度在这时才停止。<br>这两个时间点将页面加载的timeline分成了三个阶段</p>
+</blockquote>
+<p><strong>这张图告诉了我们几件事情：</strong></p>
+<ol>
+<li>defer和async的异步是相对于DOM TREE的解析。它们在网络读取没有任何差别。差别在于下载完了脚本后，何时执行。</li>
+<li>defer是全部元素解析完成之后（DOMContentLoaded）执行。所以是按照加载顺序时执行脚本。而async对它来说脚本的加载和执行是紧紧挨着的。，所以不管你声明的顺序如何，只要它加载完了就会立刻执行。所以可能会出现乱序。</li>
+<li>async 对于应用脚本的用处不大，因为它完全不考虑依赖（哪怕是最低级的顺序执行），不过它对于那些可以不依赖任何脚本或不被任何脚本依赖的脚本来说却是非常合适的，最典型的例子：Google Analytics和baidu统计。</li>
+</ol>
+<h3 id="延迟加载的方法"><a href="#延迟加载的方法" class="headerlink" title="延迟加载的方法"></a>延迟加载的方法</h3><hr>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">window.onload = <span class="function"><span class="title">function</span></span>() &#123;  </span><br><span class="line">    setTimeout(<span class="function"><span class="title">function</span></span>()&#123;  </span><br><span class="line">  </span><br><span class="line">        // reference to &lt;head&gt;  </span><br><span class="line">        var head = document.getElementsByTagName(<span class="string">'head'</span>)[0];  </span><br><span class="line">  </span><br><span class="line">        // a new CSS  </span><br><span class="line">        var css = document.createElement(<span class="string">'link'</span>);  </span><br><span class="line">        css.type = <span class="string">"text/css"</span>;  </span><br><span class="line">        css.rel = <span class="string">"stylesheet"</span>;  </span><br><span class="line">        css.href = <span class="string">"new.css"</span>;  </span><br><span class="line">  </span><br><span class="line">        // a new JS  </span><br><span class="line">        var js = document.createElement(<span class="string">"script"</span>);  </span><br><span class="line">        js.type = <span class="string">"text/javascript"</span>;  </span><br><span class="line">        js.src = <span class="string">"new.js"</span>;  </span><br><span class="line">  </span><br><span class="line">        // preload JS and CSS  </span><br><span class="line">        head.appendChild(css);  </span><br><span class="line">        head.appendChild(js);  </span><br><span class="line">  </span><br><span class="line">        // preload image  </span><br><span class="line">        new Image().src = <span class="string">"new.png"</span>;  </span><br><span class="line">  </span><br><span class="line">    &#125;, 1000);  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/15/css做三角形原理/" rel="next" title="css做三角形原理">
+                <i class="fa fa-chevron-left"></i> css做三角形原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/17/Flex-布局语法及实例/" rel="prev" title="Flex 布局语法及实例">
+                Flex 布局语法及实例 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#javascript的同步，异步，延迟加载"><span class="nav-number">1.</span> <span class="nav-text"><a href="#javascript&#x7684;&#x540C;&#x6B65;&#xFF0C;&#x5F02;&#x6B65;&#xFF0C;&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;" class="headerlink" title="javascript&#x7684;&#x540C;&#x6B65;&#xFF0C;&#x5F02;&#x6B65;&#xFF0C;&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;"></a>javascript&#x7684;&#x540C;&#x6B65;&#xFF0C;&#x5F02;&#x6B65;&#xFF0C;&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#同步加载"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x540C;&#x6B65;&#x52A0;&#x8F7D;" class="headerlink" title="&#x540C;&#x6B65;&#x52A0;&#x8F7D;"></a>&#x540C;&#x6B65;&#x52A0;&#x8F7D;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#异步加载"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x5F02;&#x6B65;&#x52A0;&#x8F7D;" class="headerlink" title="&#x5F02;&#x6B65;&#x52A0;&#x8F7D;"></a>&#x5F02;&#x6B65;&#x52A0;&#x8F7D;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#延迟加载"><span class="nav-number">1.3.</span> <span class="nav-text"><a href="#&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;" class="headerlink" title="&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;"></a>&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步加载的几种方法"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5F02;&#x6B65;&#x52A0;&#x8F7D;&#x7684;&#x51E0;&#x79CD;&#x65B9;&#x6CD5;" class="headerlink" title="&#x5F02;&#x6B65;&#x52A0;&#x8F7D;&#x7684;&#x51E0;&#x79CD;&#x65B9;&#x6CD5;"></a>&#x5F02;&#x6B65;&#x52A0;&#x8F7D;&#x7684;&#x51E0;&#x79CD;&#x65B9;&#x6CD5;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Script-DOM-Element方法"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#Script-DOM-Element&#x65B9;&#x6CD5;" class="headerlink" title="Script DOM Element&#x65B9;&#x6CD5;"></a>Script DOM Element&#x65B9;&#x6CD5;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onload时的异步加载"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#onload&#x65F6;&#x7684;&#x5F02;&#x6B65;&#x52A0;&#x8F7D;" class="headerlink" title="onload&#x65F6;&#x7684;&#x5F02;&#x6B65;&#x52A0;&#x8F7D;"></a>onload&#x65F6;&#x7684;&#x5F02;&#x6B65;&#x52A0;&#x8F7D;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#defer和async"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#defer&#x548C;async" class="headerlink" title="defer&#x548C;async"></a>defer&#x548C;async</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延迟加载的方法"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;&#x7684;&#x65B9;&#x6CD5;" class="headerlink" title="&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;&#x7684;&#x65B9;&#x6CD5;"></a>&#x5EF6;&#x8FDF;&#x52A0;&#x8F7D;&#x7684;&#x65B9;&#x6CD5;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/02/16/javascript同步和异步加载及async和differ区别/';
+          this.page.identifier = '2016/02/16/javascript同步和异步加载及async和differ区别/';
+          this.page.title = 'javascript同步和异步加载及async和differ区别';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

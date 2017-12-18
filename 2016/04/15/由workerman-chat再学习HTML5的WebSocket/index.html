@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="WEB开发," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="先前已经看了几次把workerman-chat源码，对于里面的worker和gateway具体的实现现在还是不是很清楚，但是还是学到不少东西，比如关于WebSocket的一些知识，以及在这个框架中他是怎么实现WebSocket通信的。下面做一些整理,主要是WebSocket的一些基础知识，以及对于workerman-chat里关于WebSocket那一块的代码解读和记录。  WebSocket的出">
+<meta name="keywords" content="WEB开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="由workerman-chat再认识HTML5的WebSocket">
+<meta property="og:url" content="http://sevencai.github.io/2016/04/15/由workerman-chat再学习HTML5的WebSocket/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="先前已经看了几次把workerman-chat源码，对于里面的worker和gateway具体的实现现在还是不是很清楚，但是还是学到不少东西，比如关于WebSocket的一些知识，以及在这个框架中他是怎么实现WebSocket通信的。下面做一些整理,主要是WebSocket的一些基础知识，以及对于workerman-chat里关于WebSocket那一块的代码解读和记录。  WebSocket的出">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/wes.png">
+<meta property="og:updated_time" content="2016-12-12T02:35:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="由workerman-chat再认识HTML5的WebSocket">
+<meta name="twitter:description" content="先前已经看了几次把workerman-chat源码，对于里面的worker和gateway具体的实现现在还是不是很清楚，但是还是学到不少东西，比如关于WebSocket的一些知识，以及在这个框架中他是怎么实现WebSocket通信的。下面做一些整理,主要是WebSocket的一些基础知识，以及对于workerman-chat里关于WebSocket那一块的代码解读和记录。  WebSocket的出">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/wes.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/04/15/由workerman-chat再学习HTML5的WebSocket/"/>
+
+
+
+
+
+  <title>由workerman-chat再认识HTML5的WebSocket | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/15/由workerman-chat再学习HTML5的WebSocket/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">由workerman-chat再认识HTML5的WebSocket</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-15T11:45:34+08:00">
+                2016-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/15/由workerman-chat再学习HTML5的WebSocket/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/15/由workerman-chat再学习HTML5的WebSocket/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>先前已经看了几次把workerman-chat源码，对于里面的worker和gateway具体的实现现在还是不是很清楚，但是还是学到不少东西，比如关于WebSocket的一些知识，以及在这个框架中他是怎么实现WebSocket通信的。下面做一些整理,主要是WebSocket的一些基础知识，以及对于workerman-chat里关于WebSocket那一块的代码解读和记录。</p>
+<hr>
+<h4 id="WebSocket的出现背景"><a href="#WebSocket的出现背景" class="headerlink" title="WebSocket的出现背景"></a>WebSocket的出现背景</h4><p>我们知道Web应用的传统交互过程通常是：</p>
+<pre><code>1. 客户端通过浏览器发送一个请求
+2. 服务器端收到请求，然后进行处理并把结果返回给客户端
+3. 客户端浏览器将收到的信息呈现出来
+</code></pre><p><strong>这种机制对于信息变化不是特别频繁的应用尚可，但对于实时要求高、海量并发的应用来说显得捉襟见肘，尤其在当前业界移动互联网蓬勃发展的趋势下，高并发与用户实时响应是 Web 应用经常面临的问题，比如金融证券的实时信息，Web 导航应用中的地理位置获取，社交网络的实时消息推送等。</strong></p>
+<p>具体的来说：</p>
+<pre><code>监控系统：后台硬件热插拔、LED、温度、电压发生变化；
+即时通信系统：其它用户登录、发送信息；
+即时报价系统：后台数据库内容发生变化；
+</code></pre><p>对于上面的情况，也是有传统的解决方案的。通常是采用实时通讯方案，常见的就有两种，第一种是轮询，第二种是基于Flash。</p>
+<p><strong>轮询</strong>：简单来说，就是客户端以固定的频率向服务器端发送请求，来保持客户端和服务器端的数据同步，但服务器端的数据可能没有更新，所以效率底，浪费带宽。</p>
+<blockquote>
+<p>现很多网站为了实现即时通讯，所用的技术都是轮询(polling)。轮询是在特定的的时间间隔（如每1秒），由浏览器对服务器发出HTTP request，然后由服务器返回最新的数据给客户端的浏览器。这种传统的HTTP request 的模式带来很明显的缺点 – 浏览器需要不断的向服务器发出请求，然而HTTP request 的header是非常长的，里面包含的有用数据可能只是一个很小的值，这样会占用很多的带宽。</p>
+</blockquote>
+<p><strong>基于Flash</strong>:AdobeFlash 通过自己的 Socket 实现完成数据交换，再利用 Flash 暴露出相应的接口为 JavaScript 调用，从而达到实时传输目的。此方式比轮询要高效，且因为 Flash 安装率高，应用场景比较广泛，但在移动互联网终端上 Flash 的支持并不好。IOS 系统中没有 Flash 的存在，在 Android 中虽然有 Flash 的支持，但实际的使用效果差强人意，且对移动设备的硬件配置要求较高。2012 年 Adobe 官方宣布不再支持 Android4.1+系统，宣告了 Flash 在移动终端上的死亡。</p>
+<p>我们看到上面这两种方法都有各自的缺点，尤其在处理高并发和实时的需求时。我们需要一种能够很好的双向通信机制来保证数据的实时传输，这个时候我们的WebSocket就出现了。</p>
+<hr>
+<h4 id="WebSocket机制"><a href="#WebSocket机制" class="headerlink" title="WebSocket机制"></a>WebSocket机制</h4><p><strong>到这里先问几个问题</strong>：WebSocket到底是什么？是一个协议，是HTML5的一个新协议。它能用来干什么呢？用来实现浏览器与服务器的双全工通信。它建立于TCP之上，同HTTP一样利用TCP来传输数据，但是又和HTTP有很大的不同。不同在哪里呢？先看这个图：</p>
+<p><img src="http://www.cailidan.cn/images/wes.png" alt=""></p>
+<p>上面是传统的HTTP请求响应和WebSocket的请求相应交互图，我们可以看到<strong>在 WebSocket API，浏览器和服务器只需要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。</strong></p>
+<p>所以上面的答案是：<strong>区别最大的地方在</strong>：双向通信，服务器和客户端都可以主动发送或者接收数据。就像打电话一样，两个人先建立连接，然后接通后，两个人想说啥就说啥，A可以和B主动说话，B也可以主动跟A说话。这里隐含着，也是要先建立连接的，也就是第一次还是需要三次握手的。建立连接成功后，就可以一直通信了。最开始还是需要一次TCP连接的。</p>
+<blockquote>
+<p>相对于传统 HTTP 每次请求-应答都需要客户端与服务端建立连接的模式，WebSocket 是类似 Socket 的 TCP 长连接的通讯模式，一旦 WebSocket 连接建立后，后续数据都以帧序列的形式传输。在客户端断开 WebSocket 连接或 Server 端断掉连接前，不需要客户端和服务端重新发起连接请求。在海量并发及客户端与服务器交互负载流量大的情况下，极大的节省了网络带宽资源的消耗，有明显的性能优势，且客户端发送和接受消息是在同一个持久连接上发起，实时性优势明显。</p>
+</blockquote>
+<hr>
+<h4 id="通过WebSocket的客户端和服务器端的报文"><a href="#通过WebSocket的客户端和服务器端的报文" class="headerlink" title="通过WebSocket的客户端和服务器端的报文"></a>通过WebSocket的客户端和服务器端的报文</h4><p><strong>WebSocket客户端连接报文</strong></p>
+<pre><code>GET / HTTP/1.1
+Host: localhost
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: xqBt3ImNzJbYqRINxEFlkg==
+Origin: http://localhost:8080
+Sec-WebSocket-Version: 13
+</code></pre><p>解释下：这里的upgrade表明这是一个WebSocket类型的请求。（为了更方便地部署新协议，HTTP/1.1 引入了 Upgrade 机制，它使得客户端和服务端之间可以借助已有的 HTTP 语法升级到其它协议）。“Sec-WebSocket-Key”是 WebSocket 客户端发送的一个 base64 编码的密文，要求服务端必须返回一个对应加密的“Sec-WebSocket-Accept”应答，否则客户端会抛出“Error during WebSocket handshake”错误，并关闭连接。</p>
+<p><strong>WebSocket 服务端响应报文</strong></p>
+<pre><code>HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: K7DJLdLooIwIG/MOpvWFB3y3FE8=
+</code></pre><p>“Sec-WebSocket-Accept”的值是服务端采用与客户端一致的密钥计算出来后返回客户端的,“HTTP/1.1 101 Switching Protocols”表示服务端接受 WebSocket 协议的客户端连接，经过这样的请求-响应处理后，客户端服务端的 WebSocket 连接握手成功, 后续就可以进行 TCP 通讯了。</p>
+<hr>
+<h4 id="WebSocket客户端API"><a href="#WebSocket客户端API" class="headerlink" title="WebSocket客户端API"></a>WebSocket客户端API</h4><p>WebSocket的实现分为客户端和服务器端两个部分，客户端通过浏览器发送WebSocket连接请求，服务端响应，然后TCP三次捂手，然后就在客户端和服务器端形成了一条HTTP长连接快速通道，两者后面就不要再次建立链接了。看看workerman-chat是分别怎么实现客户端和服务器端的。</p>
+<p>先看下我们一般在客户端用Javascript如何建立WebSocket连接：首先，new一个WebSocket，然后在socket上监听WebSocket对象。主要通过onopen，onmessage，onclose和onerror四个事件实现对socket消息的异步响应。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span>  wsServer = <span class="string">'ws://localhost:8888/Demo'</span>; </span><br><span class="line"><span class="keyword">var</span>  websocket = <span class="keyword">new</span> WebSocket(wsServer); </span><br><span class="line">websocket.onopen = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123; onOpen(evt) &#125;; </span><br><span class="line">websocket.onclose = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123; onClose(evt) &#125;; </span><br><span class="line">websocket.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123; onMessage(evt) &#125;; </span><br><span class="line">websocket.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123; onError(evt) &#125;; </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onOpen</span>(<span class="params">evt</span>) </span>&#123; </span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"Connected to WebSocket server."</span>); </span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onClose</span>(<span class="params">evt</span>) </span>&#123; </span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"Disconnected"</span>); </span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onMessage</span>(<span class="params">evt</span>) </span>&#123; </span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'Retrieved data from server: '</span> + evt.data); </span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onError</span>(<span class="params">evt</span>) </span>&#123; </span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'Error occured: '</span> + evt.data); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="看下workerman-chat的客户端代码"><a href="#看下workerman-chat的客户端代码" class="headerlink" title="看下workerman-chat的客户端代码"></a>看下workerman-chat的客户端代码</h4><p><strong>首先是<code>onload=&quot;connect();&quot;</code>onload的时候调用connect创建连接socket。</strong></p>
+<p><strong>它在connect里面创建了socket，并且设置了onopen，onmessage，onclose和onerror这几个事件。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">connect</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="comment">// 创建websocket</span></span><br><span class="line">   ws = <span class="keyword">new</span> WebSocket(<span class="string">"ws://"</span>+<span class="built_in">document</span>.domain+<span class="string">":7272"</span>);</span><br><span class="line">   <span class="comment">// 当socket连接打开时，输入用户名</span></span><br><span class="line">   ws.onopen = onopen;</span><br><span class="line">   <span class="comment">// 当有消息时根据消息类型显示不同信息</span></span><br><span class="line">   ws.onmessage = onmessage; </span><br><span class="line">   ws.onclose = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	  <span class="built_in">console</span>.log(<span class="string">"连接关闭，定时重连"</span>);</span><br><span class="line">      connect();</span><br><span class="line">   &#125;;</span><br><span class="line">   ws.onerror = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"> 	  <span class="built_in">console</span>.log(<span class="string">"出现错误"</span>);</span><br><span class="line">   &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>再来看看它的onopen和onmessage函数。在这两个函数中，获取到客户端用户的<code>client_name</code>后，利用<code>ws.send</code>把数据（包括type类型，是login）发送给服务器。服务器那边收到消息会做相应的处理，然后把数据返回给客户端，这个时候调用onmessage,里面也包括了type的类型，将该用户设置入<code>client_list</code>,并且广播给所有的用户。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 连接建立时发送登录信息</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onopen</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!name)</span><br><span class="line">    &#123;</span><br><span class="line">        show_prompt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 登录</span></span><br><span class="line">    <span class="keyword">var</span> login_data = <span class="string">'&#123;"type":"login","client_name":"'</span>+name.replace(<span class="regexp">/"/g</span>, <span class="string">'\\"'</span>)+<span class="string">'","room_id":"&lt;?php echo isset($_GET['</span>room_id<span class="string">']) ? $_GET['</span>room_id<span class="string">'] : 1?&gt;"&#125;'</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"websocket握手成功，发送登录数据:"</span>+login_data);</span><br><span class="line">    ws.send(login_data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 服务端发来消息时</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onmessage</span>(<span class="params">e</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(e.data);</span><br><span class="line">    <span class="keyword">var</span> data = <span class="built_in">eval</span>(<span class="string">"("</span>+e.data+<span class="string">")"</span>);</span><br><span class="line">    <span class="keyword">switch</span>(data[<span class="string">'type'</span>])&#123;</span><br><span class="line">        <span class="comment">// 服务端ping客户端</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">'ping'</span>:</span><br><span class="line">            ws.send(<span class="string">'&#123;"type":"pong"&#125;'</span>);</span><br><span class="line">            <span class="keyword">break</span>;;</span><br><span class="line">        <span class="comment">// 登录 更新用户列表</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">'login'</span>:</span><br><span class="line">            <span class="comment">//&#123;"type":"login","client_id":xxx,"client_name":"xxx","client_list":"[...]","time":"xxx"&#125;</span></span><br><span class="line">            say(data[<span class="string">'client_id'</span>], data[<span class="string">'client_name'</span>],  data[<span class="string">'client_name'</span>]+<span class="string">' 加入了聊天室'</span>, data[<span class="string">'time'</span>]);</span><br><span class="line">            <span class="keyword">if</span>(data[<span class="string">'client_list'</span>])</span><br><span class="line">            &#123;</span><br><span class="line">                client_list = data[<span class="string">'client_list'</span>];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                client_list[data[<span class="string">'client_id'</span>]] = data[<span class="string">'client_name'</span>]; </span><br><span class="line">            &#125;</span><br><span class="line">            flush_client_list();</span><br><span class="line">            <span class="built_in">console</span>.log(data[<span class="string">'client_name'</span>]+<span class="string">"登录成功"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 发言</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">'say'</span>:</span><br><span class="line">            <span class="comment">//&#123;"type":"say","from_client_id":xxx,"to_client_id":"all/client_id","content":"xxx","time":"xxx"&#125;</span></span><br><span class="line">            say(data[<span class="string">'from_client_id'</span>], data[<span class="string">'from_client_name'</span>], data[<span class="string">'content'</span>], data[<span class="string">'time'</span>]);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 用户退出 更新用户列表</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">'logout'</span>:</span><br><span class="line">            <span class="comment">//&#123;"type":"logout","client_id":xxx,"time":"xxx"&#125;</span></span><br><span class="line">            say(data[<span class="string">'from_client_id'</span>], data[<span class="string">'from_client_name'</span>], data[<span class="string">'from_client_name'</span>]+<span class="string">' 退出了'</span>, data[<span class="string">'time'</span>]);</span><br><span class="line">            <span class="keyword">delete</span> client_list[data[<span class="string">'from_client_id'</span>]];</span><br><span class="line">            flush_client_list();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>当用户要提交对话的时候，我们获取到表单里的内容，将数据同样利用<code>ws.send()</code>发送给服务器，服务器同样做相应的处理，并将数据返回给客户端。然后再调用客户端的<code>onmessage</code>,这个时候的类型很明显就不是<code>login</code>了，而是<code>say</code>。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//提交数据</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onSubmit</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> input = <span class="built_in">document</span>.getElementById(<span class="string">"textarea"</span>);</span><br><span class="line">  <span class="keyword">var</span> to_client_id = $(<span class="string">"#client_list option:selected"</span>).attr(<span class="string">"value"</span>);</span><br><span class="line">  <span class="keyword">var</span> to_client_name = $(<span class="string">"#client_list option:selected"</span>).text();</span><br><span class="line">  ws.send(<span class="string">'&#123;"type":"say","to_client_id":"'</span>+to_client_id+<span class="string">'","to_client_name":"'</span>+to_client_name+<span class="string">'","content":"'</span>+input.value.replace(<span class="regexp">/"/g</span>, <span class="string">'\\"'</span>).replace(<span class="regexp">/\n/g</span>,<span class="string">'\\n'</span>).replace(<span class="regexp">/\r/g</span>, <span class="string">'\\r'</span>)+<span class="string">'"&#125;'</span>);</span><br><span class="line">  input.value = <span class="string">""</span>;</span><br><span class="line">  input.focus();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发言就是把数据append进入对应的回话区</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params">from_client_id, from_client_name, content, time</span>)</span>&#123;</span><br><span class="line">	$(<span class="string">"#dialog"</span>).append(<span class="string">'&lt;div class="speech_item"&gt;&lt;img src="http://lorempixel.com/38/38/?'</span>+from_client_id+<span class="string">'" class="user_icon" /&gt; '</span>+from_client_name+<span class="string">' &lt;br&gt; '</span>+time+<span class="string">'&lt;div style="clear:both;"&gt;&lt;/div&gt;&lt;p class="triangle-isosceles top"&gt;'</span>+content+<span class="string">'&lt;/p&gt; &lt;/div&gt;'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="看下workerman-chat的服务器端代码"><a href="#看下workerman-chat的服务器端代码" class="headerlink" title="看下workerman-chat的服务器端代码"></a>看下workerman-chat的服务器端代码</h4><p>这里的代码很少，主要是定义了Event类的两个方法，一个是onMessage方法，这里根据客户端传过来的type来返回不同的数据。比如如果是<code>login</code>就加入到client_list中去，然后设置session什么的。这里他有调用Gateway里面的一些方法如：<code>Gateway::getClientInfoByGroup()</code>等。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Event</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 有消息时</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> int $client_id</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> mixed $message</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">onMessage</span><span class="params">($client_id, $message)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">        <span class="comment">// debug</span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"client:&#123;$_SERVER['REMOTE_ADDR']&#125;:&#123;$_SERVER['REMOTE_PORT']&#125; gateway:&#123;$_SERVER['GATEWAY_ADDR']&#125;:&#123;$_SERVER['GATEWAY_PORT']&#125;  client_id:$client_id session:"</span>.json_encode($_SESSION).<span class="string">" onMessage:"</span>.$message.<span class="string">"\n"</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 客户端传递的是json数据</span></span><br><span class="line">        $message_data = json_decode($message, <span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">if</span>(!$message_data)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> ;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 根据类型执行不同的业务</span></span><br><span class="line">        <span class="keyword">switch</span>($message_data[<span class="string">'type'</span>])</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 客户端回应服务端的心跳</span></span><br><span class="line">            <span class="keyword">case</span> <span class="string">'pong'</span>:</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            <span class="comment">// 客户端登录 message格式: &#123;type:login, name:xx, room_id:1&#125; ，添加到客户端，广播给所有客户端xx进入聊天室</span></span><br><span class="line">            <span class="keyword">case</span> <span class="string">'login'</span>:</span><br><span class="line">                <span class="comment">// 判断是否有房间号</span></span><br><span class="line">                <span class="keyword">if</span>(!<span class="keyword">isset</span>($message_data[<span class="string">'room_id'</span>]))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> \<span class="keyword">Exception</span>(<span class="string">"\$message_data['room_id'] not set. client_ip:&#123;$_SERVER['REMOTE_ADDR']&#125; \$message:$message"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 把房间号昵称放到session中</span></span><br><span class="line">                $room_id = $message_data[<span class="string">'room_id'</span>];</span><br><span class="line">                $client_name = htmlspecialchars($message_data[<span class="string">'client_name'</span>]);</span><br><span class="line">                $_SESSION[<span class="string">'room_id'</span>] = $room_id;</span><br><span class="line">                $_SESSION[<span class="string">'client_name'</span>] = $client_name;</span><br><span class="line">              </span><br><span class="line">                <span class="comment">// 获取房间内所有用户列表 </span></span><br><span class="line">                $clients_list = Gateway::getClientInfoByGroup($room_id);</span><br><span class="line">                <span class="keyword">foreach</span>($clients_list <span class="keyword">as</span> $tmp_client_id=&gt;$item)</span><br><span class="line">                &#123;</span><br><span class="line">                    $clients_list[$tmp_client_id] = $item[<span class="string">'client_name'</span>];</span><br><span class="line">                &#125;</span><br><span class="line">                $clients_list[$client_id] = $client_name;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 转播给当前房间的所有客户端，xx进入聊天室 message &#123;type:login, client_id:xx, name:xx&#125; </span></span><br><span class="line">                $new_message = <span class="keyword">array</span>(<span class="string">'type'</span>=&gt;$message_data[<span class="string">'type'</span>], <span class="string">'client_id'</span>=&gt;$client_id, <span class="string">'client_name'</span>=&gt;htmlspecialchars($client_name), <span class="string">'time'</span>=&gt;date(<span class="string">'Y-m-d H:i:s'</span>));</span><br><span class="line">                Gateway::sendToGroup($room_id, json_encode($new_message));</span><br><span class="line">                Gateway::joinGroup($client_id, $room_id);</span><br><span class="line">               </span><br><span class="line">                <span class="comment">// 给当前用户发送用户列表 </span></span><br><span class="line">                $new_message[<span class="string">'client_list'</span>] = $clients_list;</span><br><span class="line">                Gateway::sendToCurrentClient(json_encode($new_message));</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">                </span><br><span class="line">            <span class="comment">// 客户端发言 message: &#123;type:say, to_client_id:xx, content:xx&#125;</span></span><br><span class="line">            <span class="keyword">case</span> <span class="string">'say'</span>:</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 非法请求</span></span><br><span class="line">                <span class="keyword">if</span>(!<span class="keyword">isset</span>($_SESSION[<span class="string">'room_id'</span>]))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> \<span class="keyword">Exception</span>(<span class="string">"\$_SESSION['room_id'] not set. client_ip:&#123;$_SERVER['REMOTE_ADDR']&#125;"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                $room_id = $_SESSION[<span class="string">'room_id'</span>];</span><br><span class="line">                $client_name = $_SESSION[<span class="string">'client_name'</span>];</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 私聊</span></span><br><span class="line">                <span class="keyword">if</span>($message_data[<span class="string">'to_client_id'</span>] != <span class="string">'all'</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    $new_message = <span class="keyword">array</span>(</span><br><span class="line">                        <span class="string">'type'</span>=&gt;<span class="string">'say'</span>,</span><br><span class="line">                        <span class="string">'from_client_id'</span>=&gt;$client_id, </span><br><span class="line">                        <span class="string">'from_client_name'</span> =&gt;$client_name,</span><br><span class="line">                        <span class="string">'to_client_id'</span>=&gt;$message_data[<span class="string">'to_client_id'</span>],</span><br><span class="line">                        <span class="string">'content'</span>=&gt;<span class="string">"&lt;b&gt;对你说: &lt;/b&gt;"</span>.nl2br(htmlspecialchars($message_data[<span class="string">'content'</span>])),</span><br><span class="line">                        <span class="string">'time'</span>=&gt;date(<span class="string">'Y-m-d H:i:s'</span>),</span><br><span class="line">                    );</span><br><span class="line">                    Gateway::sendToClient($message_data[<span class="string">'to_client_id'</span>], json_encode($new_message));</span><br><span class="line">                    $new_message[<span class="string">'content'</span>] = <span class="string">"&lt;b&gt;你对"</span>.htmlspecialchars($message_data[<span class="string">'to_client_name'</span>]).<span class="string">"说: &lt;/b&gt;"</span>.nl2br(htmlspecialchars($message_data[<span class="string">'content'</span>]));</span><br><span class="line">                    <span class="keyword">return</span> Gateway::sendToCurrentClient(json_encode($new_message));</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                $new_message = <span class="keyword">array</span>(</span><br><span class="line">                    <span class="string">'type'</span>=&gt;<span class="string">'say'</span>, </span><br><span class="line">                    <span class="string">'from_client_id'</span>=&gt;$client_id,</span><br><span class="line">                    <span class="string">'from_client_name'</span> =&gt;$client_name,</span><br><span class="line">                    <span class="string">'to_client_id'</span>=&gt;<span class="string">'all'</span>,</span><br><span class="line">                    <span class="string">'content'</span>=&gt;nl2br(htmlspecialchars($message_data[<span class="string">'content'</span>])),</span><br><span class="line">                    <span class="string">'time'</span>=&gt;date(<span class="string">'Y-m-d H:i:s'</span>),</span><br><span class="line">                );</span><br><span class="line">                <span class="keyword">return</span> Gateway::sendToGroup($room_id ,json_encode($new_message));</span><br><span class="line">        &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 当客户端断开连接时</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> integer $client_id 客户端id</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">onClose</span><span class="params">($client_id)</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="comment">// debug</span></span><br><span class="line">       <span class="keyword">echo</span> <span class="string">"client:&#123;$_SERVER['REMOTE_ADDR']&#125;:&#123;$_SERVER['REMOTE_PORT']&#125; gateway:&#123;$_SERVER['GATEWAY_ADDR']&#125;:&#123;$_SERVER['GATEWAY_PORT']&#125;  client_id:$client_id onClose:''\n"</span>;</span><br><span class="line">       </span><br><span class="line">       <span class="comment">// 从房间的客户端列表中删除</span></span><br><span class="line">       <span class="keyword">if</span>(<span class="keyword">isset</span>($_SESSION[<span class="string">'room_id'</span>]))</span><br><span class="line">       &#123;</span><br><span class="line">           $room_id = $_SESSION[<span class="string">'room_id'</span>];</span><br><span class="line">           $new_message = <span class="keyword">array</span>(<span class="string">'type'</span>=&gt;<span class="string">'logout'</span>, <span class="string">'from_client_id'</span>=&gt;$client_id, <span class="string">'from_client_name'</span>=&gt;$_SESSION[<span class="string">'client_name'</span>], <span class="string">'time'</span>=&gt;date(<span class="string">'Y-m-d H:i:s'</span>));</span><br><span class="line">           Gateway::sendToGroup($room_id, json_encode($new_message));</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="涨知识-建立socket连接"><a href="#涨知识-建立socket连接" class="headerlink" title="涨知识-建立socket连接"></a>涨知识-建立socket连接</h4><p>建立Socket连接至少需要一对套接字，其中一个运行于客户端，称为ClientSocket ，另一个运行于服务器端，称为ServerSocket 。</p>
+<p><strong>套接字之间的连接过程分为三个步骤：服务器监听，客户端请求，连接确认。</strong></p>
+<p><strong>服务器监听</strong>：服务器端套接字并不定位具体的客户端套接字，而是处于<strong>等待连接</strong>的状态，实时监控网络状态，等待客户端的连接请求。</p>
+<p><strong>客户端请求</strong>：指客户端的套接字提出连接请求，要连接的目标是服务器端的套接字。为此，客户端的套接字必须首先描述它要连接的服务器的套接字，指出<strong>服务器端套接字的地址和端口号</strong>，然后就向服务器端套接字提出连接请求。</p>
+<p><strong>连接确认</strong>：当服务器端套接字监听到或者说接收到客户端套接字的连接请求时，就响应客户端套接字的请求，建立一个新的线程，把服务器端套接字的描述发给客户端，一旦客户端确认了此描述，双方就正式建立连接。<strong>而服务器端套接字继续处于监听状态，继续接收其他客户端套接字的连接请求</strong>。</p>
+<p>我们这里还要区分一个概念就是http和socket的区别。这两个千万不能混为一谈，Http（无状态）是超文本传输协议，是协议，是基于TCP/IP协议基础上的应用层协议。Socket不是协议，是一个调用接口，Socket是基于TCP/IP的协议封装。Socket是长连接，http只能走tcp,sockett不仅能走tcp还能走udp。总的来说：<code>Socket是应用层与TCP/IP协议族通信的中间软件抽象层，一组接口，把复杂的TCP/IP协议族隐藏在Socket接口后面。</code></p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>主要是总结了下WebSocket,然后以workerman-chat的例子为讲解，看下别人的代码怎么写的这么好。WebSocket 的优点上面我们看到了有很多，但是现在用它是也有风险，因为它正处于还不是非常成熟的阶段。另外的一个风险就是微软的 IE 作为占市场份额最大的浏览器，和其他的主流浏览器相比，对 HTML5 的支持是比较差的，这是我们在构建企业级的 Web 应用的时候必须要考虑的一个问题。现在它这个是并没有和数据库打交道的。但是我是要从数据库中读出相应的群组，然后可以群组对话，或者专一对话。并且不是只有在线才能发消息。这里workerman-chat也没有把消息存到数据库中去，这肯定对我的项目来说是不行的，我需要建表，然后把对应的会话存入数据库。它是有一些DB类的，可以用这个。回头改完，再写一篇文章。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WEB开发/" rel="tag"># WEB开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/11/PHPExcel简单列表导出/" rel="next" title="PHPExcel简单列表导出">
+                <i class="fa fa-chevron-left"></i> PHPExcel简单列表导出
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/19/监控脚本代码异常并上报的方法/" rel="prev" title="监控脚本代码异常并上报的方法">
+                监控脚本代码异常并上报的方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#WebSocket的出现背景"><span class="nav-number">1.</span> <span class="nav-text"><a href="#WebSocket&#x7684;&#x51FA;&#x73B0;&#x80CC;&#x666F;" class="headerlink" title="WebSocket&#x7684;&#x51FA;&#x73B0;&#x80CC;&#x666F;"></a>WebSocket&#x7684;&#x51FA;&#x73B0;&#x80CC;&#x666F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WebSocket机制"><span class="nav-number">2.</span> <span class="nav-text"><a href="#WebSocket&#x673A;&#x5236;" class="headerlink" title="WebSocket&#x673A;&#x5236;"></a>WebSocket&#x673A;&#x5236;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过WebSocket的客户端和服务器端的报文"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x901A;&#x8FC7;WebSocket&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x7684;&#x62A5;&#x6587;" class="headerlink" title="&#x901A;&#x8FC7;WebSocket&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x7684;&#x62A5;&#x6587;"></a>&#x901A;&#x8FC7;WebSocket&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x548C;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x7684;&#x62A5;&#x6587;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WebSocket客户端API"><span class="nav-number">4.</span> <span class="nav-text"><a href="#WebSocket&#x5BA2;&#x6237;&#x7AEF;API" class="headerlink" title="WebSocket&#x5BA2;&#x6237;&#x7AEF;API"></a>WebSocket&#x5BA2;&#x6237;&#x7AEF;API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#看下workerman-chat的客户端代码"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x770B;&#x4E0B;workerman-chat&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x4EE3;&#x7801;" class="headerlink" title="&#x770B;&#x4E0B;workerman-chat&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x4EE3;&#x7801;"></a>&#x770B;&#x4E0B;workerman-chat&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x4EE3;&#x7801;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#看下workerman-chat的服务器端代码"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x770B;&#x4E0B;workerman-chat&#x7684;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x4EE3;&#x7801;" class="headerlink" title="&#x770B;&#x4E0B;workerman-chat&#x7684;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x4EE3;&#x7801;"></a>&#x770B;&#x4E0B;workerman-chat&#x7684;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x4EE3;&#x7801;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#涨知识-建立socket连接"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x6DA8;&#x77E5;&#x8BC6;-&#x5EFA;&#x7ACB;socket&#x8FDE;&#x63A5;" class="headerlink" title="&#x6DA8;&#x77E5;&#x8BC6;-&#x5EFA;&#x7ACB;socket&#x8FDE;&#x63A5;"></a>&#x6DA8;&#x77E5;&#x8BC6;-&#x5EFA;&#x7ACB;socket&#x8FDE;&#x63A5;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/04/15/由workerman-chat再学习HTML5的WebSocket/';
+          this.page.identifier = '2016/04/15/由workerman-chat再学习HTML5的WebSocket/';
+          this.page.title = '由workerman-chat再认识HTML5的WebSocket';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

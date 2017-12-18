@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="如何完成一个记录网站加载脚本时发生的错误，并把错误上报呢？这是网站上线时最经常的需求。 一般当我们的脚本发生错误时，浏览器都会在console里体现出错误信息，并且会提示我们出错的文件，行号，堆栈信息，此时js停止往下执行：比如这样：  到这里先问自己一个问题，前端异常具体是指什么呢？ 第一种情况：JS脚本里边存着语法错误，第二种情况：JS脚本在运行时发生错误 一般有两种情况可以处理这两种错误：">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="监控脚本代码异常并上报的方法">
+<meta property="og:url" content="http://sevencai.github.io/2016/04/19/监控脚本代码异常并上报的方法/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="如何完成一个记录网站加载脚本时发生的错误，并把错误上报呢？这是网站上线时最经常的需求。 一般当我们的脚本发生错误时，浏览器都会在console里体现出错误信息，并且会提示我们出错的文件，行号，堆栈信息，此时js停止往下执行：比如这样：  到这里先问自己一个问题，前端异常具体是指什么呢？ 第一种情况：JS脚本里边存着语法错误，第二种情况：JS脚本在运行时发生错误 一般有两种情况可以处理这两种错误：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx1.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx2.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx3.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx5.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx8.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx6.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx4.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx9.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/cwxx10.png">
+<meta property="og:updated_time" content="2016-12-12T03:02:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="监控脚本代码异常并上报的方法">
+<meta name="twitter:description" content="如何完成一个记录网站加载脚本时发生的错误，并把错误上报呢？这是网站上线时最经常的需求。 一般当我们的脚本发生错误时，浏览器都会在console里体现出错误信息，并且会提示我们出错的文件，行号，堆栈信息，此时js停止往下执行：比如这样：  到这里先问自己一个问题，前端异常具体是指什么呢？ 第一种情况：JS脚本里边存着语法错误，第二种情况：JS脚本在运行时发生错误 一般有两种情况可以处理这两种错误：">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/cwxx1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/04/19/监控脚本代码异常并上报的方法/"/>
+
+
+
+
+
+  <title>监控脚本代码异常并上报的方法 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/19/监控脚本代码异常并上报的方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">监控脚本代码异常并上报的方法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-19T20:42:51+08:00">
+                2016-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/19/监控脚本代码异常并上报的方法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/19/监控脚本代码异常并上报的方法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如何完成一个记录网站加载脚本时发生的错误，并把错误上报呢？这是网站上线时最经常的需求。</p>
+<p>一般当我们的脚本发生错误时，浏览器都会在console里体现出错误信息，并且会提示我们出错的文件，行号，堆栈信息，此时js停止往下执行：比如这样：</p>
+<p><img src="http://www.cailidan.cn/images/cwxx1.png" alt="错误提示"></p>
+<p>到这里先问自己一个问题，前端异常具体是指什么呢？</p>
+<p><strong>第一种情况：JS脚本里边存着语法错误，第二种情况：JS脚本在运行时发生错误</strong></p>
+<p><strong>一般有两种情况可以处理这两种错误：</strong></p>
+<p>一种是try,catch方案，我们针对性的在可能出错的地方使用try,catch块。这个代码块如果出错了我们可以在catch块中收集并处理。</p>
+<p>一种是监听window的onerror事件，比如我们使用<code>window.onerror=function(){}</code>或者是<code>window.addEventListener(&quot;error&quot;,function(event){})</code>,这个onerror可以收集语法错误和运行时的错误，还可以知道出错的信息，文件，行号，列号等。</p>
+<hr>
+<h4 id="利用try-catch的方法"><a href="#利用try-catch的方法" class="headerlink" title="利用try,catch的方法"></a>利用try,catch的方法</h4><p>先来回忆复习下<code>try,catch</code>的基本用法。下面是我们最初学<code>try</code>,catch时会写的一个小demo。主要是<code>throw</code>的用法。<code>throw</code> 语句允许我们创建自定义错误。正确的技术术语是：创建或抛出异常（exception）。如果把 <code>throw</code> 与 <code>try</code> 和 <code>catch</code> 一起使用，就能够更加<strong>精准</strong>控制程序流，并生成自定义的错误消息。<code>throw exception</code>,这个异常可以是我们创建的字符串，数字，逻辑值，对象等。注意要小写。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">placeholder</span>=<span class="string">"请填入一个5到10之间的数字"</span> <span class="attr">id</span>=<span class="string">"inputValue"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">"test()"</span>&gt;</span>测试输入值是否合法<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"tip"</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">try</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> value = <span class="built_in">document</span>.getElementById(<span class="string">"inputValue"</span>).value;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">if</span>(value == <span class="string">""</span>)&#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="string">"数字不能为空"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(value&gt;<span class="number">10</span>)&#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="string">"数字不能大于10"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(value&lt;<span class="number">5</span>)&#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="string">"数字不能小于5"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">isNaN</span>(value))&#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="string">"必须为数字"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="keyword">catch</span>(e)&#123;</span><br><span class="line">		<span class="keyword">var</span> tip = <span class="built_in">document</span>.getElementById(<span class="string">"tip"</span>);</span><br><span class="line">		tip.innerHTML = e;</span><br><span class="line">		<span class="comment">//console.log(e);</span></span><br><span class="line">	&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>但是，try,catch有两个很严重的问题，第一个就是如果代码块有语法错误，此时JS解释器不会执行当前这块代码块，也更加不会执行catch里面的东西了。第二个问题就是try,catch可以理解成一个函数块，这有这个里面的运行错误才会被捕捉，也就是没有办法捕捉到全局错误事件</strong>。</p>
+<p>第一个就是语法错误，不会捕捉，会停止运行，上代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> =<span class="number">1</span>;</span><br><span class="line">&#125;<span class="keyword">catch</span>(e)&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"testerror"</span>);</span><br><span class="line">	<span class="built_in">console</span>.log(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://www.cailidan.cn/images/cwxx2.png" alt="错误提示"></p>
+<p>如图所示，并不会打印出错误信息，只是在控制台直接输出了错误信息。如果我们把这个语法错误变为执行时的错误，就是可以捕捉到的。如下图所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">	i&lt;l;</span><br><span class="line">&#125;<span class="keyword">catch</span>(e)&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"testerror"</span>);</span><br><span class="line">	<span class="built_in">console</span>.log(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://www.cailidan.cn/images/cwxx3.png" alt="错误提示"></p>
+<p>第二种情况怎么理解呢？</p>
+<p><code>try</code>,<code>catch</code>只能捕捉到当前执行流里面的运行错误，对于异步回调来说，是不能被<code>try</code>,<code>catch</code>来捕捉的。我们知道js是单线程的，回调里面的都被放到了任务队列里面。如下例子：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> btn = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"button"</span>)[<span class="number">0</span>];</span><br><span class="line">	btn.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		i&lt;l;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;<span class="keyword">catch</span>(e)&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这时候我们打开浏览器是不会有任何东西输出的。</p>
+<hr>
+<h4 id="利用window-onerror方法"><a href="#利用window-onerror方法" class="headerlink" title="利用window.onerror方法"></a>利用window.onerror方法</h4><p>先具体看下onerror在什么情况下会被触发：An event handler for the error event. Error events are fired at various targets for different kinds of errors:</p>
+<blockquote>
+<p>When a JavaScript runtime error (including syntax errors) occurs, an error event using interface ErrorEvent is fired at window and window.onerror() is invoked.</p>
+<p>When a resource (such as an <code>&lt;img&gt;</code> or <code>&lt;script&gt;</code>) fails to load, an error event using interface Event is fired at the element, that initiated the load, and the onerror() handler on the element is invoked. These error events do not bubble up to window, but (at least in Firefox) can be handled with a single capturing window.addEventListener.</p>
+</blockquote>
+<p>具体的参数和语法如下，可以去MDN上看.</p>
+<p><img src="http://www.cailidan.cn/images/cwxx5.png" alt="onerror语法"></p>
+<p>比如我们就把<code>onerror</code>的arguments对象打印出来就可以得到下面的结果：</p>
+<p><img src="http://www.cailidan.cn/images/cwxx8.png" alt=""></p>
+<p>或者可以获得到出错信息的文件名，行号，列号，并且通过设置返回值为true或者false来保证信息不输出到控制台上。比如下面的例子：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span>(<span class="params">message, source, lineno, colno, error</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">"-----------"</span>);</span><br><span class="line">	<span class="built_in">console</span>.log(message);</span><br><span class="line">	<span class="built_in">console</span>.log(source);</span><br><span class="line">	<span class="built_in">console</span>.log(lineno);</span><br><span class="line">	<span class="built_in">console</span>.log(colno);</span><br><span class="line">	<span class="built_in">console</span>.log(error);</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//line1</span></span><br><span class="line"><span class="keyword">if</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure></p>
+<p>会得到下面的结果：</p>
+<p><img src="http://www.cailidan.cn/images/cwxx6.png" alt="错误提示"></p>
+<p><strong>这里注意下，语法错误不能放在<code>onerror</code>代码块内部，如果放在里面，因为语法在这个<code>onerror</code>里面都没有被通过，就更不可能会被执行了，就会跟平常一样代码直接打印到控制台。所以我们要把<code>onerror</code>单独提取出来，并放在其他脚本前面执行。</strong></p>
+<p><img src="http://www.cailidan.cn/images/cwxx4.png" alt="错误提示"></p>
+<p>这里还要注意一点，就是如果我们的js文件不是本地文件，是跨域文件，当这个文件出现了错误时，我们是不能够获得详细的信息的。只会简单报错： <code>Script error</code>，这样是为了防止信息泄露，避免不安全。那如果我们确实要跨域访问，怎么办呢？</p>
+<p>我们需要在客户端和服务器端同时设置可跨域访问。客户端中的<code>image</code>和<code>script</code>标签都有 <code>crossorigin</code>参数，这个属性是告诉浏览器我要加载的这个资源是可以信任的。并在服务器端再设置：<code>Access-Control-Allow-Origin</code>的响应头。比如<code>header(&#39;Access-Control-Allow-Origin: *&#39;);</code>。下面这段话仔细看下可能更加好理解。</p>
+<blockquote>
+<p>When a syntax(?) error occurs in a script, loaded from a different origin, the details of the syntax error are not reported to prevent leaking information (see bug 363897). Instead the error reported is simply “Script error.” This behavior can be overriden in some browsers using the crossorigin attribute on <code>&lt;script&gt;</code> and having the server send the appropriate CORS HTTP response headers.</p>
+</blockquote>
+<hr>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>在解决具体问题前，我们来看下<code>window.onerror</code>里面的第五个参数，error,这个信息。它看起来并不是那么特别。因为它里面包含几个例如：message, fileName, and lineNumber。这些事已经直接在前面参数提供给了你的。但是这个里面有一个非标准的属性，<code>Error.prototype.stack</code>。这个是追踪错误信息的关键所在。而且虽然不是标准的，但是是在主流浏览器中都支持的。这个error对象是会发生变化的，比如如果是语法错误，就会显示的是下面的SyntaxError,如果是未定义错误，会是ReferenceError。打印下<code>error.stack</code>。</p>
+<p><img src="http://www.cailidan.cn/images/cwxx9.png" alt="错误提示"></p>
+<p>这个里面的stack属性，就是可以追踪的所在，我们这里的错误比较简单，所以是只有一层。</p>
+<p><img src="http://www.cailidan.cn/images/cwxx10.png" alt="错误提示"></p>
+<p>如果是比较复杂的，打印出来可能是类似这样的。</p>
+<pre><code>Error: foobar
+at bar (Unknown script code:2:5)
+at foo (Unknown script code:6:5)
+at Anonymous function (Unknown script code:11:5)
+at Anonymous function (Unknown script code:10:2)
+at Anonymous function (Unknown script code:1:73)
+</code></pre><p>这里具体的代码我在网上看到有人写了两种，我觉得两种都有自己的优缺点。学习了。</p>
+<p>第一个来自知乎的水歌,链接为：<strong><a href="https://www.zhihu.com/question/29953354/answer/51529909" target="_blank" rel="noopener">水歌的回答</a></strong>。学习了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">BOM, $</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> Console_URL = $(<span class="string">'head link[rel="console"]'</span>).attr(<span class="string">'href'</span>);</span><br><span class="line"></span><br><span class="line">    BOM.onerror = <span class="function"><span class="keyword">function</span> (<span class="params">iMessage, iURL, iLine, iColumn, iError</span>)</span>&#123;</span><br><span class="line">        BOM.setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> iData = &#123;</span><br><span class="line">                    message:    iMessage,</span><br><span class="line">                    url:        iURL,</span><br><span class="line">                    line:       iLine,</span><br><span class="line">                    column:     iColumn  ||  (BOM.event &amp;&amp; BOM.event.errorCharacter)  ||  <span class="number">0</span></span><br><span class="line">                &#125;;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (iError &amp;&amp; iError.stack)</span><br><span class="line">                iData.stack = (iError.stack || iError.stacktrace).toString();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (Console_URL) &#123;</span><br><span class="line">                <span class="keyword">if</span> (iData.stack)</span><br><span class="line">                    $.post(Console_URL, iData);</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    $.get(Console_URL, iData);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">&#125;)(self, self.jQuery);</span><br></pre></td></tr></table></figure>
+<p>这段代码是只追踪了一层stack,并提交给了server。看到下面的post和get方法分别提交了吗？这个作者的回答是：</p>
+<blockquote>
+<p>如果有详细的调用堆栈信息，就用 POST 这种理论上无限容量的方法发送，否则就只把 错误简介、文件名、出错行号 等信息用 GET 发送，以提高网络传输、服务器端解析的性能～</p>
+</blockquote>
+<p>第二种写法来自<strong><a href="http://rapheal.sinaapp.com/2014/11/06/javascript-error-monitor/" target="_blank" rel="noopener">rapheal的博客</a></strong>，rapheal的这种写法，是追踪了3层错误信息。学习了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.onerror = <span class="function"><span class="keyword">function</span>(<span class="params">msg,url,line,col,error</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//没有URL不上报！上报也不知道错误</span></span><br><span class="line">    <span class="keyword">if</span> (msg != <span class="string">"Script error."</span> &amp;&amp; !url)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//采用异步的方式</span></span><br><span class="line">    <span class="comment">//我遇到过在window.onunload进行ajax的堵塞上报</span></span><br><span class="line">    <span class="comment">//由于客户端强制关闭webview导致这次堵塞上报有Network Error</span></span><br><span class="line">    <span class="comment">//我猜测这里window.onerror的执行流在关闭前是必然执行的</span></span><br><span class="line">    <span class="comment">//而离开文章之后的上报对于业务来说是可丢失的</span></span><br><span class="line">    <span class="comment">//所以我把这里的执行流放到异步事件去执行</span></span><br><span class="line">    <span class="comment">//脚本的异常数降低了10倍</span></span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> data = &#123;&#125;;</span><br><span class="line">        <span class="comment">//不一定所有浏览器都支持col参数</span></span><br><span class="line">        col = col || (<span class="built_in">window</span>.event &amp;&amp; <span class="built_in">window</span>.event.errorCharacter) || <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">        data.url = url;</span><br><span class="line">        data.line = line;</span><br><span class="line">        data.col = col;</span><br><span class="line">        <span class="keyword">if</span> (!!error &amp;&amp; !!error.stack)&#123;</span><br><span class="line">            <span class="comment">//如果浏览器有堆栈信息</span></span><br><span class="line">            <span class="comment">//直接使用</span></span><br><span class="line">            data.msg = error.stack.toString();</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (!!<span class="built_in">arguments</span>.callee)&#123;</span><br><span class="line">            <span class="comment">//尝试通过callee拿堆栈信息</span></span><br><span class="line">            <span class="keyword">var</span> ext = [];</span><br><span class="line">            <span class="keyword">var</span> f = <span class="built_in">arguments</span>.callee.caller, c = <span class="number">3</span>;</span><br><span class="line">            <span class="comment">//这里只拿三层堆栈信息</span></span><br><span class="line">            <span class="keyword">while</span> (f &amp;&amp; (--c&gt;<span class="number">0</span>)) &#123;</span><br><span class="line">               ext.push(f.toString());</span><br><span class="line">               <span class="keyword">if</span> (f  === f.caller) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;<span class="comment">//如果有环</span></span><br><span class="line">               &#125;</span><br><span class="line">               f = f.caller;</span><br><span class="line">            &#125;</span><br><span class="line">            ext = ext.join(<span class="string">","</span>);</span><br><span class="line">            data.msg = ext;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//把data上报到后台！</span></span><br><span class="line">    &#125;,<span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="涨知识"><a href="#涨知识" class="headerlink" title="涨知识"></a>涨知识</h4><p>顺便提到这里，最近被问到了一个问题，怎么测试网页前端性能。我以前有用过<a href="http://www.webpagetest.org/" target="_blank" rel="noopener">webpagetest</a>这个网站在线测试过我的网站的性能。但是当时并没有认真的去分析到底里面有些什么使网站的加载变得慢，或者哪些是可以优化的地方。反思。最近我又看了看，这个真的是很好。仔细看的话，可以详细掌握网站加载过程中的瀑布流、性能得分、元素分布、视图分析等数据。其中比较直观的视图分析功能可以直接看到页面加载各个阶段的截屏。还可以看到：白屏时间和首屏时间，即用户多久能在页面中看到内容，以及多久首屏渲染完成(包含图片等元素加载完成)。这两个时间点直接决定了用户需要等待多久才能看到自己想看到的信息。谷歌优化建议中也提到减少非首屏使用的 css 及 JS,尽快让首屏呈现。回头我专门再研究下，再写一篇博客。</p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>主要是学习了两种追踪错误的写法，一种是try,catch。一种是onerror。主要学习自下面这几篇文章。推荐阅读：</p>
+<ul>
+<li><p><a href="http://blog.getsentry.com/2016/01/04/client-javascript-reporting-window-onerror.html" target="_blank" rel="noopener">client-javascript-reporting-window-onerror</a></p>
+</li>
+<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror" target="_blank" rel="noopener">GlobalEventHandlers/onerror</a></p>
+</li>
+<li><p><a href="http://rapheal.sinaapp.com/2014/11/06/javascript-error-monitor/" target="_blank" rel="noopener">rapheal:javascript-error-monitor</a></p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/15/由workerman-chat再学习HTML5的WebSocket/" rel="next" title="由workerman-chat再认识HTML5的WebSocket">
+                <i class="fa fa-chevron-left"></i> 由workerman-chat再认识HTML5的WebSocket
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/20/记我最近犯过的错和知识不熟悉的地方/" rel="prev" title="记我最近犯过的错和知识不熟悉的地方">
+                记我最近犯过的错和知识不熟悉的地方 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#利用try-catch的方法"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5229;&#x7528;try-catch&#x7684;&#x65B9;&#x6CD5;" class="headerlink" title="&#x5229;&#x7528;try,catch&#x7684;&#x65B9;&#x6CD5;"></a>&#x5229;&#x7528;try,catch&#x7684;&#x65B9;&#x6CD5;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#利用window-onerror方法"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5229;&#x7528;window-onerror&#x65B9;&#x6CD5;" class="headerlink" title="&#x5229;&#x7528;window.onerror&#x65B9;&#x6CD5;"></a>&#x5229;&#x7528;window.onerror&#x65B9;&#x6CD5;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x89E3;&#x51B3;&#x65B9;&#x6848;" class="headerlink" title="&#x89E3;&#x51B3;&#x65B9;&#x6848;"></a>&#x89E3;&#x51B3;&#x65B9;&#x6848;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#涨知识"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x6DA8;&#x77E5;&#x8BC6;" class="headerlink" title="&#x6DA8;&#x77E5;&#x8BC6;"></a>&#x6DA8;&#x77E5;&#x8BC6;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/04/19/监控脚本代码异常并上报的方法/';
+          this.page.identifier = '2016/04/19/监控脚本代码异常并上报的方法/';
+          this.page.title = '监控脚本代码异常并上报的方法';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

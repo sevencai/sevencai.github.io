@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机网络," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="先问几个问题，什么事正向代理？什么是反向代理？两者又有啥区别呢？正向代理可以为我们做什么？反向代理又有什么作用呢？先前只知道反向代理，可是却忽略了正向代理。知识的学习没有全面，反思。下面图片部分整理学习来自网络，如有侵权请告诉我，谢谢啦。  正向代理 正向代理是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服">
+<meta name="keywords" content="计算机网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正向代理与反向代理">
+<meta property="og:url" content="http://sevencai.github.io/2016/03/31/正向代理与反向代理/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="先问几个问题，什么事正向代理？什么是反向代理？两者又有啥区别呢？正向代理可以为我们做什么？反向代理又有什么作用呢？先前只知道反向代理，可是却忽略了正向代理。知识的学习没有全面，反思。下面图片部分整理学习来自网络，如有侵权请告诉我，谢谢啦。  正向代理 正向代理是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/zxdl.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/zxdl2.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/zxdl3.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/fxdl.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/fxdl2.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/fxdl4.png">
+<meta property="og:updated_time" content="2016-12-12T02:54:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="正向代理与反向代理">
+<meta name="twitter:description" content="先问几个问题，什么事正向代理？什么是反向代理？两者又有啥区别呢？正向代理可以为我们做什么？反向代理又有什么作用呢？先前只知道反向代理，可是却忽略了正向代理。知识的学习没有全面，反思。下面图片部分整理学习来自网络，如有侵权请告诉我，谢谢啦。  正向代理 正向代理是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/zxdl.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/03/31/正向代理与反向代理/"/>
+
+
+
+
+
+  <title>正向代理与反向代理 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/03/31/正向代理与反向代理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">正向代理与反向代理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-31T12:37:00+08:00">
+                2016-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/31/正向代理与反向代理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/31/正向代理与反向代理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>先问几个问题，什么事正向代理？什么是反向代理？两者又有啥区别呢？正向代理可以为我们做什么？反向代理又有什么作用呢？先前只知道反向代理，可是却忽略了正向代理。知识的学习没有全面，反思。下面图片部分整理学习来自网络，如有侵权请告诉我，谢谢啦。</p>
+<hr>
+<h3 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h3><blockquote>
+<p>正向代理是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。客户端必须要进行一些特别的设置才能使用正向代理。</p>
+</blockquote>
+<p>下面这张图很好的向我们解释了正向代理：<br><img src="http://www.cailidan.cn/images/zxdl.png" alt="正向代理示意图"></p>
+<hr>
+<h4 id="举个小例子"><a href="#举个小例子" class="headerlink" title="举个小例子"></a>举个小例子</h4><p>简单的有个小例子：我们知道谷歌在国内被墙了，所以我们会去用vpn。vpn的作用就相当于一个代理服务器，使我们能够访问我们访问不了的网站。在这个过程中，我们知道有这样一个代理服务器存在，也知道访问谷歌也存在一个谷歌的服务器。这两个服务器的存在我们都很清楚。</p>
+<p>上面的图中，用户A主动请求要访问的服务器B，在图中我们可以看到A先访问了代理服务器Z，Z收到请求后，再发送给服务器B。然后再由服务器Z把数据返回给A。</p>
+<p>这个过程中，用户知道服务器B，也知道代理服务器Z，但这些所有的请求都是由代理服务器来处理的。</p>
+<hr>
+<h4 id="正向代理能够帮助我们做什么"><a href="#正向代理能够帮助我们做什么" class="headerlink" title="正向代理能够帮助我们做什么"></a>正向代理能够帮助我们做什么</h4><h5 id="做缓存，加速访问"><a href="#做缓存，加速访问" class="headerlink" title="做缓存，加速访问"></a><strong>做缓存，加速访问</strong></h5><p>可以在代理服务器Z做缓存，比如用户已经访问过B服务器后，把数据又返回给了Z，Z把这些信息都存在了本地，做了缓存，那么下次A再访问B的时候，是不是就不需要通过多次转发，不需要经过很多路由，而直接用了Z呢？这样就是利用代理服务器加速访问的原理。</p>
+<p><img src="http://www.cailidan.cn/images/zxdl2.png" alt="正向代理缓存示意图"></p>
+<hr>
+<h5 id="翻墙原理"><a href="#翻墙原理" class="headerlink" title="翻墙原理"></a><strong>翻墙原理</strong></h5><p>刚刚提到了google那个例子，就是一个翻墙的常见实例。现在我们看下原理图。<br><img src="http://www.cailidan.cn/images/zxdl3.png" alt="正向代理翻墙示意图"></p>
+<hr>
+<h5 id="服务器验证"><a href="#服务器验证" class="headerlink" title="服务器验证"></a><strong>服务器验证</strong></h5><p>比如说我们可以采用代理服务器做一些验证，比如上网权限，因为互联网要先经过代理服务器。也是由于正向代理允许客户端通过它访问任意网站并且隐藏客户端自身，因此你必须采取安全措施以确保仅为经过授权的客户端提供服务。</p>
+<p><strong>整个来说，正向代理就像一个跳板，我们不能访问一个服务器，但我们可以访问代理服务器，这个代理服务器又可以访问，我们交给代理服务器去取数据，然后再返回给我。客户端必须要经过一些特别的设置才能使用正向代理。</strong></p>
+<hr>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><blockquote>
+<p>反向代理（Reverse Proxy）方式是指以代理服务器来接受Internet上的连接请求，然后将请求转发给内部网络上的服务器；并将从服务器上得到的结果返回给Internet上请求连接的客户端，此时代理服务器<strong>对外就表现为一个服务器</strong>。</p>
+</blockquote>
+<p>反向代理与正向代理正好相反，对于客户端而言它就像是原始服务器，并且客户端不需要进行任何特别的设置。客户端向反向代理的命名空间(name-space)中的内容发送普通请求，接着反向代理将判断向何处(原始服务器)转交请求，并将获得的内容返回给客户端，就像这些内容原本就是它自己的一样。</p>
+<p>对外表现为一个服务器怎么理解？比如访问cailidan.cn的时候，大家是不知道我用了反向代理的。大家以为访问的就是这个，但实际上用了反向代理，这个时候我的nginx表现的就像一个服务器一样。</p>
+<p>反向代理服务器有两种模型，一种是作为内容服务器的替身，也可以作为内如服务器集群的负载均衡器。</p>
+<p><img src="http://www.cailidan.cn/images/fxdl.png" alt="反向代理示意图"></p>
+<hr>
+<h4 id="反向代理的特点"><a href="#反向代理的特点" class="headerlink" title="反向代理的特点"></a>反向代理的特点</h4><p>比如下图，用户A在访问B的资源的时候，并不知道中间还存在一个代理服务器，她一直以为请求的是原始服务器。但实际是反向代理服务器再接受了A的请求后，从原始B取得A的需求资源，并且发送给A。由于防火墙的作用，只允许代理服务器ZZ访问原始资源服务器B，尽管在这个环境下，真实的是由于防火墙和反向代理的共同作用保护了B，但是我们用户A并不知道。</p>
+<p><strong>相当于正向代理是代理客户端而言，反向代理是代理服务器。</strong></p>
+<p><img src="http://www.cailidan.cn/images/fxdl2.png" alt="反向代理示意图"></p>
+<hr>
+<h4 id="反向代理的用途"><a href="#反向代理的用途" class="headerlink" title="反向代理的用途"></a>反向代理的用途</h4><p>代理服务器对外就表现为一个Web服务器，外部网络就可以简单把它当作一个标准的Web服务器而不需要特定的配置。<strong>不同之处在于，这个服务器没有保存任何网页的真实数据，所有的静态网页或者CGI程序，都保存在内部的Web服务器上。因此对反向代理服务器的攻击并不会使得网页信息遭到破坏，这样就增强了Web服务器的安全性</strong>。</p>
+<hr>
+<h5 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a><strong>负载均衡</strong></h5><blockquote>
+<p>负载均衡是由多台服务器以对称的方式组成一个服务器集合，每台服务器都具有等价的地位，都可以单独对外提供服务而无须其他服务器的辅助。通过某种负载分担技术，将外部发送来的请求均匀分配到对称结构中的某一台服务器上，而接收到请求的服务器独立地回应客户的请求。均衡负载能够平均分配客户请求到服务器列阵，籍此提供快速获取重要数据，解决大量并发访问服务问题。</p>
+</blockquote>
+<p>简单的来说，就是当我们的http请求过多的时候，反向代理服务器负责分发http请求，来确保某一个服务器不会压力太大，然后崩掉。</p>
+<hr>
+<h5 id="实现CDN"><a href="#实现CDN" class="headerlink" title="实现CDN"></a><strong>实现CDN</strong></h5><p>刚刚我们知道了正向代理服务器可以实现缓存，从而加快访问的效果，那反向代理服务器也是一个代理服务器，那肯定也是拥有Cache功能的，它可以暖村原始资源服务器的资源，从而不是每次都要向原始资源服务器B请求数据，特别是一些静态的数据，比如图片和文件，如果这些反向代理服务器能够做到和用户X来自同一个网络，那么用户X访问反向代理服务器X，就会得到很高质量的速度。这正是CDN技术的核心。</p>
+<blockquote>
+<p>CDN的全称是Content Delivery Network，即内容分发网络。其基本思路是尽可能避开互联网上有可能影响数据传输速度和稳定性的瓶颈和环节，使内容传输的更快、更稳定。<strong>通过在网络各处放置反向代理节点服务器</strong>所构成的在现有的互联网基础之上的一层智能虚拟网络，CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决Internet网络拥挤的状况，提高用户访问网站的响应速度。</p>
+</blockquote>
+<p><img src="http://www.cailidan.cn/images/fxdl4.png" alt="反向代理实现缓存和负载均衡示意图"></p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h4 id="从安全上说"><a href="#从安全上说" class="headerlink" title="从安全上说"></a>从安全上说</h4><ul>
+<li>正向代理允许客户端通过访问任意网站并且还隐藏客户端的身份，因此咱么必须要用安全的措施用来确保，并未经过授权的客户提供服务。</li>
+<li>反向代理对外是透明的，大家不知道自己访问的是一个代理服务器。</li>
+</ul>
+<h4 id="从用途上总结"><a href="#从用途上总结" class="headerlink" title="从用途上总结"></a>从用途上总结</h4><ul>
+<li>正向代理主要是为防火墙内的局域网客户端提供internet访问途径，并且可以利用缓存来减少网络使用率。</li>
+<li>反向代理的主要用途是为后台服务器提供负载均衡或者为后端比较慢的服务器提供缓冲技术。并且还有一些更加高级的URL策略和管理技术。</li>
+</ul>
+<pre><code>举个比方：正向代理就是有3个人，a是b的好朋友，b的好朋友是c，a有困难找了b，b不能解决就找了c。a他很清楚的知道b有个好朋友叫做c。就像我们用VPN翻墙，是知道必须买这个才行的。
+但是反向代理，也是一样的过程，区别就是a他不知道b有个好朋友c，而且b还向c寻求帮助。a以为他的忙就是b帮的。
+</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机网络/" rel="tag"># 计算机网络</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/27/操作系统体系结构-梳理二-处理机管理/" rel="next" title="操作系统体系结构-梳理二-处理机管理">
+                <i class="fa fa-chevron-left"></i> 操作系统体系结构-梳理二-处理机管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/31/如果想用script做自己的网名？/" rel="prev" title="如果想用script做自己的网名？">
+                如果想用script做自己的网名？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#正向代理"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x6B63;&#x5411;&#x4EE3;&#x7406;" class="headerlink" title="&#x6B63;&#x5411;&#x4EE3;&#x7406;"></a>&#x6B63;&#x5411;&#x4EE3;&#x7406;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#举个小例子"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x4E3E;&#x4E2A;&#x5C0F;&#x4F8B;&#x5B50;" class="headerlink" title="&#x4E3E;&#x4E2A;&#x5C0F;&#x4F8B;&#x5B50;"></a>&#x4E3E;&#x4E2A;&#x5C0F;&#x4F8B;&#x5B50;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正向代理能够帮助我们做什么"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x6B63;&#x5411;&#x4EE3;&#x7406;&#x80FD;&#x591F;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x505A;&#x4EC0;&#x4E48;" class="headerlink" title="&#x6B63;&#x5411;&#x4EE3;&#x7406;&#x80FD;&#x591F;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x505A;&#x4EC0;&#x4E48;"></a>&#x6B63;&#x5411;&#x4EE3;&#x7406;&#x80FD;&#x591F;&#x5E2E;&#x52A9;&#x6211;&#x4EEC;&#x505A;&#x4EC0;&#x4E48;</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#做缓存，加速访问"><span class="nav-number">1.2.1.</span> <span class="nav-text"><a href="#&#x505A;&#x7F13;&#x5B58;&#xFF0C;&#x52A0;&#x901F;&#x8BBF;&#x95EE;" class="headerlink" title="&#x505A;&#x7F13;&#x5B58;&#xFF0C;&#x52A0;&#x901F;&#x8BBF;&#x95EE;"></a><strong>&#x505A;&#x7F13;&#x5B58;&#xFF0C;&#x52A0;&#x901F;&#x8BBF;&#x95EE;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#翻墙原理"><span class="nav-number">1.2.2.</span> <span class="nav-text"><a href="#&#x7FFB;&#x5899;&#x539F;&#x7406;" class="headerlink" title="&#x7FFB;&#x5899;&#x539F;&#x7406;"></a><strong>&#x7FFB;&#x5899;&#x539F;&#x7406;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#服务器验证"><span class="nav-number">1.2.3.</span> <span class="nav-text"><a href="#&#x670D;&#x52A1;&#x5668;&#x9A8C;&#x8BC1;" class="headerlink" title="&#x670D;&#x52A1;&#x5668;&#x9A8C;&#x8BC1;"></a><strong>&#x670D;&#x52A1;&#x5668;&#x9A8C;&#x8BC1;</strong></span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向代理"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x53CD;&#x5411;&#x4EE3;&#x7406;" class="headerlink" title="&#x53CD;&#x5411;&#x4EE3;&#x7406;"></a>&#x53CD;&#x5411;&#x4EE3;&#x7406;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#反向代理的特点"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x7684;&#x7279;&#x70B9;" class="headerlink" title="&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x7684;&#x7279;&#x70B9;"></a>&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x7684;&#x7279;&#x70B9;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反向代理的用途"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x7684;&#x7528;&#x9014;" class="headerlink" title="&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x7684;&#x7528;&#x9014;"></a>&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x7684;&#x7528;&#x9014;</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#负载均衡"><span class="nav-number">2.2.1.</span> <span class="nav-text"><a href="#&#x8D1F;&#x8F7D;&#x5747;&#x8861;" class="headerlink" title="&#x8D1F;&#x8F7D;&#x5747;&#x8861;"></a><strong>&#x8D1F;&#x8F7D;&#x5747;&#x8861;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#实现CDN"><span class="nav-number">2.2.2.</span> <span class="nav-text"><a href="#&#x5B9E;&#x73B0;CDN" class="headerlink" title="&#x5B9E;&#x73B0;CDN"></a><strong>&#x5B9E;&#x73B0;CDN</strong></span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#从安全上说"><span class="nav-number">3.1.</span> <span class="nav-text"><a href="#&#x4ECE;&#x5B89;&#x5168;&#x4E0A;&#x8BF4;" class="headerlink" title="&#x4ECE;&#x5B89;&#x5168;&#x4E0A;&#x8BF4;"></a>&#x4ECE;&#x5B89;&#x5168;&#x4E0A;&#x8BF4;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从用途上总结"><span class="nav-number">3.2.</span> <span class="nav-text"><a href="#&#x4ECE;&#x7528;&#x9014;&#x4E0A;&#x603B;&#x7ED3;" class="headerlink" title="&#x4ECE;&#x7528;&#x9014;&#x4E0A;&#x603B;&#x7ED3;"></a>&#x4ECE;&#x7528;&#x9014;&#x4E0A;&#x603B;&#x7ED3;</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/03/31/正向代理与反向代理/';
+          this.page.identifier = '2016/03/31/正向代理与反向代理/';
+          this.page.title = '正向代理与反向代理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

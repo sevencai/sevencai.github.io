@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="DEMO &amp;amp;&amp;amp; PROJECTS Nodejs聊天室使用SocketIO,利用较少的代码实现私聊、群聊、显示用户列表、用户进入退出聊天室记录等功能。 地址：https://github.com/sevencai/node-chat  基于hybrid的ionic应用app使用感受是，可快速上手，但是坑太多。未来hybrid应该会略于ReactNative。 项目写于2014，大二。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Seven&#39;s Blog">
+<meta property="og:url" content="http://sevencai.github.io/project/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="DEMO &amp;amp;&amp;amp; PROJECTS Nodejs聊天室使用SocketIO,利用较少的代码实现私聊、群聊、显示用户列表、用户进入退出聊天室记录等功能。 地址：https://github.com/sevencai/node-chat  基于hybrid的ionic应用app使用感受是，可快速上手，但是坑太多。未来hybrid应该会略于ReactNative。 项目写于2014，大二。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-03-02T03:36:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Seven&#39;s Blog">
+<meta name="twitter:description" content="DEMO &amp;amp;&amp;amp; PROJECTS Nodejs聊天室使用SocketIO,利用较少的代码实现私聊、群聊、显示用户列表、用户进入退出聊天室记录等功能。 地址：https://github.com/sevencai/node-chat  基于hybrid的ionic应用app使用感受是，可快速上手，但是坑太多。未来hybrid应该会略于ReactNative。 项目写于2014，大二。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/project/"/>
+
+
+
+
+
+  <title> | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <h2 id="DEMO-amp-amp-PROJECTS"><a href="#DEMO-amp-amp-PROJECTS" class="headerlink" title="DEMO &amp;&amp; PROJECTS"></a>DEMO &amp;&amp; PROJECTS</h2><hr>
+<h3 id="Nodejs聊天室"><a href="#Nodejs聊天室" class="headerlink" title="Nodejs聊天室"></a>Nodejs聊天室</h3><p>使用SocketIO,利用较少的代码实现私聊、群聊、显示用户列表、用户进入退出聊天室记录等功能。</p>
+<p>地址：<a href="git@github.com:sevencai/node-chat.git">https://github.com/sevencai/node-chat</a></p>
+<hr>
+<h3 id="基于hybrid的ionic应用app"><a href="#基于hybrid的ionic应用app" class="headerlink" title="基于hybrid的ionic应用app"></a>基于hybrid的ionic应用app</h3><p>使用感受是，可快速上手，但是坑太多。未来hybrid应该会略于ReactNative。</p>
+<p>项目写于2014，大二。仅限于参考代码，因为到目前为止ionic已经迭代了很多次，运行可能报错误。</p>
+<p>地址：<a href="https://github.com/sevencai/ionic-hybrid" target="_blank" rel="noopener">https://github.com/sevencai/ionic-hybrid</a></p>
+<hr>
+<h3 id="Blog-using-Bootstrap"><a href="#Blog-using-Bootstrap" class="headerlink" title="Blog using Bootstrap"></a>Blog using Bootstrap</h3><p>14年为学习bootstrap, 利用bootstrap做了一个静态博客。</p>
+<p>可以结合Java/PHP/.Net等后端语言动态拉去后台数据从而成为一个技术、生活博客。</p>
+<p>地址：<a href="https://github.com/sevencai/sevencai.github.io" target="_blank" rel="noopener">https://github.com/sevencai/Blog-using-Bootstrap</a></p>
+<hr>
+<h3 id="CSS3-动画学习记录项目"><a href="#CSS3-动画学习记录项目" class="headerlink" title="CSS3 动画学习记录项目"></a>CSS3 动画学习记录项目</h3><p>项目地址：<a href="https://github.com/sevencai/css3-animation" target="_blank" rel="noopener">https://github.com/sevencai/css3-animation</a></p>
+<h4 id="动画小项目"><a href="#动画小项目" class="headerlink" title="动画小项目"></a>动画小项目</h4><p>地址： <a href="http://cailidan.cn/web/CSS3-practice-master/Adou-newSite/" target="_blank" rel="noopener">http://cailidan.cn/web/CSS3-practice-master/Adou-newSite/</a><br>地址：<a href="http://cailidan.cn/web/CSS3-practice-master/box-shadow/index.html" target="_blank" rel="noopener">http://cailidan.cn/web/CSS3-practice-master/box-shadow/index.html</a><br>地址：<a href="http://cailidan.cn/web/CSS3-practice-master/dynamic_effect/1.html" target="_blank" rel="noopener">http://cailidan.cn/web/CSS3-practice-master/dynamic_effect/1.html</a><br>地址：<a href="http://cailidan.cn/web/CSS3-practice-master/dynamic_effect/2.html" target="_blank" rel="noopener">http://cailidan.cn/web/CSS3-practice-master/dynamic_effect/2.html</a><br>地址：<a href="http://cailidan.cn/web/CSS3-practice-master/dynamic_effect/3.html" target="_blank" rel="noopener">http://cailidan.cn/web/CSS3-practice-master/dynamic_effect/3.html</a><br>地址： <a href="http://cailidan.cn/web/CSS3-practice-master/Ghost%20Buttons/index.html" target="_blank" rel="noopener">http://cailidan.cn/web/CSS3-practice-master/Ghost%20Buttons/index.html</a><br>地址：<a href="http://cailidan.cn/web/CSS3-practice-master/%E4%B8%83%E5%A4%95%E6%B8%B8%E6%88%8F/index.html" target="_blank" rel="noopener">http://cailidan.cn/web/CSS3-practice-master/%E4%B8%83%E5%A4%95%E6%B8%B8%E6%88%8F/index.html</a></p>
+<hr>
+<h4 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h4><p>1.由于入司后代码不可外泄，以上是我大三之前的小DEMO</p>
+<p>2.梦想希望像 TJ Holowaychuk 那样写出很多优秀的开源代码，目前还差很远，要一直努力。</p>
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DEMO-amp-amp-PROJECTS"><span class="nav-number">1.</span> <span class="nav-text"><a href="#DEMO-amp-amp-PROJECTS" class="headerlink" title="DEMO &amp;&amp; PROJECTS"></a>DEMO &amp;&amp; PROJECTS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nodejs聊天室"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#Nodejs&#x804A;&#x5929;&#x5BA4;" class="headerlink" title="Nodejs&#x804A;&#x5929;&#x5BA4;"></a>Nodejs&#x804A;&#x5929;&#x5BA4;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于hybrid的ionic应用app"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x57FA;&#x4E8E;hybrid&#x7684;ionic&#x5E94;&#x7528;app" class="headerlink" title="&#x57FA;&#x4E8E;hybrid&#x7684;ionic&#x5E94;&#x7528;app"></a>&#x57FA;&#x4E8E;hybrid&#x7684;ionic&#x5E94;&#x7528;app</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Blog-using-Bootstrap"><span class="nav-number">1.3.</span> <span class="nav-text"><a href="#Blog-using-Bootstrap" class="headerlink" title="Blog using Bootstrap"></a>Blog using Bootstrap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSS3-动画学习记录项目"><span class="nav-number">1.4.</span> <span class="nav-text"><a href="#CSS3-&#x52A8;&#x753B;&#x5B66;&#x4E60;&#x8BB0;&#x5F55;&#x9879;&#x76EE;" class="headerlink" title="CSS3 &#x52A8;&#x753B;&#x5B66;&#x4E60;&#x8BB0;&#x5F55;&#x9879;&#x76EE;"></a>CSS3 &#x52A8;&#x753B;&#x5B66;&#x4E60;&#x8BB0;&#x5F55;&#x9879;&#x76EE;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#动画小项目"><span class="nav-number">1.4.1.</span> <span class="nav-text"><a href="#&#x52A8;&#x753B;&#x5C0F;&#x9879;&#x76EE;" class="headerlink" title="&#x52A8;&#x753B;&#x5C0F;&#x9879;&#x76EE;"></a>&#x52A8;&#x753B;&#x5C0F;&#x9879;&#x76EE;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#备注"><span class="nav-number">1.4.2.</span> <span class="nav-text"><a href="#&#x5907;&#x6CE8;" class="headerlink" title="&#x5907;&#x6CE8;"></a>&#x5907;&#x6CE8;</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/project/index.html';
+          this.page.identifier = 'project/index.html';
+          this.page.title = '';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Css," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="盒子的曲边阴影，翘边阴影的区别是：曲边阴影看起来盒子下边像是有个曲边。而翘边阴影是往两边翘。两者的本质就是累加，就是看着像是一个盒子的阴影，其实是多个盒子累加起来的阴影，只是其他的看不见，只有shadow。 这个是好久以前跟着慕课网的老师学的，正好现在整理下。下图是直接的感受，要仔细看才能看到不一样的地方，演示地址上面一个大图，下边是有阴影的，而且阴影并不是整个的一样，而是两边阴影稍微少点，约往里">
+<meta name="keywords" content="Css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="css做盒子的曲边阴影和翘边阴影">
+<meta property="og:url" content="http://sevencai.github.io/2015/12/19/css做盒子的曲边阴影和翘边阴影/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="盒子的曲边阴影，翘边阴影的区别是：曲边阴影看起来盒子下边像是有个曲边。而翘边阴影是往两边翘。两者的本质就是累加，就是看着像是一个盒子的阴影，其实是多个盒子累加起来的阴影，只是其他的看不见，只有shadow。 这个是好久以前跟着慕课网的老师学的，正好现在整理下。下图是直接的感受，要仔细看才能看到不一样的地方，演示地址上面一个大图，下边是有阴影的，而且阴影并不是整个的一样，而是两边阴影稍微少点，约往里">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/qbqb.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/qbqb1.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/qbqb2.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/qbqb3.png">
+<meta property="og:updated_time" content="2016-12-12T02:59:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="css做盒子的曲边阴影和翘边阴影">
+<meta name="twitter:description" content="盒子的曲边阴影，翘边阴影的区别是：曲边阴影看起来盒子下边像是有个曲边。而翘边阴影是往两边翘。两者的本质就是累加，就是看着像是一个盒子的阴影，其实是多个盒子累加起来的阴影，只是其他的看不见，只有shadow。 这个是好久以前跟着慕课网的老师学的，正好现在整理下。下图是直接的感受，要仔细看才能看到不一样的地方，演示地址上面一个大图，下边是有阴影的，而且阴影并不是整个的一样，而是两边阴影稍微少点，约往里">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/qbqb.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2015/12/19/css做盒子的曲边阴影和翘边阴影/"/>
+
+
+
+
+
+  <title>css做盒子的曲边阴影和翘边阴影 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2015/12/19/css做盒子的曲边阴影和翘边阴影/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">css做盒子的曲边阴影和翘边阴影</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-12-19T21:14:11+08:00">
+                2015-12-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/12/19/css做盒子的曲边阴影和翘边阴影/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/12/19/css做盒子的曲边阴影和翘边阴影/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>盒子的曲边阴影，翘边阴影的区别是：曲边阴影看起来盒子下边像是有个曲边。而翘边阴影是往两边翘。两者的本质就是累加，就是看着像是一个盒子的阴影，其实是多个盒子累加起来的阴影，只是其他的看不见，只有shadow。</p>
+<p>这个是好久以前跟着慕课网的老师学的，正好现在整理下。下图是直接的感受，要仔细看才能看到不一样的地方，<a href="http://5.ghostbuttons.sinaapp.com/box-shadow/" target="_blank" rel="noopener">演示地址</a><br><img src="http://www.cailidan.cn/images/qbqb.png" alt="曲边翘边"><br>上面一个大图，下边是有阴影的，而且阴影并不是整个的一样，而是两边阴影稍微少点，约往里阴影越明显，到底是咋做的呢，一张图就可以解决。</p>
+<h2 id="曲边阴影"><a href="#曲边阴影" class="headerlink" title="曲边阴影"></a>曲边阴影</h2><p><img src="http://www.cailidan.cn/images/qbqb1.png" alt="曲边"><br>这里就是刚才说的盒子加盒子，外面的大盒子我们看得到，而里面的小矩形，就是隐藏的盒子，大盒子有大盒子的阴影，小盒子有小盒子的阴影，这样一叠加，是不是就是中间阴影更大了呢。</p>
+<p><strong>dom结构</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=<span class="string">"wrap effect"</span>&gt;</span><br><span class="line">    &lt;h1&gt;Shadow Effect&lt;/h1&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>css编写</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">.effect&#123;</span><br><span class="line">    position: relative;</span><br><span class="line">    box-shadow: 0px 1px 4px rgba(0,0,0,0.3),0 0 40px rgba(0,0,0,0.1) inset;</span><br><span class="line">    -webkit-box-shadow:0px 1px 4px rgba(0,0,0,0.3),0 0 40px rgba(0,0,0,0.1) inset;</span><br><span class="line">    -o-box-shadow:0px 1px 4px rgba(0,0,0,0.3),0 0 40px rgba(0,0,0,0.1) inset;</span><br><span class="line">    -moz-box-shadow:0px 1px 4px rgba(0,0,0,0.3),0 0 40px rgba(0,0,0,0.1) inset;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.effect:after,.effect:before&#123;</span><br><span class="line">    content: <span class="string">""</span>;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top:50%;</span><br><span class="line">    bottom: 0px;</span><br><span class="line">    left:20px;</span><br><span class="line">    right:20px;</span><br><span class="line">    background-color: red;</span><br><span class="line">    border-radius: 100px/10px;</span><br><span class="line">    box-shadow: 0 0 20px rgba(0,0,0,0.3);</span><br><span class="line">    -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.3);</span><br><span class="line">    -moz-box-shadow: 0 0 20px rgba(0,0,0,0.3);</span><br><span class="line">    -o-box-shadow: 0 0 20px rgba(0,0,0,0.3);</span><br><span class="line">    z-index: -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面还用到了box-shadow的inset,还有after和before，以及要浏览器的各个内核。</p>
+<h2 id="翘边阴影"><a href="#翘边阴影" class="headerlink" title="翘边阴影"></a>翘边阴影</h2><p>原理解析图如下，原理跟上面几乎一样，也是盒子加盒子，唯一不同的是，这次两个盒子不一样，朝向不同的方向，为不同的边加了阴影。</p>
+<p><img src="http://www.cailidan.cn/images/qbqb2.png" alt="翘边"><br><img src="http://www.cailidan.cn/images/qbqb3.png" alt="翘边"><br><strong>dom结构</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;ul class=<span class="string">"box"</span>&gt;</span><br><span class="line">    &lt;li&gt;&lt;img src=<span class="string">"images/photo1.jpg"</span> alt=<span class="string">""</span> /&gt;&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;&lt;img src=<span class="string">"images/photo2.jpg"</span> alt=<span class="string">""</span> /&gt;&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;&lt;img src=<span class="string">"images/photo3.jpg"</span> alt=<span class="string">""</span> /&gt;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>css编写</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">.box li:before&#123;</span><br><span class="line">    content:<span class="string">""</span>;</span><br><span class="line">    position:absolute;</span><br><span class="line">    width:90%;</span><br><span class="line">    height: 80%;</span><br><span class="line">    bottom: 13px;</span><br><span class="line">    left:21px;</span><br><span class="line">    background: transparent;</span><br><span class="line">    z-index: -2;</span><br><span class="line">    box-shadow: 0 8px 20px rgba(0,0,0,0.8);</span><br><span class="line">    -webkit-box-shadow: 0 8px 20px rgba(0,0,0,0.8);</span><br><span class="line">    -o-box-shadow: 0 8px 20px rgba(0,0,0,0.8);</span><br><span class="line">    -moz-box-shadow: 0 8px 20px rgba(0,0,0,0.8);</span><br><span class="line">    transform:skew(-12deg) rotate(-6deg);</span><br><span class="line">    -webkit-transform:skew(-12deg) rotate(-6deg);</span><br><span class="line">    -moz-transform:skew(-12deg) rotate(-6deg);</span><br><span class="line">    -os-transform:skew(-12deg) rotate(-6deg);</span><br><span class="line">    -o-transform:skew(-12deg) rotate(-6deg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.box li:after&#123;</span><br><span class="line">    content:<span class="string">""</span>;</span><br><span class="line">    position:absolute;</span><br><span class="line">    width:90%;</span><br><span class="line">    height: 80%;</span><br><span class="line">    bottom: 13px;</span><br><span class="line">    right:21px;</span><br><span class="line">    z-index: -2;</span><br><span class="line">    background: transparent;</span><br><span class="line">    box-shadow: 0 8px 20px rgba(0,0,0,0.8);</span><br><span class="line">    transform:skew(12deg) rotate(6deg);</span><br><span class="line">    -webkit-transform:skew(12deg) rotate(6deg);</span><br><span class="line">    -moz-transform:skew(12deg) rotate(6deg);</span><br><span class="line">    -os-transform:skew(12deg) rotate(6deg);</span><br><span class="line">    -o-transform:skew(12deg) rotate(6deg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里还用到了css3的变形，transform时元素拉伸并且旋转。由于旋转和拉伸，那个隐形的菱形有一边比较靠近边缘，给他加上阴影，阴影范围比较大时，就会有一部分溢出来了，也就是这里的阴影比较明显，2边4个脚都这样，也就形成了翘起来的边啦。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Css/" rel="tag"># Css</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/15/angular整理笔记一/" rel="next" title="angular整理笔记一">
+                <i class="fa fa-chevron-left"></i> angular整理笔记一
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/01/如何用CSS做漂亮的毛玻璃效果/" rel="prev" title="如何用CSS做漂亮的毛玻璃效果">
+                如何用CSS做漂亮的毛玻璃效果 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#曲边阴影"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x66F2;&#x8FB9;&#x9634;&#x5F71;" class="headerlink" title="&#x66F2;&#x8FB9;&#x9634;&#x5F71;"></a>&#x66F2;&#x8FB9;&#x9634;&#x5F71;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#翘边阴影"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x7FD8;&#x8FB9;&#x9634;&#x5F71;" class="headerlink" title="&#x7FD8;&#x8FB9;&#x9634;&#x5F71;"></a>&#x7FD8;&#x8FB9;&#x9634;&#x5F71;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2015/12/19/css做盒子的曲边阴影和翘边阴影/';
+          this.page.identifier = '2015/12/19/css做盒子的曲边阴影和翘边阴影/';
+          this.page.title = 'css做盒子的曲边阴影和翘边阴影';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

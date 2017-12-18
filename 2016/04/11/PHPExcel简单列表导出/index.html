@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="PHP," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="PHPExcel是用来操作Office Excel 文档的一个PHP类库，它基于微软的OpenXML标准和PHP语言。可以使用它来读取、写入不同格式的电子表格。下面主要介绍的是：PHPExcel简单列表导出。  生成Excel表的思路对照首先我们需要到官网上，下载PHPExcel的包，包里我们把classes单独提取出来，classes里面有一个文件使PHPExcel.php这个是我们主要用到的，">
+<meta name="keywords" content="PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHPExcel简单列表导出">
+<meta property="og:url" content="http://sevencai.github.io/2016/04/11/PHPExcel简单列表导出/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="PHPExcel是用来操作Office Excel 文档的一个PHP类库，它基于微软的OpenXML标准和PHP语言。可以使用它来读取、写入不同格式的电子表格。下面主要介绍的是：PHPExcel简单列表导出。  生成Excel表的思路对照首先我们需要到官网上，下载PHPExcel的包，包里我们把classes单独提取出来，classes里面有一个文件使PHPExcel.php这个是我们主要用到的，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/phpexcel.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/pex2.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/pxc1.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/exc3.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/pexc5.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/pec4.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/pce7.png">
+<meta property="og:updated_time" content="2016-12-12T02:30:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PHPExcel简单列表导出">
+<meta name="twitter:description" content="PHPExcel是用来操作Office Excel 文档的一个PHP类库，它基于微软的OpenXML标准和PHP语言。可以使用它来读取、写入不同格式的电子表格。下面主要介绍的是：PHPExcel简单列表导出。  生成Excel表的思路对照首先我们需要到官网上，下载PHPExcel的包，包里我们把classes单独提取出来，classes里面有一个文件使PHPExcel.php这个是我们主要用到的，">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/phpexcel.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/04/11/PHPExcel简单列表导出/"/>
+
+
+
+
+
+  <title>PHPExcel简单列表导出 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/11/PHPExcel简单列表导出/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PHPExcel简单列表导出</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-11T22:30:23+08:00">
+                2016-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/11/PHPExcel简单列表导出/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/11/PHPExcel简单列表导出/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>PHPExcel是用来操作Office Excel 文档的一个PHP<strong>类库</strong>，它基于微软的OpenXML标准和PHP语言。可以使用它来读取、写入不同格式的电子表格。下面主要介绍的是：PHPExcel简单列表导出。</p>
+<hr>
+<h4 id="生成Excel表的思路对照"><a href="#生成Excel表的思路对照" class="headerlink" title="生成Excel表的思路对照"></a>生成Excel表的思路对照</h4><p>首先我们需要到官网上，下载PHPExcel的包，包里我们把classes单独提取出来，classes里面有一个文件使PHPExcel.php这个是我们主要用到的，在下面的例子中，我把classes文件夹重命名为了PHPExcel。下面这张图对比了我们平常创建一个excel需要做什么和我们用代码创建一个excel的相同的地方，我们应该看到他们非常相似：<br><img src="http://www.cailidan.cn/images/phpexcel.png" alt=""></p>
+<hr>
+<h4 id="生成Excel表基本代码"><a href="#生成Excel表基本代码" class="headerlink" title="生成Excel表基本代码"></a>生成Excel表基本代码</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">  <span class="comment">//获取当前路径</span></span><br><span class="line">  $dir = dirname(<span class="keyword">__FILE__</span>); </span><br><span class="line"></span><br><span class="line">  <span class="comment">//包含PHPExcel文件</span></span><br><span class="line">  <span class="keyword">require_once</span>(<span class="string">"./PHPExcel/PHPExcel.php"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//创建了一个表格</span></span><br><span class="line">  $phpExcelObj = <span class="keyword">new</span> PHPExcel(); </span><br><span class="line"></span><br><span class="line">  <span class="comment">//获取当前活动sheet</span></span><br><span class="line">  $activeSheet = $phpExcelObj-&gt;getActiveSheet();</span><br><span class="line">  <span class="comment">//var_dump($activeSheet);</span></span><br><span class="line"></span><br><span class="line">  $activeSheet-&gt;setTitle(<span class="string">"demo"</span>);</span><br><span class="line">  <span class="comment">//给当前的表格填充数据</span></span><br><span class="line">  $activeSheet-&gt;setCellValue(<span class="string">"A1"</span>,<span class="string">"姓名"</span>)-&gt;setCellValue(<span class="string">"B1"</span>,<span class="string">"分数"</span>);</span><br><span class="line">  $activeSheet-&gt;setCellValue(<span class="string">"A2"</span>,<span class="string">"Seven"</span>)-&gt;setCellValue(<span class="string">"B2"</span>,<span class="string">"75"</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//按照指定格式生成excel文件</span></span><br><span class="line">  $objWriter = PHPExcel_IOFactory::createWriter($phpExcelObj,<span class="string">"Excel2007"</span>);</span><br><span class="line">  <span class="comment">//保存文档</span></span><br><span class="line">  $objWriter-&gt;save($dir.<span class="string">"/demo.xlsx"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>就可以在当前目录下生成一个demo.xlsx,里面的内容：</strong></p>
+<p><img src="http://www.cailidan.cn/images/pex2.png" alt=""></p>
+<p><strong>先前可以试着打印下$phpExcelObj对象，如果看到下面的可以说明引入成功：</strong></p>
+<p><img src="http://www.cailidan.cn/images/pxc1.png" alt=""></p>
+<p><strong>还有下面这样的一种方式，以数组来填充：</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">  $dir = dirname(<span class="keyword">__FILE__</span>); <span class="comment">//string 'D:\wamp\wamp\www\phpexcel' (length=25)</span></span><br><span class="line">  <span class="keyword">require_once</span>(<span class="string">"./PHPExcel/PHPExcel.php"</span>);</span><br><span class="line">  $phpExcelObj = <span class="keyword">new</span> PHPExcel();  <span class="comment">//创建了一个表格</span></span><br><span class="line">  $activeSheet = $phpExcelObj-&gt;getActiveSheet();</span><br><span class="line">  <span class="comment">//var_dump($activeSheet);//获取当前活动sheet</span></span><br><span class="line">  $activeSheet-&gt;setTitle(<span class="string">"demo"</span>);</span><br><span class="line">  <span class="comment">//给当前的表格填充数据</span></span><br><span class="line">  $array = <span class="keyword">array</span>(</span><br><span class="line">    <span class="keyword">array</span>(),</span><br><span class="line">    <span class="keyword">array</span>(<span class="string">""</span>,<span class="string">"姓名"</span>,<span class="string">"分数"</span>),</span><br><span class="line">    <span class="keyword">array</span>(<span class="string">""</span>,<span class="string">"李四"</span>,<span class="string">"60"</span>),</span><br><span class="line">    <span class="keyword">array</span>(<span class="string">""</span>,<span class="string">"王五"</span>,<span class="string">"90"</span>)</span><br><span class="line">    );</span><br><span class="line">  $activeSheet-&gt;fromArray($array);</span><br><span class="line">  $objWriter = PHPExcel_IOFactory::createWriter($phpExcelObj,<span class="string">"Excel2007"</span>);</span><br><span class="line">  $objWriter-&gt;save($dir.<span class="string">"/demo1.xlsx"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="http://www.cailidan.cn/images/exc3.png" alt=""></p>
+<p>这种方法肯定和上面的比有优点，比如设置起来比较方便，但是也有不好的地方，比较耗内存。</p>
+<hr>
+<h4 id="把数据库的数据录入excel中"><a href="#把数据库的数据录入excel中" class="headerlink" title="把数据库的数据录入excel中"></a>把数据库的数据录入excel中</h4><p>刚刚我们的是直接手动录入，这种情况在项目中是使用比较少的，下面这种我们把数据从数据库录入excel中是最常见的。比如我们在生成订单表的时候，生成excel对卖家来说会是经常需要的。</p>
+<p>比如我们在数据库中有这样一张表：</p>
+<p><img src="http://www.cailidan.cn/images/pexc5.png" alt=""></p>
+<p>我们需要按照年级把成绩分出来，并得到下面的结果,如果我们手动录入肯定会很麻烦，看看下面的PHPExcel方法：</p>
+<p><img src="http://www.cailidan.cn/images/pec4.png" alt=""></p>
+<p><strong>首先我们有一个数据库配置文件：<code>config.php</code></strong>,在这里面要设置数据库，字符集等信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">	$config = array(</span><br><span class="line">		&apos;host&apos;=&gt;&apos;127.0.0.1&apos;,</span><br><span class="line">		&apos;username&apos;=&gt;&apos;root&apos;,</span><br><span class="line">		&apos;password&apos;=&gt;&apos;****&apos;,</span><br><span class="line">		&apos;database&apos;=&gt;&apos;test&apos;,</span><br><span class="line">		&apos;charset&apos;=&gt;&apos;utf8&apos;</span><br><span class="line">	);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>然后我们需要一个db类，用于我们从数据库取出数据，我们命名为db.php</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">	<span class="keyword">require_once</span>(<span class="string">'./config.php'</span>);</span><br><span class="line">	<span class="class"><span class="keyword">class</span> <span class="title">db</span></span>&#123;</span><br><span class="line">		<span class="keyword">public</span> $conn = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($config)</span></span>&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;conn = mysql_connect($config[<span class="string">'host'</span>],$config[<span class="string">'username'</span>],$config[<span class="string">'password'</span>]) <span class="keyword">or</span> <span class="keyword">die</span>(mysql_error());</span><br><span class="line">			mysql_select_db($config[<span class="string">'database'</span>]) <span class="keyword">or</span> <span class="keyword">die</span>(mysql_error());</span><br><span class="line">			mysql_query(<span class="string">"set names "</span>.$config[<span class="string">'charset'</span>]) <span class="keyword">or</span> <span class="keyword">die</span>(mysql_error());</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getResult</span><span class="params">($sql)</span></span>&#123;</span><br><span class="line">			$res = mysql_query($sql);</span><br><span class="line">			$arr = <span class="keyword">array</span>();</span><br><span class="line">			<span class="keyword">while</span>($row = mysql_fetch_assoc($res))&#123;</span><br><span class="line">				$arr[] = $row;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> $arr;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getDataByGrade</span><span class="params">($grade)</span></span>&#123;</span><br><span class="line">			$sql = <span class="string">"select * from student where grade = "</span>.$grade.<span class="string">" order by score desc"</span>;</span><br><span class="line">			$res = <span class="keyword">self</span>::getResult($sql);</span><br><span class="line">			<span class="keyword">return</span> $res;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>下面是我们的主文件，我们把上面的文件都包含进来，这里注意因为我们在db里已经require了config.php,所以这里不用再包含config.php了，或者我们用<code>require_once</code>也可以。</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">	$dir = dirname(<span class="keyword">__FILE__</span>);</span><br><span class="line">	<span class="keyword">require</span> $dir.<span class="string">"/db.php"</span>;</span><br><span class="line">	<span class="keyword">require</span> $dir.<span class="string">"/PHPExcel/PHPExcel.php"</span>;</span><br><span class="line">	$db = <span class="keyword">new</span> db($config);</span><br><span class="line">	$objPHPExcel = <span class="keyword">new</span> PHPExcel();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> ($i=<span class="number">1</span>; $i &lt;= <span class="number">3</span>; $i++) &#123; </span><br><span class="line">		<span class="keyword">if</span>($i&gt;<span class="number">1</span>)&#123;</span><br><span class="line">			$objPHPExcel-&gt;createSheet();</span><br><span class="line">		&#125;</span><br><span class="line">		$objPHPExcel-&gt;setActiveSheetIndex($i<span class="number">-1</span>);</span><br><span class="line">		$objSheet = $objPHPExcel-&gt;getActiveSheet();</span><br><span class="line">		$objSheet-&gt;setTitle($i.<span class="string">"年级"</span>);</span><br><span class="line">		$data = $db-&gt;getDataByGrade($i);</span><br><span class="line"></span><br><span class="line">		$objSheet-&gt;setCellValue(<span class="string">"A1"</span>,<span class="string">"姓名"</span>)-&gt;setCellValue(<span class="string">"B1"</span>,<span class="string">"年级"</span>)-&gt;setCellValue(<span class="string">"C1"</span>,<span class="string">"成绩"</span>);</span><br><span class="line">		$j=<span class="number">2</span>;</span><br><span class="line">		<span class="keyword">foreach</span> ($data <span class="keyword">as</span> $key =&gt; $value) &#123;</span><br><span class="line">			$objSheet-&gt;setCellValue(<span class="string">"A"</span>.$j,$value[<span class="string">'name'</span>])-&gt;setCellValue(<span class="string">"B"</span>.$j,$value[<span class="string">'grade'</span>])-&gt;setCellValue(<span class="string">"C"</span>.$j,$value[<span class="string">'name'</span>]);</span><br><span class="line">			$j++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,<span class="string">'Excel5'</span>);</span><br><span class="line">	$objWriter-&gt;save($dir.<span class="string">"/export_1.xls"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>主要的思路就是我们按照先前我们的步骤新建表，创建sheet,这里不同的是，我们要把三个年级的放到不同的sheet里，所以不能只create一个sheet,要根据grade有多少个循环创建，并且把相应的数据放进去。</p>
+<hr>
+<h4 id="将excel输出到浏览器"><a href="#将excel输出到浏览器" class="headerlink" title="将excel输出到浏览器"></a>将excel输出到浏览器</h4><p>我们也可以吧excel保存到浏览器，这个时候我们只用改动一点代码就行了，比如这里我们设置header头，告诉浏览器生成的类型。注意这里save方法发生了变化的。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">	$dir = dirname(<span class="keyword">__FILE__</span>);</span><br><span class="line">	<span class="keyword">require</span> $dir.<span class="string">"/db.php"</span>;</span><br><span class="line">	<span class="keyword">require</span> $dir.<span class="string">"/PHPExcel/PHPExcel.php"</span>;</span><br><span class="line">	$db = <span class="keyword">new</span> db($config);</span><br><span class="line">	$objPHPExcel = <span class="keyword">new</span> PHPExcel();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> ($i=<span class="number">1</span>; $i &lt;= <span class="number">3</span>; $i++) &#123; </span><br><span class="line">		<span class="keyword">if</span>($i&gt;<span class="number">1</span>)&#123;</span><br><span class="line">			$objPHPExcel-&gt;createSheet();</span><br><span class="line">		&#125;</span><br><span class="line">		$objPHPExcel-&gt;setActiveSheetIndex($i<span class="number">-1</span>);</span><br><span class="line">		$objSheet = $objPHPExcel-&gt;getActiveSheet();</span><br><span class="line">		$objSheet-&gt;setTitle($i.<span class="string">"年级"</span>);</span><br><span class="line">		$data = $db-&gt;getDataByGrade($i);</span><br><span class="line"></span><br><span class="line">		$objSheet-&gt;setCellValue(<span class="string">"A1"</span>,<span class="string">"姓名"</span>)-&gt;setCellValue(<span class="string">"B1"</span>,<span class="string">"年级"</span>)-&gt;setCellValue(<span class="string">"C1"</span>,<span class="string">"成绩"</span>);</span><br><span class="line">		$j=<span class="number">2</span>;</span><br><span class="line">		<span class="keyword">foreach</span> ($data <span class="keyword">as</span> $key =&gt; $value) &#123;</span><br><span class="line">			$objSheet-&gt;setCellValue(<span class="string">"A"</span>.$j,$value[<span class="string">'name'</span>])-&gt;setCellValue(<span class="string">"B"</span>.$j,$value[<span class="string">'grade'</span>])-&gt;setCellValue(<span class="string">"C"</span>.$j,$value[<span class="string">'name'</span>]);</span><br><span class="line">			$j++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,<span class="string">'Excel5'</span>);</span><br><span class="line">	<span class="comment">//$objWriter-&gt;save($dir."/export_1.xls");</span></span><br><span class="line">	browser_export(<span class="string">"Excel5"</span>,<span class="string">'browser_export01.xls'</span>);</span><br><span class="line">	$objWriter-&gt;save(<span class="string">"php://output"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">browser_export</span><span class="params">($type,$filename)</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span>($type==<span class="string">"Excel5"</span>)&#123;</span><br><span class="line">				header(<span class="string">'Content-Type: application/vnd.ms-excel'</span>);<span class="comment">//告诉浏览器将要输出excel03文件</span></span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">				header(<span class="string">'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'</span>);<span class="comment">//告诉浏览器数据excel07文件</span></span><br><span class="line">		&#125;</span><br><span class="line">		header(<span class="string">'Content-Disposition: attachment;filename="'</span>.$filename.<span class="string">'"'</span>);<span class="comment">//告诉浏览器将输出文件的名称</span></span><br><span class="line">		header(<span class="string">'Cache-Control: max-age=0'</span>);<span class="comment">//禁止缓存</span></span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>如果不告诉浏览器名称的话，就会把当前文本的名称当成输出excel的名称。header就是告诉浏览器文件类型。必须有。</p>
+<p>最后的结果，就是我一刷新就出来了下载这个：</p>
+<p><img src="http://www.cailidan.cn/images/pce7.png" alt=""></p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个还有很多方法我没有写到，比如我们怎么样设置居中，怎么样添加线性表，怎么样导入Excel表，这个我会回头有时间再写一篇博客的。还有很多设置样式的，我们其实要做的就是调用它的接口就行。因为这样的东西我觉得不是经常用就会忘，所以做一次大概知道是什么思路和样子就行了，以后要用的时候再查一查文档，看看以前做的例子，应该能很快就想起来的，那些函数的调用也没有太大的必要记住。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PHP/" rel="tag"># PHP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/10/Workerman-chat学习之路一（基本概念了解）/" rel="next" title="Workerman-chat学习之路一（基本概念了解）">
+                <i class="fa fa-chevron-left"></i> Workerman-chat学习之路一（基本概念了解）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/15/由workerman-chat再学习HTML5的WebSocket/" rel="prev" title="由workerman-chat再认识HTML5的WebSocket">
+                由workerman-chat再认识HTML5的WebSocket <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#生成Excel表的思路对照"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x751F;&#x6210;Excel&#x8868;&#x7684;&#x601D;&#x8DEF;&#x5BF9;&#x7167;" class="headerlink" title="&#x751F;&#x6210;Excel&#x8868;&#x7684;&#x601D;&#x8DEF;&#x5BF9;&#x7167;"></a>&#x751F;&#x6210;Excel&#x8868;&#x7684;&#x601D;&#x8DEF;&#x5BF9;&#x7167;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成Excel表基本代码"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x751F;&#x6210;Excel&#x8868;&#x57FA;&#x672C;&#x4EE3;&#x7801;" class="headerlink" title="&#x751F;&#x6210;Excel&#x8868;&#x57FA;&#x672C;&#x4EE3;&#x7801;"></a>&#x751F;&#x6210;Excel&#x8868;&#x57FA;&#x672C;&#x4EE3;&#x7801;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#把数据库的数据录入excel中"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x628A;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6570;&#x636E;&#x5F55;&#x5165;excel&#x4E2D;" class="headerlink" title="&#x628A;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6570;&#x636E;&#x5F55;&#x5165;excel&#x4E2D;"></a>&#x628A;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6570;&#x636E;&#x5F55;&#x5165;excel&#x4E2D;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将excel输出到浏览器"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x5C06;excel&#x8F93;&#x51FA;&#x5230;&#x6D4F;&#x89C8;&#x5668;" class="headerlink" title="&#x5C06;excel&#x8F93;&#x51FA;&#x5230;&#x6D4F;&#x89C8;&#x5668;"></a>&#x5C06;excel&#x8F93;&#x51FA;&#x5230;&#x6D4F;&#x89C8;&#x5668;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/04/11/PHPExcel简单列表导出/';
+          this.page.identifier = '2016/04/11/PHPExcel简单列表导出/';
+          this.page.title = 'PHPExcel简单列表导出';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="先前在学koa的时候，学习到了很多概念，比如generator,yield,yield *再深一点，比如co,trunk,iterator,async,await这些。当时学习的时候还是有很多疑惑。现在又重新整理了一遍。感觉思路清晰了很多。记录分享如下。大部分都来自MDN的整理和学习。感谢。我觉得MDN那种先定义，再解释，再讲用途的方式特别好。如果再加上自己感性点的理解就是很完美的学习新东西的方式">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yield和yield*的区别和用法">
+<meta property="og:url" content="http://sevencai.github.io/2016/08/04/yield和yield-的区别和用法/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="先前在学koa的时候，学习到了很多概念，比如generator,yield,yield *再深一点，比如co,trunk,iterator,async,await这些。当时学习的时候还是有很多疑惑。现在又重新整理了一遍。感觉思路清晰了很多。记录分享如下。大部分都来自MDN的整理和学习。感谢。我觉得MDN那种先定义，再解释，再讲用途的方式特别好。如果再加上自己感性点的理解就是很完美的学习新东西的方式">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T03:01:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="yield和yield*的区别和用法">
+<meta name="twitter:description" content="先前在学koa的时候，学习到了很多概念，比如generator,yield,yield *再深一点，比如co,trunk,iterator,async,await这些。当时学习的时候还是有很多疑惑。现在又重新整理了一遍。感觉思路清晰了很多。记录分享如下。大部分都来自MDN的整理和学习。感谢。我觉得MDN那种先定义，再解释，再讲用途的方式特别好。如果再加上自己感性点的理解就是很完美的学习新东西的方式">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/08/04/yield和yield-的区别和用法/"/>
+
+
+
+
+
+  <title>yield和yield*的区别和用法 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/08/04/yield和yield-的区别和用法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">yield和yield*的区别和用法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-04T09:02:01+08:00">
+                2016-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/04/yield和yield-的区别和用法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/04/yield和yield-的区别和用法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>先前在学koa的时候，学习到了很多概念，比如generator,yield,yield *再深一点，比如co,trunk,iterator,async,await这些。当时学习的时候还是有很多疑惑。现在又重新整理了一遍。感觉思路清晰了很多。记录分享如下。大部分都来自MDN的整理和学习。感谢。我觉得MDN那种先定义，再解释，再讲用途的方式特别好。如果再加上自己感性点的理解就是很完美的学习新东西的方式。以后要多学习这种学东西的习惯。很多时候，都是因为开始的时候没有抓住定义，把握住这个东西到底是干什么用的，导致到后来越来越糊涂。正确的做事情，第一次虽然会花费很长时间，但是后来会越来越少。</p>
+<hr>
+<h3 id="什么是yield"><a href="#什么是yield" class="headerlink" title="什么是yield?"></a><strong>什么是yield?</strong></h3><h4 id="yield的定义"><a href="#yield的定义" class="headerlink" title="yield的定义"></a><strong>yield的定义</strong></h4><p>yield 关键字用来暂停和继续一个生成器函数 (function* or legacy generator).</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">yield</span> [[expression]];</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>yield 关键字<strong>使生成器函数暂停执行</strong>，并返回跟在它后面的表达式的当前值. 可以把它想成是 return 关键字的一个基于生成器的版本.</p>
+<p>yield 关键字实际返回一个对象，<strong>包含两个属性, value 和 done</strong>.  value 属性为 yield expression 的值,  done 是一个布尔值用来指示生成器函数是否已经全部完成.</p>
+<p>一旦在 yield expression 处暂停,  <strong>除非外部调用生成器的 next() 方法</strong>，否则生成器的代码将不能继续执行. 这使得可以对生成器的执行以及渐进式的返回值进行直接控制.</p>
+</blockquote>
+<p>上面你能够理解，是建立在稍微知道一些<code>generator</code>的基础上的。<code>generator</code>我们称之为生成器，当你看到一个<code>function *(){//...}</code>这种有<code>*</code>的函数的时候，你就可以把这个函数称作<code>generator</code>,在这个函数里面，你可以使用<code>yield</code>。</p>
+<hr>
+<h4 id="煮个栗子"><a href="#煮个栗子" class="headerlink" title="煮个栗子"></a><strong>煮个栗子</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (index &lt;= <span class="number">2</span>) <span class="comment">// when index reaches 3, </span></span><br><span class="line">                     <span class="comment">// yield's done will be true </span></span><br><span class="line">                     <span class="comment">// and its value will be undefined;</span></span><br><span class="line">    <span class="keyword">yield</span> index++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> iterator = foo();</span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value:0, done:false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value:1, done:false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value:2, done:false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value:undefined, done:true &#125;</span></span><br></pre></td></tr></table></figure>
+<p>上面的都是我从MDN上学习到的，我没有做任何改动，因为我觉得它本身的例子就很好。看到这里，你肯定会想，那么为什么yield会跟异步扯上关系呢？<strong>因为执行到yield的时候，本次调用就已经结束了。控制权已经转到了外部next方法。并且调用的过程中整个生成器内部状态是一直在改变的。如果外部不条用next的话，那么这个生成器就停在了yield那里。所以我们只需要把异步的东西先做完。然后再在合适的地方调用next方法继续执行该生成器。就可以了。这就像函数在暂停，后面在继续的感觉。</strong>也就是我们通常理解的代码分段执行了。在阮一峰老师的es6的书里，他有提到，所谓的异步，就可以理解为代码分段执行了。先执行了一部分，然后这部分没有执行完，就开始执行下一部分。等到第一部分执行完再来执行剩余的部分。这样就可以理解为简单的异步。后面的代码并没有等前面的代码执行完，就开始执行了。</p>
+<p>但实际上，我们会经常这么用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchResult</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">gen</span>*(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> result = <span class="keyword">yield</span> fetchResult();</span><br><span class="line">  <span class="built_in">console</span>.log(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>fetchResult是一个异步的操作。比如返回的是一个Promise,那么如果你不用yield的时候，log出来的result是null，因为fetchResult是异步的。这个时候用yield就很需要了。</p>
+<p>我们可以用yield来写一个斐波那契函数：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">feb</span>(<span class="params">num</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> count = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">var</span> current= <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">var</span> last = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span>(count++ <span class="xml"><span class="tag">&lt; <span class="attr">num</span>)&#123;</span></span></span><br><span class="line"><span class="xml">    yield current;</span></span><br><span class="line"><span class="xml">    var temp = current;</span></span><br><span class="line"><span class="xml">    current += last;</span></span><br><span class="line"><span class="xml">    last = temp;</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br><span class="line"><span class="xml"></span></span><br><span class="line"><span class="xml">var f = feb(7),nxt;</span></span><br><span class="line"><span class="xml">var arr = [];</span></span><br><span class="line"><span class="xml">while(!(nxt = f.next()).done)&#123;</span></span><br><span class="line"><span class="xml">  arr.push(nxt.value);</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>注意这里last和count都是从0开始的。最后的到结果：<code>Array [ 1, 1, 2, 3, 5, 8, 13 ]</code>。因为这里的yield的作用就跟我们递归是很像很像的。</p>
+<p>那么在koa里面又是怎么用yield的呢？<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">var</span> app = koa();</span><br><span class="line"></span><br><span class="line"><span class="comment">// x-response-time</span></span><br><span class="line"></span><br><span class="line">app.use(<span class="function"><span class="keyword">function</span> *(<span class="params">next</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> start = <span class="keyword">new</span> <span class="built_in">Date</span>;</span><br><span class="line">  <span class="keyword">yield</span> next;</span><br><span class="line">  <span class="keyword">var</span> ms = <span class="keyword">new</span> <span class="built_in">Date</span> - start;</span><br><span class="line">  <span class="keyword">this</span>.set(<span class="string">'X-Response-Time'</span>, ms + <span class="string">'ms'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// logger</span></span><br><span class="line"></span><br><span class="line">app.use(<span class="function"><span class="keyword">function</span> *(<span class="params">next</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> start = <span class="keyword">new</span> <span class="built_in">Date</span>;</span><br><span class="line">  <span class="keyword">yield</span> next;</span><br><span class="line">  <span class="keyword">var</span> ms = <span class="keyword">new</span> <span class="built_in">Date</span> - start;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'%s %s - %s'</span>, <span class="keyword">this</span>.method, <span class="keyword">this</span>.url, ms);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// response</span></span><br><span class="line"></span><br><span class="line">app.use(<span class="function"><span class="keyword">function</span> *(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.body = <span class="string">'Hello World'</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure></p>
+<p>在app.use里面，只接受有*的generator,在这个里面，你可以调用yield next继续往下一直进行，等下面没有yield可以返回的时候，再从下往上执行。具体koa是怎么实现中间件的，可以翻翻博客里另外一篇文章。</p>
+<hr>
+<h3 id="什么时候用yield"><a href="#什么时候用yield" class="headerlink" title="什么时候用yield *"></a>什么时候用yield *</h3><h4 id="yield-的概念"><a href="#yield-的概念" class="headerlink" title="yield *的概念"></a><strong>yield *的概念</strong></h4><p>在生成器中，yield* 可以把需要 yield 的值委托给另外一个生成器或者其他任意的可迭代对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">yield</span>* [[expression]];</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>yield* 一个可迭代对象，就相当于把这个可迭代对象的所有迭代值分次 yield 出去。</p>
+<p>yield* 表达式本身的值就是当前可迭代对象迭代完毕时的那个返回值（也就是迭代器的迭代值的 done 属性为 true 时 value 属性的值)。</p>
+</blockquote>
+<p>可以在定义看到，yield<em>是把值委托给<em>*一个生成器或者是一个可以迭代的对象</em></em>。下面举几个例子来说：</p>
+<hr>
+<h4 id="委托给其他生成器"><a href="#委托给其他生成器" class="headerlink" title="委托给其他生成器"></a><strong>委托给其他生成器</strong></h4><p>以下代码中，g1() yield 出去的每个值都会在 g2() 的 next() 方法中返回，就像那些 yield 语句是写在 g2() 里一样。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">g1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">g2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span>* g1();</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> iterator = g2();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 3, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 4, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 5, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="委托给其他类型的可迭代对象"><a href="#委托给其他类型的可迭代对象" class="headerlink" title="委托给其他类型的可迭代对象"></a><strong>委托给其他类型的可迭代对象</strong></h4><p>除了生成器对象这一种可迭代对象，yield* 还可以 yield 其它任意的可迭代对象，比如说数组、字符串、arguments 对象等等。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">g3</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span>* [<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line">  <span class="keyword">yield</span>* <span class="string">"34"</span>;</span><br><span class="line">  <span class="keyword">yield</span>* <span class="built_in">arguments</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> iterator = g3(<span class="number">5</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: "3", done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: "4", done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 5, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 6, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="yield-表达式的值"><a href="#yield-表达式的值" class="headerlink" title="yield* 表达式的值"></a><strong>yield* 表达式的值</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">g4</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span>* [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"foo"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> result;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">g5</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  result = <span class="keyword">yield</span>* g4();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> iterator = g5();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 1, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 2, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: 3, done: false &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123; value: undefined, done: true &#125;, </span></span><br><span class="line">                              <span class="comment">// 此时 g4() 返回了 &#123; value: "foo", done: true &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(result);          <span class="comment">// "foo"</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="如果不用yield"><a href="#如果不用yield" class="headerlink" title="如果不用yield *?"></a><strong>如果不用yield *?</strong></h4><p>好，那如果我们想试一下不用yield*,还是用yield会得到什么结果呢？我们把上面的代码改成这样：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">g1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//去掉*后，看看结果</span></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">g2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span> g1();</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> iterator = g2();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); </span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); </span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); </span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); </span><br><span class="line"><span class="built_in">console</span>.log(iterator.next());</span><br><span class="line"><span class="built_in">console</span>.log(iterator.next());</span><br></pre></td></tr></table></figure></p>
+<p>我们会得到如下的结果：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span> &#123; <span class="attr">value</span>: <span class="number">1</span>, <span class="attr">done</span>: <span class="literal">false</span> &#125;</span><br><span class="line"><span class="built_in">Object</span> &#123; <span class="attr">value</span>: Generator, <span class="attr">done</span>: <span class="literal">false</span> &#125;</span><br><span class="line"><span class="built_in">Object</span> &#123; <span class="attr">value</span>: <span class="number">5</span>, <span class="attr">done</span>: <span class="literal">false</span> &#125;</span><br><span class="line"><span class="built_in">Object</span> &#123; <span class="attr">value</span>: <span class="literal">undefined</span>, <span class="attr">done</span>: <span class="literal">true</span> &#125;</span><br><span class="line"><span class="built_in">Object</span> &#123; <span class="attr">value</span>: <span class="literal">undefined</span>, <span class="attr">done</span>: <span class="literal">true</span> &#125;</span><br><span class="line"><span class="built_in">Object</span> &#123; <span class="attr">value</span>: <span class="literal">undefined</span>, <span class="attr">done</span>: <span class="literal">true</span> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>为什么会有这个结果呢？这就是<code>yield *</code>的魔力了。<code>yield *</code>后面可以接受一个<code>iterable object</code>，然后这个<code>yield* a</code>的值，就是这个<code>a</code>完成时，也就是状态<code>done:true</code>时的a的返回值。当你调用<code>generator function</code>时，会返回一个<code>generator object</code>,这个对象也是一个<code>iterable object</code>。<strong>【yield*表达式本身的值就是当前可迭代对象迭代完毕时的那个返回值】</strong>。</p>
+<p><strong>其实最常用的就是yield*用来在一个 generator 函数里“执行”另一个 generator 函数，并可以取得其返回值。</strong></p>
+<p>这里还可以扯一些关于co的事情。你会发现在co里面，你是可以直接yield 一个generator的，更可怕的是还可以yield一个generator function的。这里面来源自co在实现的时候进行了判断。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isGeneratorFunction(obj) || isGenerator(obj)) <span class="keyword">return</span> co.call(<span class="keyword">this</span>, obj);</span><br></pre></td></tr></table></figure></p>
+<p>当它判断出来你是一个generator function的时候，是会继续的调用自己的。在co里，如果是yield *fn差不多就等于yield co(fn)</p>
+<p>co里面是很棒的代码。决定这个星期再仔细学一遍。然后整理下，嘻嘻。</p>
+<hr>
+<h3 id="观点"><a href="#观点" class="headerlink" title="观点"></a><strong>观点</strong></h3><p>这里有几个观点和技巧，是我犯过的错误。总结下：</p>
+<ol>
+<li><p>yield后面只能接generator?错误，比如你看到<code>yield fun()</code>,那么这个fun()的返回一定是generator吗？当然不是；fun方法完全可以返回一个 Promise，返回一个 thunk，返回一个数组、对象，或者就是返回<code>generator object</code>。<code>yield</code>后面可以接的值，要多注意容易犯错。</p>
+</li>
+<li><p>比如说你看到了<code>yield * fun()</code>,<code>yield *</code> 后面这个fun的返回值一定是<code>generator object</code>?<code>yield*</code>后面可以接很多，但是由于我们这里给的前提条件是<code>yield*</code>所以是可以判定的。<br>这个是肯定的啦。你可以很自信的告诉别人这就是<code>generator object</code>。</p>
+</li>
+<li><p>生成器其实在其它语言很早就有了，比如python、c#，但与python不同的是js的generator更多的是提供一种异步解决方案。yield也是，在python中都有。</p>
+</li>
+<li><p>yield只能在koa里用？当然不是。koa里面只是利用yield，generator这种方式。yield，generator的用处可大了多了。</p>
+</li>
+</ol>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>主要就是学习了yield 和yield *的区别和联系，还有他们的使用方式。参考了下面的几篇文章，感谢：</p>
+<ol>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/yield" target="_blank" rel="noopener">MDN-Operators/yield</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/yield*" target="_blank" rel="noopener">MDN-Operators/yield*</a></li>
+<li><a href="http://www.html-js.com/article/Understanding-the-Yield-principle" target="_blank" rel="noopener">Understanding-the-Yield-principle</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/03/ES6-rest-parameters和spread-operator/" rel="next" title="ES6 rest parameters和spread operator">
+                <i class="fa fa-chevron-left"></i> ES6 rest parameters和spread operator
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/10/用Nodejs进行文件上传-下载-浏览-横扫File-System-API/" rel="prev" title="用Nodejs进行文件上传-下载-浏览-横扫File-System-API">
+                用Nodejs进行文件上传-下载-浏览-横扫File-System-API <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是yield"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x4EC0;&#x4E48;&#x662F;yield" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;yield?"></a><strong>&#x4EC0;&#x4E48;&#x662F;yield?</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#yield的定义"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#yield&#x7684;&#x5B9A;&#x4E49;" class="headerlink" title="yield&#x7684;&#x5B9A;&#x4E49;"></a><strong>yield&#x7684;&#x5B9A;&#x4E49;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#煮个栗子"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x716E;&#x4E2A;&#x6817;&#x5B50;" class="headerlink" title="&#x716E;&#x4E2A;&#x6817;&#x5B50;"></a><strong>&#x716E;&#x4E2A;&#x6817;&#x5B50;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么时候用yield"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x7528;yield" class="headerlink" title="&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x7528;yield *"></a>&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x7528;yield *</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#yield-的概念"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#yield-&#x7684;&#x6982;&#x5FF5;" class="headerlink" title="yield *&#x7684;&#x6982;&#x5FF5;"></a><strong>yield *&#x7684;&#x6982;&#x5FF5;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#委托给其他生成器"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x59D4;&#x6258;&#x7ED9;&#x5176;&#x4ED6;&#x751F;&#x6210;&#x5668;" class="headerlink" title="&#x59D4;&#x6258;&#x7ED9;&#x5176;&#x4ED6;&#x751F;&#x6210;&#x5668;"></a><strong>&#x59D4;&#x6258;&#x7ED9;&#x5176;&#x4ED6;&#x751F;&#x6210;&#x5668;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#委托给其他类型的可迭代对象"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x59D4;&#x6258;&#x7ED9;&#x5176;&#x4ED6;&#x7C7B;&#x578B;&#x7684;&#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;" class="headerlink" title="&#x59D4;&#x6258;&#x7ED9;&#x5176;&#x4ED6;&#x7C7B;&#x578B;&#x7684;&#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;"></a><strong>&#x59D4;&#x6258;&#x7ED9;&#x5176;&#x4ED6;&#x7C7B;&#x578B;&#x7684;&#x53EF;&#x8FED;&#x4EE3;&#x5BF9;&#x8C61;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#yield-表达式的值"><span class="nav-number">2.4.</span> <span class="nav-text"><a href="#yield-&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x503C;" class="headerlink" title="yield* &#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x503C;"></a><strong>yield* &#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x503C;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如果不用yield"><span class="nav-number">2.5.</span> <span class="nav-text"><a href="#&#x5982;&#x679C;&#x4E0D;&#x7528;yield" class="headerlink" title="&#x5982;&#x679C;&#x4E0D;&#x7528;yield *?"></a><strong>&#x5982;&#x679C;&#x4E0D;&#x7528;yield *?</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#观点"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x89C2;&#x70B9;" class="headerlink" title="&#x89C2;&#x70B9;"></a><strong>&#x89C2;&#x70B9;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a><strong>&#x603B;&#x7ED3;</strong></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/08/04/yield和yield-的区别和用法/';
+          this.page.identifier = '2016/08/04/yield和yield-的区别和用法/';
+          this.page.title = 'yield和yield*的区别和用法';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

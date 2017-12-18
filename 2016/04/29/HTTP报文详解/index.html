@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机网络," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我们可以把HTTP报文当做它用来搬东西的包裹了。下面是关于HTTP报文这块的详细总结和记录。主要内容有：报文时如何流动的？HTTP报文的组成是什么？我们知道报文可以分为请求报文和响应报文，那么这两个又有什么区别呢？请求报文支持的各种功能和方法有？响应报文状态常见的码总结。图片全部来源《http权威指南》，感谢。   报文流HTTP报文">
+<meta name="keywords" content="计算机网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP报文详解">
+<meta property="og:url" content="http://sevencai.github.io/2016/04/29/HTTP报文详解/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我们可以把HTTP报文当做它用来搬东西的包裹了。下面是关于HTTP报文这块的详细总结和记录。主要内容有：报文时如何流动的？HTTP报文的组成是什么？我们知道报文可以分为请求报文和响应报文，那么这两个又有什么区别呢？请求报文支持的各种功能和方法有？响应报文状态常见的码总结。图片全部来源《http权威指南》，感谢。   报文流HTTP报文">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/http21.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http22.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http23.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http25.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http27.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http211.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http212.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http29.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http213.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http210.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http214.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http26.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http218.jpg">
+<meta property="og:updated_time" content="2016-12-12T02:28:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP报文详解">
+<meta name="twitter:description" content="HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我们可以把HTTP报文当做它用来搬东西的包裹了。下面是关于HTTP报文这块的详细总结和记录。主要内容有：报文时如何流动的？HTTP报文的组成是什么？我们知道报文可以分为请求报文和响应报文，那么这两个又有什么区别呢？请求报文支持的各种功能和方法有？响应报文状态常见的码总结。图片全部来源《http权威指南》，感谢。   报文流HTTP报文">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/http21.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/04/29/HTTP报文详解/"/>
+
+
+
+
+
+  <title>HTTP报文详解 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/29/HTTP报文详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HTTP报文详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-29T13:17:54+08:00">
+                2016-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/29/HTTP报文详解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/29/HTTP报文详解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我们可以把HTTP报文当做它用来搬东西的包裹了。下面是关于HTTP报文这块的详细总结和记录。主要内容有：报文时如何流动的？HTTP报文的组成是什么？我们知道报文可以分为请求报文和响应报文，那么这两个又有什么区别呢？请求报文支持的各种功能和方法有？响应报文状态常见的码总结。图片全部来源《http权威指南》，感谢。</p>
+</blockquote>
+<hr>
+<h3 id="报文流"><a href="#报文流" class="headerlink" title="报文流"></a>报文流</h3><p>HTTP报文是再HTTP应用程序之间发送的数据块。这些数据块以一些文本形式的原信息开头。这些信息描述了报文的内容及含义。这些报文时再客户端，服务器，代理之间不断的流动的。我们一般用“流入”，“流出”，“上游”，“下游”来描述报文流动的方向。</p>
+<hr>
+<h4 id="报文流入服务器端并流回客户端"><a href="#报文流入服务器端并流回客户端" class="headerlink" title="报文流入服务器端并流回客户端"></a><strong>报文流入服务器端并流回客户端</strong></h4><p>这个很好理解。<br><img src="http://www.cailidan.cn/images/http21.png" alt="流入，流出"></p>
+<hr>
+<h4 id="报文向下游流动"><a href="#报文向下游流动" class="headerlink" title="报文向下游流动"></a><strong>报文向下游流动</strong></h4><p>注意，这里不管是请求还是响应报文，所有报文都是会向下游流动。所有报文的发送者都在上游，接受者都在下游。报文就像河水一样。河水不能往上游流，是不是？一样的道理。</p>
+<p><img src="http://www.cailidan.cn/images/http22.png" alt="报文下流"></p>
+<hr>
+<h3 id="报文的组成部分-重要"><a href="#报文的组成部分-重要" class="headerlink" title="报文的组成部分-重要"></a>报文的组成部分-重要</h3><p>每一条报文都是包含一个来自客户端的请求，或者是一条来自服务器的响应。<strong>它们由三个部分组成，对报文进行描述的起始行，包含属性的首部块，以及可选的包含数据的主体部分。</strong>即：<code>start line</code>+<code>header</code>+<code>body</code>。</p>
+<p><img src="http://www.cailidan.cn/images/http23.png" alt="报文下流"></p>
+<p>起始行和首部都是由行分割的<code>ASCII</code>文本。每一行都是以一个由两个字符组成的序列作为结束。一个回车13，一个换行10。我们把这个终止序列可以写作<code>CRLF</code>。</p>
+<p>这里要注意下，虽然标准是说要<code>CRLF</code>表示终止行，但是稳健的应用程序也应该接受单个换行符作为行的终止。因为有一些老的不完成的应用程序并不能总是即发送回车，又发送换行。</p>
+<p><strong>实体，也就是<code>body</code>部分。是一个可以选择的数据块。但是与起始行和首部不同，<code>body</code>部分可以是文本，可以是二进制，当然也可以为空。注意下上面图里的<code>content-length</code>是说的主体部分的长度。</strong></p>
+<hr>
+<h4 id="报文的语法"><a href="#报文的语法" class="headerlink" title="报文的语法"></a><strong>报文的语法</strong></h4><h5 id="请求报文的语法"><a href="#请求报文的语法" class="headerlink" title="请求报文的语法"></a><strong>请求报文的语法</strong></h5><pre><code>&lt;method&gt;&lt;request-url&gt;&lt;version&gt;
+&lt;headers&gt;
+
+&lt;entity-body&gt;
+</code></pre><h5 id="响应报文的语法"><a href="#响应报文的语法" class="headerlink" title="响应报文的语法"></a><strong>响应报文的语法</strong></h5><pre><code>&lt;version&gt;&lt;status&gt;&lt;reason-phrase&gt;
+&lt;headers&gt;
+
+&lt;entity-body&gt;
+</code></pre><p><img src="http://www.cailidan.cn/images/http25.png" alt="报文语法"></p>
+<h5 id="具体解释上面语法"><a href="#具体解释上面语法" class="headerlink" title="具体解释上面语法"></a><strong>具体解释上面语法</strong></h5><ul>
+<li>方法（method）：客户端希望服务器对资源执行的动作，是一个单独的词，比如<code>GET</code>,<code>POST</code>,<code>HEAD</code>。</li>
+<li>请求URL（request-url）:命名了所请求的资源，如果是直接跟服务器对话，则只要是绝对路径，但如果通过了代理就是要写全。</li>
+<li>版本（version）:<code>HTTP/&lt;major&gt;.&lt;minor&gt;</code>主要是版本号和次要版本号。都是整数，1.22和1.3,版本号不会被当做小树来处理，都是单独的数据。所以2.22比2.3要高。因为22&gt;3。</li>
+<li>状态码（status-code）:这三个数字描述了请求过程中所发生的情况。</li>
+<li>原因短语：数字状态码的可读版本，包含行终止序列之前所有的文本。原因短语只供我们阅读，比如<code>HTTP/1.0 200 NOT OK</code>和<code>HTTP/1.0 200 OK</code>都是表示成功指示。原因短语和状态码成对出现。</li>
+<li>首部（headers）：可以有多个header,<code>名字： 值 CRLF</code></li>
+<li>实体（entity-body):可以选择的数据块。实体，也就是<code>body</code>部分。就是HTTP要传输的内容。是一个可以选择的数据块。可以是文本，二进制，空。可以承载很多类型，图片，视频，HTML文档，软件应用陈旭，信用卡事物，电子邮件等。</li>
+</ul>
+<hr>
+<h4 id="方法method"><a href="#方法method" class="headerlink" title="方法method"></a><strong>方法<code>method</code></strong></h4><p>注意这些方法的请求报文中有主体，有些则是没有主体的请求，并且也并不是所有的服务器都实现了上面的7中方法。而且就算服务器实现了所有的这些方法，这些方法的使用也会受到限制。比如<code>put</code>和<code>delete</code>方法，服务器不可能让任何人都可以删除或者存储资源。这些现实都会在服务器进行配置。因此会随着站点的不同而不同。</p>
+<p><img src="http://www.cailidan.cn/images/http27.png" alt="报文下流"></p>
+<p>下面详细介绍常见的几个方法。</p>
+<hr>
+<h5 id="GET"><a href="#GET" class="headerlink" title="GET"></a><strong>GET</strong></h5><p>请求服务器上的某个资源。</p>
+<h5 id="POST"><a href="#POST" class="headerlink" title="POST"></a><strong>POST</strong></h5><p>POST方法起初是要向服务器输入数据的。实际上，通常用来支持表单。</p>
+<p><img src="http://www.cailidan.cn/images/http211.png" alt="POST示例"></p>
+<h5 id="TRACE"><a href="#TRACE" class="headerlink" title="TRACE"></a><strong>TRACE</strong></h5><p>当客户端发起一个请求的时候，这个请求可能要穿过防火墙，代理，网关，或者其他一些应用程序。每个中间节点都可能会修改该原始HTTP请求。<code>Trace</code>方法允许客户端在最终将请求发送给服务器时，看看它变成了什么样。<code>Trace</code>请求会在目的服务器发起一个换回诊断。航程最后一站的服务器会弹送一个<code>Trace</code>响应。并且把响应主体中携带它收到的原始请求报文。这样就可以在客户端查看在所有中间<code>HTTP</code>应用程序组成的请求上。原始报文是否或者如何被毁坏或修改过。</p>
+<p><img src="http://www.cailidan.cn/images/http212.png" alt="Trace示例"></p>
+<p><strong>注意，trace请求中不能带有实体部分的主体内容，trace响应的实体主体部分包含了响应服务器收到的请求的精确副本。</strong></p>
+<hr>
+<h5 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a><strong>HEAD</strong></h5><p><code>HEAD</code>方法与<code>GET</code>方法很类似，但服务器在响应中<strong>只返回首部，不会返回实体</strong>，这就允许客户端在未获取实体资源的情况下，对资源的首部进行检查，使用<code>HEAD</code>的作用具体如下：</p>
+<pre><code>1. 在不获得资源的情况下了解资源的情况（比如判断类型）。
+2. 通过查看响应中的状态码，看看某个对象是否存在。
+3. 通过查看首部，测试资源是否被修改。
+</code></pre><p><img src="http://www.cailidan.cn/images/http29.png" alt="HEAD示例"></p>
+<hr>
+<h5 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a><strong>DELETE</strong></h5><p>请服务器删除请求<code>URL</code>所指定的资源，但是客户端应用程序无法保证删除的操作一定会被执行。因为<code>HTTP</code>规范允许服务器在不通知客户端的情况下撤销请求。</p>
+<p><img src="http://www.cailidan.cn/images/http213.png" alt="DELETE示例"></p>
+<hr>
+<h5 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a><strong>PUT</strong></h5><p>与<code>GET</code>从服务器中读取文档相反，<code>PUT</code>方法会向服务器写入文档。有些发布系统允许用户创建WEB页面并用PUT直接安装到服务器上去。</p>
+<p><img src="http://www.cailidan.cn/images/http210.png" alt="报文下流"></p>
+<p>它的语义就是让服务器用请求主体部分来创建一个由所请求的<code>URL</code>命名的新文档。或者，如果这个URL已经存在，就用这个主体代替它。<strong>一般Web服务器都要要求在执行PUT之前，用密码登陆</strong>。原因你懂的。</p>
+<hr>
+<h5 id="OPTIONS"><a href="#OPTIONS" class="headerlink" title="OPTIONS"></a><strong>OPTIONS</strong></h5><p><code>OPTIONS</code>方法请求Web服务器告之其支持的各种功能。可以询问服务器通常支持的哪些方法。或者堆某些特殊资源支持哪些方法。</p>
+<p>这的作用就是为客户端应用程序提供了一种手段。使其不用实际访问哪些资源就能判定访问的资源的最优方式。</p>
+<p><img src="http://www.cailidan.cn/images/http214.png" alt="OPTIONS示例"></p>
+<hr>
+<h4 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a><strong>状态码</strong></h4><p><strong>方法是用来告诉服务器要做什么事情的，状态码是用来告诉客户端发生了什么事情的。</strong>可以通过三维数字代码对不同的状态码进行分类。<br><img src="http://www.cailidan.cn/images/http26.png" alt="状态码"></p>
+<p>我们可以看到目前定义了的状态码不是很多。但是分类很明确。</p>
+<p>主要了解下：</p>
+<pre><code>100（continue）,101(Switching Protocols),
+200(ok),201(created),202(accepted),
+300(Multipul Choices),301(moved permanently),302(Found),303(See other),304(Not Modified),
+400(Bad Request),401(Unauthorized),402(Payment Required),403（Forbidden）,404(Not Found),
+500(Internal Server Error),501(Not Implemented),502(Bad Gateway),503(Service Unavailable),504(Gateway Timeout)
+</code></pre><p>301：永久重定向，302临时重定向。</p>
+<p>307：<strong>HTTP1.1指出，对于HTTP1.1客户端，用307状态码来取代302状态码来进行临时重定向，这样就可以把302状态码保留起来，为HTTP1.0客户端使用。这样一来，服务器要选择适当的重定向状态码放入重定向响应中发送。</strong></p>
+<p>402：该状态码暂时未使用，但是被保留了，以做未来使用</p>
+<p>502：作为代理或者网关使用的服务器从请求响应链的下一条链路上收到了一条伪响应。（比如：无法连接到其他网关上）</p>
+<p>503：用来说明服务器目前无法 为请求提供服务。但将来可以。</p>
+<hr>
+<h4 id="首部"><a href="#首部" class="headerlink" title="首部"></a><strong>首部</strong></h4><p>首部和方法配合工作，可以共同决定客户端和服务器能做什么事情。这有分为了通用首部，请求首部，响应首部，实体首部，扩展首部这些分类。</p>
+<ol>
+<li>通用首部：客户端和服务器端都可以使用的首部。比如Date首部。<code>Date: Tue,3 Oct...</code></li>
+<li>请求首部：请求首部是请求报文特有的。比如<code>Accept:*/*</code>。它们为服务器提供了一些额外的信息。比如客户端希3. 望接收什么类型的数据。</li>
+<li>响应首部：响应报文特有的，以便为客户端提供信息，比如客户端正在跟哪种服务器发生通信。<code>Server: Tiki...</code></li>
+<li>实体首部：是用于实体部分的首部，比如可以说明主体部分的数据类型。<code>Content-type: text/html;charset...</code></li>
+<li>扩展首部：非标准首部，由应用程序开发者创建，但还是没有添加到规范中去。</li>
+</ol>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要是对整个报文部分做了一个稍微完整点的了解和记录。其实还有比如状态码部分都是很粗略的介绍，还有关于首部，里面的各个分类分别有哪些信息都只是大概的记录下。我觉得这些可以遇到的时候再去查，现在大概的看下有哪些和大致的作用就可以了。</p>
+<p><img src="http://www.cailidan.cn/images/http218.jpg" alt="报文"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机网络/" rel="tag"># 计算机网络</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/28/Web组件结构和URL的简单介绍/" rel="next" title="Web组件结构和URL的简单介绍">
+                <i class="fa fa-chevron-left"></i> Web组件结构和URL的简单介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/01/HTTP连接管理/" rel="prev" title="HTTP连接管理">
+                HTTP连接管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#报文流"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x62A5;&#x6587;&#x6D41;" class="headerlink" title="&#x62A5;&#x6587;&#x6D41;"></a>&#x62A5;&#x6587;&#x6D41;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#报文流入服务器端并流回客户端"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x62A5;&#x6587;&#x6D41;&#x5165;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x5E76;&#x6D41;&#x56DE;&#x5BA2;&#x6237;&#x7AEF;" class="headerlink" title="&#x62A5;&#x6587;&#x6D41;&#x5165;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x5E76;&#x6D41;&#x56DE;&#x5BA2;&#x6237;&#x7AEF;"></a><strong>&#x62A5;&#x6587;&#x6D41;&#x5165;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x5E76;&#x6D41;&#x56DE;&#x5BA2;&#x6237;&#x7AEF;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#报文向下游流动"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x62A5;&#x6587;&#x5411;&#x4E0B;&#x6E38;&#x6D41;&#x52A8;" class="headerlink" title="&#x62A5;&#x6587;&#x5411;&#x4E0B;&#x6E38;&#x6D41;&#x52A8;"></a><strong>&#x62A5;&#x6587;&#x5411;&#x4E0B;&#x6E38;&#x6D41;&#x52A8;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#报文的组成部分-重要"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x62A5;&#x6587;&#x7684;&#x7EC4;&#x6210;&#x90E8;&#x5206;-&#x91CD;&#x8981;" class="headerlink" title="&#x62A5;&#x6587;&#x7684;&#x7EC4;&#x6210;&#x90E8;&#x5206;-&#x91CD;&#x8981;"></a>&#x62A5;&#x6587;&#x7684;&#x7EC4;&#x6210;&#x90E8;&#x5206;-&#x91CD;&#x8981;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#报文的语法"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;" class="headerlink" title="&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;"></a><strong>&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#请求报文的语法"><span class="nav-number">2.1.1.</span> <span class="nav-text"><a href="#&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;" class="headerlink" title="&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;"></a><strong>&#x8BF7;&#x6C42;&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#响应报文的语法"><span class="nav-number">2.1.2.</span> <span class="nav-text"><a href="#&#x54CD;&#x5E94;&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;" class="headerlink" title="&#x54CD;&#x5E94;&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;"></a><strong>&#x54CD;&#x5E94;&#x62A5;&#x6587;&#x7684;&#x8BED;&#x6CD5;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#具体解释上面语法"><span class="nav-number">2.1.3.</span> <span class="nav-text"><a href="#&#x5177;&#x4F53;&#x89E3;&#x91CA;&#x4E0A;&#x9762;&#x8BED;&#x6CD5;" class="headerlink" title="&#x5177;&#x4F53;&#x89E3;&#x91CA;&#x4E0A;&#x9762;&#x8BED;&#x6CD5;"></a><strong>&#x5177;&#x4F53;&#x89E3;&#x91CA;&#x4E0A;&#x9762;&#x8BED;&#x6CD5;</strong></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法method"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x65B9;&#x6CD5;method" class="headerlink" title="&#x65B9;&#x6CD5;method"></a><strong>&#x65B9;&#x6CD5;<code>method</code></strong></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#GET"><span class="nav-number">2.2.1.</span> <span class="nav-text"><a href="#GET" class="headerlink" title="GET"></a><strong>GET</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#POST"><span class="nav-number">2.2.2.</span> <span class="nav-text"><a href="#POST" class="headerlink" title="POST"></a><strong>POST</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TRACE"><span class="nav-number">2.2.3.</span> <span class="nav-text"><a href="#TRACE" class="headerlink" title="TRACE"></a><strong>TRACE</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HEAD"><span class="nav-number">2.2.4.</span> <span class="nav-text"><a href="#HEAD" class="headerlink" title="HEAD"></a><strong>HEAD</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DELETE"><span class="nav-number">2.2.5.</span> <span class="nav-text"><a href="#DELETE" class="headerlink" title="DELETE"></a><strong>DELETE</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PUT"><span class="nav-number">2.2.6.</span> <span class="nav-text"><a href="#PUT" class="headerlink" title="PUT"></a><strong>PUT</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#OPTIONS"><span class="nav-number">2.2.7.</span> <span class="nav-text"><a href="#OPTIONS" class="headerlink" title="OPTIONS"></a><strong>OPTIONS</strong></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态码"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x72B6;&#x6001;&#x7801;" class="headerlink" title="&#x72B6;&#x6001;&#x7801;"></a><strong>&#x72B6;&#x6001;&#x7801;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#首部"><span class="nav-number">2.4.</span> <span class="nav-text"><a href="#&#x9996;&#x90E8;" class="headerlink" title="&#x9996;&#x90E8;"></a><strong>&#x9996;&#x90E8;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/04/29/HTTP报文详解/';
+          this.page.identifier = '2016/04/29/HTTP报文详解/';
+          this.page.title = 'HTTP报文详解';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

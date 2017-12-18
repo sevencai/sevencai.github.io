@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="WEB开发," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="源码我放在了github上面。【地址在这儿】。首先可以看下【上篇】博客,把环境先搭建好和熟悉socket.io基本用法。整个可以实现下面的这些功能：  用户登陆进行聊天。 用户登陆后，即可发送消息。 对刚登录用户来说，罗列所有在线用户列表 对已在线的用户来说，通知该用户有新用户登陆或者离开 支持对所有人广播聊天内容，即群聊 支持私聊当前在线用户，即私聊 用户即时获得消息列表 当服务器断开连接时，提">
+<meta name="keywords" content="WEB开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Socket.IO的node聊天室，支持私聊">
+<meta property="og:url" content="http://sevencai.github.io/2016/05/04/基于Socket-IO的node聊天室，支持私聊/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="源码我放在了github上面。【地址在这儿】。首先可以看下【上篇】博客,把环境先搭建好和熟悉socket.io基本用法。整个可以实现下面的这些功能：  用户登陆进行聊天。 用户登陆后，即可发送消息。 对刚登录用户来说，罗列所有在线用户列表 对已在线的用户来说，通知该用户有新用户登陆或者离开 支持对所有人广播聊天内容，即群聊 支持私聊当前在线用户，即私聊 用户即时获得消息列表 当服务器断开连接时，提">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/nodechat.png">
+<meta property="og:updated_time" content="2016-12-12T02:33:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于Socket.IO的node聊天室，支持私聊">
+<meta name="twitter:description" content="源码我放在了github上面。【地址在这儿】。首先可以看下【上篇】博客,把环境先搭建好和熟悉socket.io基本用法。整个可以实现下面的这些功能：  用户登陆进行聊天。 用户登陆后，即可发送消息。 对刚登录用户来说，罗列所有在线用户列表 对已在线的用户来说，通知该用户有新用户登陆或者离开 支持对所有人广播聊天内容，即群聊 支持私聊当前在线用户，即私聊 用户即时获得消息列表 当服务器断开连接时，提">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/nodechat.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/05/04/基于Socket-IO的node聊天室，支持私聊/"/>
+
+
+
+
+
+  <title>基于Socket.IO的node聊天室，支持私聊 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/05/04/基于Socket-IO的node聊天室，支持私聊/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于Socket.IO的node聊天室，支持私聊</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-04T10:23:19+08:00">
+                2016-05-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/05/04/基于Socket-IO的node聊天室，支持私聊/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/05/04/基于Socket-IO的node聊天室，支持私聊/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>源码我放在了github上面。【<a href="https://github.com/Christine95/js-project/tree/master/node-chat" target="_blank" rel="noopener">地址在这儿</a>】。首先可以看下【<a href="http://cailidan.cn/2016/05/02/%E4%BD%BF%E7%94%A8Socket-IO%E7%B1%BB%E5%BA%93%E5%AE%9E%E7%8E%B0WebSocket%E9%80%9A%E4%BF%A1/" target="_blank" rel="noopener">上篇</a>】博客,把环境先搭建好和熟悉socket.io基本用法。整个可以实现下面的这些功能：</p>
+<ol>
+<li>用户登陆进行聊天。</li>
+<li>用户登陆后，即可发送消息。</li>
+<li>对刚登录用户来说，罗列所有在线用户列表</li>
+<li>对已在线的用户来说，通知该用户有新用户登陆或者离开</li>
+<li>支持对所有人广播聊天内容，<strong>即群聊</strong></li>
+<li>支持私聊当前在线用户，<strong>即私聊</strong></li>
+<li>用户<strong>即时获得消息列表</strong></li>
+<li>当服务器断开连接时，提醒所有用户</li>
+</ol>
+<p>整个代码量非常少，可以根据自己的需求修改逻辑。</p>
+<p>没有进行太多的限制，比如没有限制重名登陆，主要是关注逻辑代码。</p>
+<p><strong>没有写任何样式,所以很难看额</strong>，以后有时间慢慢的补起来吧，现在考试略多。。。。</p>
+<p>运行：切换到此目录，运行<code>node index.js</code>即可。打开端口3000,<code>localhost:3000</code>。</p>
+<hr>
+<h4 id="服务器端代码"><a href="#服务器端代码" class="headerlink" title="服务器端代码"></a><strong>服务器端代码</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">'http'</span>);</span><br><span class="line"><span class="keyword">var</span> sio = <span class="built_in">require</span>(<span class="string">'socket.io'</span>);</span><br><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = express();</span><br><span class="line"><span class="keyword">var</span> server = http.createServer(app);</span><br><span class="line"><span class="keyword">var</span> io = sio.listen(server);</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">'/'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">req,res</span>)</span>&#123;</span><br><span class="line">	res.sendFile(__dirname+<span class="string">'/index.html'</span>);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.listen(<span class="string">'3000'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'listening on port 3000'</span>);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> onlineUsers = &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> onlineCount = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> userSockets = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">io.on(<span class="string">'connection'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">socket</span>)</span>&#123;</span><br><span class="line">	<span class="comment">//当客户端有用户登陆的时候</span></span><br><span class="line">	socket.on(<span class="string">'login'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">userObj</span>)</span>&#123;</span><br><span class="line">		socket.uid = userObj.uid;</span><br><span class="line">		userSockets[userObj.uid] = socket;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//检查是否在当前的用户列表中，如果不在count++</span></span><br><span class="line">		<span class="keyword">if</span>(!onlineUsers.hasOwnProperty(userObj.uid))&#123;</span><br><span class="line">			onlineUsers[userObj.uid] = userObj.username;</span><br><span class="line">			onlineCount++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//向客户端发送用户登陆的信息</span></span><br><span class="line">		io.emit(<span class="string">'login'</span>,&#123;<span class="attr">onlineUsers</span>:onlineUsers,<span class="attr">onlineCount</span>:onlineCount,<span class="attr">userObj</span>:userObj&#125;);</span><br><span class="line"></span><br><span class="line">		<span class="built_in">console</span>.log(userObj.username + <span class="string">" 进入了聊天室"</span>);</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//当服务器接收到消息时</span></span><br><span class="line">	socket.on(<span class="string">'message'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(data.to !== <span class="string">"所有人"</span>)&#123;</span><br><span class="line">			<span class="keyword">if</span>(data.to <span class="keyword">in</span> userSockets)&#123;</span><br><span class="line">				userSockets[data.to].emit(<span class="string">'to'</span>+data.to,data);</span><br><span class="line">				userSockets[data.uid].emit(<span class="string">'to'</span>+data.uid,data);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			io.emit(<span class="string">'message'</span>,data);</span><br><span class="line">			<span class="built_in">console</span>.log(data.username+<span class="string">"对"</span>+data.to+<span class="string">"说："</span>+data.message);</span><br><span class="line">		&#125;			</span><br><span class="line">	&#125;);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//当客户端退出的时候</span></span><br><span class="line">	socket.on(<span class="string">'disconnect'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(onlineUsers.hasOwnProperty(socket.uid))&#123;</span><br><span class="line">			<span class="comment">//记录要退出用户的信息，发送给客户端</span></span><br><span class="line">			<span class="keyword">var</span> userObj = &#123;<span class="attr">uid</span>:socket.uid,<span class="attr">username</span>:onlineUsers.uid&#125;;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">delete</span> onlineUsers[socket.uid];</span><br><span class="line">			<span class="keyword">delete</span> userSockets[socket.uid];</span><br><span class="line">			onlineCount--;</span><br><span class="line"></span><br><span class="line">			io.emit(<span class="string">'logout'</span>,&#123;<span class="attr">onlineUsers</span>:onlineUsers,<span class="attr">onlineCount</span>:onlineCount,<span class="attr">userObj</span>:userObj&#125;);</span><br><span class="line">			<span class="built_in">console</span>.log(userObj.username+<span class="string">" 退出了聊天室"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h4><h5 id="DOM结构部分"><a href="#DOM结构部分" class="headerlink" title="DOM结构部分"></a><strong>DOM结构部分</strong></h5><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">h3</span>&gt;</span>基于socket.io的聊天室<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"notice"</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"login"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">h3</span>&gt;</span>聊天前请先登陆<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">placeholder</span>=<span class="string">"输入用户名"</span> <span class="attr">id</span>=<span class="string">"username"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"登陆"</span> <span class="attr">onclick</span>=<span class="string">"CHAT.submit()"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"main"</span> <span class="attr">style</span>=<span class="string">"display:none;"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">aside</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">p</span>&gt;</span>在线用户列表<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"onlineUsers"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">aside</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">section</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">p</span>&gt;</span>消息列表<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"messageList"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span> <span class="attr">id</span>=<span class="string">"footer"</span> <span class="attr">style</span>=<span class="string">"display:none"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">textarea</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">id</span>=<span class="string">"message"</span> <span class="attr">cols</span>=<span class="string">"30"</span> <span class="attr">rows</span>=<span class="string">"10"</span>&gt;</span><span class="tag">&lt;/<span class="name">textarea</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">select</span> <span class="attr">name</span>=<span class="string">""</span> <span class="attr">id</span>=<span class="string">"selectUserList"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">option</span> <span class="attr">value</span>=<span class="string">""</span>&gt;</span>所有人<span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"提交"</span> <span class="attr">onclick</span>=<span class="string">"CHAT.sendMessage()"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h5 id="js脚本代码部分"><a href="#js脚本代码部分" class="headerlink" title="js脚本代码部分"></a><strong>js脚本代码部分</strong></h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"/socket.io/socket.io.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line">&lt;script&gt;</span><br><span class="line">	(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;			</span><br><span class="line">		<span class="built_in">window</span>.CHAT = &#123;</span><br><span class="line">			uid:<span class="literal">null</span>,</span><br><span class="line">			username:<span class="literal">null</span>,</span><br><span class="line">			socket:<span class="literal">null</span>,</span><br><span class="line">			submit:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">				<span class="keyword">var</span> username = <span class="built_in">document</span>.getElementById(<span class="string">'username'</span>).value;</span><br><span class="line">				<span class="keyword">if</span>(username!==<span class="string">""</span>)&#123;</span><br><span class="line">					<span class="keyword">this</span>.init(username);</span><br><span class="line">					<span class="keyword">this</span>.socket.emit(<span class="string">'login'</span>,&#123;<span class="attr">uid</span>:<span class="keyword">this</span>.uid,<span class="attr">username</span>:<span class="keyword">this</span>.username&#125;);</span><br><span class="line"></span><br><span class="line">					<span class="keyword">this</span>.initStyle();</span><br><span class="line">				&#125;							</span><br><span class="line">			&#125;,</span><br><span class="line">			initStyle:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">				<span class="keyword">var</span> main = <span class="built_in">document</span>.getElementById(<span class="string">'main'</span>);</span><br><span class="line">				<span class="keyword">var</span> footer = <span class="built_in">document</span>.getElementById(<span class="string">'footer'</span>);</span><br><span class="line"></span><br><span class="line">				main.style.display = <span class="string">'block'</span>;</span><br><span class="line">				footer.style.display = <span class="string">'block'</span>;</span><br><span class="line">			&#125;,</span><br><span class="line">			getUid:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">				<span class="keyword">return</span> +<span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">			&#125;,</span><br><span class="line">			sendMessage:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">				<span class="keyword">var</span> message = <span class="built_in">document</span>.getElementById(<span class="string">'message'</span>).value;</span><br><span class="line">				<span class="keyword">var</span> select = <span class="built_in">document</span>.getElementById(<span class="string">'selectUserList'</span>);</span><br><span class="line">				<span class="keyword">var</span> selectIndex = select.selectedIndex;</span><br><span class="line">				<span class="keyword">var</span> optionValue = select.options[selectIndex].value;</span><br><span class="line">				<span class="keyword">var</span> optionText = select.options[selectIndex].text;</span><br><span class="line">				<span class="keyword">if</span>(message != <span class="string">""</span>)&#123;						</span><br><span class="line">					<span class="keyword">this</span>.socket.emit(<span class="string">'message'</span>,&#123;<span class="attr">uid</span>:<span class="keyword">this</span>.uid,<span class="attr">username</span>:<span class="keyword">this</span>.username,<span class="attr">message</span>:message,<span class="attr">to</span>:optionValue,<span class="attr">toUser</span>:optionText&#125;);</span><br><span class="line">				&#125;					</span><br><span class="line">			&#125;,</span><br><span class="line">			createEleNode:<span class="function"><span class="keyword">function</span>(<span class="params">ele,text</span>)</span>&#123;</span><br><span class="line">				<span class="keyword">var</span> eleNode = <span class="built_in">document</span>.createElement(ele);</span><br><span class="line">				<span class="keyword">var</span> text = <span class="built_in">document</span>.createTextNode(text);</span><br><span class="line">				eleNode.appendChild(text);</span><br><span class="line">				<span class="keyword">return</span> eleNode;</span><br><span class="line">			&#125;,</span><br><span class="line">			updateUlist:<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">				<span class="keyword">var</span> onlineLists = <span class="built_in">document</span>.getElementById(<span class="string">"onlineUsers"</span>);</span><br><span class="line">				<span class="keyword">var</span> str = <span class="string">""</span>;</span><br><span class="line">				<span class="keyword">for</span>(<span class="keyword">var</span> i <span class="keyword">in</span> data.onlineUsers)&#123;</span><br><span class="line">					str += <span class="string">"&lt;li id='"</span>+i+<span class="string">"'&gt;"</span>+data.onlineUsers[i]+<span class="string">"&lt;/li&gt;"</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				onlineLists.innerHTML = str;</span><br><span class="line">			&#125;,</span><br><span class="line">			updateSelect:<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">				<span class="keyword">var</span> selectUserList = <span class="built_in">document</span>.getElementById(<span class="string">'selectUserList'</span>);</span><br><span class="line">				<span class="keyword">var</span> str = <span class="string">"&lt;option value='所有人'&gt;所有人&lt;/option&gt;"</span>;</span><br><span class="line">				<span class="keyword">for</span>(<span class="keyword">var</span> key <span class="keyword">in</span> data.onlineUsers)&#123;</span><br><span class="line">					str += <span class="string">"&lt;option value='"</span>+key+<span class="string">"'&gt;"</span>+data.onlineUsers[key]+<span class="string">"&lt;/option&gt;"</span></span><br><span class="line">				&#125;</span><br><span class="line">				selectUserList.innerHTML = str;</span><br><span class="line">			&#125;,</span><br><span class="line">			updateNotice:<span class="function"><span class="keyword">function</span>(<span class="params">msg</span>)</span>&#123;</span><br><span class="line">				<span class="keyword">var</span> notice = <span class="built_in">document</span>.getElementById(<span class="string">'notice'</span>);</span><br><span class="line">				<span class="keyword">var</span> node = <span class="keyword">this</span>.createEleNode(<span class="string">'li'</span>,msg)</span><br><span class="line">				notice.appendChild(node);</span><br><span class="line">			&#125;,	</span><br><span class="line">			appendMessage:<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">				<span class="keyword">var</span> messageList = <span class="built_in">document</span>.getElementById(<span class="string">"messageList"</span>);</span><br><span class="line">				<span class="keyword">var</span> node = CHAT.createEleNode(<span class="string">'li'</span>,<span class="string">'用户'</span>+data.username+<span class="string">"对"</span>+data.toUser+<span class="string">"说："</span>+data.message);			</span><br><span class="line">				<span class="built_in">console</span>.log(node);</span><br><span class="line">				messageList.appendChild(node);</span><br><span class="line">			&#125;,			</span><br><span class="line">			init:<span class="function"><span class="keyword">function</span>(<span class="params">username</span>)</span>&#123;</span><br><span class="line">				<span class="keyword">this</span>.uid = <span class="keyword">this</span>.getUid();</span><br><span class="line">				<span class="keyword">this</span>.username = username;</span><br><span class="line">				<span class="keyword">this</span>.socket = io.connect();</span><br><span class="line"></span><br><span class="line">				<span class="keyword">this</span>.socket.on(<span class="string">'login'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">					<span class="comment">//当用户登陆的时候，更新列表</span></span><br><span class="line">					CHAT.updateUlist(data);</span><br><span class="line">					CHAT.updateSelect(data);</span><br><span class="line">					CHAT.updateNotice(data.userObj.username+<span class="string">"进入了聊天室"</span>);</span><br><span class="line">				&#125;);					</span><br><span class="line"></span><br><span class="line">				<span class="keyword">this</span>.socket.on(<span class="string">'logout'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">					<span class="comment">//当用户退出时，更新列表</span></span><br><span class="line">					CHAT.updateUlist(data);</span><br><span class="line">					CHAT.updateSelect(data);</span><br><span class="line">					CHAT.updateNotice(CHAT.username+<span class="string">"退出了聊天室"</span>);			</span><br><span class="line">				&#125;);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">this</span>.socket.on(<span class="string">'message'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">					CHAT.appendMessage(data);</span><br><span class="line">				&#125;);</span><br><span class="line">				<span class="keyword">this</span>.socket.on(<span class="string">'to'</span>+CHAT.uid,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">					CHAT.appendMessage(data);</span><br><span class="line">				&#125;)</span><br><span class="line"></span><br><span class="line">				<span class="keyword">this</span>.socket.on(<span class="string">'disconnect'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">					CHAT.updateNotice(<span class="string">"服务器断开连接"</span>);</span><br><span class="line">				&#125;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)()</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>这里注意下有个地方，有的时候我们调用方法的时候，不能够直接用this.method调用该方法，因为比如我们使用：this.socket.on的时候，这个内部的this已经不是当前对象了。所以我们要直接使用CHAT.method或者CHAT.属性的方法来调用。</strong></p>
+<hr>
+<h4 id="截图结果"><a href="#截图结果" class="headerlink" title="截图结果"></a><strong>截图结果</strong></h4><p><img src="http://www.cailidan.cn/images/nodechat.png" alt="结果截图"></p>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h4><p>socket.io很好用，开发也很简单，花了比较少的时间。但是还有一些功能没有实现，比如如何实现群组，也就是房间聊天？如何给不在线的用户发送聊天记录？如何利用<code>redis</code>和聊天室结合起来？</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WEB开发/" rel="tag"># WEB开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/02/使用Socket-IO类库实现WebSocket通信/" rel="next" title="使用Socket.IO类库实现WebSocket通信">
+                <i class="fa fa-chevron-left"></i> 使用Socket.IO类库实现WebSocket通信
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/07/vim-下的常用命令/" rel="prev" title="vim 下的常用命令">
+                vim 下的常用命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器端代码"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x4EE3;&#x7801;" class="headerlink" title="&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x4EE3;&#x7801;"></a><strong>&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x4EE3;&#x7801;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端代码"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5BA2;&#x6237;&#x7AEF;&#x4EE3;&#x7801;" class="headerlink" title="&#x5BA2;&#x6237;&#x7AEF;&#x4EE3;&#x7801;"></a>&#x5BA2;&#x6237;&#x7AEF;&#x4EE3;&#x7801;</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#DOM结构部分"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#DOM&#x7ED3;&#x6784;&#x90E8;&#x5206;" class="headerlink" title="DOM&#x7ED3;&#x6784;&#x90E8;&#x5206;"></a><strong>DOM&#x7ED3;&#x6784;&#x90E8;&#x5206;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#js脚本代码部分"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#js&#x811A;&#x672C;&#x4EE3;&#x7801;&#x90E8;&#x5206;" class="headerlink" title="js&#x811A;&#x672C;&#x4EE3;&#x7801;&#x90E8;&#x5206;"></a><strong>js&#x811A;&#x672C;&#x4EE3;&#x7801;&#x90E8;&#x5206;</strong></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#截图结果"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x622A;&#x56FE;&#x7ED3;&#x679C;" class="headerlink" title="&#x622A;&#x56FE;&#x7ED3;&#x679C;"></a><strong>&#x622A;&#x56FE;&#x7ED3;&#x679C;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a><strong>&#x603B;&#x7ED3;</strong></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/05/04/基于Socket-IO的node聊天室，支持私聊/';
+          this.page.identifier = '2016/05/04/基于Socket-IO的node聊天室，支持私聊/';
+          this.page.title = '基于Socket.IO的node聊天室，支持私聊';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

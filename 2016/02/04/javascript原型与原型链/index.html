@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="原型对象每个javascript对象都有一个原型对象，这个对象在不同的解释器下的实现不同。比如在firefox下,每个对象都有一个隐藏的proto属性,这个属性就是原型对象的引用。原型的值可以是一个对象或者null。 原型链由于原型对象本身也是对象，根据上边的定义，它也有自己的原型，而它自己的原型对象又可以有自己的原型，这样就组成了一条链，这个链就是原型链。JavaScritp引擎在访问对象的属性">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="javascript原型对象与原型链">
+<meta property="og:url" content="http://sevencai.github.io/2016/02/04/javascript原型与原型链/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="原型对象每个javascript对象都有一个原型对象，这个对象在不同的解释器下的实现不同。比如在firefox下,每个对象都有一个隐藏的proto属性,这个属性就是原型对象的引用。原型的值可以是一个对象或者null。 原型链由于原型对象本身也是对象，根据上边的定义，它也有自己的原型，而它自己的原型对象又可以有自己的原型，这样就组成了一条链，这个链就是原型链。JavaScritp引擎在访问对象的属性">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dl2.iteye.com/upload/attachment/0047/3799/e9cabd48-9984-3aa6-9cfd-a031a51a9107.png">
+<meta property="og:image" content="http://dl.iteye.com/upload/attachment/473801/e034e3ab-0a37-31c6-92c1-498d353e74ae.png">
+<meta property="og:updated_time" content="2016-12-12T03:00:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="javascript原型对象与原型链">
+<meta name="twitter:description" content="原型对象每个javascript对象都有一个原型对象，这个对象在不同的解释器下的实现不同。比如在firefox下,每个对象都有一个隐藏的proto属性,这个属性就是原型对象的引用。原型的值可以是一个对象或者null。 原型链由于原型对象本身也是对象，根据上边的定义，它也有自己的原型，而它自己的原型对象又可以有自己的原型，这样就组成了一条链，这个链就是原型链。JavaScritp引擎在访问对象的属性">
+<meta name="twitter:image" content="http://dl2.iteye.com/upload/attachment/0047/3799/e9cabd48-9984-3aa6-9cfd-a031a51a9107.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/02/04/javascript原型与原型链/"/>
+
+
+
+
+
+  <title>javascript原型对象与原型链 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/04/javascript原型与原型链/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">javascript原型对象与原型链</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-04T11:32:08+08:00">
+                2016-02-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/04/javascript原型与原型链/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/04/javascript原型与原型链/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="原型对象"><a href="#原型对象" class="headerlink" title="原型对象"></a>原型对象</h2><p>每个javascript对象都有一个原型对象，这个对象在不同的解释器下的实现不同。比如在firefox下,每个对象都有一个隐藏的<strong>proto</strong>属性,这个属性就是原型对象的引用。原型的值可以是一个对象或者null。</p>
+<h2 id="原型链"><a href="#原型链" class="headerlink" title="原型链"></a>原型链</h2><p>由于原型对象本身也是对象，根据上边的定义，它也有自己的原型，而它自己的原型对象又可以有自己的原型，这样就组成了一条链，这个链就是原型链。<br>JavaScritp引擎在访问对象的属性时，如果在对象本身中没有找到，则会去原型链中查找，如果找到，直接返回值，如果整个链都遍历且没有找到属性，则返回undefined，原型链一般实现为一个链表，这样就可以按照一定的顺序来查找。</p>
+<h4 id="例子1"><a href="#例子1" class="headerlink" title="例子1"></a>例子1</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var base = &#123;</span><br><span class="line">	name:<span class="string">"base"</span>,</span><br><span class="line">	getInfo:<span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">		<span class="built_in">return</span> this.name;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">var ext1 = &#123;</span><br><span class="line">	id:0,</span><br><span class="line">	__proto__:base</span><br><span class="line">&#125;</span><br><span class="line">var ext2 = &#123;</span><br><span class="line">	id:9,</span><br><span class="line">	__proto__:base</span><br><span class="line">&#125;</span><br><span class="line">console.log(ext1.id+<span class="string">" "</span>+ext2.id+<span class="string">" "</span>+ext1.getInfo()+<span class="string">" "</span>+ext2.getInfo());</span><br></pre></td></tr></table></figure>
+<p>最后结果会是：0 9 base base,在访问每个对象的属性时，都是先在对象本身找，如果没找到，则去原型链中查找，下面的图片可以显示这一点。<br><br><img src="http://dl2.iteye.com/upload/attachment/0047/3799/e9cabd48-9984-3aa6-9cfd-a031a51a9107.png" alt="example1"></p>
+<h4 id="例子2"><a href="#例子2" class="headerlink" title="例子2"></a>例子2</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var base = &#123;</span><br><span class="line">	name:<span class="string">"base"</span>,</span><br><span class="line">	getInfo:<span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">		<span class="built_in">return</span> this.name+<span class="string">"*"</span>+this.id;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">var ext1 = &#123;</span><br><span class="line">	id:0,</span><br><span class="line">	name:<span class="string">"ext1"</span>,</span><br><span class="line">	__proto__:base</span><br><span class="line">&#125;</span><br><span class="line">var ext2 = &#123;</span><br><span class="line">	id:9,</span><br><span class="line">	__proto__:base</span><br><span class="line">&#125;</span><br><span class="line">console.log(ext1.name+<span class="string">" "</span>+ext2.name+<span class="string">" "</span>+ext1.getInfo()+<span class="string">" "</span>+ext2.getInfo());</span><br></pre></td></tr></table></figure>
+<p>结果是：ext1 base ext1<em>0 base</em>9，这里为什么ext1.getInfo()不会有base出现，就是因为name属性在ext2对象中不存在，因此,从对象本身出发，沿着<strong>proto</strong>查找，直到在base中找到属性名称相同的值（name）。而ext1对象中本身就有name了，所以不会沿着原型链继续查找了。<br>应该注意的是，getInfo函数中的this表示<em>原始的对象</em>，而并非原型对象（this上下文）。如果对象没有显式的声明自己的”<strong>proto</strong>”属性，这个值默认的设置为Object.prototype,而Object.prototype的”<strong>proto</strong>”属性的值为”null”，标志着原型链的终结，即该对象没有原型。</p>
+<h2 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h2><p>除了上边提到的<em>直接</em>操作对象的<strong>proto</strong>属性的指向以外，JavaScript还支持<em>构造器</em>形式的对象创建。构造器会自动的为新创建的对象设置原型对象，此时的原型对象通过构造器的prototype属性来引用。</p>
+<h4 id="例子3"><a href="#例子3" class="headerlink" title="例子3"></a>例子3</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> Task(id)&#123;</span><br><span class="line">	this.id = id;</span><br><span class="line">&#125;</span><br><span class="line">Task.prototype.status = <span class="string">"STOPPED"</span>;</span><br><span class="line">Task.prototype.execute = <span class="keyword">function</span>(args)&#123;</span><br><span class="line">	<span class="built_in">return</span> <span class="string">"execute task_"</span>+this.id+<span class="string">"["</span>+this.status+<span class="string">"]:"</span>+args; </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var task1 = new Task(1);</span><br><span class="line">var task2 = new Task(2);</span><br><span class="line"></span><br><span class="line">task1.status = <span class="string">"ACTIVE"</span>;</span><br><span class="line">task2.status = <span class="string">"STARTING"</span>;</span><br><span class="line"></span><br><span class="line">console.log(task1.execute(<span class="string">'task1'</span>)+<span class="string">" * "</span>+task2.execute(<span class="string">'task2'</span>));</span><br></pre></td></tr></table></figure>
+<p>这里不像上面的例子在对象上直接操作<strong>proto</strong>属性的指向，而是通过构造器（属性prototype）的形式来操作。这就是构造器方法也是最经常用的一种方法。<br>最后的结果是：execute task_1[ACTIVE]:task1 * execute task_2[STARTING]:task2<br>构造器会自动为task1,task2两个对象设置原型对象Task.prototype，这个对象被Task(在此最为构造器)的prototype属性引用，参看下图中的箭头指向。<br><br><img src="http://dl.iteye.com/upload/attachment/473801/e034e3ab-0a37-31c6-92c1-498d353e74ae.png" alt="example3"><br><br>由于Task本身仍旧是函数，因此其”<strong>proto</strong>”属性为Function.prototype, 而内建的函数原型对象的”<strong>proto</strong>”属性则为Object.prototype对象。最后Obejct.prototype的”<strong>proto</strong>”值为null.</p>
+<p>感谢这么棒的文章：<a href="http://hzjavaeyer.group.iteye.com/group/wiki/3086-JavaScript-core-concepts" target="_blank" rel="noopener">核心概念深入</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/01/如何用CSS做漂亮的毛玻璃效果/" rel="next" title="如何用CSS做漂亮的毛玻璃效果">
+                <i class="fa fa-chevron-left"></i> 如何用CSS做漂亮的毛玻璃效果
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/04/javascript作用域链和活动对象/" rel="prev" title="javascript作用域链和活动对象">
+                javascript作用域链和活动对象 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原型对象"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x539F;&#x578B;&#x5BF9;&#x8C61;" class="headerlink" title="&#x539F;&#x578B;&#x5BF9;&#x8C61;"></a>&#x539F;&#x578B;&#x5BF9;&#x8C61;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原型链"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x539F;&#x578B;&#x94FE;" class="headerlink" title="&#x539F;&#x578B;&#x94FE;"></a>&#x539F;&#x578B;&#x94FE;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例子1"><span class="nav-number">2.0.1.</span> <span class="nav-text"><a href="#&#x4F8B;&#x5B50;1" class="headerlink" title="&#x4F8B;&#x5B50;1"></a>&#x4F8B;&#x5B50;1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子2"><span class="nav-number">2.0.2.</span> <span class="nav-text"><a href="#&#x4F8B;&#x5B50;2" class="headerlink" title="&#x4F8B;&#x5B50;2"></a>&#x4F8B;&#x5B50;2</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构造器"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x6784;&#x9020;&#x5668;" class="headerlink" title="&#x6784;&#x9020;&#x5668;"></a>&#x6784;&#x9020;&#x5668;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#例子3"><span class="nav-number">3.0.1.</span> <span class="nav-text"><a href="#&#x4F8B;&#x5B50;3" class="headerlink" title="&#x4F8B;&#x5B50;3"></a>&#x4F8B;&#x5B50;3</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/02/04/javascript原型与原型链/';
+          this.page.identifier = '2016/02/04/javascript原型与原型链/';
+          this.page.title = 'javascript原型对象与原型链';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

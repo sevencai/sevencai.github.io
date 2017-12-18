@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="小程序 javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="过去的两个月，在组里参与了【腾讯充值小程序】以及【腾讯周边】两个项目。其中充值项目，由于IOS对于微信小程序的虚拟商品的限制，暂时搁浅上线，周边已上。下面是我遇到的一些体会，坑，以及一些感受。  小程序快的原理轻应用，快一定是个最大的优点。小程序为什么这么快？平时开发是在PC端开发者工具上，可以看到各个资源的请求情况，包括js，cgi等。在真实手机上，又是怎么样的呢？  资源最初全部下载下来 图片">
+<meta name="keywords" content="小程序 javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小程序开发体会">
+<meta property="og:url" content="http://sevencai.github.io/2017/01/22/小程序开发体会/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="过去的两个月，在组里参与了【腾讯充值小程序】以及【腾讯周边】两个项目。其中充值项目，由于IOS对于微信小程序的虚拟商品的限制，暂时搁浅上线，周边已上。下面是我遇到的一些体会，坑，以及一些感受。  小程序快的原理轻应用，快一定是个最大的优点。小程序为什么这么快？平时开发是在PC端开发者工具上，可以看到各个资源的请求情况，包括js，cgi等。在真实手机上，又是怎么样的呢？  资源最初全部下载下来 图片">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://cailidan.cn/images/xiaochengxu.jpg">
+<meta property="og:image" content="http://cailidan.cn/images/1123123.png">
+<meta property="og:image" content="http://cailidan.cn/images/xiaochengxu123.png">
+<meta property="og:updated_time" content="2017-02-09T12:02:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="小程序开发体会">
+<meta name="twitter:description" content="过去的两个月，在组里参与了【腾讯充值小程序】以及【腾讯周边】两个项目。其中充值项目，由于IOS对于微信小程序的虚拟商品的限制，暂时搁浅上线，周边已上。下面是我遇到的一些体会，坑，以及一些感受。  小程序快的原理轻应用，快一定是个最大的优点。小程序为什么这么快？平时开发是在PC端开发者工具上，可以看到各个资源的请求情况，包括js，cgi等。在真实手机上，又是怎么样的呢？  资源最初全部下载下来 图片">
+<meta name="twitter:image" content="http://cailidan.cn/images/xiaochengxu.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2017/01/22/小程序开发体会/"/>
+
+
+
+
+
+  <title>小程序开发体会 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2017/01/22/小程序开发体会/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">小程序开发体会</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-22T17:45:02+08:00">
+                2017-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/22/小程序开发体会/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/01/22/小程序开发体会/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>过去的两个月，在组里参与了【腾讯充值小程序】以及【腾讯周边】两个项目。<br>其中充值项目，由于IOS对于微信小程序的虚拟商品的限制，暂时搁浅上线，周边已上。<br>下面是我遇到的一些体会，坑，以及一些感受。</p>
+<hr>
+<h3 id="小程序快的原理"><a href="#小程序快的原理" class="headerlink" title="小程序快的原理"></a>小程序快的原理</h3><p>轻应用，快一定是个最大的优点。小程序为什么这么快？平时开发是在PC端开发者工具上，可以看到各个资源的请求情况，包括js，cgi等。在真实手机上，又是怎么样的呢？</p>
+<ol>
+<li>资源最初全部下载下来</li>
+<li>图片缓存策略</li>
+<li>小程序大小限制，最多1M</li>
+<li>小程序页面状态缓存，webview不会被回收销毁</li>
+<li>每个程序都是单独的进程，并且最多5个进程</li>
+</ol>
+<p>前期我曾抓了个包试试，如下：</p>
+<p><img src="http://cailidan.cn/images/xiaochengxu.jpg" alt="抓包实例"></p>
+<p><strong>可以看到没有我们平时在开发者工具上看到的js等资源，原因是小程序在第一次打开时就把资源预先全部从微信服务器 down 了下来到本地，（appbrand/pkg目录下，后缀名为wxapkg），存放在了本地的文件系统中，所以在你使用的过程中，只会有CGI请求发出，不会再请求其他代码资源了。</strong></p>
+<p>所以这也是为什么微信会限制开发者包的大小不得超过1M。这保证了第一次加载的速度，也不至于在无WIFI情况下，耗费太多流量。</p>
+<p>所以如果完全可以通过一些API比如setStorage、getStorage等使用户在离线状态下也可以使用。</p>
+<p>后期我再抓包时，发现请求又有了写变化，如下：</p>
+<p><img src="http://cailidan.cn/images/1123123.png" alt="rid/sid"></p>
+<p>猜想（未验证仅参考）这个rid/sid可能是用来判断小程序有没有资源发生变化，比如如果开发者提交了审核新版本，那么这个时候就去判断，如果有变化就从服务器拉去新的资源。如果没有变动，就用本地文件中的资源。</p>
+<p>再：微信对于访问过的图片，都有缓存策略，所以对比如腾讯周边小程序这样的图片很多的应用，也比较快。</p>
+<hr>
+<h3 id="小程序发布流程思考"><a href="#小程序发布流程思考" class="headerlink" title="小程序发布流程思考"></a>小程序发布流程思考</h3><ol>
+<li>开发者本地开发，通过开发者工具，本地预览，提交发布。然后微信通过审核，开发者发布审核版本，用户即可搜到。</li>
+<li>上传的代码是到了微信服务器上，统一管理。所以这里是微信服务器，第三方服务器，微信客户端三方的交互。</li>
+</ol>
+<p>这个过程中情形是这样的：</p>
+<p><img src="http://cailidan.cn/images/xiaochengxu123.png" alt="小程序流程图"></p>
+<p>小程序框架分为两层</p>
+<ol>
+<li>View视图层， 用于渲染页面结构。使用Webview渲染。</li>
+<li>App Service逻辑层，用来逻辑处理，网络请求，接口调用等等。运行在JSCore中。</li>
+</ol>
+<p>视图层和逻辑层通过JSBridge通信。逻辑层通知视图层数据发生变化，从而出发视图层更新。视图层则绑定事件，通知到逻辑层进行相应的业务处理。</p>
+<p>如在视图层：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">view</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">bindtap</span>=<span class="string">"updateData"</span>&gt;</span>页面跳转<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">view</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>逻辑层：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">page(&#123;</span><br><span class="line">    data: &#123;</span><br><span class="line">        config: &#123;</span><br><span class="line">            title: <span class="string">''</span>,</span><br><span class="line">            name: <span class="string">''</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    updateData() &#123;</span><br><span class="line">        <span class="keyword">this</span>.setData(&#123;</span><br><span class="line">        <span class="string">'config.title'</span>: <span class="string">'腾讯周边'</span>,</span><br><span class="line">        <span class="string">'config.name'</span>: <span class="string">'Seven'</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="在View层渲染数据"><a href="#在View层渲染数据" class="headerlink" title="在View层渲染数据"></a>在View层渲染数据</h3><p><strong>用户打开小程序后，选择左上角的关闭或按返回键时小程序只是隐藏到后台，webview不会被销毁或者回收。比如在ios上，从小程序转到另外一个应用中，再回来微信，打开的webview仍然存在。再android上则是可以在窗口进程中再次找到先前打开的小程序。</strong></p>
+<ol>
+<li>Native预先加载额外一个Webview，当打开指定页面时，无需请求额外资源，直接渲染</li>
+<li>model和view双线程，单向数据绑定</li>
+<li>重渲染使用Virtual DOM减少开销，采用diff算法局部更新</li>
+</ol>
+<p>这里的单向数据绑定确实是有不方便的地方。先前用过Vue等双向绑定的，能够及时反馈用户的输入，相对来说这种可能更方便操作，也更适合小型应用。<br>但是单向绑定就是可能更加高效一些了。</p>
+<hr>
+<h3 id="其他特性"><a href="#其他特性" class="headerlink" title="其他特性"></a>其他特性</h3><p>1.小程序并发请求数不超过5，这里可以做优化，比如使用接口将所有的请求合并。</p>
+<p>2.小程序关于登录态与移动应用和网页应用的不同之处是抛弃了access_token的验证方式，而是采用session_key加签名的方式，为小程序与服务器交换敏感数据提供了对称加密方法。签名方法对小程序透明，后端服务实现相应的解密程序以及登录态验证和控制能力。由于我们部门的后台接口基本都是基于access_token这一套，后来与WX侧协商还是可以用ac.否则后台就会有很大的改动。</p>
+<p>3.要好好的利用小程序模板机制，这样可以减少很多代码量，也更便于维护。</p>
+<p>4.对于WX官方文档上的API,最好是自己封装一个WXLIB文件。这样可以减少代码量，统一整个代码。例如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">wxLib</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    share(obj) &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            title: obj.title,</span><br><span class="line">            desc: obj.desc,</span><br><span class="line">            path: obj.path</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在每一个想要分享的页面就可以：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> wxLib <span class="keyword">from</span> <span class="string">'../../service/lib/wxLib'</span>;</span><br><span class="line">Page(&#123;</span><br><span class="line">    onShareAppMessage() &#123;</span><br><span class="line">        <span class="keyword">return</span> wxLib.share(&#123;</span><br><span class="line">            title: <span class="string">'腾讯周边'</span>,</span><br><span class="line">            desc: <span class="string">'正品周边'</span>,</span><br><span class="line">            path: <span class="string">'page/index/index'</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>(233,这个好像看起来没有代码量减少，但是统一了以后，其他的也统一，就会发现后来方便很多。)</p>
+<p>5.可以利用本地存储，解决离线的时候，黑屏无数据的情况。</p>
+<p>6.文档很容易理解，API也好用。基本上按照文档来大部分功能都可以实现。</p>
+<hr>
+<h3 id="关于小程序定位"><a href="#关于小程序定位" class="headerlink" title="关于小程序定位"></a>关于小程序定位</h3><p>小程序即用即走的定位原本是很好的，比如非常适合线下的营销，非常适合生活服务。比如查火车票，膜拜单车，打麻将和牌的小游戏都很合适。用户生活方便，娱乐也方便。</p>
+<p>但是目前来看小程序除了刚发布的时候，现在的流量目测已经越来越少，除开微信好像没有做很多推广以外，小程序还没有形成用户的习惯，可能是一个问题。</p>
+<p>小程序要发展起来，一定是要在用户形成了使用习惯，产生【不用装这个app,直接用小程序就可以满足我的需求】的这种想法。</p>
+<p>未来会怎样，取决于微信的推广和未来长远的看法。也取决是不是有很好的小程序出来。期待未来超出想象。</p>
+<p>下次准备写一些小程序的用法，比如模板消息，客服等等。以上内容如果有不对的地方，欢迎指正，感谢阅读。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/小程序-javascript/" rel="tag"># 小程序 javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/22/onload及onerror在IE下不兼容的问题/" rel="next" title="利用onerror/onload写的jsonp在IE下不兼容的问题">
+                <i class="fa fa-chevron-left"></i> 利用onerror/onload写的jsonp在IE下不兼容的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/21/React-读书笔记/" rel="prev" title="React 读书笔记（一）">
+                React 读书笔记（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#小程序快的原理"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5C0F;&#x7A0B;&#x5E8F;&#x5FEB;&#x7684;&#x539F;&#x7406;" class="headerlink" title="&#x5C0F;&#x7A0B;&#x5E8F;&#x5FEB;&#x7684;&#x539F;&#x7406;"></a>&#x5C0F;&#x7A0B;&#x5E8F;&#x5FEB;&#x7684;&#x539F;&#x7406;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小程序发布流程思考"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5C0F;&#x7A0B;&#x5E8F;&#x53D1;&#x5E03;&#x6D41;&#x7A0B;&#x601D;&#x8003;" class="headerlink" title="&#x5C0F;&#x7A0B;&#x5E8F;&#x53D1;&#x5E03;&#x6D41;&#x7A0B;&#x601D;&#x8003;"></a>&#x5C0F;&#x7A0B;&#x5E8F;&#x53D1;&#x5E03;&#x6D41;&#x7A0B;&#x601D;&#x8003;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在View层渲染数据"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5728;View&#x5C42;&#x6E32;&#x67D3;&#x6570;&#x636E;" class="headerlink" title="&#x5728;View&#x5C42;&#x6E32;&#x67D3;&#x6570;&#x636E;"></a>&#x5728;View&#x5C42;&#x6E32;&#x67D3;&#x6570;&#x636E;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他特性"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x5176;&#x4ED6;&#x7279;&#x6027;" class="headerlink" title="&#x5176;&#x4ED6;&#x7279;&#x6027;"></a>&#x5176;&#x4ED6;&#x7279;&#x6027;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于小程序定位"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x5173;&#x4E8E;&#x5C0F;&#x7A0B;&#x5E8F;&#x5B9A;&#x4F4D;" class="headerlink" title="&#x5173;&#x4E8E;&#x5C0F;&#x7A0B;&#x5E8F;&#x5B9A;&#x4F4D;"></a>&#x5173;&#x4E8E;&#x5C0F;&#x7A0B;&#x5E8F;&#x5B9A;&#x4F4D;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2017/01/22/小程序开发体会/';
+          this.page.identifier = '2017/01/22/小程序开发体会/';
+          this.page.title = '小程序开发体会';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

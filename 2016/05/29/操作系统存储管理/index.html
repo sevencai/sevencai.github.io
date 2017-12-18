@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="other," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 下面先来看一张简单的图：  所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，">
+<meta name="keywords" content="other">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统存储管理">
+<meta property="og:url" content="http://sevencai.github.io/2016/05/29/操作系统存储管理/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 下面先来看一张简单的图：  所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/jiegou.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/test44.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/ncfp3.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/yeshi.jpg">
+<meta property="og:updated_time" content="2016-12-12T02:33:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="操作系统存储管理">
+<meta name="twitter:description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 下面先来看一张简单的图：  所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/jiegou.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/05/29/操作系统存储管理/"/>
+
+
+
+
+
+  <title>操作系统存储管理 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/05/29/操作系统存储管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">操作系统存储管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-29T14:45:10+08:00">
+                2016-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/other/" itemprop="url" rel="index">
+                    <span itemprop="name">other</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/05/29/操作系统存储管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/05/29/操作系统存储管理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。</strong></p>
+<p>下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。</p>
+<p>下面先来看一张简单的图：</p>
+<p><img src="http://www.cailidan.cn/images/jiegou.png" alt=""></p>
+<p>所以存储管理的功能主要包括下面三个部分：</p>
+<blockquote>
+<ol>
+<li>建立内存分配登记表，记录哪些已经被分配，哪些没有被分配</li>
+<li>实施分配内存，当有作业提出要求时，按照一定的原则分配，并且要修改一说的内存分配登记表</li>
+<li>内存回收，由操作系统的内存管理程序负责回收资源，并修改相应内存分配登记表</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="地址转换"><a href="#地址转换" class="headerlink" title="地址转换"></a><strong>地址转换</strong></h3><p>用户装入主存之前是逻辑地址，装入之后是物理地址。要有相应的硬件机构配合，将物理地址转换成物理地址。</p>
+<h4 id="逻辑地址和逻辑空间"><a href="#逻辑地址和逻辑空间" class="headerlink" title="逻辑地址和逻辑空间"></a><strong>逻辑地址和逻辑空间</strong></h4><p>地址空间：一个程序限定的地址范围。</p>
+<p>源程序经过汇编或者编译后，形成目标程序，<strong>每个目标程序都是以0为基址顺序进行编制的</strong>。这样生成的目标程序就会占据一定空间。成为作业的逻辑空间。</p>
+<h4 id="物理地址与物理空间"><a href="#物理地址与物理空间" class="headerlink" title="物理地址与物理空间"></a><strong>物理地址与物理空间</strong></h4><p>内存以字节为编址空间。分别由0，1，2….这样编号。这个唯一的编号就是内存单元中的物理地址。<strong>可以直接通过这个编号寻址</strong>。  </p>
+<p>一个编译好的程序在自己的逻辑空间中。运行时，要把它装入内存空间。在多道程序中，每个用户不可能用内存的物理地址来编写程序。我们需要一种存储管理机制提供地址映射功能将用户程序中的逻辑地址转换成运行时机器可以直接寻址的物理地址。这个功能叫做<strong>地址映射或者地址重定位</strong>。</p>
+<p><img src="http://www.cailidan.cn/images/test44.png" alt=""></p>
+<hr>
+<h3 id="地址重定位方式"><a href="#地址重定位方式" class="headerlink" title="地址重定位方式"></a><strong>地址重定位方式</strong></h3><h4 id="静态地址重定位"><a href="#静态地址重定位" class="headerlink" title="静态地址重定位"></a><strong>静态地址重定位</strong></h4><p>静态重定位是在程序装入过程中，由操作系统的重定位装入程序一次完成作业的地址转换过程。以后不再转换。即直接修改指令中的地址代码，把这些地址代码从逻辑转换成物理。</p>
+<h5 id="静态地址重定位优点"><a href="#静态地址重定位优点" class="headerlink" title="静态地址重定位优点"></a><strong>静态地址重定位优点</strong></h5><ol>
+<li>由于在程序执行前就完成了地址转换，所以执行速度快。</li>
+<li>地址转换方法无需硬件支持，在硬件中容易实现。</li>
+</ol>
+<h5 id="静态地址重定位缺点"><a href="#静态地址重定位缺点" class="headerlink" title="静态地址重定位缺点"></a><strong>静态地址重定位缺点</strong></h5><ol>
+<li>程序一旦经过转换后，其占用的存储空间就不能变了，所以静态地址重定位不能再内存中移动。</li>
+<li>程序必须分配连续的存储空间，不能把程序放在若干个不连续的区域中，这些不利于存储空间的充分利用。</li>
+<li>程序中涉及的所有要转换地址的指令，不管程序运行过程是否会执行到，都必须转换。这就有可能有些指令实施了转换，但根本不会执行。因此做了不必要的工作。</li>
+<li>程序共享不方便，用户必须事先确定所需的存储量，若所需的存储量超过可用的存储空间，用户必须覆盖结构。</li>
+</ol>
+<hr>
+<h4 id="动态地址重定位"><a href="#动态地址重定位" class="headerlink" title="动态地址重定位"></a><strong>动态地址重定位</strong></h4><p>动态地址重定位的作业是在装入时，不进行地址转换，而是直接把作业装到分配的主存区域中，执行过程中再进行地址重定位。</p>
+<p>这个过程中需要重定位寄存器（硬件支持），它用来存放用户作业装入主存空间的起始地址。</p>
+<p><strong>在程序执行过程中，执行到访问内存指令的时候，并不立即把指令中的地址码送到地址总线，而是先经过动态地址重定位机制，由地址转换硬件逻辑自动把指令中的相对地址码与定位寄存器的值相加，形成物理地址码，然后把这个地址码送到地址总线，以此来实现对内存存储单元的访问。</strong>这个过程中，动态地址重定位的过程是在执行访问内存指令时，由硬件机制自动完成地址转换的。所以对程序执行的速度没有太大影响。</p>
+<p>这个过程中，可以看到，执行前或者执行中<strong>代码没有任何变化</strong>。所以也可以<strong>实现内存的移动</strong>，对后面内存碎片提供了技术支持。</p>
+<p>并且也可以在互补连续的内存空间，只要各程序段有自己对应的重定位寄存器，有利于内存资源的充分利用和共享。</p>
+<p>缺点就是<strong>硬件支持需要</strong>，系统开销大，实现村粗管理的软件比较复杂。</p>
+<hr>
+<h3 id="存储保护"><a href="#存储保护" class="headerlink" title="存储保护"></a><strong>存储保护</strong></h3><p>在多道系统中，内存中的许多用户或系统程序和数据段可以提供不同的用户进程共享。这样会提高内存的利用率。但是，我们也需要限制各个进程只在自己的存储区活动。除了共享的以外，各进程<strong>不能对别人的进程的程序和数据段产生干扰和破坏</strong>，因此必须对内存中的程序和数据段采用存储保护措施。</p>
+<p>主要是两方面：</p>
+<ol>
+<li>防止地址越界（上，下界存储保护和基址限长）</li>
+<li>存取权限控制（每个进程都有自己的访问权限）</li>
+</ol>
+<hr>
+<h3 id="存储扩充"><a href="#存储扩充" class="headerlink" title="存储扩充"></a><strong>存储扩充</strong></h3><p>多个程序同时在系统中运行，往往受内存容量的限制。使得有些大程序不能装入系统运行，或者只能装入很少的程序。解决办法可能有下面两种：</p>
+<p>从硬件上：增加内存芯片的数量<br>从软件上：<strong>虚拟存储器，实现逻辑上的扩充</strong></p>
+<hr>
+<h3 id="分区存储管理"><a href="#分区存储管理" class="headerlink" title="分区存储管理"></a><strong>分区存储管理</strong></h3><p>分区存储管理是多道程序运行环境中最简单的存储管理方法，<strong>基本思想就是讲内存划分为若干个连续区域，成为分区。每个分区只放一个程序</strong>。</p>
+<h4 id="单一连续分配方案"><a href="#单一连续分配方案" class="headerlink" title="单一连续分配方案"></a><strong>单一连续分配方案</strong></h4><p>一段时间内，只能有一个进程在内存的用户可用区。内存空间中，只有一道用户进程。这一般由单道系统采用。</p>
+<h4 id="固定分区"><a href="#固定分区" class="headerlink" title="固定分区"></a><strong>固定分区</strong></h4><p>在作业未进入内存之前，就由操作员吧内存划分为若干个固定存储区。<strong>除操作系统占用一个区域外，其他的为用户共享。分区一旦划分，就不可以变。由于一个分区只存放一个进程，所以系统可以同时运行的最大进程道数就是内存分区的大小。通常采用静态地址重定位。</strong>注意这个每个分区的大小可以不同。<br>固定分区表，分区的分配，分区的回收。这是要做的主要工作。缺点也很明显。严重浪费，碎片大，影响内存利用率。</p>
+<h4 id="可变分区管理"><a href="#可变分区管理" class="headerlink" title="可变分区管理"></a><strong>可变分区管理</strong></h4><p>内存中除了操作系统的区域外，对内存剩余空间预先不划分分区，初始构成一个大的空闲去。<strong>当作业装入时，根据作业的大小，在内存的空闲区划分出一个连续的存储区域</strong>。作为分区分配给给作业使用。这里面涉及到碎片问题，还有移动和覆盖。</p>
+<p>这里面主要要有：建立空闲区表，内存分配，可变分区的回收，地址转换和存储保护。</p>
+<p>内存分配中又涉及到三种方法：最先适应算法，最佳适应算法，最坏适应算法。</p>
+<blockquote>
+<p><strong>最先适应算法(nrst-fit)</strong>：按分区在内存的先后次序从头查找，找到符合要求的第一个分区进行分配。该算法的分配和释放的时间性能较好，较大的空闲分区可以被保留在内存高端。但随着低端分区不断划分会产生较多小分区，每次分配时查找时间开销便会增大。</p>
+<p><strong>最佳适应算法(best-fit)</strong>：按分区在内存的先后次序从头查找，找到其大小与要求相差最小的空闲分区进行分配。从个别来看，外碎片较小；但从整体来看，会形成较多外碎片优点是较大的空闲分区可以被保留。</p>
+<p><strong>最坏适应算法(worst- fit)</strong>：按分区在内存的先后次序从头查找，找到最大的空闲分区进行分配。基本不留下小空闲分区，不易形成外碎片。但由于较大的空闲分区不被保留，当对内存需求较大的进程需要运行时，其要求不易被满足。</p>
+</blockquote>
+<p><img src="http://www.cailidan.cn/images/ncfp3.png" alt="ncfp3"></p>
+<hr>
+<h3 id="页式存储管理"><a href="#页式存储管理" class="headerlink" title="页式存储管理"></a><strong>页式存储管理</strong></h3><p>将进程分配在不连续但大小先疼痛的存储区域中，实现内存见缝插针的分配，同时又保证进程的连续执行。页式技术包括：先把内存空间分块，再把用户程序逻辑空间分页，再以页为单位分配内存。</p>
+<h4 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a><strong>具体步骤</strong></h4><ol>
+<li><p>等分内存</p>
+<p> 页式存储管理将内存空间划分成<strong>等长</strong>的若干区域<br> 每个区域的大小一般<strong>取2的整数幂</strong>，称为一个物理页面有时称为块。<br> 内存的所有物理页面从0开始编号，称作物理页号。</p>
+</li>
+<li><p>逻辑地址</p>
+<p> 系统将<strong>程序的逻辑空间</strong>按照同样大小也划分成若干页面，称为逻辑页面也称为页。<br> 程序的各个逻辑页面从0开始依次编号，称作逻辑页号或相对页号。<br> 每个页面内从0开始编址，称为页内地址。程序中的逻辑地址由两部分组成：<strong>页号和页内位移</strong></p>
+</li>
+<li><p>内存分配</p>
+<p> 系统可用一张<strong>“位示图”来登记内存中各块的分配情况</strong>，存储分配时以页面（块）为单位，并按程序的页数多少进行分配。<br> 相邻的页面在内存中不一定相邻，即分配给程序的内存块之间不一定连续。</p>
+<p> 对<strong>程序地址空间的分页是系统自动进行的，即对用户是透明的</strong>。<br> 由于页面尺寸为2的整数次幂，故相对地址中的高位部分即为页号，低位部分为页内地址。</p>
+</li>
+</ol>
+<p><img src="http://www.cailidan.cn/images/yeshi.jpg" alt=""></p>
+<hr>
+<h4 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a><strong>实现原理</strong></h4><p>1．页表</p>
+<p>   系统为<strong>每个</strong>进程建立一张页表，用于记录进程逻辑页面与内存物理页面之间的对应关系。地址空间有多少页，该页表里就登记多少行，且按逻辑页的顺序排列。</p>
+<p>2．地址映射过程</p>
+<p><strong>页式存储管理采用动态重定位，即在程序的执行过程中完成地址转换。处理器每执行一条指令，就将指令中的逻辑地址（p,d）取来从中得到逻辑页号(p)，硬件机构按此页号查页表，得到内存的块号B’，便形成绝对地址（B’,d）,处理器即按此地址访问主存。</strong></p>
+<p>3．页面的共享与保护</p>
+<p>  当多个不同进程中需要有相同页面信息时，可以在主存中只保留一个副本，只要让这些进程各自的有关项中指向内存同一块号即可。<strong>同时在页表中设置相应的“存取权限”，对不同进程的访问权限进行各种必要的限制</strong>。</p>
+<hr>
+<h4 id="页式管理方式的优点"><a href="#页式管理方式的优点" class="headerlink" title="页式管理方式的优点"></a><strong>页式管理方式的优点</strong></h4><p>没有外碎片，程序不必连续存放，便于改变程序占用空间的大小。</p>
+<h4 id="页式管理方式的缺点"><a href="#页式管理方式的缺点" class="headerlink" title="页式管理方式的缺点"></a><strong>页式管理方式的缺点</strong></h4><p>要求程序全部装入内存，没有足够的内存，程序就不能执行。</p>
+<p>除了页式存储管理，还有段式存储管理。</p>
+<hr>
+<h3 id="覆盖和交换技术"><a href="#覆盖和交换技术" class="headerlink" title="覆盖和交换技术"></a><strong>覆盖和交换技术</strong></h3><h4 id="覆盖技术"><a href="#覆盖技术" class="headerlink" title="覆盖技术"></a><strong>覆盖技术</strong></h4><p>引入覆盖 (overlay)技术的目标是<strong>在较小的可用内存中运行较大的程序</strong>。这种技术常用于多道程序系统之中，与分区式存储管理配合使用。</p>
+<p><strong>覆盖技术的原理：</strong>一个程序的几个代码段或数据段，按照时间先后来占用公共的内存空间。将程序必要部分(常用功能)的代码和数据常驻内存；可选部分(不常用功能)平时存放在外存(覆盖文件)中，在需要时才装入内存。不存在调用关系的模块不必同时装入到内存，从而可以相互覆盖</p>
+<p>覆盖技术的缺点是编程时必须划分程序模块和确定程序模块之间的覆盖关系，增加编程复杂度；从外存装入覆盖文件，以时间延长换取空间节省。</p>
+<hr>
+<h4 id="交换技术"><a href="#交换技术" class="headerlink" title="交换技术"></a><strong>交换技术</strong></h4><p>交换 (swapping)技术在多个程序并发执行时，可以将暂时不能执行的程序（进程）送到外存中，从而获得空闲内存空间来装入新程序（进程），或读人保存在外存中而处于就绪状态的程序。交换单位为整个进程的地址空间。交换技术常用于多道程序系统或小型分时系统中，因为这些系统大多采用分区存储管理方式。与分区式存储管理配合使用又称作“对换”或“滚进／滚出” (roll-in／roll-out)。</p>
+<p><strong>原理</strong>：暂停执行内存中的进程，将整个进程的地址空间保存到外存的交换区中（换出swap out），而将外存中由阻塞变为就绪的进程的地址空间读入到内存中，并将该进程送到就绪队列（换入swap in）。</p>
+<hr>
+<h4 id="两者比较"><a href="#两者比较" class="headerlink" title="两者比较"></a><strong>两者比较</strong></h4><p>交换花费大量内，外存交换时间。两者都实现了大作业在小内存上运行。</p>
+<p>覆盖于与换技术的区别：</p>
+<p>a. 覆盖由<strong>用户解决空间不足</strong>问题（即：覆盖只能在<strong>一个程序内部</strong>进行）</p>
+<p>b. 交换由<strong>系统解决空间不足</strong>问题（即：交换可以<strong>在任意程序间</strong>进行）</p>
+<p>c. 覆盖对程序结构有严格的限制，交换对程序结构没有限制（这也是由于a,b的原因）</p>
+<hr>
+<h3 id="虚拟存储器"><a href="#虚拟存储器" class="headerlink" title="虚拟存储器"></a><strong>虚拟存储器</strong></h3><h4 id="什么是虚拟存储器"><a href="#什么是虚拟存储器" class="headerlink" title="什么是虚拟存储器"></a><strong>什么是虚拟存储器</strong></h4><p>当代计算机系统的主存主要由半导体存储器组成，由于工艺和成本的原因，主存的容量受到限制。然而，计算机系统软件和应用软件的功能不断增强，程序规模迅速扩大，要求主存的容量越大越好，这就产生了矛盾。为了给大的程序提供方便，使它们摆脱主存容量的限制，可以由操作系统把主存和辅存这两级存储系统管理起来，实现自动覆盖。</p>
+<blockquote>
+<p><strong>一个大作业在执行时，其一部分地址空间在主存，另一部分在辅存，当所访问的信息不在主存时，则由操作系统而不是程序员来安排I/O指令，把信息从辅存调入主存。从效果上来看，好像为用户提供了一个存储容量比实际主存大得多的存储器，用户无需考虑所编程序在主存中是否放得下或放在什么位置等问题。我们称这种存储器为虚拟存储器。</strong></p>
+</blockquote>
+<p><strong>虚拟存储器只是一个容量非常大的存储器的逻辑模型，不是任何实际的物理存储器</strong>。它借助于磁盘等辅助存储器来扩大主存容量，使之为更大或更多的程序所使用。虚拟存储器指的是主存－外存层次，它以透明的方式为用户提供了一个比实际主存空间大得多的程序地址空间。</p>
+<p>物理地址是实际的主存单元地址，由CPU地址引脚送出，是用于访问主存的。设CPU地址总线的宽度为m位，则物理地址空间的大小就是2m。</p>
+<p><strong>虚拟地址是用户编程时使用的地址，由编译程序生成，是程序的逻辑地址</strong>，其地址空间的大小受到辅助存储器容量的限制。显然，虚拟地址要比实际地址大得多。程序的逻辑地址空间称为虚拟地址空间。</p>
+<hr>
+<h4 id="判断过程"><a href="#判断过程" class="headerlink" title="判断过程"></a><strong>判断过程</strong></h4><p><strong>程序运行时，CPU以虚拟地址来访问主存，由辅助硬件找出虚拟地址和实际地址之间的对应关系，并判断这个虚拟地址指示的存储单元内容是否已装入主存。如果已在主存中，则通过地址变换，CPU可直接访问主存的实际单元；如果不在主存中，则把包含这个字的一个存储块调入主存后再由CPU访问。如果主存已满，则由替换算法从主存中将暂不运行的一块调回外存，再从外存调入新的一块到主存。</strong></p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>主要是了解了操作系统是怎么进行内存分配的，怎么进行管理进程进入内存的。了解了覆盖和交换技术的区别和联系。了解了分区管理和页式管理的区别。对存储分配和管理有了一点认识。解决了一点点心中的疑惑，本意记录下来方便以后查阅。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/other/" rel="tag"># other</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/26/闭包深入理解阅读笔记/" rel="next" title="闭包深入理解阅读笔记">
+                <i class="fa fa-chevron-left"></i> 闭包深入理解阅读笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/05/计算机网络体系结构脑图分享/" rel="prev" title="计算机网络体系结构脑图分享">
+                计算机网络体系结构脑图分享 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#地址转换"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5730;&#x5740;&#x8F6C;&#x6362;" class="headerlink" title="&#x5730;&#x5740;&#x8F6C;&#x6362;"></a><strong>&#x5730;&#x5740;&#x8F6C;&#x6362;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#逻辑地址和逻辑空间"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x903B;&#x8F91;&#x5730;&#x5740;&#x548C;&#x903B;&#x8F91;&#x7A7A;&#x95F4;" class="headerlink" title="&#x903B;&#x8F91;&#x5730;&#x5740;&#x548C;&#x903B;&#x8F91;&#x7A7A;&#x95F4;"></a><strong>&#x903B;&#x8F91;&#x5730;&#x5740;&#x548C;&#x903B;&#x8F91;&#x7A7A;&#x95F4;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#物理地址与物理空间"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x7269;&#x7406;&#x5730;&#x5740;&#x4E0E;&#x7269;&#x7406;&#x7A7A;&#x95F4;" class="headerlink" title="&#x7269;&#x7406;&#x5730;&#x5740;&#x4E0E;&#x7269;&#x7406;&#x7A7A;&#x95F4;"></a><strong>&#x7269;&#x7406;&#x5730;&#x5740;&#x4E0E;&#x7269;&#x7406;&#x7A7A;&#x95F4;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#地址重定位方式"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x65B9;&#x5F0F;" class="headerlink" title="&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x65B9;&#x5F0F;"></a><strong>&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x65B9;&#x5F0F;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#静态地址重定位"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;" class="headerlink" title="&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;"></a><strong>&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#静态地址重定位优点"><span class="nav-number">2.1.1.</span> <span class="nav-text"><a href="#&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x4F18;&#x70B9;" class="headerlink" title="&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x4F18;&#x70B9;"></a><strong>&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x4F18;&#x70B9;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#静态地址重定位缺点"><span class="nav-number">2.1.2.</span> <span class="nav-text"><a href="#&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x7F3A;&#x70B9;" class="headerlink" title="&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x7F3A;&#x70B9;"></a><strong>&#x9759;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;&#x7F3A;&#x70B9;</strong></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态地址重定位"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x52A8;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;" class="headerlink" title="&#x52A8;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;"></a><strong>&#x52A8;&#x6001;&#x5730;&#x5740;&#x91CD;&#x5B9A;&#x4F4D;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储保护"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5B58;&#x50A8;&#x4FDD;&#x62A4;" class="headerlink" title="&#x5B58;&#x50A8;&#x4FDD;&#x62A4;"></a><strong>&#x5B58;&#x50A8;&#x4FDD;&#x62A4;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储扩充"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x5B58;&#x50A8;&#x6269;&#x5145;" class="headerlink" title="&#x5B58;&#x50A8;&#x6269;&#x5145;"></a><strong>&#x5B58;&#x50A8;&#x6269;&#x5145;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区存储管理"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x5206;&#x533A;&#x5B58;&#x50A8;&#x7BA1;&#x7406;" class="headerlink" title="&#x5206;&#x533A;&#x5B58;&#x50A8;&#x7BA1;&#x7406;"></a><strong>&#x5206;&#x533A;&#x5B58;&#x50A8;&#x7BA1;&#x7406;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单一连续分配方案"><span class="nav-number">5.1.</span> <span class="nav-text"><a href="#&#x5355;&#x4E00;&#x8FDE;&#x7EED;&#x5206;&#x914D;&#x65B9;&#x6848;" class="headerlink" title="&#x5355;&#x4E00;&#x8FDE;&#x7EED;&#x5206;&#x914D;&#x65B9;&#x6848;"></a><strong>&#x5355;&#x4E00;&#x8FDE;&#x7EED;&#x5206;&#x914D;&#x65B9;&#x6848;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#固定分区"><span class="nav-number">5.2.</span> <span class="nav-text"><a href="#&#x56FA;&#x5B9A;&#x5206;&#x533A;" class="headerlink" title="&#x56FA;&#x5B9A;&#x5206;&#x533A;"></a><strong>&#x56FA;&#x5B9A;&#x5206;&#x533A;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可变分区管理"><span class="nav-number">5.3.</span> <span class="nav-text"><a href="#&#x53EF;&#x53D8;&#x5206;&#x533A;&#x7BA1;&#x7406;" class="headerlink" title="&#x53EF;&#x53D8;&#x5206;&#x533A;&#x7BA1;&#x7406;"></a><strong>&#x53EF;&#x53D8;&#x5206;&#x533A;&#x7BA1;&#x7406;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#页式存储管理"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x9875;&#x5F0F;&#x5B58;&#x50A8;&#x7BA1;&#x7406;" class="headerlink" title="&#x9875;&#x5F0F;&#x5B58;&#x50A8;&#x7BA1;&#x7406;"></a><strong>&#x9875;&#x5F0F;&#x5B58;&#x50A8;&#x7BA1;&#x7406;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#具体步骤"><span class="nav-number">6.1.</span> <span class="nav-text"><a href="#&#x5177;&#x4F53;&#x6B65;&#x9AA4;" class="headerlink" title="&#x5177;&#x4F53;&#x6B65;&#x9AA4;"></a><strong>&#x5177;&#x4F53;&#x6B65;&#x9AA4;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现原理"><span class="nav-number">6.2.</span> <span class="nav-text"><a href="#&#x5B9E;&#x73B0;&#x539F;&#x7406;" class="headerlink" title="&#x5B9E;&#x73B0;&#x539F;&#x7406;"></a><strong>&#x5B9E;&#x73B0;&#x539F;&#x7406;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#页式管理方式的优点"><span class="nav-number">6.3.</span> <span class="nav-text"><a href="#&#x9875;&#x5F0F;&#x7BA1;&#x7406;&#x65B9;&#x5F0F;&#x7684;&#x4F18;&#x70B9;" class="headerlink" title="&#x9875;&#x5F0F;&#x7BA1;&#x7406;&#x65B9;&#x5F0F;&#x7684;&#x4F18;&#x70B9;"></a><strong>&#x9875;&#x5F0F;&#x7BA1;&#x7406;&#x65B9;&#x5F0F;&#x7684;&#x4F18;&#x70B9;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#页式管理方式的缺点"><span class="nav-number">6.4.</span> <span class="nav-text"><a href="#&#x9875;&#x5F0F;&#x7BA1;&#x7406;&#x65B9;&#x5F0F;&#x7684;&#x7F3A;&#x70B9;" class="headerlink" title="&#x9875;&#x5F0F;&#x7BA1;&#x7406;&#x65B9;&#x5F0F;&#x7684;&#x7F3A;&#x70B9;"></a><strong>&#x9875;&#x5F0F;&#x7BA1;&#x7406;&#x65B9;&#x5F0F;&#x7684;&#x7F3A;&#x70B9;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#覆盖和交换技术"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x8986;&#x76D6;&#x548C;&#x4EA4;&#x6362;&#x6280;&#x672F;" class="headerlink" title="&#x8986;&#x76D6;&#x548C;&#x4EA4;&#x6362;&#x6280;&#x672F;"></a><strong>&#x8986;&#x76D6;&#x548C;&#x4EA4;&#x6362;&#x6280;&#x672F;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#覆盖技术"><span class="nav-number">7.1.</span> <span class="nav-text"><a href="#&#x8986;&#x76D6;&#x6280;&#x672F;" class="headerlink" title="&#x8986;&#x76D6;&#x6280;&#x672F;"></a><strong>&#x8986;&#x76D6;&#x6280;&#x672F;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交换技术"><span class="nav-number">7.2.</span> <span class="nav-text"><a href="#&#x4EA4;&#x6362;&#x6280;&#x672F;" class="headerlink" title="&#x4EA4;&#x6362;&#x6280;&#x672F;"></a><strong>&#x4EA4;&#x6362;&#x6280;&#x672F;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#两者比较"><span class="nav-number">7.3.</span> <span class="nav-text"><a href="#&#x4E24;&#x8005;&#x6BD4;&#x8F83;" class="headerlink" title="&#x4E24;&#x8005;&#x6BD4;&#x8F83;"></a><strong>&#x4E24;&#x8005;&#x6BD4;&#x8F83;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟存储器"><span class="nav-number">8.</span> <span class="nav-text"><a href="#&#x865A;&#x62DF;&#x5B58;&#x50A8;&#x5668;" class="headerlink" title="&#x865A;&#x62DF;&#x5B58;&#x50A8;&#x5668;"></a><strong>&#x865A;&#x62DF;&#x5B58;&#x50A8;&#x5668;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是虚拟存储器"><span class="nav-number">8.1.</span> <span class="nav-text"><a href="#&#x4EC0;&#x4E48;&#x662F;&#x865A;&#x62DF;&#x5B58;&#x50A8;&#x5668;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;&#x865A;&#x62DF;&#x5B58;&#x50A8;&#x5668;"></a><strong>&#x4EC0;&#x4E48;&#x662F;&#x865A;&#x62DF;&#x5B58;&#x50A8;&#x5668;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断过程"><span class="nav-number">8.2.</span> <span class="nav-text"><a href="#&#x5224;&#x65AD;&#x8FC7;&#x7A0B;" class="headerlink" title="&#x5224;&#x65AD;&#x8FC7;&#x7A0B;"></a><strong>&#x5224;&#x65AD;&#x8FC7;&#x7A0B;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a><strong>&#x603B;&#x7ED3;</strong></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/05/29/操作系统存储管理/';
+          this.page.identifier = '2016/05/29/操作系统存储管理/';
+          this.page.title = '操作系统存储管理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

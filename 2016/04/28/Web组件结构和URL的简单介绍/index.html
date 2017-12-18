@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机网络," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="以前大二的时候，接触到了《HTTP权威指南》这本书，当时觉得这本书好棒，容易懂，而且配了很多图，很容易就明白作者的意思。除去附录，其实也不厚。是不是可能有这样一种趋势，好像外国人都是喜欢把难的东西写的更简单，咱们国内的书可能就喜欢写的很复杂，=。=。当时看了前面三章，到后面讲代理，隧道，网关的时候不太明白就放下了。这段时间有点积累，再加上最近又上了一点点网络课了，再去看的时候就觉很容易明白，也轻">
+<meta name="keywords" content="计算机网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web组件结构和URL的简单介绍">
+<meta property="og:url" content="http://sevencai.github.io/2016/04/28/Web组件结构和URL的简单介绍/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="以前大二的时候，接触到了《HTTP权威指南》这本书，当时觉得这本书好棒，容易懂，而且配了很多图，很容易就明白作者的意思。除去附录，其实也不厚。是不是可能有这样一种趋势，好像外国人都是喜欢把难的东西写的更简单，咱们国内的书可能就喜欢写的很复杂，=。=。当时看了前面三章，到后面讲代理，隧道，网关的时候不太明白就放下了。这段时间有点积累，再加上最近又上了一点点网络课了，再去看的时候就觉很容易明白，也轻">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/http11.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http12.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http13.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http14.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http15.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http16.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http17.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/http18.png">
+<meta property="og:updated_time" content="2016-12-12T02:31:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Web组件结构和URL的简单介绍">
+<meta name="twitter:description" content="以前大二的时候，接触到了《HTTP权威指南》这本书，当时觉得这本书好棒，容易懂，而且配了很多图，很容易就明白作者的意思。除去附录，其实也不厚。是不是可能有这样一种趋势，好像外国人都是喜欢把难的东西写的更简单，咱们国内的书可能就喜欢写的很复杂，=。=。当时看了前面三章，到后面讲代理，隧道，网关的时候不太明白就放下了。这段时间有点积累，再加上最近又上了一点点网络课了，再去看的时候就觉很容易明白，也轻">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/http11.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/04/28/Web组件结构和URL的简单介绍/"/>
+
+
+
+
+
+  <title>Web组件结构和URL的简单介绍 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/28/Web组件结构和URL的简单介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Web组件结构和URL的简单介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-28T23:30:45+08:00">
+                2016-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/04/28/Web组件结构和URL的简单介绍/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/04/28/Web组件结构和URL的简单介绍/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>以前大二的时候，接触到了《HTTP权威指南》这本书，当时觉得这本书好棒，容易懂，而且配了很多图，很容易就明白作者的意思。除去附录，其实也不厚。是不是可能有这样一种趋势，好像外国人都是喜欢把难的东西写的更简单，咱们国内的书可能就喜欢写的很复杂，=。=。当时看了前面三章，到后面讲代理，隧道，网关的时候不太明白就放下了。这段时间有点积累，再加上最近又上了一点点网络课了，再去看的时候就觉很容易明白，也轻松了很多。那时候在CSDN上面写了两篇博客，主要是记录所学的。<a href="http://blog.csdn.net/christine95/article/details/47111607" target="_blank" rel="noopener">HTTP概述</a>和<a href="http://blog.csdn.net/christine95/article/details/47113145" target="_blank" rel="noopener">TCP/IP</a>。（ps，忽略排版这件事）。所有的图片都是来自这本书。接下来我会每个星期都看几章，然后把东西都整理到博客。主要目的也是整理思路，方便查阅，系统的学习下，也分享给大家。</p>
+</blockquote>
+<hr>
+<h3 id="Web的组件结构"><a href="#Web的组件结构" class="headerlink" title="Web的组件结构"></a>Web的组件结构</h3><p>我们知道了万维网的基本组件是<strong>HTTP客户端和HTTP服务器</strong>，他们其实还有与很多其他的Web应用程序进行交互。下面简单的说明下这些Web组件的是什么和他们的作用。具体有代理，网关，隧道，缓存。以后会有专门的文章专门再讲他们。</p>
+<hr>
+<h4 id="代理"><a href="#代理" class="headerlink" title="代理"></a><strong>代理</strong></h4><p>HTTP代理服务器是Web安全，应用集成以及性能优化的重要组成模块。</p>
+<p><strong>代理是什么?代理是个HTTP中间实体，它位于客户端和服务器端。</strong></p>
+<p><img src="http://www.cailidan.cn/images/http11.png" alt="代理"></p>
+<p>这个图上我们看的出来，代理位于他们中间，并且接收所有的客户端HTTP请求，并且将这些请求转发给服务器，这个过程中，代理服务器可能会做一些修改和变动然后转发给服务器。</p>
+<p><strong>代理有很多作用，我们一般把代理作为转发所有Web流量的可信任中间节点使用，因为它可以接触到所有流过的流量。比如代理可以作为过滤器，让儿童就不能看不好的内容。再比如，网络工程师用代理服务器提高安全性，把代理服务器当做安全防火墙。再比如我们利用代理服务器做缓存，利用代理做反向代理，内容路由器等等。</strong></p>
+<p>代理还可以分为正向代理和反向代理。这个我有先前写过一篇博客。<a href="http://cailidan.cn/2016/03/31/%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E4%B8%8E%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" target="_blank" rel="noopener">文章地址</a></p>
+<p>这中间可以思考下面的几个问题：</p>
+<ol>
+<li>代理请求中的URI和服务器请求中的URI有什么不同呢？</li>
+<li>我们刚刚知道了代理服务器可以修改内容，那么修改URI的原则是什么呢？</li>
+<li>拦截和反向代理是怎么把服务器主机的信息隐藏起来的呢？我们知道反向代理时，用户不知道代理服务的存在。</li>
+<li>代理怎么样印象浏览器的只能URI自动完成机制，或主机扩展名特性呢？比如我输入cailidan,浏览器会去搜什么呢？<code>http://cailidan.com?</code>还是<code>http://cailidan.cn?</code></li>
+</ol>
+<hr>
+<h4 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a><strong>缓存</strong></h4><p>Web缓存，也成为代理缓存，它是上面的一种特例，是一个特殊的代理服务器。可以常常把代理传送的常用文档存起来。这样下一个请求同一个文档的客户端就可以直接在代理商享受私有副本提供的服务了。</p>
+<p><img src="http://www.cailidan.cn/images/http12.png" alt="缓存"></p>
+<p>为什么要这样呢？客户端从离他近的地方下载文档不很明显比从远程的Web服务器上下载要快很多吗？Http定义了很多功能，很多头部，用来更高效的缓存，也规范了新鲜度和缓存内容的隐私性。</p>
+<hr>
+<h4 id="网关"><a href="#网关" class="headerlink" title="网关"></a><strong>网关</strong></h4><p>网关是什么？网关是一个特殊的<strong>服务器</strong>，作为其他服务器的中间实体使用。主要用来<strong>将HTTP流量转化为其他的协议</strong>，用户在发送请求的时候，并不知道自己正在是和网关通信，网关这时候表现的就像资源的源端服务器一样。</p>
+<p><img src="http://www.cailidan.cn/images/http13.png" alt="网关"></p>
+<p>如上面的图，一个HTTP/FTP的网关会通过HTTP请求对FTP URI的请求，但通过TFP来获取文档。得到了文档会被FTP服务器封装成成一条HTTP报文。并且发送给客户端。</p>
+<p>好，到这里，网关和代理又有什么区别呢？</p>
+<blockquote>
+<p>严格来说，代理连接的是两个或者多个使用相同协议的应用程序，而网关却连接的是两个或者使用不同协议的端点。网关扮演的是“协议转换器”的角色。及时客户端和服务器使用的是不同协议，客户端也能够通过它完成和服务器之间的事物处理。</p>
+</blockquote>
+<p><img src="http://www.cailidan.cn/images/http14.png" alt="网关和代理的区别"></p>
+<hr>
+<h4 id="隧道"><a href="#隧道" class="headerlink" title="隧道"></a><strong>隧道</strong></h4><p>通过Web隧道，我们可以通过HTTP应用程序访问使用费HTTP协议的应用程序。</p>
+<p><strong>隧道是建立起来后，就会在两条连接中间对原始数据进行盲转发的HTTP应用程序。Http隧道通常用来在一条或多条HTTP连接上转发非HTTP数据，并且转发时也不会窥探数据。</strong></p>
+<p>Web隧道允许用户通过HTTP连接而发送非HTTP流量，这样就可以在HTTP上稍带其他的协议数据了。使用Web隧道最常见的原因就是要在HTTP连接中嵌入非HTTP流量，这样，这类流量就可以穿过只允许Web流量通过的防火墙了。</p>
+<p><img src="http://www.cailidan.cn/images/http15.png" alt="隧道"></p>
+<p>如在上面这个图中，看到HTTP隧道的常见用途，是通过HTTP连接承载加密的安全套接字流量，这样SSL流量就可以穿过只允许Web流量通过的防火墙了。在HTTP/SSL隧道中收到了一条HTTP请求，要求建立一条道目的地址和端口的输出连接，然后在HTTP信道上通过隧道传输加密的SSL流量，这样就可以将其忙转发到目的服务器上去了。</p>
+<p>简单的说，HTTP隧道技术就是把所有要传送的数据全部封装到HTTP协议里进行传送。</p>
+<hr>
+<h3 id="URL与资源"><a href="#URL与资源" class="headerlink" title="URL与资源"></a>URL与资源</h3><p>URL，我们已经再熟悉不过了。URL是因特网资源的标准化名称，URL是URI的子集，下面主要介绍：URL语法，URL编码和字符集规则，常见的URL方案，URL的未来-URN。</p>
+<hr>
+<h4 id="URL因特网的语法"><a href="#URL因特网的语法" class="headerlink" title="URL因特网的语法"></a><strong>URL因特网的语法</strong></h4><p>URL包括三个部分,URL方案，服务器位置，资源路径–schema,host,path。URL可以指定HTTP之外的其他协议来访问，但大多数都有同样的这种结构。</p>
+<p><img src="http://www.cailidan.cn/images/http16.png" alt="URL"></p>
+<p><strong>方案：//服务器位置/路径</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;schema&gt;://&lt;user&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;/&lt;path&gt;;&lt;param&gt;?&lt;query&gt;<span class="comment">#&lt;frag&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如下所示：</p>
+<pre><code>http://www.cailidan.cn/images/1.png
+ftp://ftp.lots-o-books.com/pub/1.xls
+rtsp://www.joes.com:554/a/vt_video
+</code></pre><p><img src="http://www.cailidan.cn/images/http17.png" alt="URL"></p>
+<p>URL有绝对路径和相对路径之分。这中间有专门的算法来将相对路径转化为绝对路径。</p>
+<hr>
+<h4 id="自动扩展URL"><a href="#自动扩展URL" class="headerlink" title="自动扩展URL"></a><strong>自动扩展URL</strong></h4><p>我们知道当用户在输入URL的时候，浏览器会自动进行扩展，不需要用户输入完整的URL。扩展主要是有下面两种方式扩展的。</p>
+<h5 id="主机名扩展"><a href="#主机名扩展" class="headerlink" title="主机名扩展"></a><strong>主机名扩展</strong></h5><p>比如，如果你再地址栏输入cailidan，浏览器会自动在主机名中插入www和.com，构建出www.cailidan.com。显然我使用的是cn.所以这个时候是得不到正确的解析的。找不到时，浏览器会在放弃前尝试集中扩展形式。浏览器通过这些简单的技巧来节省你的时间。但这在代理的时候会出现问题。</p>
+<h5 id="历史扩展"><a href="#历史扩展" class="headerlink" title="历史扩展"></a><strong>历史扩展</strong></h5><p>还有一种节省用户输入URL时间的方法，就是把用户以前访问过的URL存储起来。这样你输入的时候浏览器会提供一些选择给你。</p>
+<hr>
+<h4 id="字符"><a href="#字符" class="headerlink" title="字符"></a><strong>字符</strong></h4><p>URL是可以移植的，这意味着，它要统一的命名因特网上所有的资源，这也意味着要通过各种不同的协议来传送这些资源。安全传输意味着URL的传输不能够丢失。有些协议，比如，传输电子邮件的简单<br>邮件传输协议。所使用的传输方法就会博取一些特定的字符。为了避免这些问题。URL只能使用一些相对比较小的，通用的安全字母表中的字母。并且我们还希望URL可以供人类阅读。因此，即使看不到的，不可打印的字符，从而成为可以移植的。URL还得是完整的。我们需要转移机制，能够把不安全的字符编码为安全字符。再进行传输。</p>
+<h5 id="编码机制"><a href="#编码机制" class="headerlink" title="编码机制"></a><strong>编码机制</strong></h5><p>为了避开安全字符集表示法的限制，人们设置了一种编码机制，用来在URL中表示各种不安全字符。这种方法就是通过转义表示法来表示不安全字符的。转义表示法包括了一个百分号%，后面是两个表示字符ASCII码的十六进制数。</p>
+<p><img src="http://www.cailidan.cn/images/http18.png" alt="编码示例"></p>
+<h5 id="字符限制"><a href="#字符限制" class="headerlink" title="字符限制"></a><strong>字符限制</strong></h5><p>在URL中，有几个字符被保留起来，有着特殊的含义。这些字符不再定义的US-ASCII可打印字符中，这些字符在将其用在保留用途之外的场合时，要在URL中对其进行编码。比如：%，/,.，#，？,$,&amp;,=之类的。</p>
+<hr>
+<h4 id="未来展望"><a href="#未来展望" class="headerlink" title="未来展望"></a><strong>未来展望</strong></h4><p>URL是可以在各种因特网协议间共享的统一命名机制。但是URL，它表示的是实际地址，而不是准确的名字。URL会告诉你资源在哪个地方。它会为你提供特定端口上特定的服务器的名字，告诉你可以在这个地方找到这个资源。它的缺点是，如果资源被移走了，URL也不再有效了。那个时候，就无法对对象进行定位了。</p>
+<p>然后就有人想，如果一个对象有了一个准确的名称，就像人的身份证一样，那么不管这个资源在哪里，我们都可以通过这个名称找到这个对象。这个时候URN出来了。但是这个目前使用的人不是很多额。因为由URL转换成URN是一个很巨大的工程，更何况在URL已经如此普及的情况下。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机网络/" rel="tag"># 计算机网络</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/25/《Javascript-for-PHP-Developers》读书笔记/" rel="next" title="《Javascript for PHP Developers》读书笔记">
+                <i class="fa fa-chevron-left"></i> 《Javascript for PHP Developers》读书笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/29/HTTP报文详解/" rel="prev" title="HTTP报文详解">
+                HTTP报文详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web的组件结构"><span class="nav-number">1.</span> <span class="nav-text"><a href="#Web&#x7684;&#x7EC4;&#x4EF6;&#x7ED3;&#x6784;" class="headerlink" title="Web&#x7684;&#x7EC4;&#x4EF6;&#x7ED3;&#x6784;"></a>Web&#x7684;&#x7EC4;&#x4EF6;&#x7ED3;&#x6784;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#代理"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x4EE3;&#x7406;" class="headerlink" title="&#x4EE3;&#x7406;"></a><strong>&#x4EE3;&#x7406;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缓存"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x7F13;&#x5B58;" class="headerlink" title="&#x7F13;&#x5B58;"></a><strong>&#x7F13;&#x5B58;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网关"><span class="nav-number">1.3.</span> <span class="nav-text"><a href="#&#x7F51;&#x5173;" class="headerlink" title="&#x7F51;&#x5173;"></a><strong>&#x7F51;&#x5173;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隧道"><span class="nav-number">1.4.</span> <span class="nav-text"><a href="#&#x96A7;&#x9053;" class="headerlink" title="&#x96A7;&#x9053;"></a><strong>&#x96A7;&#x9053;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#URL与资源"><span class="nav-number">2.</span> <span class="nav-text"><a href="#URL&#x4E0E;&#x8D44;&#x6E90;" class="headerlink" title="URL&#x4E0E;&#x8D44;&#x6E90;"></a>URL&#x4E0E;&#x8D44;&#x6E90;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#URL因特网的语法"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#URL&#x56E0;&#x7279;&#x7F51;&#x7684;&#x8BED;&#x6CD5;" class="headerlink" title="URL&#x56E0;&#x7279;&#x7F51;&#x7684;&#x8BED;&#x6CD5;"></a><strong>URL&#x56E0;&#x7279;&#x7F51;&#x7684;&#x8BED;&#x6CD5;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自动扩展URL"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x81EA;&#x52A8;&#x6269;&#x5C55;URL" class="headerlink" title="&#x81EA;&#x52A8;&#x6269;&#x5C55;URL"></a><strong>&#x81EA;&#x52A8;&#x6269;&#x5C55;URL</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#主机名扩展"><span class="nav-number">2.2.1.</span> <span class="nav-text"><a href="#&#x4E3B;&#x673A;&#x540D;&#x6269;&#x5C55;" class="headerlink" title="&#x4E3B;&#x673A;&#x540D;&#x6269;&#x5C55;"></a><strong>&#x4E3B;&#x673A;&#x540D;&#x6269;&#x5C55;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#历史扩展"><span class="nav-number">2.2.2.</span> <span class="nav-text"><a href="#&#x5386;&#x53F2;&#x6269;&#x5C55;" class="headerlink" title="&#x5386;&#x53F2;&#x6269;&#x5C55;"></a><strong>&#x5386;&#x53F2;&#x6269;&#x5C55;</strong></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字符"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x5B57;&#x7B26;" class="headerlink" title="&#x5B57;&#x7B26;"></a><strong>&#x5B57;&#x7B26;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#编码机制"><span class="nav-number">2.3.1.</span> <span class="nav-text"><a href="#&#x7F16;&#x7801;&#x673A;&#x5236;" class="headerlink" title="&#x7F16;&#x7801;&#x673A;&#x5236;"></a><strong>&#x7F16;&#x7801;&#x673A;&#x5236;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#字符限制"><span class="nav-number">2.3.2.</span> <span class="nav-text"><a href="#&#x5B57;&#x7B26;&#x9650;&#x5236;" class="headerlink" title="&#x5B57;&#x7B26;&#x9650;&#x5236;"></a><strong>&#x5B57;&#x7B26;&#x9650;&#x5236;</strong></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#未来展望"><span class="nav-number">2.4.</span> <span class="nav-text"><a href="#&#x672A;&#x6765;&#x5C55;&#x671B;" class="headerlink" title="&#x672A;&#x6765;&#x5C55;&#x671B;"></a><strong>&#x672A;&#x6765;&#x5C55;&#x671B;</strong></span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/04/28/Web组件结构和URL的简单介绍/';
+          this.page.identifier = '2016/04/28/Web组件结构和URL的简单介绍/';
+          this.page.title = 'Web组件结构和URL的简单介绍';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

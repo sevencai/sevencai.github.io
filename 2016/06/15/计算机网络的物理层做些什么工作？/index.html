@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机网络," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="物理层解决什么问题？物理层主要关心如何传输信号,物理层的主要任务描述为确定与传输媒体的接口的一些特性，即：  机械特性    指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性    指明在接口电缆的各条线上出现的电压的范围。 功能特性    指明某条线上出现的某一电平的电压表示何种意义。 过程特性    指明对于不同功能的各种可能事件的出现顺序。   物理层上所传送">
+<meta name="keywords" content="计算机网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络的物理层做些什么工作？">
+<meta property="og:url" content="http://sevencai.github.io/2016/06/15/计算机网络的物理层做些什么工作？/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="物理层解决什么问题？物理层主要关心如何传输信号,物理层的主要任务描述为确定与传输媒体的接口的一些特性，即：  机械特性    指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性    指明在接口电缆的各条线上出现的电压的范围。 功能特性    指明某条线上出现的某一电平的电压表示何种意义。 过程特性    指明对于不同功能的各种可能事件的出现顺序。   物理层上所传送">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/wuliceng1.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/wuliceng2.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/wuliceng3.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/wuliceng4.png">
+<meta property="og:updated_time" content="2016-06-15T13:52:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机网络的物理层做些什么工作？">
+<meta name="twitter:description" content="物理层解决什么问题？物理层主要关心如何传输信号,物理层的主要任务描述为确定与传输媒体的接口的一些特性，即：  机械特性    指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性    指明在接口电缆的各条线上出现的电压的范围。 功能特性    指明某条线上出现的某一电平的电压表示何种意义。 过程特性    指明对于不同功能的各种可能事件的出现顺序。   物理层上所传送">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/wuliceng1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/06/15/计算机网络的物理层做些什么工作？/"/>
+
+
+
+
+
+  <title>计算机网络的物理层做些什么工作？ | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/06/15/计算机网络的物理层做些什么工作？/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">计算机网络的物理层做些什么工作？</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-15T13:27:14+08:00">
+                2016-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/06/15/计算机网络的物理层做些什么工作？/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/06/15/计算机网络的物理层做些什么工作？/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<h3 id="物理层解决什么问题？"><a href="#物理层解决什么问题？" class="headerlink" title="物理层解决什么问题？"></a><strong>物理层解决什么问题？</strong></h3><p>物理层主要关心如何传输信号,物理层的主要任务描述为<strong>确定与传输媒体的接口的一些特性</strong>，即：</p>
+<ol>
+<li>机械特性    指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。</li>
+<li>电气特性    指明在接口电缆的各条线上出现的电压的范围。</li>
+<li>功能特性    指明某条线上出现的某一电平的电压表示何种意义。</li>
+<li>过程特性    指明对于不同功能的各种可能事件的出现顺序。 </li>
+</ol>
+<p><strong>物理层上所传送数据的单位是比特，物理层的主要任务就是透明地传送比特流，其所要考虑的就是如何传输bit,需要用多大的电压代表“1”或“0”，怎样才能在各种传输媒体上传输比特流，而不是指具体的传输媒体。</strong></p>
+<p>下面是一个简单的数据通信系统模型。</p>
+<p><img src="http://www.cailidan.cn/images/wuliceng1.png" alt=""></p>
+<p>数据通信系统可以包括三个部分：源系统，传输系统，端系统。</p>
+<p>源系统包括：源点（如PC的键盘输入的汉字）+发送器<br>端系统包括：终点+接受器</p>
+<hr>
+<h3 id="物理层的几个专业术语"><a href="#物理层的几个专业术语" class="headerlink" title="物理层的几个专业术语"></a><strong>物理层的几个专业术语</strong></h3><h4 id="数据，信号，模拟，数字，码元"><a href="#数据，信号，模拟，数字，码元" class="headerlink" title="数据，信号，模拟，数字，码元"></a><strong>数据，信号，模拟，数字，码元</strong></h4><ol>
+<li><p>数据(data)——运送消息的实体。</p>
+</li>
+<li><p>信号(signal)——数据的电气的或电磁的表现。 </p>
+</li>
+<li><p>模拟的(analogous)——代表消息的参数的取值是<strong>连续的</strong>。 </p>
+</li>
+<li><p>数字的(digital)——代表消息的参数的取值是<strong>离散的</strong>。 </p>
+</li>
+<li><p>码元(code)——在使用时间域（或简称为时域）的波形表示数字信号时，代表不同离散数值的基本波形。</p>
+</li>
+</ol>
+<hr>
+<h4 id="信道"><a href="#信道" class="headerlink" title="信道"></a><strong>信道</strong></h4><p>信道不等于电路。信道<strong>只是一个方向</strong>的传送信息的媒体。因此一条通信电路往往包含一条发送信息的通道和一条接受信息的通道。</p>
+<ul>
+<li>单向通信（单工通信）——只能有一个方向的通信而没有反方向的交互。</li>
+<li>双向交替通信（半双工通信）——通信的双方都可以发送信息，但不能双方同时发送(当然也就不能同时接收)。</li>
+<li>双向同时通信（全双工通信）——通信的双方可以同时发送和接收信息。</li>
+</ul>
+<hr>
+<h4 id="基带-baseband-信号和带通-band-pass-信号"><a href="#基带-baseband-信号和带通-band-pass-信号" class="headerlink" title="基带(baseband)信号和带通(band pass)信号"></a><strong>基带(baseband)信号和带通(band pass)信号</strong></h4><p><strong>基带信号</strong>（即基本频带信号）——来自信源的信号。像计算机输出的代表各种文字或图像文件的数据信号都属于基带信号。</p>
+<p>基带信号往往包含有较多的低频成分，甚至有直流成分，而许多信道并<strong>不能传输这种低频分量或直流分量</strong>。因此必须对基带信号进行调制(modulation)。   </p>
+<p><strong>带通信号</strong>——把基带信号经过载波<strong>调制后</strong>，把信号的频率范围搬移到较高的频段以便在信道中传输（即仅在一段频率范围内能够通过信道）。 </p>
+<p>几种最基本的调制方法:调幅(AM)调频(FM)调相(PM) </p>
+<p><img src="http://www.cailidan.cn/images/wuliceng2.png" alt="调制方法"></p>
+<hr>
+<h4 id="信道的极限容量"><a href="#信道的极限容量" class="headerlink" title="信道的极限容量"></a><strong>信道的极限容量</strong></h4><p>任何实际的信道都不是理想的，在传输信号时会产生各种失真以及带来多种干扰。 </p>
+<p>码元传输的速率越高，或信号传输的距离越远，在信道的输出端的波形的失真就越严重。 </p>
+<p><img src="http://www.cailidan.cn/images/wuliceng3.png" alt="数字信号通过实际的信道 "></p>
+<p>为之产生了</p>
+<ol>
+<li>奈氏准则：为了避免码间串扰，码元的传输速率的上限值 </li>
+<li>信噪比：信道的带宽或信道中的信噪比越大，则信息的极限传输速率就越高</li>
+</ol>
+<hr>
+<h3 id="物理层下面的传输媒体"><a href="#物理层下面的传输媒体" class="headerlink" title="物理层下面的传输媒体"></a><strong>物理层下面的传输媒体</strong></h3><p>导引型传输媒体：双绞线，同轴电缆，光缆<br>非导引型传输媒体：无线，红外，大气激光</p>
+<p>其中科普下：光纤的原理是：光线在纤芯中传输的方式是不断地全反射，它的带宽很大，所以传输速度才快。</p>
+<hr>
+<h3 id="信道复用技术"><a href="#信道复用技术" class="headerlink" title="信道复用技术"></a><strong>信道复用技术</strong></h3><p>复用(multiplexing)是通信技术中的基本概念</p>
+<p><img src="http://www.cailidan.cn/images/wuliceng4.png" alt=" "></p>
+<p>复用分为：频分复用，时分复用，波分复用，码分复用。</p>
+<p><strong>频分复用</strong>的所有用户在同样的时间占用不同的带宽资源（请注意，这里的“带宽”是频率带宽而不是数据的发送速率）。</p>
+<p><strong>时分复用</strong>则是将时间划分为一段段等长的时分复用帧（TDM 帧）。每一个时分复用的用户在每一个 TDM 帧中占用固定序号的时隙。</p>
+<p>码分复用 CDM常用的名词是码分多址 <strong>CDMA (Code Division Multiple Access)</strong>。</p>
+<hr>
+<h3 id="宽带接入技术"><a href="#宽带接入技术" class="headerlink" title="宽带接入技术"></a><strong>宽带接入技术</strong></h3><p><strong>ADSL 技术就是用数字技术对现有的模拟电话用户线进行改造，使它能够承载宽带业务。</strong></p>
+<p>ADSL 技术就把 0~4 kHz 低端频谱留给传统电话使用，而把原来没有被利用的高端频谱留给用户上网使用。<br>DSL 就是数字用户线(Digital Subscriber Line)的缩写。</p>
+<hr>
+<h3 id="用户接口盒"><a href="#用户接口盒" class="headerlink" title="用户接口盒"></a><strong>用户接口盒</strong></h3><p>用户接口盒 UIB (User Interface Box)要提供三种连接，即：</p>
+<ol>
+<li>使用同轴电缆连接到机顶盒(set-top box)，然后再连接到用户的电视机。</li>
+<li>使用双绞线连接到用户的电话机。</li>
+<li>使用电缆调制解调器连接到用户的计算机。</li>
+</ol>
+<hr>
+<h3 id="对比物理层和数据链路层"><a href="#对比物理层和数据链路层" class="headerlink" title="对比物理层和数据链路层"></a><strong>对比物理层和数据链路层</strong></h3><p>曾经困扰我很长时间，就是物理层和数据链路层到底有什么区别？</p>
+<p><strong>数据链路层简称为链路层</strong>，两台主机之间的数据传输总是在一段一段的链路上传送的，这就需要使用专门的链路层协议。将网络层下来的数据报封装成帧，在相邻节点之间的链路上传送帧，每个帧包括数据和必要的控制信息。</p>
+<p><strong>物理层传送单元是bit</strong>,发送方发送0，接收方应当受到0，发送方发送1，则是1。因此物理层要要考虑的就是如何传输bit,需要用多大的电压代表“1”或“0”，怎样才能在各种传输媒体上传输比特流，而不是指具体的传输媒体。物理层还要确定连接电缆的插头应当有多少根引脚和如何连接。要注意的是：传递信息所用的一些物理媒体，如刚刚提到的双绞线，同轴电缆等等，并不是在物理层之内，而是在物理层协议的下面。因此也有人把物理媒体当做第0层，物理层为第一层。</p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>这篇文章的主要目的是了解和总结物理层到底做些什么工作。以前很多见过但又讲不出来的东西都有了新的认识。比如ADSL,比如用户接口盒，比如机顶盒，比如半双工，全双工。在这个过程中还解决了我很多的困惑。主要参考资料是课本《计算机网络第6版》-谢希仁著。感谢。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机网络/" rel="tag"># 计算机网络</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/14/ES6变量的解构赋值/" rel="next" title="ES6变量的解构赋值">
+                <i class="fa fa-chevron-left"></i> ES6变量的解构赋值
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/15/高大上的数据链路层的学习和整理/" rel="prev" title="高大上的数据链路层的学习和整理">
+                高大上的数据链路层的学习和整理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#物理层解决什么问题？"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x7269;&#x7406;&#x5C42;&#x89E3;&#x51B3;&#x4EC0;&#x4E48;&#x95EE;&#x9898;&#xFF1F;" class="headerlink" title="&#x7269;&#x7406;&#x5C42;&#x89E3;&#x51B3;&#x4EC0;&#x4E48;&#x95EE;&#x9898;&#xFF1F;"></a><strong>&#x7269;&#x7406;&#x5C42;&#x89E3;&#x51B3;&#x4EC0;&#x4E48;&#x95EE;&#x9898;&#xFF1F;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#物理层的几个专业术语"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x7269;&#x7406;&#x5C42;&#x7684;&#x51E0;&#x4E2A;&#x4E13;&#x4E1A;&#x672F;&#x8BED;" class="headerlink" title="&#x7269;&#x7406;&#x5C42;&#x7684;&#x51E0;&#x4E2A;&#x4E13;&#x4E1A;&#x672F;&#x8BED;"></a><strong>&#x7269;&#x7406;&#x5C42;&#x7684;&#x51E0;&#x4E2A;&#x4E13;&#x4E1A;&#x672F;&#x8BED;</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据，信号，模拟，数字，码元"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x6570;&#x636E;&#xFF0C;&#x4FE1;&#x53F7;&#xFF0C;&#x6A21;&#x62DF;&#xFF0C;&#x6570;&#x5B57;&#xFF0C;&#x7801;&#x5143;" class="headerlink" title="&#x6570;&#x636E;&#xFF0C;&#x4FE1;&#x53F7;&#xFF0C;&#x6A21;&#x62DF;&#xFF0C;&#x6570;&#x5B57;&#xFF0C;&#x7801;&#x5143;"></a><strong>&#x6570;&#x636E;&#xFF0C;&#x4FE1;&#x53F7;&#xFF0C;&#x6A21;&#x62DF;&#xFF0C;&#x6570;&#x5B57;&#xFF0C;&#x7801;&#x5143;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#信道"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x4FE1;&#x9053;" class="headerlink" title="&#x4FE1;&#x9053;"></a><strong>&#x4FE1;&#x9053;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基带-baseband-信号和带通-band-pass-信号"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x57FA;&#x5E26;-baseband-&#x4FE1;&#x53F7;&#x548C;&#x5E26;&#x901A;-band-pass-&#x4FE1;&#x53F7;" class="headerlink" title="&#x57FA;&#x5E26;(baseband)&#x4FE1;&#x53F7;&#x548C;&#x5E26;&#x901A;(band pass)&#x4FE1;&#x53F7;"></a><strong>&#x57FA;&#x5E26;(baseband)&#x4FE1;&#x53F7;&#x548C;&#x5E26;&#x901A;(band pass)&#x4FE1;&#x53F7;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#信道的极限容量"><span class="nav-number">2.4.</span> <span class="nav-text"><a href="#&#x4FE1;&#x9053;&#x7684;&#x6781;&#x9650;&#x5BB9;&#x91CF;" class="headerlink" title="&#x4FE1;&#x9053;&#x7684;&#x6781;&#x9650;&#x5BB9;&#x91CF;"></a><strong>&#x4FE1;&#x9053;&#x7684;&#x6781;&#x9650;&#x5BB9;&#x91CF;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#物理层下面的传输媒体"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x7269;&#x7406;&#x5C42;&#x4E0B;&#x9762;&#x7684;&#x4F20;&#x8F93;&#x5A92;&#x4F53;" class="headerlink" title="&#x7269;&#x7406;&#x5C42;&#x4E0B;&#x9762;&#x7684;&#x4F20;&#x8F93;&#x5A92;&#x4F53;"></a><strong>&#x7269;&#x7406;&#x5C42;&#x4E0B;&#x9762;&#x7684;&#x4F20;&#x8F93;&#x5A92;&#x4F53;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信道复用技术"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x4FE1;&#x9053;&#x590D;&#x7528;&#x6280;&#x672F;" class="headerlink" title="&#x4FE1;&#x9053;&#x590D;&#x7528;&#x6280;&#x672F;"></a><strong>&#x4FE1;&#x9053;&#x590D;&#x7528;&#x6280;&#x672F;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宽带接入技术"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x5BBD;&#x5E26;&#x63A5;&#x5165;&#x6280;&#x672F;" class="headerlink" title="&#x5BBD;&#x5E26;&#x63A5;&#x5165;&#x6280;&#x672F;"></a><strong>&#x5BBD;&#x5E26;&#x63A5;&#x5165;&#x6280;&#x672F;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户接口盒"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x7528;&#x6237;&#x63A5;&#x53E3;&#x76D2;" class="headerlink" title="&#x7528;&#x6237;&#x63A5;&#x53E3;&#x76D2;"></a><strong>&#x7528;&#x6237;&#x63A5;&#x53E3;&#x76D2;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对比物理层和数据链路层"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x5BF9;&#x6BD4;&#x7269;&#x7406;&#x5C42;&#x548C;&#x6570;&#x636E;&#x94FE;&#x8DEF;&#x5C42;" class="headerlink" title="&#x5BF9;&#x6BD4;&#x7269;&#x7406;&#x5C42;&#x548C;&#x6570;&#x636E;&#x94FE;&#x8DEF;&#x5C42;"></a><strong>&#x5BF9;&#x6BD4;&#x7269;&#x7406;&#x5C42;&#x548C;&#x6570;&#x636E;&#x94FE;&#x8DEF;&#x5C42;</strong></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a><strong>&#x603B;&#x7ED3;</strong></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/06/15/计算机网络的物理层做些什么工作？/';
+          this.page.identifier = '2016/06/15/计算机网络的物理层做些什么工作？/';
+          this.page.title = '计算机网络的物理层做些什么工作？';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

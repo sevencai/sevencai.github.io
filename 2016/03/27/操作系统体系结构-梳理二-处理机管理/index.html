@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="other," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="上一篇文章是操作系统的一个简述，这一篇文章就记录操作系统几个重要功能的详细内容。操作系统的功能主要是由4大功能：处理机管理，存储管理，设备管理，文件管理，作业管理。下面看看处理机管理。   处理机管理上一篇文章说了，处理机管理我们可以就归结为进程管理。那么进程到底是啥子？和程序又有什么区别呢？ 程序是完成特定功能而编排的指令集合的有序集合，是静态的，特点是顺序执行。但在多道系统中，由于存在多个独">
+<meta name="keywords" content="other">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统体系结构-梳理二-处理机管理">
+<meta property="og:url" content="http://sevencai.github.io/2016/03/27/操作系统体系结构-梳理二-处理机管理/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="上一篇文章是操作系统的一个简述，这一篇文章就记录操作系统几个重要功能的详细内容。操作系统的功能主要是由4大功能：处理机管理，存储管理，设备管理，文件管理，作业管理。下面看看处理机管理。   处理机管理上一篇文章说了，处理机管理我们可以就归结为进程管理。那么进程到底是啥子？和程序又有什么区别呢？ 程序是完成特定功能而编排的指令集合的有序集合，是静态的，特点是顺序执行。但在多道系统中，由于存在多个独">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/bfbx.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/pcbc.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/htpcb1.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/htpcb2.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/hupcb3.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/jckoz.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/pcbxhl.png">
+<meta property="og:updated_time" content="2016-12-12T02:54:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="操作系统体系结构-梳理二-处理机管理">
+<meta name="twitter:description" content="上一篇文章是操作系统的一个简述，这一篇文章就记录操作系统几个重要功能的详细内容。操作系统的功能主要是由4大功能：处理机管理，存储管理，设备管理，文件管理，作业管理。下面看看处理机管理。   处理机管理上一篇文章说了，处理机管理我们可以就归结为进程管理。那么进程到底是啥子？和程序又有什么区别呢？ 程序是完成特定功能而编排的指令集合的有序集合，是静态的，特点是顺序执行。但在多道系统中，由于存在多个独">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/bfbx.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/03/27/操作系统体系结构-梳理二-处理机管理/"/>
+
+
+
+
+
+  <title>操作系统体系结构-梳理二-处理机管理 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/03/27/操作系统体系结构-梳理二-处理机管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">操作系统体系结构-梳理二-处理机管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-27T12:31:50+08:00">
+                2016-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/other/" itemprop="url" rel="index">
+                    <span itemprop="name">other</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/27/操作系统体系结构-梳理二-处理机管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/27/操作系统体系结构-梳理二-处理机管理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>上一篇文章是操作系统的一个简述，这一篇文章就记录操作系统几个重要功能的详细内容。操作系统的功能主要是由4大功能：<strong>处理机管理，存储管理，设备管理，文件管理，作业管理</strong>。下面看看处理机管理。</p>
+</blockquote>
+<hr>
+<h3 id="处理机管理"><a href="#处理机管理" class="headerlink" title="处理机管理"></a>处理机管理</h3><p>上一篇文章说了，处理机管理我们可以就归结为进程管理。那么进程到底是啥子？和程序又有什么区别呢？</p>
+<p>程序是完成特定功能而编排的指令集合的有序集合，是静态的，特点是顺序执行。但在多道系统中，由于存在多个独立的程序，他们对系统的资源即<strong>共享又竞争</strong>，程序不再以顺序方式执行，程序的顺序性，可再现行（不管怎么运行，都得到相同的结果），封闭性，与时间无关性，这些特点就没有了。这个时候，系统中的程序的执行方式也有了本质的变化，从<strong>顺序执行变成了并发执行</strong>。</p>
+<hr>
+<h4 id="并发与并行"><a href="#并发与并行" class="headerlink" title="并发与并行"></a>并发与并行</h4><p>注意并发就是时间上有重叠，一个程序没有结束另一个程序就可以开始。这个时候，处理机在内的系统资源不再由一道程序独占，而是由多道程序共享。<strong>宏观上是并行的特征，微观上肯定还有顺序行的。毕竟同一个时刻，只有一个事物处于活动状态</strong>。</p>
+<p>并行就是<strong>同一时刻</strong>，两个事物均处于活动状态。<br><img src="http://www.cailidan.cn/images/bfbx.png" alt="并发并行"></p>
+<hr>
+<h3 id="进程的概念"><a href="#进程的概念" class="headerlink" title="进程的概念"></a>进程的概念</h3><p>进程是操作系统最基本，最重要的概念。</p>
+<p><strong>进程是一个具有独立功能的程序关于某个数据集合的一次活动，是系统进行资源分配和调度的一个独立单位</strong>。两点：1.是程序的执行活动2.是资源调度的基本单位。</p>
+<hr>
+<h4 id="进程的组成"><a href="#进程的组成" class="headerlink" title="进程的组成"></a>进程的组成</h4><p>进程 = 程序+数据+进程控制块（PCB）<br><img src="http://www.cailidan.cn/images/pcbc.png" alt="并发并行"></p>
+<hr>
+<h4 id="PCB的组织方式"><a href="#PCB的组织方式" class="headerlink" title="PCB的组织方式"></a>PCB的组织方式</h4><p>（其实大多数的组织方式，不仅仅是PCB都是类似下面的这种情况）</p>
+<ol>
+<li>线性表结构</li>
+<li>链接表结构</li>
+<li>索引表结构</li>
+</ol>
+<p><strong>线性表</strong>特点肯定就是：在一个<strong>连续</strong>的区域中，并且每次都要<strong>扫描整个线性表</strong>，增加了系统开销。适用于进程比较少的操作系统。<br><img src="http://www.cailidan.cn/images/htpcb1.png" alt="线性表"></p>
+<p><strong>链接表</strong>，由于系统中的进程的总数量以及处于各种状态下的进程数量是动态变化的，为了便于管理，就把有些操作系统使用链表数据结构<strong>把处于相同状态进程中的PCB链接在一起，成为进程队列</strong>。<br><img src="http://www.cailidan.cn/images/htpcb2.png" alt="链接表"></p>
+<p><strong>索引表结构</strong>是利用索引表记载各种状态进程的PCB地址，将线性表中相同的进程的PCB建立一个索引表，形成比如说就绪索引表，等待态索引表等。索引表中就绪索引表只有一个。注意这个图中为啥美欧运行指针的索引表呢？因为运行的时候只有一个进程，那就不需要建立一个索引表啦。<br><img src="http://www.cailidan.cn/images/hupcb3.png" alt="索引表结构"></p>
+<hr>
+<h3 id="PCB的状态及其转换"><a href="#PCB的状态及其转换" class="headerlink" title="PCB的状态及其转换"></a>PCB的状态及其转换</h3><p>这是<strong>重点</strong>，三种状态：</p>
+<ol>
+<li>运行态：进程获得了处理机，注意处于裕兴状态的进程个数不能大于CPU的数目。对于单处理操作系统，任何时刻，正处于运行状态的进程最多一个。</li>
+<li>就绪态：指进程已经具备了可以在处理机上运行的条件，但因为出理解已经被其他的进程占用而处于一种等待处理机的状态。</li>
+<li>等待态：当一个处理机上运行的程序，因为等待某一个事情发生而不能继续运行，那么这个进程处于等待太，比如中途一个进程需要申请使用某种I/O设备。</li>
+</ol>
+<p>当一个进程刚被创建的时候，处于就绪态。进程的转换图如下，看到这里的时候想一想下面的转换分别会发生在什么时候。<br><img src="http://www.cailidan.cn/images/jckoz.png" alt="并发并行"></p>
+<hr>
+<h3 id="进程的控制"><a href="#进程的控制" class="headerlink" title="进程的控制"></a>进程的控制</h3><p>进程的控制室操作系统的底层功能之一，本身属于操作系统的内核，内核在执行操时候，往往是通过各种原语操作实现的。</p>
+<h4 id="原语"><a href="#原语" class="headerlink" title="原语"></a>原语</h4><p>为了防止进程在执行过程中被其他的程序给打断，并且要保证程序执行的唯一性和数据结构的完整性，我们一如了原语的概念。<strong>一般的，把系统态下的执行的某些具有特定功能的程序段成为原语</strong>。</p>
+<p>包括创建原语，撤销原语，阻塞原语，唤醒原语。</p>
+<p>这里只看下进程创建原语的功能：</p>
+<ol>
+<li>首先申请一个空闲的PCB,并指定唯一的进程标志号PID</li>
+<li>为新进程分配资源。根据调用者提供的所需内存的大小，为新进程分配必要的内存空间，并且装入该进程的试题（程序和数据）</li>
+<li>将新进程的PCB初始化</li>
+<li>讲进程加入到就绪队列中</li>
+</ol>
+<hr>
+<h3 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h3><p>在多道的系统中，往往进程数目多余处理机的数目，他们都要使用处理机运行自己的程序，所以处理机成为竞争的主要资源。</p>
+<h4 id="进程调度的方式"><a href="#进程调度的方式" class="headerlink" title="进程调度的方式"></a>进程调度的方式</h4><ol>
+<li>可剥夺调度方式<ul>
+<li>剥夺原则1：优先级原则</li>
+<li>剥夺原则2：短进程优先原则</li>
+<li>剥夺原则3：时间片原则</li>
+<li>剥夺原则4：强制性剥夺（人工干预）</li>
+</ul>
+</li>
+<li>非可剥夺调度方式</li>
+</ol>
+<p>这种方式又称为不可抢占式方式。这是指一旦把处理机分配给某个进程之后，则该进程一直占用处理机，只有当进程运行完毕或者等待某种外部原因而不能继续运行自动放弃处理机的情况下。系统才把处理机分配给其他的进程。</p>
+<h4 id="进程调度算法"><a href="#进程调度算法" class="headerlink" title="进程调度算法"></a>进程调度算法</h4><ol>
+<li>先来先服务调度算法（不利于段作业，但算法实现简单）</li>
+<li>优先数法（先按照某种原则赋一个优先级，又分为下面几种）<ul>
+<li>静态优先数法（创建的时候赋给一个优先数）</li>
+<li>动态优先数法（根据进程的生命期动态变化）</li>
+</ul>
+</li>
+<li>时间片轮转法（一个进程占用一点）</li>
+</ol>
+<p>注意这里的时间片轮转法，太长的话，就会变成先来先服务，太短的话，调度程序剥夺处理机次数增多，会导致切换次数太大，而且加重了系统开销。</p>
+<hr>
+<h3 id="进程的同步与互斥"><a href="#进程的同步与互斥" class="headerlink" title="进程的同步与互斥"></a>进程的同步与互斥</h3><p>一方面进程需要互相协作才能待到运行用户作业的目的，另外一个方面就还存在某种简介或者直接的制约关系。</p>
+<p><strong>临界资源，临界区</strong>：一次只能一个进程使用的资源成为临界资源。访问临界资源的程序段成为临界区。</p>
+<p><strong>进程的同步</strong>：进程为了完成那个某个共同的目标，必须相互合作的协同工作，有前后次序de直接制约关系，成为进程的同步。</p>
+<p><strong>进程的互斥</strong>：多个进程不能同时访问临界资源而产生的制约关系。</p>
+<p>一个是合作，一个是竞争。我觉得可以这么理解。这个过程中又设计了PV操作和信号量。</p>
+<p><strong>信号量</strong>是由两个部分组成的：一个成员变量是信号量的值，整型，另一个是PCB的指针。</p>
+<p>当信号量的值大于等于0时候，就是表示当前可用资源的实体个数。当它的值小于0的时候，就表示正在等待使用该资源的进程个数。即在信号量队列上排队的PCB的个数。<br><img src="http://www.cailidan.cn/images/pcbxhl.png" alt="信号量"></p>
+<hr>
+<h3 id="进程的通信机制"><a href="#进程的通信机制" class="headerlink" title="进程的通信机制"></a>进程的通信机制</h3><p>刚刚的同步和互斥是低级通信，有的时候如果我们需要交换大量的信息，这种方式就需要专门的通信机制来实现。我们把实现进程交换大量信息的通信方式成为高级通信。</p>
+<p>两种方式：</p>
+<ol>
+<li>直接通信（消息缓冲通信）过程是：发送进程在发送消息之前，先在内存中设置一个发送区，把要发送的消息正文还有进程名填入其中，然后发送消息程序。接收程序在读取消息之前，先在自己占用的内存空间中设置一个消息接受区，然后调用接收消息的程序。</li>
+<li>间接通信（信箱通信）这个最大的好处就是发送进程和接受进程之间没有时间上的限制。想想为啥叫<strong>信箱</strong>。</li>
+</ol>
+<hr>
+<h3 id="进程和线程"><a href="#进程和线程" class="headerlink" title="进程和线程"></a>进程和线程</h3><p>线程是一个进程的实体，是CPU调度和分派到基本单位，是进程的一个执行单元。<br>进程是操作系统资源分配的基本单位。</p>
+<p><strong>我们把计算机中执行的程序成为线程，而不是程序。所谓线程，是进程中某个单一顺序的控制流</strong></p>
+<p>线程很轻，所以切换非常迅速，减少了系统的开销。</p>
+<p>在引入线程的操作系统中，调度的基本单位是线程，而不是进程。真正在CPU上执行的是线程。</p>
+<p>进程是抢占处理机的调度单位。拥有一个完整的虚拟地址空间。</p>
+<p>刚刚看了一个多线程，单线程的理解，简单的就这么理解：</p>
+<blockquote>
+<p>你早上上班，正要打卡的时候，手机响了。。你如果先接了电话，等接完了，在打卡，就是单线程。<br>如果你一手接电话，一手打卡。就是多线程。<br>2件事的结果是一样的。。你接了电话且打了卡。 —-来自网络</p>
+</blockquote>
+<p><strong>多线程是为了同步完成多项任务，不是为了提高运行效率，而是为了提高资源使用效率来提高系统的效率。线程是在同一时间需要完成多项任务的时候实现的</strong>。</p>
+<p>最简单的比喻多线程就像火车的每一节车厢，而进程则是火车。车厢离开火车是无法跑动的，同理火车也不可能只有一节车厢。多线程的出现就是为了提高效率。同时它的出现也带来了一些问题。</p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>进程调度是操作系统最核心的部分，要掌握线程和进程的区别和联系。要知道进程的调度算法。要了解同步和互斥的关系。还要知道并发和并行的区别。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/other/" rel="tag"># other</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/27/操作系统体系结构-梳理一/" rel="next" title="操作系统体系结构-梳理一">
+                <i class="fa fa-chevron-left"></i> 操作系统体系结构-梳理一
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/31/正向代理与反向代理/" rel="prev" title="正向代理与反向代理">
+                正向代理与反向代理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理机管理"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5904;&#x7406;&#x673A;&#x7BA1;&#x7406;" class="headerlink" title="&#x5904;&#x7406;&#x673A;&#x7BA1;&#x7406;"></a>&#x5904;&#x7406;&#x673A;&#x7BA1;&#x7406;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#并发与并行"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x5E76;&#x53D1;&#x4E0E;&#x5E76;&#x884C;" class="headerlink" title="&#x5E76;&#x53D1;&#x4E0E;&#x5E76;&#x884C;"></a>&#x5E76;&#x53D1;&#x4E0E;&#x5E76;&#x884C;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的概念"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x7684;&#x6982;&#x5FF5;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x7684;&#x6982;&#x5FF5;"></a>&#x8FDB;&#x7A0B;&#x7684;&#x6982;&#x5FF5;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#进程的组成"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x7684;&#x7EC4;&#x6210;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x7684;&#x7EC4;&#x6210;"></a>&#x8FDB;&#x7A0B;&#x7684;&#x7EC4;&#x6210;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PCB的组织方式"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#PCB&#x7684;&#x7EC4;&#x7EC7;&#x65B9;&#x5F0F;" class="headerlink" title="PCB&#x7684;&#x7EC4;&#x7EC7;&#x65B9;&#x5F0F;"></a>PCB&#x7684;&#x7EC4;&#x7EC7;&#x65B9;&#x5F0F;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PCB的状态及其转换"><span class="nav-number">3.</span> <span class="nav-text"><a href="#PCB&#x7684;&#x72B6;&#x6001;&#x53CA;&#x5176;&#x8F6C;&#x6362;" class="headerlink" title="PCB&#x7684;&#x72B6;&#x6001;&#x53CA;&#x5176;&#x8F6C;&#x6362;"></a>PCB&#x7684;&#x72B6;&#x6001;&#x53CA;&#x5176;&#x8F6C;&#x6362;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的控制"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x7684;&#x63A7;&#x5236;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x7684;&#x63A7;&#x5236;"></a>&#x8FDB;&#x7A0B;&#x7684;&#x63A7;&#x5236;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原语"><span class="nav-number">4.1.</span> <span class="nav-text"><a href="#&#x539F;&#x8BED;" class="headerlink" title="&#x539F;&#x8BED;"></a>&#x539F;&#x8BED;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程调度"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;"></a>&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#进程调度的方式"><span class="nav-number">5.1.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;&#x7684;&#x65B9;&#x5F0F;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;&#x7684;&#x65B9;&#x5F0F;"></a>&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;&#x7684;&#x65B9;&#x5F0F;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进程调度算法"><span class="nav-number">5.2.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;"></a>&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的同步与互斥"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x4E0E;&#x4E92;&#x65A5;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x4E0E;&#x4E92;&#x65A5;"></a>&#x8FDB;&#x7A0B;&#x7684;&#x540C;&#x6B65;&#x4E0E;&#x4E92;&#x65A5;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程的通信机制"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x7684;&#x901A;&#x4FE1;&#x673A;&#x5236;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x7684;&#x901A;&#x4FE1;&#x673A;&#x5236;"></a>&#x8FDB;&#x7A0B;&#x7684;&#x901A;&#x4FE1;&#x673A;&#x5236;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程和线程"><span class="nav-number">8.</span> <span class="nav-text"><a href="#&#x8FDB;&#x7A0B;&#x548C;&#x7EBF;&#x7A0B;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x548C;&#x7EBF;&#x7A0B;"></a>&#x8FDB;&#x7A0B;&#x548C;&#x7EBF;&#x7A0B;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/03/27/操作系统体系结构-梳理二-处理机管理/';
+          this.page.identifier = '2016/03/27/操作系统体系结构-梳理二-处理机管理/';
+          this.page.title = '操作系统体系结构-梳理二-处理机管理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

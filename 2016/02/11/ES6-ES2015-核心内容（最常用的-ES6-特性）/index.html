@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ES6," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="ECMAScript 6（以下简称 ES6）是 JavaScript 语言的下一代标准。因为当前版本的 ES6 是在 2015 年发布的，所以又称 ECMAScript 2015。也就是说，ES6  就是 ES2015。虽然目前并不是所有浏览器都能兼容 ES6 全部特性，但越来越多的程序员在实际项目当中已经开始使用 ES6 了。所以就算你现在不打算使用 ES6，但为了看懂别人的你也该懂点ES6的">
+<meta name="keywords" content="ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6&#x2F;ES2015 核心内容（最常用的 ES6 特性）">
+<meta property="og:url" content="http://sevencai.github.io/2016/02/11/ES6-ES2015-核心内容（最常用的-ES6-特性）/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="ECMAScript 6（以下简称 ES6）是 JavaScript 语言的下一代标准。因为当前版本的 ES6 是在 2015 年发布的，所以又称 ECMAScript 2015。也就是说，ES6  就是 ES2015。虽然目前并不是所有浏览器都能兼容 ES6 全部特性，但越来越多的程序员在实际项目当中已经开始使用 ES6 了。所以就算你现在不打算使用 ES6，但为了看懂别人的你也该懂点ES6的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-12T02:59:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6&#x2F;ES2015 核心内容（最常用的 ES6 特性）">
+<meta name="twitter:description" content="ECMAScript 6（以下简称 ES6）是 JavaScript 语言的下一代标准。因为当前版本的 ES6 是在 2015 年发布的，所以又称 ECMAScript 2015。也就是说，ES6  就是 ES2015。虽然目前并不是所有浏览器都能兼容 ES6 全部特性，但越来越多的程序员在实际项目当中已经开始使用 ES6 了。所以就算你现在不打算使用 ES6，但为了看懂别人的你也该懂点ES6的">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/02/11/ES6-ES2015-核心内容（最常用的-ES6-特性）/"/>
+
+
+
+
+
+  <title>ES6/ES2015 核心内容（最常用的 ES6 特性） | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/11/ES6-ES2015-核心内容（最常用的-ES6-特性）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6/ES2015 核心内容（最常用的 ES6 特性）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-11T20:18:46+08:00">
+                2016-02-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/11/ES6-ES2015-核心内容（最常用的-ES6-特性）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/11/ES6-ES2015-核心内容（最常用的-ES6-特性）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>ECMAScript 6（以下简称 ES6）是 JavaScript 语言的下一代标准。因为当前版本的 ES6 是在 2015 年发布的，所以又称 ECMAScript 2015。也就是说，ES6  就是 ES2015。虽然目前并不是所有浏览器都能兼容 ES6 全部特性，但越来越多的程序员在实际项目当中已经开始使用 ES6 了。所以就算你现在不打算使用 ES6，但为了看懂别人的你也该懂点ES6的语法了…</p>
+</blockquote>
+<p>let, const, class, extends, super, arrow functions, template string,  default,destructuring, rest arguments基本上这些就是ES6最经常用到的语法了。</p>
+<h2 id="let-const-用作声明变量"><a href="#let-const-用作声明变量" class="headerlink" title="let , const(用作声明变量)"></a>let , const(用作声明变量)</h2><p>与var相同，let和const同用作声明变量，但是他们俩实际是有特殊而且重要的用途。</p>
+<h3 id="关于let"><a href="#关于let" class="headerlink" title="关于let"></a>关于let</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var global = <span class="string">"global variables"</span>;</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">	var global = <span class="string">"local variables"</span>;</span><br><span class="line">	console.log(global);</span><br><span class="line">	<span class="built_in">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">console.log(global);</span><br></pre></td></tr></table></figure>
+<p>这两次log出来的结果都是：local variables，因为在ES5中作用域只分为<strong>全局作用域和函数作用域</strong>，并没有其他语言中的块级作用域，这会有很多不合理的地方，在这个地方就表现为内层变量覆盖了外层变量。也就是两次说两次都是全局作用域中的变量，第一次覆盖了第二次global的声明。</p>
+<p>let可以很好的解决这一问题：<strong>let则实际上为 JavaScript 新增了块级作用域。用它所声明的变量，只在let命令所在的代码块内有效</strong>。例如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var global = <span class="string">"global variables"</span>;</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">	<span class="built_in">let</span> global = <span class="string">"local variables"</span>;</span><br><span class="line">	console.log(global);</span><br><span class="line">	<span class="built_in">break</span>;</span><br><span class="line">&#125;</span><br><span class="line">console.log(global);</span><br></pre></td></tr></table></figure></p>
+<p>此时结果是：local variables global variables,但我试了下，我现在的火狐和360都是不支持的。</p>
+<p>还有一个var带来的经常会错的地方，这是我经常会弄错的地方，就是<strong>用来计数的循环变量泄露为全局变量</strong>,下面这个例子应该很经典了：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var arr = [];</span><br><span class="line"><span class="keyword">for</span>(var i=0;i&lt;5;i++)&#123;</span><br><span class="line">	arr[i] = <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">		console.log(i);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">arr[3]();</span><br></pre></td></tr></table></figure></p>
+<p>最后不管调用哪一个函数结果都是5，这是由于变量var i是在全局范围内声明的，是全局变量，所以每次循环一次，i都会增加，并且覆盖先前的值。将上面的var改为let边不会出现这个问题。在ES5中应该有两种写法可以避免上面出现的问题：闭包。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var arr = [];</span><br><span class="line"><span class="keyword">for</span>(var i=0;i&lt;5;i++)&#123;</span><br><span class="line">	(<span class="keyword">function</span>(i)&#123;</span><br><span class="line">		arr[i] = <span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">			console.log(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)(i);			</span><br><span class="line">&#125;</span><br><span class="line">arr[3]();</span><br></pre></td></tr></table></figure></p>
+<p>结果为3，还有一种写法就是拆开，把arr[i]对应的函数放在外面。</p>
+<h3 id="关于const"><a href="#关于const" class="headerlink" title="关于const"></a>关于const</h3><p>这里的const就跟我们平常别的语言一样了，用于声明常量如PI，声明后不可更改，更改后浏览器会报错用，const 来声明可以避免未来不小心重命名而导致出现 bug。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const PI = Math.PI</span><br><span class="line">PI = 23 //Module build failed: SyntaxError: /es6/app.js: <span class="string">"PI"</span> is <span class="built_in">read</span>-only</span><br><span class="line">const monent = require(<span class="string">'moment'</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="class-extends-super"><a href="#class-extends-super" class="headerlink" title="class , extends , super"></a>class , extends , super</h2><p>这三个特性涉及了 ES5 中最令人头疼的的几个部分：原型、构造函数，继承…你还在为它们复杂难懂的语法而烦恼吗？你还在为指针到底指向哪里而纠结万分吗？</p>
+<p>ES6 提供了更接近传统语言的写法，引入了 Class（类）这个概念。新的 class 写法让对象原型的写法更加清晰、更像面向对象编程的语法，也更加通俗易懂。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Animal &#123;</span><br><span class="line">	<span class="function"><span class="title">constructor</span></span> () &#123;</span><br><span class="line">		this.type = <span class="string">"animal"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	says (say) &#123;</span><br><span class="line">		console.log(this.type + <span class="string">"says"</span> + say);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">class Cat extends Animal&#123;</span><br><span class="line">	<span class="function"><span class="title">constructor</span></span> () &#123;</span><br><span class="line">		super();</span><br><span class="line">		this.type = <span class="string">"cat"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">let</span> animal = new Animal ();</span><br><span class="line">animal.says(<span class="string">"hello"</span>);</span><br><span class="line"><span class="built_in">let</span> cat = new Cat();</span><br><span class="line">cat.says(<span class="string">"hi"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这个例子中我们首先定义了一个Animal类，有一个 constructor构造方法和一个函数says。而这里面的this则代表的是实例对象本身。也就是说，constructor里面的属性和方法是每个被实例化的对象自己的，而constructor外的是所有对象共享的。</p>
+<p>ES6中，这里可以通过class和extends来实现继承，比ES5中通过修改原型链来继承要方便和清晰的多，跟我们以前学习的比如PHP,C++都要类似，更容易接受。</p>
+<p>super应该也陌生，它代表的是父类的实例（父类的this对象），子类必须在constructor中通过调用super，如果不调用，新建实例时会报错。因为子类并没有自己的this对象，而是继承了父类的this对象，然后进行加工和修改形成子类自己的特性。如果不调用，子类也就自然没有自己的this对象了。</p>
+<p><strong>ES6 的继承机制，实质是先创造父类的实例对象 this（所以必须先调用 super 方法），然后再用子类的构造函数修改 this。</strong></p>
+<h2 id="template-string"><a href="#template-string" class="headerlink" title="template string"></a>template string</h2><p>这个东西也是非常有用，当我们要插入大段的 html 内容到文档中时，传统的写法非常麻烦，所以之前我们通常会引用一些模板工具库，比如 mustache 等等。例如jquery里面当我们需要插入一段dom节点时：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#result"</span>).append(</span><br><span class="line">  <span class="string">"There are &lt;b&gt;"</span> + basket.count + <span class="string">"&lt;/b&gt; "</span> +</span><br><span class="line">  <span class="string">"items in your basket, "</span> +</span><br><span class="line">  <span class="string">"&lt;em&gt;"</span> + basket.onSale +</span><br><span class="line">  <span class="string">"&lt;/em&gt; are on sale!"</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<p>这需要对双引号和+都用的恰当才可。下面通过ES6的template string改进，用反引号（\）来标识起始，用${}`来引用变量，而且所有的空格和缩进都会被保留在输出之中，这个可以有对吧。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#result"</span>).append(`</span><br><span class="line">  There are &lt;b&gt;<span class="variable">$&#123;basket.count&#125;</span>&lt;/b&gt; items</span><br><span class="line">   <span class="keyword">in</span> your basket, &lt;em&gt;<span class="variable">$&#123;basket.onSale&#125;</span>&lt;/em&gt;</span><br><span class="line">  are on sale!</span><br><span class="line">`);</span><br></pre></td></tr></table></figure></p>
+<h2 id="destructuring-解构"><a href="#destructuring-解构" class="headerlink" title="destructuring(解构)"></a>destructuring(解构)</h2><p>ES6中允许按照一定的模式，从对象和数组中提取值，对变量进行赋值，这称为解构。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> cat = <span class="string">'ken'</span></span><br><span class="line"><span class="built_in">let</span> dog = <span class="string">'lili'</span></span><br><span class="line"><span class="built_in">let</span> zoo = &#123;cat: cat, dog: dog&#125;</span><br><span class="line">console.log(zoo)  //Object &#123;cat: <span class="string">"ken"</span>, dog: <span class="string">"lili"</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ES6中更改为：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> cat = <span class="string">'ken'</span></span><br><span class="line"><span class="built_in">let</span> dog = <span class="string">'lili'</span></span><br><span class="line"><span class="built_in">let</span> zoo = &#123;cat, dog&#125;</span><br><span class="line">console.log(zoo)  //Object &#123;cat: <span class="string">"ken"</span>, dog: <span class="string">"lili"</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也可以反过来解析：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> dog = &#123;<span class="built_in">type</span>: <span class="string">'animal'</span>, many: 2&#125;</span><br><span class="line"><span class="built_in">let</span> &#123; <span class="built_in">type</span>, many&#125; = dog</span><br><span class="line">console.log(<span class="built_in">type</span>, many)   //animal 2</span><br></pre></td></tr></table></figure></p>
+<h2 id="default-rest"><a href="#default-rest" class="headerlink" title="default , rest"></a>default , rest</h2><p>default 很简单，意思就是默认值。大家可以看下面的例子，调用animal()方法时忘了传参数，传统的做法就是加上这一句type = type || ‘cat’来指定默认值。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> animal(<span class="built_in">type</span>)&#123;</span><br><span class="line">    <span class="built_in">type</span> = <span class="built_in">type</span> || <span class="string">'cat'</span>  </span><br><span class="line">    console.log(<span class="built_in">type</span>)</span><br><span class="line">&#125;</span><br><span class="line">animal()</span><br></pre></td></tr></table></figure></p>
+<p>如果用 ES6 我们而已直接这么写(跟c++差不多了)：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> animal(<span class="built_in">type</span> = <span class="string">'cat'</span>)&#123;</span><br><span class="line">    console.log(<span class="built_in">type</span>)</span><br><span class="line">&#125;</span><br><span class="line">animal()</span><br></pre></td></tr></table></figure></p>
+<p>最后一个 rest 语法也很简单，直接看例子：（而如果不用 ES6 的话，我们则得使用 ES5 的arguments）<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> animals(...types)&#123;</span><br><span class="line">    console.log(types)</span><br><span class="line">&#125;</span><br><span class="line">animals(<span class="string">'cat'</span>, <span class="string">'dog'</span>, <span class="string">'fish'</span>) //[<span class="string">"cat"</span>, <span class="string">"dog"</span>, <span class="string">"fish"</span>]</span><br></pre></td></tr></table></figure></p>
+<h2 id="arrow-function"><a href="#arrow-function" class="headerlink" title="arrow function"></a>arrow function</h2><p>我看的这篇文章说：这个恐怕是 ES6 最最常用的一个新特性了，用它来写 function 比原来的写法要简洁清晰很多。我现在还没有真正的体会到。<br>直接上例子，比如原来这么写的可以像现在这样写：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(i)&#123; <span class="built_in">return</span> i + 1; &#125; //ES5</span><br><span class="line">(i) =&gt; i + 1 //ES6</span><br></pre></td></tr></table></figure></p>
+<p>如果方程比较复杂，则需要用{}把代码包起来：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>(x, y) &#123; </span><br><span class="line">    x++;</span><br><span class="line">    y--;</span><br><span class="line">    <span class="built_in">return</span> x + y;</span><br><span class="line">&#125;</span><br><span class="line">(x, y) =&gt; &#123;x++; y--; <span class="built_in">return</span> x+y&#125;</span><br></pre></td></tr></table></figure></p>
+<p>除了看上去更简洁以外，arrow function 还有一项超级无敌的功能！<br>长期以来，JavaScript 语言的this对象一直是一个令人头痛的问题，在对象方法中使用 this，必须非常小心。例如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Animal &#123;</span><br><span class="line">    <span class="function"><span class="title">constructor</span></span>()&#123;</span><br><span class="line">        this.type = <span class="string">'animal'</span></span><br><span class="line">    &#125;</span><br><span class="line">    says(say)&#123;</span><br><span class="line">        setTimeout(<span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">            console.log(this.type + <span class="string">' says '</span> + say)</span><br><span class="line">        &#125;, 1000)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> var animal = new Animal()</span><br><span class="line"> animal.says(<span class="string">'hi'</span>)  //undefined says hi</span><br></pre></td></tr></table></figure></p>
+<p>运行上面的代码会报错，这是因为setTimeout中的this指向的是全局对象。所以为了让它能够正确的运行，传统的解决方法有两种：</p>
+<p><strong>第一种是将 this 传给 self,再用 self 来指代 this</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">says(say)&#123;</span><br><span class="line"> var self = this;</span><br><span class="line"> setTimeout(<span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">     console.log(self.type + <span class="string">' says '</span> + say)</span><br><span class="line"> &#125;, 1000)</span><br></pre></td></tr></table></figure></p>
+<p><strong>第二种方法是用bind(this),即</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">says(say)&#123;</span><br><span class="line"> setTimeout(<span class="function"><span class="title">function</span></span>()&#123;</span><br><span class="line">     console.log(self.type + <span class="string">' says '</span> + say)</span><br><span class="line"> &#125;.<span class="built_in">bind</span>(this), 1000)</span><br></pre></td></tr></table></figure></p>
+<p>但现在我们有了箭头函数，就不需要这么麻烦了：<br>当我们使用箭头函数时，函数体内的 this 对象，就是定义时所在的对象，而不是使用时所在的对象。<br>并不是因为箭头函数内部有绑定 this 的机制，实际原因是箭头函数根本没有自己的 this，它的 this 是继承外面的，因此内部的 this 就是外层代码块的 this。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class Animal &#123;</span><br><span class="line"> <span class="function"><span class="title">constructor</span></span>()&#123;</span><br><span class="line">     this.type = <span class="string">'animal'</span></span><br><span class="line"> &#125;</span><br><span class="line"> says(say)&#123;</span><br><span class="line">     setTimeout( () =&gt; &#123;</span><br><span class="line">         console.log(this.type + <span class="string">' says '</span> + say)</span><br><span class="line">     &#125;, 1000)</span><br><span class="line"> &#125;</span><br><span class="line">&#125; </span><br><span class="line">var animal = new Animal()</span><br><span class="line">animal.says(‘hi’)  //animal says hi</span><br></pre></td></tr></table></figure></p>
+<p>完结：学习整理自<a href="http://mp.weixin.qq.com/s?__biz=MjM5NTEwMTAwNg==&amp;mid=402076564&amp;idx=1&amp;sn=e43eba6ddc9bc89b776a6c8123927be5&amp;scene=0#wechat_redirect" target="_blank" rel="noopener">SegmentFault</a>，太感谢啦。看完以后对ES6有了一点新的认识，最起码看别人写ES6编码时能看懂一点。也达到了我的初衷。但是看的过程中也暴露了自己的一个问题，那就是对this不了解。应该好好去看看啦。回头再写一篇文章整理下。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6/" rel="tag"># ES6</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/10/如何通过nginx反向代理/" rel="next" title="如何通过nginx反向代理">
+                <i class="fa fa-chevron-left"></i> 如何通过nginx反向代理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/12/css3渐变（Gradient）/" rel="prev" title="css3渐变（Gradient）">
+                css3渐变（Gradient） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#let-const-用作声明变量"><span class="nav-number">1.</span> <span class="nav-text"><a href="#let-const-&#x7528;&#x4F5C;&#x58F0;&#x660E;&#x53D8;&#x91CF;" class="headerlink" title="let , const(&#x7528;&#x4F5C;&#x58F0;&#x660E;&#x53D8;&#x91CF;)"></a>let , const(&#x7528;&#x4F5C;&#x58F0;&#x660E;&#x53D8;&#x91CF;)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于let"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x5173;&#x4E8E;let" class="headerlink" title="&#x5173;&#x4E8E;let"></a>&#x5173;&#x4E8E;let</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于const"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x5173;&#x4E8E;const" class="headerlink" title="&#x5173;&#x4E8E;const"></a>&#x5173;&#x4E8E;const</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class-extends-super"><span class="nav-number">2.</span> <span class="nav-text"><a href="#class-extends-super" class="headerlink" title="class , extends , super"></a>class , extends , super</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#template-string"><span class="nav-number">3.</span> <span class="nav-text"><a href="#template-string" class="headerlink" title="template string"></a>template string</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#destructuring-解构"><span class="nav-number">4.</span> <span class="nav-text"><a href="#destructuring-&#x89E3;&#x6784;" class="headerlink" title="destructuring(&#x89E3;&#x6784;)"></a>destructuring(&#x89E3;&#x6784;)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#default-rest"><span class="nav-number">5.</span> <span class="nav-text"><a href="#default-rest" class="headerlink" title="default , rest"></a>default , rest</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arrow-function"><span class="nav-number">6.</span> <span class="nav-text"><a href="#arrow-function" class="headerlink" title="arrow function"></a>arrow function</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/02/11/ES6-ES2015-核心内容（最常用的-ES6-特性）/';
+          this.page.identifier = '2016/02/11/ES6-ES2015-核心内容（最常用的-ES6-特性）/';
+          this.page.title = 'ES6/ES2015 核心内容（最常用的 ES6 特性）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

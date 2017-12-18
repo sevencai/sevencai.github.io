@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="other," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="今天看到知乎上有个讨论，说我们的墙的存在合不合理？有些人说墙的存在限制了国内的发展，是中国的不进步的一种表现，还有人说墙的存在是好的。毕竟保护了中国人的一些隐私。墙的存在，会对我们程序员来说，不太好受，比如我们必须想办法翻墙去google。 我骨子里还是很保守，所以我觉得墙还是要存在的，=。=，隐私还是要保护的，不能让外国人把咱们中国的摸得太透啦。我们操作系统都是用的外国的，不管是linux,ma">
+<meta name="keywords" content="other">
+<meta property="og:type" content="article">
+<meta property="og:title" content="防火墙简单知识">
+<meta property="og:url" content="http://sevencai.github.io/2016/05/19/防火墙简单知识/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="今天看到知乎上有个讨论，说我们的墙的存在合不合理？有些人说墙的存在限制了国内的发展，是中国的不进步的一种表现，还有人说墙的存在是好的。毕竟保护了中国人的一些隐私。墙的存在，会对我们程序员来说，不太好受，比如我们必须想办法翻墙去google。 我骨子里还是很保守，所以我觉得墙还是要存在的，=。=，隐私还是要保护的，不能让外国人把咱们中国的摸得太透啦。我们操作系统都是用的外国的，不管是linux,ma">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/fhq2.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/fhq.jpg">
+<meta property="og:image" content="http://www.cailidan.cn/images/fhq3.jpg">
+<meta property="og:image" content="http://www.cailidan.cn/images/fhq4.PNG">
+<meta property="og:updated_time" content="2016-05-19T03:29:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="防火墙简单知识">
+<meta name="twitter:description" content="今天看到知乎上有个讨论，说我们的墙的存在合不合理？有些人说墙的存在限制了国内的发展，是中国的不进步的一种表现，还有人说墙的存在是好的。毕竟保护了中国人的一些隐私。墙的存在，会对我们程序员来说，不太好受，比如我们必须想办法翻墙去google。 我骨子里还是很保守，所以我觉得墙还是要存在的，=。=，隐私还是要保护的，不能让外国人把咱们中国的摸得太透啦。我们操作系统都是用的外国的，不管是linux,ma">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/fhq2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/05/19/防火墙简单知识/"/>
+
+
+
+
+
+  <title>防火墙简单知识 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/05/19/防火墙简单知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">防火墙简单知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-19T11:00:15+08:00">
+                2016-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/other/" itemprop="url" rel="index">
+                    <span itemprop="name">other</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/05/19/防火墙简单知识/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/05/19/防火墙简单知识/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天看到知乎上有个讨论，说我们的墙的存在合不合理？有些人说墙的存在限制了国内的发展，是中国的不进步的一种表现，还有人说墙的存在是好的。毕竟保护了中国人的一些隐私。墙的存在，会对我们程序员来说，不太好受，比如我们必须想办法翻墙去google。</p>
+<p>我骨子里还是很保守，所以我觉得墙还是要存在的，=。=，隐私还是要保护的，不能让外国人把咱们中国的摸得太透啦。我们操作系统都是用的外国的，不管是linux,mac,windows。编程语言是外国人的，那如果全部的人都去搜索也全用外国的，或者去上外国一些不好的网站，那该多不好。原谅我骨子里那么一点点的保守。但是，咱们又不是墙所有的，stackoverflow不能上吗？github不能上吗？那么多都可以上，就不要抱怨啦。百度出了那个事情，是让人难过，但是如果经过这个事情，他们真的有很大的决心改正，并且实施了行动，我其实还是抱有希望的，=。=，虽然咱们程序员肯定是要去翻墙。感觉扯远了。。</p>
+<p>我搜了下，防火墙大概张这个样子，以前还以为是个很大的东西，没想到就是这样一个小机器，涨见识啦。</p>
+<p><img src="http://www.cailidan.cn/images/fhq2.png" alt=""></p>
+<p>这篇文章讲解一些关于防火墙的知识。算是解决我的一些疑惑。记录整理如下：</p>
+<hr>
+<h3 id="防火墙是啥"><a href="#防火墙是啥" class="headerlink" title="防火墙是啥"></a>防火墙是啥</h3><p>防火墙的本义原是指古代人们房屋之间修建的墙，这道墙可以防止火灾发生的时候蔓延到别的房屋。</p>
+<p><strong>但咱们这里所说的防火墙不是指为了防火而造的墙，而是指隔离在本地网络与外界网络之间的一道防御系统。防火墙是一种非常有效的网络安全系统，通过它可以隔离风险区域（Internet或有一定风险的网络）与安全区域（局域网）的连接，同时不会妨碍安全区域对风险区域的访问。它实际上是一种隔离技术。</strong></p>
+<blockquote>
+<p>所谓防火墙指的是一个由<strong>软件和硬件</strong>设备组合而成、在内部网和外部网之间、专用网与公共网之间的界面上构造的保护屏障.是一种获取安全性方法的形象说法，它是一种计算机硬件和软件的结合，使Internet与Intranet之间建立起一个安全网关（Security Gateway），从而保护内部网免受非法用户的侵入，<strong>防火墙主要由服务访问规则、验证工具、包过滤和应用网关4个部分组成</strong>，防火墙就是一个位于计算机和它所连接的网络之间的软件或硬件。<strong>该计算机流入流出的所有网络通信和数据包均要经过此防火墙。</strong>-from wiki</p>
+</blockquote>
+<p><img src="http://www.cailidan.cn/images/fhq.jpg" alt="防火墙"></p>
+<hr>
+<h3 id="防火墙的功能"><a href="#防火墙的功能" class="headerlink" title="防火墙的功能"></a>防火墙的功能</h3><p>防火墙一般有下列的功能：</p>
+<pre><code>可以限制未授权的用户进入内部网络，过滤掉不安全的服务和非法用户
+防止入侵者接近网络防御设施
+限制内部用户访问特殊站点
+对网络存取和访问进行监控审计
+</code></pre><p>一个防火墙（作为阻塞点、控制点）能极大地提高一个内部网络的安全性，并通过过滤不安全的服务而降低风险。<strong>由于只有经过精心选择的应用协议才能通过防火墙，所以网络环境变得更安全</strong>。如防火墙可以禁止诸如众所周知的不安全的NFS协议进出受保护网络，这样外部的攻击者就不可能利用这些脆弱的协议来攻击内部网络。防火墙同时可以保护网络免受基于路由的攻击，如IP选项中的源路由攻击和ICMP重定向中的重定向路径。防火墙应该可以拒绝所有以上类型攻击的报文并通知防火墙管理员。</p>
+<p>通过以防火墙为中心的安全方案配置，<strong>能将所有安全软件（如口令、加密、身份认证、审计等）配置在防火墙上</strong>。与将网络安全问题分散到各个主机上相比，防火墙的集中安全管理更经济。例如在网络访问时，一次一密口令系统和其它的身份认证系统完全可以不必分散在各个主机上，而集中在防火墙一身上。</p>
+<p>如果所有的访问都经过防火墙，那么<strong>防火墙就能记录下这些访问并作出日志记录，同时也能提供网络使用情况的统计数据。当发生可疑动作时，防火墙能进行适当的报警，并提供网络是否受到监测和攻击的详细信息。</strong>另外，收集一个网络的使用和误用情况也是非常重要的。首先的理由是可以清楚防火墙是否能够抵挡攻击者的探测和攻击，并且清楚防火墙的控制是否充足。而网络使用统计对网络需求分析和威胁分析等而言也是非常重要的。</p>
+<p>通过利用防火墙对内部网络的划分，<strong>可实现内部网重点网段的隔离，从而限制了局部重点或敏感网络安全问题对全局网络造成的影响</strong>。再者，隐私是内部网络非常关心的问题，一个内部网络中不引人注意的细节可能包含了有关安全的线索而引起外部攻击者的兴趣，甚至因此而暴漏了内部网络的某些安全漏洞。使用防火墙就可以隐蔽那些透漏内部细节如Finger，DNS等服务。Finger显示了主机的所有用户的注册名、真名，最后登录时间和使用shell类型等。但是Finger显示的信息非常容易被攻击者所获悉。攻击者可以知道一个系统使用的频繁程度，这个系统是否有用户正在连线上网，这个系统是否在被攻击时引起注意等等。防火墙可以同样阻塞有关内部网络中的DNS信息，这样一台主机的域名和IP地址就不会被外界所了解。</p>
+<p><img src="http://www.cailidan.cn/images/fhq3.jpg" alt=""></p>
+<hr>
+<h3 id="防火墙的局限性"><a href="#防火墙的局限性" class="headerlink" title="防火墙的局限性"></a>防火墙的局限性</h3><p>但是防火墙也不是万能的，它也有以下的局限性。</p>
+<ol>
+<li><p>防火墙不能防范网络内部的攻击。比如：防火墙无法禁止变节者或内部间谍将敏感数据拷贝到软盘上。</p>
+</li>
+<li><p>防火墙也不能防范那些伪装成超级用户或诈称新雇员的黑客们劝说没有防范心理的用户公开其口令，并授予其临时的网络访问权限。</p>
+</li>
+<li><p>防火墙不能防止传送己感染病毒的软件或文件，不能期望防火墙去对每一个文件进行扫描，查出潜在的病毒。</p>
+</li>
+</ol>
+<hr>
+<h3 id="防火墙的分类"><a href="#防火墙的分类" class="headerlink" title="防火墙的分类"></a>防火墙的分类</h3><p>常见的是下面三种防火墙：</p>
+<ol>
+<li>分组过滤防火墙；</li>
+<li>应用代理防火墙；</li>
+<li>状态检测防火墙。</li>
+</ol>
+<hr>
+<h4 id="分组过滤（Packet-Filtering）"><a href="#分组过滤（Packet-Filtering）" class="headerlink" title="分组过滤（Packet Filtering）"></a>分组过滤（Packet Filtering）</h4><p>作用在协议组的网络层和传输层，<strong>根据分组包头源地址、目的地址和端口号、协议类型等标志确定是否允许数据包通过</strong>，只有满足过滤逻辑的数据包才被转发到相应的目的地的出口端，其余的数据包则从数据流中丢弃。</p>
+<h4 id="应用代理（Application-Proxy）"><a href="#应用代理（Application-Proxy）" class="headerlink" title="应用代理（Application Proxy）"></a>应用代理（Application Proxy）</h4><p>也叫应用网关（Application Gateway），它作用在应用层，其特点是<strong>完全“阻隔”网络通信流，通过对每种应用服务编制专门的代理程序，实现监视和控制应用层通信流的作用</strong>。实际中的应用网关通常由专用工作站实现。</p>
+<h4 id="状态检测（Status-Detection）"><a href="#状态检测（Status-Detection）" class="headerlink" title="状态检测（Status Detection）"></a>状态检测（Status Detection）</h4><p>直接对分组里的数据进行处理，并且结合前后分组的数据进行综合判断，然后决定是否允许该数据包通过。</p>
+<hr>
+<h3 id="防火墙的特征"><a href="#防火墙的特征" class="headerlink" title="防火墙的特征"></a>防火墙的特征</h3><p>防火墙就是一种过滤塞（你这么理解不算错），你可以让你喜欢的东西通过这个塞子，别的玩意都统统过滤掉。在网络的世界里，要由防火墙过滤的就是承载通信数据的通信包。</p>
+<hr>
+<h4 id="内部网络和外部网络之间的所有网络数据流都必须经过防火墙"><a href="#内部网络和外部网络之间的所有网络数据流都必须经过防火墙" class="headerlink" title="内部网络和外部网络之间的所有网络数据流都必须经过防火墙"></a><strong>内部网络和外部网络之间的所有网络数据流都必须经过防火墙</strong></h4><p>这是防火墙所处网络位置特性，同时也是一个前提。因为只有当防火墙是内、外部网络之间通信的唯一通道，才可以全面、有效地保护企业网部网络不受侵害。</p>
+<p>根据美国国家安全局制定的《信息保障技术框架》，防火墙适用于用户网络系统的边界，属于用户网络边界的安全保护设备。所谓网络边界即是采用不同安全策略的两个网络连接处，比如用户网络和互联网之间连接、和其它业务往来单位的网络连接、用户内部网络不同部门之间的连接等。<strong>防火墙的目的就是在网络连接之间建立一个安全控制点，通过允许、拒绝或重新定向经过防火墙的数据流，实现对进、出内部网络的服务和访问的审计和控制。</strong></p>
+<p>典型的防火墙体系网络结构可以是：防火墙的一端连接企事业单位内部的局域网，而另一端则连接着互联网。所有的内、外部网络之间的通信都要经过防火墙。</p>
+<hr>
+<h4 id="只有符合安全策略的数据流才能通过防火墙"><a href="#只有符合安全策略的数据流才能通过防火墙" class="headerlink" title="只有符合安全策略的数据流才能通过防火墙"></a><strong>只有符合安全策略的数据流才能通过防火墙</strong></h4><p><strong>防火墙最基本的功能是确保网络流量的合法性，并在此前提下将网络的流量快速的从一条链路转发到另外的链路上去</strong>。从最早的防火墙模型开始谈起，原始的防火墙是一台“双穴主机”，即具备两个网络接口，同时拥有两个网络层地址。</p>
+<p>防火墙将网络上的流量通过相应的网络接口接收上来，按照OSI协议栈的七层结构顺序上传，在适当的协议层进行访问规则和安全审查，然后将符合通过条件的报文从相应的网络接口送出，<strong>而对于那些不符合通过条件的报文则予以阻断</strong>。因此，从这个角度上来说，防火墙是一个类似于桥接或路由器的、多端口的（网络接口&gt;=2）转发设备，它跨接于多个分离的物理网段之间，并在报文转发过程之中完成对报文的审查工作。</p>
+<hr>
+<h4 id="防火墙自身应具有非常强的抗攻击免疫力"><a href="#防火墙自身应具有非常强的抗攻击免疫力" class="headerlink" title="防火墙自身应具有非常强的抗攻击免疫力"></a><strong>防火墙自身应具有非常强的抗攻击免疫力</strong></h4><p>这是防火墙之所以能担当企业内部网络安全防护重任的先决条件。防火墙处于网络边缘，它就像一个边界卫士一样，每时每刻都要面对黑客的入侵，这样就要求防火墙自身要具有非常强的抗击入侵本领。<strong>它之所以具有这么强的本领防火墙操作系统本身是关键，只有自身具有完整信任关系的操作系统才可以谈论系统的安全性。</strong>其次就是防火墙自身具有非常低的服务功能，除了专门的防火墙嵌入系统外，再没有其它应用程序在防火墙上运行。当然这些安全性也只能说是相对的。</p>
+<p>目前国内的防火墙几乎被国外的品牌占据了一半的市场，国外品牌的优势主要是在技术和知名度上比国内产品高。而国内防火墙厂商对国内用户了解更加透彻，价格上也更具有优势。防火墙产品中，国外主流厂商为思科（Cisco）、CheckPoint、NetScreen等，国内主流厂商为东软、天融信、网御神州、联想、方正等，它们都提供不同级别的防火墙产品。</p>
+<p><img src="http://www.cailidan.cn/images/fhq4.PNG" alt=""></p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要是记录下简单的防火墙知识，方便以后的查阅。大部分都整理自wiki,感谢。大概可以对防火墙有些简单的了解，科普。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/other/" rel="tag"># other</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/07/vim-下的常用命令/" rel="next" title="vim 下的常用命令">
+                <i class="fa fa-chevron-left"></i> vim 下的常用命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/22/用node写小爬虫/" rel="prev" title="用node写小爬虫">
+                用node写小爬虫 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#防火墙是啥"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x9632;&#x706B;&#x5899;&#x662F;&#x5565;" class="headerlink" title="&#x9632;&#x706B;&#x5899;&#x662F;&#x5565;"></a>&#x9632;&#x706B;&#x5899;&#x662F;&#x5565;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防火墙的功能"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x9632;&#x706B;&#x5899;&#x7684;&#x529F;&#x80FD;" class="headerlink" title="&#x9632;&#x706B;&#x5899;&#x7684;&#x529F;&#x80FD;"></a>&#x9632;&#x706B;&#x5899;&#x7684;&#x529F;&#x80FD;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防火墙的局限性"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x9632;&#x706B;&#x5899;&#x7684;&#x5C40;&#x9650;&#x6027;" class="headerlink" title="&#x9632;&#x706B;&#x5899;&#x7684;&#x5C40;&#x9650;&#x6027;"></a>&#x9632;&#x706B;&#x5899;&#x7684;&#x5C40;&#x9650;&#x6027;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防火墙的分类"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x9632;&#x706B;&#x5899;&#x7684;&#x5206;&#x7C7B;" class="headerlink" title="&#x9632;&#x706B;&#x5899;&#x7684;&#x5206;&#x7C7B;"></a>&#x9632;&#x706B;&#x5899;&#x7684;&#x5206;&#x7C7B;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分组过滤（Packet-Filtering）"><span class="nav-number">4.1.</span> <span class="nav-text"><a href="#&#x5206;&#x7EC4;&#x8FC7;&#x6EE4;&#xFF08;Packet-Filtering&#xFF09;" class="headerlink" title="&#x5206;&#x7EC4;&#x8FC7;&#x6EE4;&#xFF08;Packet Filtering&#xFF09;"></a>&#x5206;&#x7EC4;&#x8FC7;&#x6EE4;&#xFF08;Packet Filtering&#xFF09;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#应用代理（Application-Proxy）"><span class="nav-number">4.2.</span> <span class="nav-text"><a href="#&#x5E94;&#x7528;&#x4EE3;&#x7406;&#xFF08;Application-Proxy&#xFF09;" class="headerlink" title="&#x5E94;&#x7528;&#x4EE3;&#x7406;&#xFF08;Application Proxy&#xFF09;"></a>&#x5E94;&#x7528;&#x4EE3;&#x7406;&#xFF08;Application Proxy&#xFF09;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态检测（Status-Detection）"><span class="nav-number">4.3.</span> <span class="nav-text"><a href="#&#x72B6;&#x6001;&#x68C0;&#x6D4B;&#xFF08;Status-Detection&#xFF09;" class="headerlink" title="&#x72B6;&#x6001;&#x68C0;&#x6D4B;&#xFF08;Status Detection&#xFF09;"></a>&#x72B6;&#x6001;&#x68C0;&#x6D4B;&#xFF08;Status Detection&#xFF09;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#防火墙的特征"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x9632;&#x706B;&#x5899;&#x7684;&#x7279;&#x5F81;" class="headerlink" title="&#x9632;&#x706B;&#x5899;&#x7684;&#x7279;&#x5F81;"></a>&#x9632;&#x706B;&#x5899;&#x7684;&#x7279;&#x5F81;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#内部网络和外部网络之间的所有网络数据流都必须经过防火墙"><span class="nav-number">5.1.</span> <span class="nav-text"><a href="#&#x5185;&#x90E8;&#x7F51;&#x7EDC;&#x548C;&#x5916;&#x90E8;&#x7F51;&#x7EDC;&#x4E4B;&#x95F4;&#x7684;&#x6240;&#x6709;&#x7F51;&#x7EDC;&#x6570;&#x636E;&#x6D41;&#x90FD;&#x5FC5;&#x987B;&#x7ECF;&#x8FC7;&#x9632;&#x706B;&#x5899;" class="headerlink" title="&#x5185;&#x90E8;&#x7F51;&#x7EDC;&#x548C;&#x5916;&#x90E8;&#x7F51;&#x7EDC;&#x4E4B;&#x95F4;&#x7684;&#x6240;&#x6709;&#x7F51;&#x7EDC;&#x6570;&#x636E;&#x6D41;&#x90FD;&#x5FC5;&#x987B;&#x7ECF;&#x8FC7;&#x9632;&#x706B;&#x5899;"></a><strong>&#x5185;&#x90E8;&#x7F51;&#x7EDC;&#x548C;&#x5916;&#x90E8;&#x7F51;&#x7EDC;&#x4E4B;&#x95F4;&#x7684;&#x6240;&#x6709;&#x7F51;&#x7EDC;&#x6570;&#x636E;&#x6D41;&#x90FD;&#x5FC5;&#x987B;&#x7ECF;&#x8FC7;&#x9632;&#x706B;&#x5899;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#只有符合安全策略的数据流才能通过防火墙"><span class="nav-number">5.2.</span> <span class="nav-text"><a href="#&#x53EA;&#x6709;&#x7B26;&#x5408;&#x5B89;&#x5168;&#x7B56;&#x7565;&#x7684;&#x6570;&#x636E;&#x6D41;&#x624D;&#x80FD;&#x901A;&#x8FC7;&#x9632;&#x706B;&#x5899;" class="headerlink" title="&#x53EA;&#x6709;&#x7B26;&#x5408;&#x5B89;&#x5168;&#x7B56;&#x7565;&#x7684;&#x6570;&#x636E;&#x6D41;&#x624D;&#x80FD;&#x901A;&#x8FC7;&#x9632;&#x706B;&#x5899;"></a><strong>&#x53EA;&#x6709;&#x7B26;&#x5408;&#x5B89;&#x5168;&#x7B56;&#x7565;&#x7684;&#x6570;&#x636E;&#x6D41;&#x624D;&#x80FD;&#x901A;&#x8FC7;&#x9632;&#x706B;&#x5899;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#防火墙自身应具有非常强的抗攻击免疫力"><span class="nav-number">5.3.</span> <span class="nav-text"><a href="#&#x9632;&#x706B;&#x5899;&#x81EA;&#x8EAB;&#x5E94;&#x5177;&#x6709;&#x975E;&#x5E38;&#x5F3A;&#x7684;&#x6297;&#x653B;&#x51FB;&#x514D;&#x75AB;&#x529B;" class="headerlink" title="&#x9632;&#x706B;&#x5899;&#x81EA;&#x8EAB;&#x5E94;&#x5177;&#x6709;&#x975E;&#x5E38;&#x5F3A;&#x7684;&#x6297;&#x653B;&#x51FB;&#x514D;&#x75AB;&#x529B;"></a><strong>&#x9632;&#x706B;&#x5899;&#x81EA;&#x8EAB;&#x5E94;&#x5177;&#x6709;&#x975E;&#x5E38;&#x5F3A;&#x7684;&#x6297;&#x653B;&#x51FB;&#x514D;&#x75AB;&#x529B;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/05/19/防火墙简单知识/';
+          this.page.identifier = '2016/05/19/防火墙简单知识/';
+          this.page.title = '防火墙简单知识';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

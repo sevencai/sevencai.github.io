@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ES6," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章主要记录和学习Rest parameters和Spread Operator的区别和联系。今天我去了解了下关于Rest解构赋值/扩展运算符的用法和区别。主要是开始的时候容易弄混淆。所以想要记录和学习下来。也分享给大家。  Peviewif you don’t use rest parameter Aggregation of remaining arguments into single">
+<meta name="keywords" content="ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6 rest parameters和spread operator">
+<meta property="og:url" content="http://sevencai.github.io/2016/08/03/ES6-rest-parameters和spread-operator/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="这篇文章主要记录和学习Rest parameters和Spread Operator的区别和联系。今天我去了解了下关于Rest解构赋值/扩展运算符的用法和区别。主要是开始的时候容易弄混淆。所以想要记录和学习下来。也分享给大家。  Peviewif you don’t use rest parameter Aggregation of remaining arguments into single">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-02-10T03:47:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6 rest parameters和spread operator">
+<meta name="twitter:description" content="这篇文章主要记录和学习Rest parameters和Spread Operator的区别和联系。今天我去了解了下关于Rest解构赋值/扩展运算符的用法和区别。主要是开始的时候容易弄混淆。所以想要记录和学习下来。也分享给大家。  Peviewif you don’t use rest parameter Aggregation of remaining arguments into single">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/08/03/ES6-rest-parameters和spread-operator/"/>
+
+
+
+
+
+  <title>ES6 rest parameters和spread operator | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/08/03/ES6-rest-parameters和spread-operator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ES6 rest parameters和spread operator</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-03T09:04:51+08:00">
+                2016-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/03/ES6-rest-parameters和spread-operator/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/03/ES6-rest-parameters和spread-operator/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章主要记录和学习Rest parameters和Spread Operator的区别和联系。今天我去了解了下关于Rest解构赋值/扩展运算符的用法和区别。主要是开始的时候容易弄混淆。所以想要记录和学习下来。也分享给大家。</p>
+<hr>
+<h3 id="Peview"><a href="#Peview" class="headerlink" title="Peview"></a><em>Peview</em></h3><h4 id="if-you-don’t-use-rest-parameter"><a href="#if-you-don’t-use-rest-parameter" class="headerlink" title="if you don’t use rest parameter"></a><strong>if you don’t use rest parameter</strong></h4><blockquote>
+<p>Aggregation of remaining arguments into single parameter of variadic functions.</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> a = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">2</span>);</span><br><span class="line">	<span class="keyword">return</span> (x+y) * a.length;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f(<span class="number">1</span>, <span class="number">3</span>, <span class="string">"hello"</span>, <span class="literal">true</span>, <span class="number">7</span>);</span><br></pre></td></tr></table></figure>
+<p>如果使用Rest Parameter就会简单很多：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">x, y, ...a</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (x+y) * a.length;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f(<span class="number">1</span>, <span class="number">3</span>, <span class="string">"hello"</span>, <span class="literal">true</span>, <span class="number">7</span>);</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="If-you-don’t-use-spread-operator"><a href="#If-you-don’t-use-spread-operator" class="headerlink" title="If you don’t use spread operator"></a><strong>If you don’t use spread operator</strong></h4><blockquote>
+<p>Spreading of elements of an iterable collection (like an array or even a string) into both literal elements and individual function parameters.</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> params = [<span class="string">"hello"</span>, <span class="literal">true</span>, <span class="number">7</span>];</span><br><span class="line"><span class="keyword">var</span> extends = [<span class="number">1</span>, <span class="number">3</span>].concat(params);</span><br><span class="line"></span><br><span class="line">f.apply(<span class="literal">undefined</span>, [<span class="number">1</span>, <span class="number">3</span>].concat(params)); <span class="comment">//因为extends是数据的原因，所以用apply</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">"Seven"</span>;</span><br><span class="line"><span class="keyword">var</span> chars = str.split(<span class="string">""</span>); <span class="comment">//["S", "e", "v", "e", "n"]</span></span><br></pre></td></tr></table></figure>
+<p>如果使用spread operator的话：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> params = [<span class="string">"hello"</span>, <span class="literal">true</span>, <span class="number">7</span>];</span><br><span class="line"><span class="keyword">var</span> extends = [<span class="number">1</span>, <span class="number">3</span>, ...params];</span><br><span class="line">f(<span class="number">1</span>,<span class="number">3</span>, ...params);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">"Seven"</span>;</span><br><span class="line"><span class="keyword">var</span> chars = [...str]; <span class="comment">//["S", "e", "v", "e", "n"]</span></span><br></pre></td></tr></table></figure></p>
+<p>下面具体看下两种新的 Extended Parameter Handling。</p>
+<hr>
+<h3 id="Rest-parameters"><a href="#Rest-parameters" class="headerlink" title="Rest parameters"></a><strong>Rest parameters</strong></h3><blockquote>
+<p>The rest parameter syntax allows us to represent an indefinite number of arguments as an array.</p>
+</blockquote>
+<p>在ES6的新特性中，Rest parameters可以为我们带来很多方便的地方。它可以帮助我们去把一系列不确定个数的参数转换成数组。</p>
+<hr>
+<h4 id="Rest-parameters的语法"><a href="#Rest-parameters的语法" class="headerlink" title="Rest parameters的语法"></a><strong>Rest parameters的语法</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params">a, b, ...theArgs</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比如我们传入 fun(1,2,3,4),那么a将为1，b将为2，theArgs将为[3,4]。</p>
+<hr>
+<h4 id="arguments和rest-parameters的区别"><a href="#arguments和rest-parameters的区别" class="headerlink" title="arguments和rest parameters的区别"></a><strong>arguments和rest parameters的区别</strong></h4><p>区别主要有下面三点：</p>
+<blockquote>
+<p><strong>rest parameters are only the ones that haven’t been given a separate name, while the arguments object contains all arguments passed to the function;</strong></p>
+<p>the arguments object is not a real array, while rest parameters are Array instances, meaning methods like sort, map, forEach or pop can be applied on it directly;</p>
+<p>the arguments object has additional functionality specific to itself (like the callee property).<br>-FROM MDN =&gt; <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters" target="_blank" rel="noopener">rest_parameters</a></p>
+</blockquote>
+<p>我觉得讲的很清楚了。具体怎么使用，我们看下面的几个例子来更好的理解这些区别。</p>
+<hr>
+<h4 id="煮几个栗子"><a href="#煮几个栗子" class="headerlink" title="煮几个栗子"></a><strong>煮几个栗子</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="keyword">var</span> numbers = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>),</span><br><span class="line">       result = <span class="number">0</span>;</span><br><span class="line">   numbers.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">number</span>) </span>&#123;</span><br><span class="line">       result += number;</span><br><span class="line">   &#125;);</span><br><span class="line">   <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(sum(<span class="number">1</span>));             <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(sum(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)); <span class="comment">// 15</span></span><br></pre></td></tr></table></figure>
+<p>上面是我们最长看到的一个相加参数的方法。由于arguments不是数组，所以我们在使用前要先将他转换成数组。我们再看看rest的写法。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">…numbers</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> result = <span class="number">0</span>;</span><br><span class="line">  numbers.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">number</span>) </span>&#123;</span><br><span class="line">    result += number;</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(sum(<span class="number">1</span>)); <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(sum(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)); <span class="comment">// 15</span></span><br></pre></td></tr></table></figure></p>
+<p>由于使用…numbers的参数就已经是被转换成数组了，所以我们可以直接使用。</p>
+<p>再看个几个可以直接使用rest的例子。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multiply</span>(<span class="params">multiplier, ...theArgs</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> theArgs.map(<span class="function"><span class="keyword">function</span> (<span class="params">element</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> multiplier * element;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arr = multiply(<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>); </span><br><span class="line"><span class="built_in">console</span>.log(arr); <span class="comment">// [2, 4, 6]</span></span><br></pre></td></tr></table></figure></p>
+<p>上面看两个地方，第一是传参数是从第二个开始传的。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sortRestArgs</span>(<span class="params">...theArgs</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sortedArgs = theArgs.sort();</span><br><span class="line">  <span class="keyword">return</span> sortedArgs;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(sortRestArgs(<span class="number">5</span>,<span class="number">3</span>,<span class="number">7</span>,<span class="number">1</span>)); <span class="comment">// shows 1,3,5,7</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sortArguments</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sortedArgs = <span class="built_in">arguments</span>.sort(); </span><br><span class="line">  <span class="keyword">return</span> sortedArgs; <span class="comment">// this will never happen</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// throws a TypeError: arguments.sort is not a function</span></span><br><span class="line"><span class="built_in">console</span>.log(sortArguments(<span class="number">5</span>,<span class="number">3</span>,<span class="number">7</span>,<span class="number">1</span>));</span><br></pre></td></tr></table></figure></p>
+<p>再举一个经常见到的例子：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">logArguments</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="built_in">arguments</span>[i]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>下面是更好的一种写法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">logArguments</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> arg <span class="keyword">of</span> args) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(arg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>好，到目前为止，你肯定很清楚，不过估计过一会可能会混淆了，就像我一样。下面我们看看spread。</p>
+<hr>
+<h3 id="Spread-operator"><a href="#Spread-operator" class="headerlink" title="Spread_operator"></a><strong>Spread_operator</strong></h3><h4 id="spread的基本语法"><a href="#spread的基本语法" class="headerlink" title="spread的基本语法"></a><strong>spread的基本语法</strong></h4><p>用于函数调用:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myFunction(...iterableObj);</span><br></pre></td></tr></table></figure></p>
+<p>用于数组字面量:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[...iterableObj, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]</span><br></pre></td></tr></table></figure></p>
+<p>也就是说spread有两种情况。<strong>一个是在函数中使用的情况。一个是在数组字面量的情况。在函数中就相当于是分割成单个参数，在数组中是组成一个更大的数组。</strong></p>
+<hr>
+<h4 id="spread和rest-parameter的区别"><a href="#spread和rest-parameter的区别" class="headerlink" title="spread和rest parameter的区别"></a><strong>spread和rest parameter的区别</strong></h4><p>spread和rest parameters非常像。因为它们都有…这个表达式。<strong>但是它们几乎是相反的操作。spread 可以把一个数组分割成单个的参数。然后传递给函数。而刚刚我们讲的rest则是把单个的参数转换成数组传递下去。</strong></p>
+<blockquote>
+<p>还有一种操作符叫做剩余操作符（the rest operator），它的样子看起来和展开操作符一样，但是它是用于解构数组和对象。在某种程度上，剩余元素和展开元素相反，展开元素会“展开”数组变成多个元素，剩余元素会收集多个元素和“压缩”成一个单一的元素。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a, b, c</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b + c;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> args = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="built_in">console</span>.log(sum(…args)); <span class="comment">// 6</span></span><br></pre></td></tr></table></figure>
+<p>但是在ES5中我们一般是这么做的：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a, b, c</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b + c;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> args = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="built_in">console</span>.log(sum.apply(<span class="literal">undefined</span>, args)); <span class="comment">// 6</span></span><br></pre></td></tr></table></figure></p>
+<p>因为apply可以帮助我们把数组变成单个的参数。这样是不是很方便了。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a, b, c</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b + c;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> args = [<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"><span class="built_in">console</span>.log(sum(…args, <span class="number">3</span>)); <span class="comment">// 6</span></span><br></pre></td></tr></table></figure></p>
+<p>也可以像上面一样混淆着写。所以我们总结下。</p>
+<hr>
+<h4 id="更好的apply"><a href="#更好的apply" class="headerlink" title="更好的apply"></a><strong>更好的apply</strong></h4><p>我们都是使用Function.prototype.apply方法来将一个数组展开成多个参数:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myFunction</span>(<span class="params">x, y, z</span>) </span>&#123; &#125;</span><br><span class="line"><span class="keyword">var</span> args = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line">myFunction.apply(<span class="literal">null</span>, args);</span><br></pre></td></tr></table></figure></p>
+<p>用了展开符我们可以这样写：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myFunction</span>(<span class="params">x, y, z</span>) </span>&#123; &#125;</span><br><span class="line"><span class="keyword">var</span> args = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line">myFunction(...args);</span><br></pre></td></tr></table></figure></p>
+<p>也可以展开多个：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myFunction</span>(<span class="params">v, w, x, y, z</span>) </span>&#123; &#125;</span><br><span class="line"><span class="keyword">var</span> args = [<span class="number">0</span>, <span class="number">1</span>];</span><br><span class="line">myFunction(<span class="number">-1</span>, ...args, <span class="number">2</span>, ...[<span class="number">3</span>]);</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="更强大的数组字面量"><a href="#更强大的数组字面量" class="headerlink" title="更强大的数组字面量"></a><strong>更强大的数组字面量</strong></h4><p>如果在已有的数组中的某个部分添加一个属性，通常会用到push，splice，concat 等数组方法。有了扩展运算符会让代码更简洁:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> parts = [<span class="string">'shoulder'</span>, <span class="string">'knees'</span>];</span><br><span class="line"><span class="keyword">var</span> lyrics = [<span class="string">'head'</span>, ...parts, <span class="string">'and'</span>, <span class="string">'toes'</span>]; <span class="comment">// ["head", "shoulders", "knees", "and", "toes"]</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="更好的-push-方法"><a href="#更好的-push-方法" class="headerlink" title="更好的 push 方法"></a><strong>更好的 push 方法</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line"><span class="comment">// 将arr2中的所有元素添加到arr1中</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.push.apply(arr1, arr2);</span><br></pre></td></tr></table></figure>
+<p>上面是我们一般将数组push添加到一个数组的情况。下面是我们使用spread操作符。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr1 = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line"><span class="keyword">var</span> arr2 = [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line">arr1.push(...arr2);</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="将类数组对象转换成数组"><a href="#将类数组对象转换成数组" class="headerlink" title="将类数组对象转换成数组"></a><strong>将类数组对象转换成数组</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> nodeList = <span class="built_in">document</span>.querySelectorAll(<span class="string">'div'</span>);</span><br><span class="line"><span class="keyword">var</span> array = [...nodeList];</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="举几个很常用的例子"><a href="#举几个很常用的例子" class="headerlink" title="举几个很常用的例子"></a><strong>举几个很常用的例子</strong></h4><p>如果我们有一个数组，要求它的最大值，通常我们会这么做：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myArr = [<span class="number">5</span>,<span class="number">3</span>,<span class="number">9</span>];</span><br><span class="line"><span class="built_in">Math</span>.max(myArr);  <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">Math</span>.max.apply(<span class="built_in">Math</span>,myArr);  <span class="comment">// 9</span></span><br></pre></td></tr></table></figure></p>
+<p>一般我们都是利用apply可以把数组转换为单个参数。现在我们可以这样做：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myArr = [<span class="number">5</span>,<span class="number">3</span>,<span class="number">9</span>];</span><br><span class="line"><span class="built_in">Math</span>.max(...myArr);  <span class="comment">//9</span></span><br></pre></td></tr></table></figure></p>
+<p>是不是很方便？还有一个优点：扩展运算符支持构造函数：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>(...[<span class="number">2016</span>, <span class="number">5</span>, <span class="number">6</span>]);</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>.apply(<span class="literal">null</span>, [<span class="number">2016</span>, <span class="number">8</span>, <span class="number">2</span>]);    <span class="comment">// TypeError: Date.apply is not a constructor</span></span><br><span class="line"><span class="keyword">new</span> (<span class="built_in">Function</span>.prototype.bind.apply(<span class="built_in">Date</span>, [<span class="literal">null</span>].concat([<span class="number">2016</span>, <span class="number">8</span>, <span class="number">2</span>])));   <span class="comment">//Date 2016-09-01T16:00:00.000Z</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>主要是了解了ES6的这两个新特性。我觉得很好用。不过都是要刻意的去用才有熟悉的过程。否则估计过不了多久就忘记啦。大部分整理和学习自MDN。感谢。<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Spread_operator" target="_blank" rel="noopener">MDN - Spread_operator</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ES6/" rel="tag"># ES6</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/01/ES6-Symbol-Why-How-When/" rel="next" title="ES6 Symbol ! Why ? How ? When ? ">
+                <i class="fa fa-chevron-left"></i> ES6 Symbol ! Why ? How ? When ? 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/04/yield和yield-的区别和用法/" rel="prev" title="yield和yield*的区别和用法">
+                yield和yield*的区别和用法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Peview"><span class="nav-number">1.</span> <span class="nav-text"><a href="#Peview" class="headerlink" title="Peview"></a><em>Peview</em></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#if-you-don’t-use-rest-parameter"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#if-you-don&#x2019;t-use-rest-parameter" class="headerlink" title="if you don&#x2019;t use rest parameter"></a><strong>if you don&#x2019;t use rest parameter</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#If-you-don’t-use-spread-operator"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#If-you-don&#x2019;t-use-spread-operator" class="headerlink" title="If you don&#x2019;t use spread operator"></a><strong>If you don&#x2019;t use spread operator</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rest-parameters"><span class="nav-number">2.</span> <span class="nav-text"><a href="#Rest-parameters" class="headerlink" title="Rest parameters"></a><strong>Rest parameters</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Rest-parameters的语法"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#Rest-parameters&#x7684;&#x8BED;&#x6CD5;" class="headerlink" title="Rest parameters&#x7684;&#x8BED;&#x6CD5;"></a><strong>Rest parameters&#x7684;&#x8BED;&#x6CD5;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#arguments和rest-parameters的区别"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#arguments&#x548C;rest-parameters&#x7684;&#x533A;&#x522B;" class="headerlink" title="arguments&#x548C;rest parameters&#x7684;&#x533A;&#x522B;"></a><strong>arguments&#x548C;rest parameters&#x7684;&#x533A;&#x522B;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#煮几个栗子"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x716E;&#x51E0;&#x4E2A;&#x6817;&#x5B50;" class="headerlink" title="&#x716E;&#x51E0;&#x4E2A;&#x6817;&#x5B50;"></a><strong>&#x716E;&#x51E0;&#x4E2A;&#x6817;&#x5B50;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spread-operator"><span class="nav-number">3.</span> <span class="nav-text"><a href="#Spread-operator" class="headerlink" title="Spread_operator"></a><strong>Spread_operator</strong></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#spread的基本语法"><span class="nav-number">3.1.</span> <span class="nav-text"><a href="#spread&#x7684;&#x57FA;&#x672C;&#x8BED;&#x6CD5;" class="headerlink" title="spread&#x7684;&#x57FA;&#x672C;&#x8BED;&#x6CD5;"></a><strong>spread&#x7684;&#x57FA;&#x672C;&#x8BED;&#x6CD5;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spread和rest-parameter的区别"><span class="nav-number">3.2.</span> <span class="nav-text"><a href="#spread&#x548C;rest-parameter&#x7684;&#x533A;&#x522B;" class="headerlink" title="spread&#x548C;rest parameter&#x7684;&#x533A;&#x522B;"></a><strong>spread&#x548C;rest parameter&#x7684;&#x533A;&#x522B;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#更好的apply"><span class="nav-number">3.3.</span> <span class="nav-text"><a href="#&#x66F4;&#x597D;&#x7684;apply" class="headerlink" title="&#x66F4;&#x597D;&#x7684;apply"></a><strong>&#x66F4;&#x597D;&#x7684;apply</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#更强大的数组字面量"><span class="nav-number">3.4.</span> <span class="nav-text"><a href="#&#x66F4;&#x5F3A;&#x5927;&#x7684;&#x6570;&#x7EC4;&#x5B57;&#x9762;&#x91CF;" class="headerlink" title="&#x66F4;&#x5F3A;&#x5927;&#x7684;&#x6570;&#x7EC4;&#x5B57;&#x9762;&#x91CF;"></a><strong>&#x66F4;&#x5F3A;&#x5927;&#x7684;&#x6570;&#x7EC4;&#x5B57;&#x9762;&#x91CF;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#更好的-push-方法"><span class="nav-number">3.5.</span> <span class="nav-text"><a href="#&#x66F4;&#x597D;&#x7684;-push-&#x65B9;&#x6CD5;" class="headerlink" title="&#x66F4;&#x597D;&#x7684; push &#x65B9;&#x6CD5;"></a><strong>&#x66F4;&#x597D;&#x7684; push &#x65B9;&#x6CD5;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将类数组对象转换成数组"><span class="nav-number">3.6.</span> <span class="nav-text"><a href="#&#x5C06;&#x7C7B;&#x6570;&#x7EC4;&#x5BF9;&#x8C61;&#x8F6C;&#x6362;&#x6210;&#x6570;&#x7EC4;" class="headerlink" title="&#x5C06;&#x7C7B;&#x6570;&#x7EC4;&#x5BF9;&#x8C61;&#x8F6C;&#x6362;&#x6210;&#x6570;&#x7EC4;"></a><strong>&#x5C06;&#x7C7B;&#x6570;&#x7EC4;&#x5BF9;&#x8C61;&#x8F6C;&#x6362;&#x6210;&#x6570;&#x7EC4;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#举几个很常用的例子"><span class="nav-number">3.7.</span> <span class="nav-text"><a href="#&#x4E3E;&#x51E0;&#x4E2A;&#x5F88;&#x5E38;&#x7528;&#x7684;&#x4F8B;&#x5B50;" class="headerlink" title="&#x4E3E;&#x51E0;&#x4E2A;&#x5F88;&#x5E38;&#x7528;&#x7684;&#x4F8B;&#x5B50;"></a><strong>&#x4E3E;&#x51E0;&#x4E2A;&#x5F88;&#x5E38;&#x7528;&#x7684;&#x4F8B;&#x5B50;</strong></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/08/03/ES6-rest-parameters和spread-operator/';
+          this.page.identifier = '2016/08/03/ES6-rest-parameters和spread-operator/';
+          this.page.title = 'ES6 rest parameters和spread operator';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>

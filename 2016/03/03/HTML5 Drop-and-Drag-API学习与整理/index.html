@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Drop和Drag是能够DOM元素拖动与释放的API。过去我们也有一个能够实现拖动与释放的流程。今天总结一下，可以看到新的API是给我们提供了很大的便利和简化了许多代码的。  拖拽的旧方法总的是下面下面的三个流程：（js以前是没有直接拖拽的方法的，所谓的拖拽也就是把鼠标拖拽的偏移值赋值给拖动的元素，这样就好像形成一个假象，我是可以拖拽的，实际上该元素就是我们硬性规定他的新新位置的） 通过mouse">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTML5 Drop and Drag API学习与整理">
+<meta property="og:url" content="http://sevencai.github.io/2016/03/03/HTML5 Drop-and-Drag-API学习与整理/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="Drop和Drag是能够DOM元素拖动与释放的API。过去我们也有一个能够实现拖动与释放的流程。今天总结一下，可以看到新的API是给我们提供了很大的便利和简化了许多代码的。  拖拽的旧方法总的是下面下面的三个流程：（js以前是没有直接拖拽的方法的，所谓的拖拽也就是把鼠标拖拽的偏移值赋值给拖动的元素，这样就好像形成一个假象，我是可以拖拽的，实际上该元素就是我们硬性规定他的新新位置的） 通过mouse">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.cailidan.cn/images/drag.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/drag1.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/drag3.png">
+<meta property="og:image" content="http://www.cailidan.cn/images/drag4.png">
+<meta property="og:updated_time" content="2016-12-12T03:00:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTML5 Drop and Drag API学习与整理">
+<meta name="twitter:description" content="Drop和Drag是能够DOM元素拖动与释放的API。过去我们也有一个能够实现拖动与释放的流程。今天总结一下，可以看到新的API是给我们提供了很大的便利和简化了许多代码的。  拖拽的旧方法总的是下面下面的三个流程：（js以前是没有直接拖拽的方法的，所谓的拖拽也就是把鼠标拖拽的偏移值赋值给拖动的元素，这样就好像形成一个假象，我是可以拖拽的，实际上该元素就是我们硬性规定他的新新位置的） 通过mouse">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/drag.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2016/03/03/HTML5 Drop-and-Drag-API学习与整理/"/>
+
+
+
+
+
+  <title>HTML5 Drop and Drag API学习与整理 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/03/03/HTML5 Drop-and-Drag-API学习与整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HTML5 Drop and Drag API学习与整理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-03T22:20:52+08:00">
+                2016-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/03/HTML5 Drop-and-Drag-API学习与整理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/03/HTML5 Drop-and-Drag-API学习与整理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Drop和Drag是能够DOM元素拖动与释放的API。过去我们也有一个能够实现拖动与释放的流程。今天总结一下，可以看到新的API是给我们提供了很大的便利和简化了许多代码的。</p>
+<hr>
+<h3 id="拖拽的旧方法"><a href="#拖拽的旧方法" class="headerlink" title="拖拽的旧方法"></a>拖拽的旧方法</h3><p>总的是下面下面的三个流程：（js以前是没有直接拖拽的方法的，所谓的拖拽也就是把鼠标拖拽的偏移值赋值给拖动的元素，这样就好像形成一个假象，我是可以拖拽的，实际上该元素就是我们硬性规定他的新新位置的）</p>
+<pre><code>通过mousedown事件捕获DOM元素
+通过mousemove事件来移动DOM元素
+通过mouseup事件来释放DOM元素
+</code></pre><p>我们在拖拽元素时，要计算该元素距离浏览器的top值和left值，当我们获得这个值后，我们再直接给他定位。获得这个top和left需要我们计算，我们很容易算出上图中红色线的距离，利用e.clientX和e.clientY，就可以获得点击该元素时，该点的位置，然后我们再算出该元素距离顶部和底部的距离，相减就可以得到鼠标距离该拖动对象的距离。</p>
+<p><img src="http://www.cailidan.cn/images/drag.png" alt="旧拖拽方法的原理"></p>
+<p>具体代码如下：<br>先定义一个可拖动对象，并给其父框加入对应的样式（做完以后可以试试如果main的absolute去掉会怎么样）：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//CSS</span><br><span class="line">.main&#123;</span><br><span class="line">	position:absolute;</span><br><span class="line">	overflow:hidden;</span><br><span class="line">	width:500px;</span><br><span class="line">	height:500px;</span><br><span class="line">	border:1px solid red;</span><br><span class="line">&#125;</span><br><span class="line">//DOM</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"main"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"./face.png"</span> <span class="attr">alt</span>=<span class="string">"drag"</span> <span class="attr">id</span>=<span class="string">"item"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="下面是js代码，对应解释以下几点："><a href="#下面是js代码，对应解释以下几点：" class="headerlink" title="下面是js代码，对应解释以下几点："></a><strong>下面是js代码，对应解释以下几点</strong>：</h4><ol>
+<li>两个对象dragObj是拖动对象，mouseOffset是鼠标距离对象的偏移量。</li>
+<li>要给document加入onmousemove事件，而不是给对应的obj,否则会页面抖动。</li>
+<li>mouseup是用来释放对象，用来结束拖动，设置拖动对象为空。</li>
+<li>设置mousePoint对象是为了使用的时候更加方便。直接以对象属性的形式访问。</li>
+<li>getMousePos是用来获得鼠标偏移量的。</li>
+<li>mousemove用来计算位置并定位。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dragObj = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">var</span> mouseOffset = <span class="literal">null</span>;</span><br><span class="line"><span class="built_in">document</span>.onmousemove = mousemove;</span><br><span class="line"><span class="built_in">document</span>.onmouseup = mouseup;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mouseup</span> (<span class="params">e</span>)</span>&#123;</span><br><span class="line">	dragObj = <span class="literal">null</span>;</span><br><span class="line">&#125;	</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mousePoint</span> (<span class="params">x,y</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.x = x;</span><br><span class="line">	<span class="keyword">this</span>.y = y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getMousePos</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x = <span class="built_in">parseInt</span>(e.clientX);</span><br><span class="line">	<span class="keyword">var</span> y = <span class="built_in">parseInt</span>(e.clientY);</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> mousePoint(x,y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getMouseOffset</span>(<span class="params">target,e</span>)</span>&#123;</span><br><span class="line">	e = e || <span class="built_in">window</span>.event;</span><br><span class="line">	<span class="keyword">var</span> mousePos = getMousePos(e);</span><br><span class="line">	<span class="keyword">var</span> x = mousePos.x - target.offsetLeft;</span><br><span class="line">	<span class="keyword">var</span> y = mousePos.y - target.offsetTop;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> mousePoint(x,y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mousemove</span> (<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!dragObj)&#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	e = e || <span class="built_in">window</span>.event;</span><br><span class="line">	<span class="keyword">var</span> mousePos = getMousePos(e);</span><br><span class="line">	<span class="keyword">if</span>(dragObj)&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">"entermousemove"</span>);</span><br><span class="line">		dragObj.style.position = <span class="string">"absolute"</span>;</span><br><span class="line">		dragObj.style.left = mousePos.x - mouseOffset.x + <span class="string">"px"</span>;</span><br><span class="line">		dragObj.style.top = mousePos.y - mouseOffset.y + <span class="string">"px"</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;			</span><br><span class="line">&#125;	</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">startdrag</span> (<span class="params">item</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(item)&#123;</span><br><span class="line">		item = <span class="built_in">document</span>.getElementById(item);</span><br><span class="line">		item.onmousedown = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">			dragObj = <span class="keyword">this</span>;</span><br><span class="line">			mouseOffset = getMouseOffset(<span class="keyword">this</span>,e);</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">window</span>.onload = startdrag(<span class="string">'item'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="http://www.cailidan.cn/images/drag1.png" alt="结果拖动"></p>
+<hr>
+<h3 id="新方法的拖拽"><a href="#新方法的拖拽" class="headerlink" title="新方法的拖拽"></a>新方法的拖拽</h3><blockquote>
+<p>上面的这种方法代码比较复杂，新的API,通过dragstart和drop等添加高度抽象的事件。就能够实现更为直观的拖动与释放操作。同时，由于拖动过程中基本的显示更新处理也都是教给浏览器处理，我们开发人员就可以将精力集中于程序。</p>
+</blockquote>
+<hr>
+<h4 id="为什么已经有很丰富的拖拽库了，我们还要用Drag-Drop-API呢"><a href="#为什么已经有很丰富的拖拽库了，我们还要用Drag-Drop-API呢" class="headerlink" title="为什么已经有很丰富的拖拽库了，我们还要用Drag Drop API呢"></a><strong>为什么已经有很丰富的拖拽库了，我们还要用Drag Drop API呢</strong></h4><p>因为在这些API中有一个叫做DataTransfer的API。它用来给拖动操作中的数据接收与传递提供支持。它并未限定数据的发送方和数据的接收方限定在一个窗口。比如：可以讲桌面上的文件拖拽到浏览器，讲DOM元素拖拽到文本编辑器。这个它消除了web应用程序与原生的应用的界限。</p>
+<hr>
+<h4 id="先煮个例子"><a href="#先煮个例子" class="headerlink" title="先煮个例子"></a>先煮个例子</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"dragElement"</span> <span class="attr">class</span>=<span class="string">"element"</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span> drag me <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"dropElement"</span> <span class="attr">class</span>=<span class="string">"element"</span>&gt;</span> drop here <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dragElement = <span class="built_in">document</span>.getElementById(<span class="string">"dragElement"</span>);</span><br><span class="line"><span class="keyword">var</span> dropElement = <span class="built_in">document</span>.getElementById(<span class="string">"dropElement"</span>);</span><br><span class="line"></span><br><span class="line">dragElement.ondragstart = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	e.dataTransfer.setData(<span class="string">"text/plain"</span>,e.target.textContent);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dropElement.ondragover = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="comment">//zhe</span></span><br><span class="line">	<span class="keyword">if</span>(e.dataTransfer.types == <span class="string">"text/plain"</span>)&#123;</span><br><span class="line">		<span class="comment">//取消浏览器默认操作（浏览器默认操作时将drop事件取消，所以这里必须取消默认操作）</span></span><br><span class="line">		e.preventDefault();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dropElement.ondrop = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="comment">//取消浏览器默认操作</span></span><br><span class="line">	e.preventDefault();</span><br><span class="line">	<span class="comment">//获取所拖动时设置的数据</span></span><br><span class="line">	<span class="keyword">var</span> dragData = e.dataTransfer.getData(<span class="string">'text/plain'</span>);</span><br><span class="line">	<span class="built_in">console</span>.log(dragData);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面这个例子中我们就获得了drag里面的值并且输出到了控制台。这个数据发送方也就是拖动的元素与接收方也就是释放的区域是一种松耦合的关系。通过对这两个区域分别实现你想要的事件处理程序就能够完成操作。</p>
+<hr>
+<h4 id="下面是具体的讲解"><a href="#下面是具体的讲解" class="headerlink" title="下面是具体的讲解"></a>下面是具体的讲解</h4><p>上面我们也看到了给drag设置了draggable=true，要让特定的元素支持被拖动，需要将元素设置为true,当然如果该元素如img,a本来默认就可以拖动，就不用写了。其他的值还可以设置成false,auto。</p>
+<p>下面是设定拖动区域与设防区域的事件处理程序的API</p>
+<hr>
+<h5 id="能够拖动元素的事件处理程序"><a href="#能够拖动元素的事件处理程序" class="headerlink" title="能够拖动元素的事件处理程序"></a><strong>能够拖动元素的事件处理程序</strong></h5><pre><code>dragstart 在拖动操作时被触发
+drag 在拖动操作中被**定期**触发
+dragend 在拖动操作结束时被触发
+</code></pre><hr>
+<h5 id="能够设定释放区域的事件处理程序"><a href="#能够设定释放区域的事件处理程序" class="headerlink" title="能够设定释放区域的事件处理程序"></a><strong>能够设定释放区域的事件处理程序</strong></h5><pre><code>dragenter 拖动操作中，进入DOM元素的领域时被触发
+dragover 拖动操作中，处于DOM元素的领域内被定时触发
+dragleave 拖动操作中，离开DOM元素领域时触发
+drop 在DOM元素上释放时触发
+</code></pre><hr>
+<h3 id="关于DataTransfer"><a href="#关于DataTransfer" class="headerlink" title="关于DataTransfer"></a>关于DataTransfer</h3><p>它的功能有：</p>
+<pre><code>数据的接收
+数据处理方式的指定
+拖动图像的设定
+</code></pre><p>下面是具体的属性和方法概览：</p>
+<ol>
+<li>setData(format,data) 以format所指定的格式添加数据（只在dragstart中有效）</li>
+<li>getData(format) 以format所指定的格式获取数据（只在drop事件中有效）</li>
+<li>clearData([format]) 以format所指定的格式清除数据，如果没有指定format,则清除所有数据</li>
+<li>types属性 包含正在拖动数据的format的数组</li>
+<li>files属性 包含正在拖动文件的File对象数组</li>
+<li>setDragImage(element,x,y) 设定拖动的图像（在dragstart中有效）</li>
+<li>adddElement(element) 设定拖动的图像（在dragstart中有效）</li>
+<li>effectAllowed 设定允许用于拖动操作的目标效果。通常会在dragstart事件中设定</li>
+<li>dropEffect 设定操作的目标的效果，或由用户选择的效果。系统会在copy,move,link,none中选择。并根据院中的效果显示相应的拖动对象。</li>
+</ol>
+<p><img src="http://www.cailidan.cn/images/drag3.png" alt="概览"></p>
+<hr>
+<h4 id="上面setDragImage和addElement的区别是什么？"><a href="#上面setDragImage和addElement的区别是什么？" class="headerlink" title="上面setDragImage和addElement的区别是什么？"></a>上面setDragImage和addElement的区别是什么？</h4><p>区别在于拖动图像的显示位置不同。setDragImage以拖动图像的左上角为拖动位置，并可以通过x,y坐标来调整位置。而addElement则将整个容器作为拖动对象。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"container"</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"dragElement"</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">		</span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dragObj = <span class="built_in">document</span>.getElementById(<span class="string">"dragElement"</span>),</span><br><span class="line">	container = <span class="built_in">document</span>.getElementById(<span class="string">"container"</span>);</span><br><span class="line"></span><br><span class="line">dragObj.ondragstart = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">	event.dataTransfer.addElement(container);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="关于文件的drag-in–drag-out"><a href="#关于文件的drag-in–drag-out" class="headerlink" title="关于文件的drag-in–drag-out"></a>关于文件的drag-in–drag-out</h3><p>我们先前提到了通过DataTransfer的一些优点，数据的发送方和数据的接受方并未限定于同一个窗口。<br>比如dataTransfer的files属性以通过拖动操作来获取桌面的程序的文件。尽管要获取的是一个文件。我们只需要现在释放区域的dragover中执行preventDefault既可以。</p>
+<hr>
+<h4 id="第一个例子（files-length）"><a href="#第一个例子（files-length）" class="headerlink" title="第一个例子（files.length）"></a>第一个例子（files.length）</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"drop"</span>&gt;</span></span><br><span class="line">	drop here</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>获得释放区后，监听释放操作并做处理。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> elem = <span class="built_in">document</span>.getElementById(<span class="string">"drop"</span>);</span><br><span class="line"></span><br><span class="line">elem.ondragover = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	e.preventDefault();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">elem.ondrop = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="comment">//通过files.length来判别是否拖动了对象</span></span><br><span class="line">	<span class="comment">//也就是说一次可以拖动多个文件(File对象)</span></span><br><span class="line">	<span class="keyword">if</span>(e.dataTransfer.files.length)&#123;</span><br><span class="line">		alert(<span class="string">"你拖动了文件"</span>);</span><br><span class="line">		<span class="keyword">var</span> file = e.dataTransfer.files[<span class="number">0</span>];</span><br><span class="line">		<span class="built_in">console</span>.log(file);</span><br><span class="line">	&#125;</span><br><span class="line">	event.preventDefault();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h4 id="第二个例子将文件保存至桌面"><a href="#第二个例子将文件保存至桌面" class="headerlink" title="第二个例子将文件保存至桌面"></a>第二个例子将文件保存至桌面</h4><p>可以通过拖动操作来把文件从浏览器中保存至桌面升序的方法。可以按照下列的格式，将数据设置于dataTransfer,以实现通过拖动操作讲文件从浏览器保存至桌面程序。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">event.dataTransfer.setData(<span class="string">"DownloadURL"</span>,<span class="string">"MIMETYPE:文件名:文件URL"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>通过这个功能，就能够实现与原声应用之间的双向文件收发。使桌面环境中运行的Web应用程序的实用性得到了飞跃性的提高。<br>下面的是一个文件下载的实例。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://www.example.com/foo.mp3"</span> <span class="attr">data-downloadurl</span>=<span class="string">"audio/mpeg:foo.mp3:http://example.com/foo.mp3"</span> <span class="attr">class</span>=<span class="string">"dragObj"</span> <span class="attr">draggable</span>=<span class="string">"true"</span>&gt;</span>download mp3<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://www.example.com/bar.pdf"</span> <span class="attr">data-downloadurl</span>=<span class="string">"application/pdf:bar.pdf:http://example.com/bar.pdf"</span>&gt;</span>download pdf<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>先利用querySelectorAll来获得所有的drag对象。然后监听dragstart事件。然后setData下载。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> files = <span class="built_in">document</span>.querySelectorAll(<span class="string">".dragObj"</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;files.length;i++)&#123;</span><br><span class="line">	file.addEventListener(<span class="string">"dragstart"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">		e.dataTransfer.setData(<span class="string">"DownloadURL"</span>,<span class="keyword">this</span>.dataset.downloadurl);</span><br><span class="line">	&#125;,<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://www.cailidan.cn/images/drag4.png" alt="可以得到这个结果"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/03/我理解的TCP的三次握手和四次分手/" rel="next" title="我理解的TCP的三次握手和四次分手">
+                <i class="fa fa-chevron-left"></i> 我理解的TCP的三次握手和四次分手
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/04/javascript事件委托/" rel="prev" title="javascript事件委托">
+                javascript事件委托 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">91</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#拖拽的旧方法"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x62D6;&#x62FD;&#x7684;&#x65E7;&#x65B9;&#x6CD5;" class="headerlink" title="&#x62D6;&#x62FD;&#x7684;&#x65E7;&#x65B9;&#x6CD5;"></a>&#x62D6;&#x62FD;&#x7684;&#x65E7;&#x65B9;&#x6CD5;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下面是js代码，对应解释以下几点："><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#&#x4E0B;&#x9762;&#x662F;js&#x4EE3;&#x7801;&#xFF0C;&#x5BF9;&#x5E94;&#x89E3;&#x91CA;&#x4EE5;&#x4E0B;&#x51E0;&#x70B9;&#xFF1A;" class="headerlink" title="&#x4E0B;&#x9762;&#x662F;js&#x4EE3;&#x7801;&#xFF0C;&#x5BF9;&#x5E94;&#x89E3;&#x91CA;&#x4EE5;&#x4E0B;&#x51E0;&#x70B9;&#xFF1A;"></a><strong>&#x4E0B;&#x9762;&#x662F;js&#x4EE3;&#x7801;&#xFF0C;&#x5BF9;&#x5E94;&#x89E3;&#x91CA;&#x4EE5;&#x4E0B;&#x51E0;&#x70B9;</strong>&#xFF1A;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新方法的拖拽"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x65B0;&#x65B9;&#x6CD5;&#x7684;&#x62D6;&#x62FD;" class="headerlink" title="&#x65B0;&#x65B9;&#x6CD5;&#x7684;&#x62D6;&#x62FD;"></a>&#x65B0;&#x65B9;&#x6CD5;&#x7684;&#x62D6;&#x62FD;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么已经有很丰富的拖拽库了，我们还要用Drag-Drop-API呢"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x4E3A;&#x4EC0;&#x4E48;&#x5DF2;&#x7ECF;&#x6709;&#x5F88;&#x4E30;&#x5BCC;&#x7684;&#x62D6;&#x62FD;&#x5E93;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x8FD8;&#x8981;&#x7528;Drag-Drop-API&#x5462;" class="headerlink" title="&#x4E3A;&#x4EC0;&#x4E48;&#x5DF2;&#x7ECF;&#x6709;&#x5F88;&#x4E30;&#x5BCC;&#x7684;&#x62D6;&#x62FD;&#x5E93;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x8FD8;&#x8981;&#x7528;Drag Drop API&#x5462;"></a><strong>&#x4E3A;&#x4EC0;&#x4E48;&#x5DF2;&#x7ECF;&#x6709;&#x5F88;&#x4E30;&#x5BCC;&#x7684;&#x62D6;&#x62FD;&#x5E93;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x8FD8;&#x8981;&#x7528;Drag Drop API&#x5462;</strong></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#先煮个例子"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x5148;&#x716E;&#x4E2A;&#x4F8B;&#x5B50;" class="headerlink" title="&#x5148;&#x716E;&#x4E2A;&#x4F8B;&#x5B50;"></a>&#x5148;&#x716E;&#x4E2A;&#x4F8B;&#x5B50;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下面是具体的讲解"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x4E0B;&#x9762;&#x662F;&#x5177;&#x4F53;&#x7684;&#x8BB2;&#x89E3;" class="headerlink" title="&#x4E0B;&#x9762;&#x662F;&#x5177;&#x4F53;&#x7684;&#x8BB2;&#x89E3;"></a>&#x4E0B;&#x9762;&#x662F;&#x5177;&#x4F53;&#x7684;&#x8BB2;&#x89E3;</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#能够拖动元素的事件处理程序"><span class="nav-number">2.3.1.</span> <span class="nav-text"><a href="#&#x80FD;&#x591F;&#x62D6;&#x52A8;&#x5143;&#x7D20;&#x7684;&#x4E8B;&#x4EF6;&#x5904;&#x7406;&#x7A0B;&#x5E8F;" class="headerlink" title="&#x80FD;&#x591F;&#x62D6;&#x52A8;&#x5143;&#x7D20;&#x7684;&#x4E8B;&#x4EF6;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"></a><strong>&#x80FD;&#x591F;&#x62D6;&#x52A8;&#x5143;&#x7D20;&#x7684;&#x4E8B;&#x4EF6;&#x5904;&#x7406;&#x7A0B;&#x5E8F;</strong></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#能够设定释放区域的事件处理程序"><span class="nav-number">2.3.2.</span> <span class="nav-text"><a href="#&#x80FD;&#x591F;&#x8BBE;&#x5B9A;&#x91CA;&#x653E;&#x533A;&#x57DF;&#x7684;&#x4E8B;&#x4EF6;&#x5904;&#x7406;&#x7A0B;&#x5E8F;" class="headerlink" title="&#x80FD;&#x591F;&#x8BBE;&#x5B9A;&#x91CA;&#x653E;&#x533A;&#x57DF;&#x7684;&#x4E8B;&#x4EF6;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"></a><strong>&#x80FD;&#x591F;&#x8BBE;&#x5B9A;&#x91CA;&#x653E;&#x533A;&#x57DF;&#x7684;&#x4E8B;&#x4EF6;&#x5904;&#x7406;&#x7A0B;&#x5E8F;</strong></span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于DataTransfer"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5173;&#x4E8E;DataTransfer" class="headerlink" title="&#x5173;&#x4E8E;DataTransfer"></a>&#x5173;&#x4E8E;DataTransfer</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#上面setDragImage和addElement的区别是什么？"><span class="nav-number">3.1.</span> <span class="nav-text"><a href="#&#x4E0A;&#x9762;setDragImage&#x548C;addElement&#x7684;&#x533A;&#x522B;&#x662F;&#x4EC0;&#x4E48;&#xFF1F;" class="headerlink" title="&#x4E0A;&#x9762;setDragImage&#x548C;addElement&#x7684;&#x533A;&#x522B;&#x662F;&#x4EC0;&#x4E48;&#xFF1F;"></a>&#x4E0A;&#x9762;setDragImage&#x548C;addElement&#x7684;&#x533A;&#x522B;&#x662F;&#x4EC0;&#x4E48;&#xFF1F;</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于文件的drag-in–drag-out"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x5173;&#x4E8E;&#x6587;&#x4EF6;&#x7684;drag-in&#x2013;drag-out" class="headerlink" title="&#x5173;&#x4E8E;&#x6587;&#x4EF6;&#x7684;drag-in&#x2013;drag-out"></a>&#x5173;&#x4E8E;&#x6587;&#x4EF6;&#x7684;drag-in&#x2013;drag-out</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一个例子（files-length）"><span class="nav-number">4.1.</span> <span class="nav-text"><a href="#&#x7B2C;&#x4E00;&#x4E2A;&#x4F8B;&#x5B50;&#xFF08;files-length&#xFF09;" class="headerlink" title="&#x7B2C;&#x4E00;&#x4E2A;&#x4F8B;&#x5B50;&#xFF08;files.length&#xFF09;"></a>&#x7B2C;&#x4E00;&#x4E2A;&#x4F8B;&#x5B50;&#xFF08;files.length&#xFF09;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二个例子将文件保存至桌面"><span class="nav-number">4.2.</span> <span class="nav-text"><a href="#&#x7B2C;&#x4E8C;&#x4E2A;&#x4F8B;&#x5B50;&#x5C06;&#x6587;&#x4EF6;&#x4FDD;&#x5B58;&#x81F3;&#x684C;&#x9762;" class="headerlink" title="&#x7B2C;&#x4E8C;&#x4E2A;&#x4F8B;&#x5B50;&#x5C06;&#x6587;&#x4EF6;&#x4FDD;&#x5B58;&#x81F3;&#x684C;&#x9762;"></a>&#x7B2C;&#x4E8C;&#x4E2A;&#x4F8B;&#x5B50;&#x5C06;&#x6587;&#x4EF6;&#x4FDD;&#x5B58;&#x81F3;&#x684C;&#x9762;</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencld.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2016/03/03/HTML5 Drop-and-Drag-API学习与整理/';
+          this.page.identifier = '2016/03/03/HTML5 Drop-and-Drag-API学习与整理/';
+          this.page.title = 'HTML5 Drop and Drag API学习与整理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencld.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8"></script
+</body>
+</html>
