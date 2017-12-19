@@ -81,20 +81,18 @@
 
 
 
-<meta name="description" content="以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。   为什么使用 PromisePromise 可以让我们避免回调的地狱。以前我们可能使用的是 bluebird 或者 Q,现在我们已经有了原生的实现。1234567891011func1(function (value1) &amp;#123;    func2(value1,">
+<meta name="description" content="以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。  为什么使用 PromisePromise 可以让我们避免回调的地狱。以前我们可能使用的是 bluebird 或者 Q,现在我们已经有了原生的实现。1234567891011func1(function (value1) &amp;#123;    func2(value1,">
 <meta name="keywords" content="javascript">
 <meta property="og:type" content="article">
 <meta property="og:title" content="探索Promise用法和机制">
 <meta property="og:url" content="http://sevencai.github.io/2017/02/27/深度探索Promise机制/index.html">
 <meta property="og:site_name" content="Seven&#39;s Blog">
-<meta property="og:description" content="以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。   为什么使用 PromisePromise 可以让我们避免回调的地狱。以前我们可能使用的是 bluebird 或者 Q,现在我们已经有了原生的实现。1234567891011func1(function (value1) &amp;#123;    func2(value1,">
+<meta property="og:description" content="以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。  为什么使用 PromisePromise 可以让我们避免回调的地狱。以前我们可能使用的是 bluebird 或者 Q,现在我们已经有了原生的实现。1234567891011func1(function (value1) &amp;#123;    func2(value1,">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://www.cailidan.cn/images/promise.jpg">
-<meta property="og:updated_time" content="2017-07-11T09:25:01.000Z">
+<meta property="og:updated_time" content="2017-12-19T12:40:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="探索Promise用法和机制">
-<meta name="twitter:description" content="以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。   为什么使用 PromisePromise 可以让我们避免回调的地狱。以前我们可能使用的是 bluebird 或者 Q,现在我们已经有了原生的实现。1234567891011func1(function (value1) &amp;#123;    func2(value1,">
-<meta name="twitter:image" content="http://www.cailidan.cn/images/promise.jpg">
+<meta name="twitter:description" content="以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。  为什么使用 PromisePromise 可以让我们避免回调的地狱。以前我们可能使用的是 bluebird 或者 Q,现在我们已经有了原生的实现。1234567891011func1(function (value1) &amp;#123;    func2(value1,">
 
 
 
@@ -346,7 +344,6 @@
 
       
         <p>以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。</p>
-<p><img src="http://www.cailidan.cn/images/promise.jpg" alt="promise"></p>
 <hr>
 <h3 id="为什么使用-Promise"><a href="#为什么使用-Promise" class="headerlink" title="为什么使用 Promise"></a><strong>为什么使用 Promise</strong></h3><p>Promise 可以让我们避免回调的地狱。以前我们可能使用的是 bluebird 或者 Q,现在我们已经有了原生的实现。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">func1(<span class="function"><span class="keyword">function</span> (<span class="params">value1</span>) </span>&#123;</span><br><span class="line">    func2(value1, <span class="function"><span class="keyword">function</span> (<span class="params">value2</span>) </span>&#123;</span><br><span class="line">        func3(value2, <span class="function"><span class="keyword">function</span> (<span class="params">value3</span>) </span>&#123;</span><br><span class="line">            func4(value3, <span class="function"><span class="keyword">function</span> (<span class="params">value4</span>) </span>&#123;</span><br><span class="line">                func5(value4, <span class="function"><span class="keyword">function</span> (<span class="params">value5</span>) </span>&#123;</span><br><span class="line">                    <span class="comment">// Do something with value 5</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
 <p>使用 Promise 后，可以把平行的代码变成竖状的易读的代码。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func1(value)</span><br><span class="line">	.then(func2)</span><br><span class="line">	.then(func3)</span><br><span class="line">	.then(func4)</span><br><span class="line">	.then(func5)</span><br></pre></td></tr></table></figure></p>

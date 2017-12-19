@@ -81,22 +81,20 @@
 
 
 
-<meta name="description" content="先前有用php写过小爬虫，其实本质就是获取到网页中的Dom结构，然后分析里面的元素，提取出自己想要的东西。最近想找东西练练node,就想到用node做小爬虫。去看了看慕课网scott老师讲的。感觉很棒，学到了不少东西。自己跟着做了一篇，爬了下慕课网的课程。明天准备再去写一个脚本爬自己博客。下面是学到东西的总结。感谢scott老师。 最后结果大概是这样的。  中间我们要去分析慕课网的地址，然后得到类">
+<meta name="description" content="先前有用php写过小爬虫，其实本质就是获取到网页中的Dom结构，然后分析里面的元素，提取出自己想要的东西。最近想找东西练练node,就想到用node做小爬虫。去看了看慕课网scott老师讲的。感觉很棒，学到了不少东西。自己跟着做了一篇，爬了下慕课网的课程。明天准备再去写一个脚本爬自己博客。下面是学到东西的总结。感谢scott老师。  包模块的选择这里除了http核心模块外，还用到了bluebird">
 <meta name="keywords" content="Nodejs">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用node写小爬虫">
 <meta property="og:url" content="http://sevencai.github.io/2016/05/22/用node写小爬虫/index.html">
 <meta property="og:site_name" content="Seven&#39;s Blog">
-<meta property="og:description" content="先前有用php写过小爬虫，其实本质就是获取到网页中的Dom结构，然后分析里面的元素，提取出自己想要的东西。最近想找东西练练node,就想到用node做小爬虫。去看了看慕课网scott老师讲的。感觉很棒，学到了不少东西。自己跟着做了一篇，爬了下慕课网的课程。明天准备再去写一个脚本爬自己博客。下面是学到东西的总结。感谢scott老师。 最后结果大概是这样的。  中间我们要去分析慕课网的地址，然后得到类">
+<meta property="og:description" content="先前有用php写过小爬虫，其实本质就是获取到网页中的Dom结构，然后分析里面的元素，提取出自己想要的东西。最近想找东西练练node,就想到用node做小爬虫。去看了看慕课网scott老师讲的。感觉很棒，学到了不少东西。自己跟着做了一篇，爬了下慕课网的课程。明天准备再去写一个脚本爬自己博客。下面是学到东西的总结。感谢scott老师。  包模块的选择这里除了http核心模块外，还用到了bluebird">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://cailidan.cn/images/pc1.png">
-<meta property="og:image" content="http://cailidan.cn/images/pc2.png">
 <meta property="og:image" content="http://cailidan.cn/images/pc3.png">
-<meta property="og:updated_time" content="2016-12-12T03:02:12.000Z">
+<meta property="og:updated_time" content="2017-12-19T12:40:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用node写小爬虫">
-<meta name="twitter:description" content="先前有用php写过小爬虫，其实本质就是获取到网页中的Dom结构，然后分析里面的元素，提取出自己想要的东西。最近想找东西练练node,就想到用node做小爬虫。去看了看慕课网scott老师讲的。感觉很棒，学到了不少东西。自己跟着做了一篇，爬了下慕课网的课程。明天准备再去写一个脚本爬自己博客。下面是学到东西的总结。感谢scott老师。 最后结果大概是这样的。  中间我们要去分析慕课网的地址，然后得到类">
-<meta name="twitter:image" content="http://cailidan.cn/images/pc1.png">
+<meta name="twitter:description" content="先前有用php写过小爬虫，其实本质就是获取到网页中的Dom结构，然后分析里面的元素，提取出自己想要的东西。最近想找东西练练node,就想到用node做小爬虫。去看了看慕课网scott老师讲的。感觉很棒，学到了不少东西。自己跟着做了一篇，爬了下慕课网的课程。明天准备再去写一个脚本爬自己博客。下面是学到东西的总结。感谢scott老师。  包模块的选择这里除了http核心模块外，还用到了bluebird">
+<meta name="twitter:image" content="http://cailidan.cn/images/pc3.png">
 
 
 
@@ -370,10 +368,6 @@
 
       
         <p>先前有用php写过小爬虫，其实本质就是获取到网页中的Dom结构，然后分析里面的元素，提取出自己想要的东西。最近想找东西练练node,就想到用node做小爬虫。去看了看慕课网scott老师讲的。感觉很棒，学到了不少东西。自己跟着做了一篇，爬了下慕课网的课程。明天准备再去写一个脚本爬自己博客。下面是学到东西的总结。感谢scott老师。</p>
-<p>最后结果大概是这样的。</p>
-<p><img src="http://cailidan.cn/images/pc1.png" alt=""></p>
-<p>中间我们要去分析慕课网的地址，然后得到类似下面的结构：</p>
-<p><img src="http://cailidan.cn/images/pc2.png" alt=""></p>
 <hr>
 <h3 id="包模块的选择"><a href="#包模块的选择" class="headerlink" title="包模块的选择"></a>包模块的选择</h3><p>这里除了http核心模块外，还用到了bluebird和cheerio，这两个模块。bluebird封装了promise,可以异步来调用。cheerio则是可以让我们更方便的操作Dom,就可以像jquery一样来操作Dom。我们的目的是，分析dom结构，然后操作dom节点，获取我们想要的，并且拼接成下面的数组：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> coursesData = &#123;</span><br><span class="line">	title:title,</span><br><span class="line">	number:number,</span><br><span class="line">	videos:[</span><br><span class="line">		title:title,</span><br><span class="line">	videos:[</span><br><span class="line"></span><br><span class="line">		]</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>

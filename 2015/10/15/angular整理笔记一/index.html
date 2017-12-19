@@ -89,22 +89,10 @@
 <meta property="og:site_name" content="Seven&#39;s Blog">
 <meta property="og:description" content="以下是归档内容，来自2015年angular学习笔记。学习自慕课网大漠穷秋。虽然已经过去了好久，但仍然记得老师当时的思路多清晰。棒棒哒。angular的4大核心特性MVC,模块化，指令系统，双向数据绑定是angular的四个最主要的核心特性。  MVC什么是MVC,M数据模型，V视图层，负责展示，C业务逻辑和控制逻辑。职责清晰，代码模块化。  为什么要用MVC?一定要理解这句话：MVC这是手段，终">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk3.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk4.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk5.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk6.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk8.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk13.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk14.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk15.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk16.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk10.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/mk11.png">
-<meta property="og:updated_time" content="2016-12-12T02:59:10.000Z">
+<meta property="og:updated_time" content="2017-12-19T12:40:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="angular整理笔记一">
 <meta name="twitter:description" content="以下是归档内容，来自2015年angular学习笔记。学习自慕课网大漠穷秋。虽然已经过去了好久，但仍然记得老师当时的思路多清晰。棒棒哒。angular的4大核心特性MVC,模块化，指令系统，双向数据绑定是angular的四个最主要的核心特性。  MVC什么是MVC,M数据模型，V视图层，负责展示，C业务逻辑和控制逻辑。职责清晰，代码模块化。  为什么要用MVC?一定要理解这句话：MVC这是手段，终">
-<meta name="twitter:image" content="http://www.cailidan.cn/images/mk3.png">
 
 
 
@@ -393,13 +381,13 @@ js的原型继承也给前端编程带来了很多困难。
 </code></pre><hr>
 <h4 id="关于C（controller）"><a href="#关于C（controller）" class="headerlink" title="关于C（controller）"></a>关于C（controller）</h4><p><strong>通过ng-controller指令来实现控制器。</strong><br>下面会将下面这种方法来声明控制器是不好的，因为没有实现模块化。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hello</span>(<span class="params">$scope</span>)</span>&#123;</span><br><span class="line">	$scope.textInput = &#123;</span><br><span class="line">		text:<span class="string">"cailidan"</span></span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <hr>
-<p><strong>MVC–controller的实现方式1</strong><br>这样第一种的实现方式并不好，因为如果视图1和视图2并没有任何逻辑关系，控制器的角色就会很尴尬。也不符合我们代码的分离。无法应对大项目。<br><img src="http://www.cailidan.cn/images/mk3.png" alt=""></p>
+<p><strong>MVC–controller的实现方式1</strong><br>这样第一种的实现方式并不好，因为如果视图1和视图2并没有任何逻辑关系，控制器的角色就会很尴尬。也不符合我们代码的分离。无法应对大项目。</p>
 <hr>
-<p><strong>MVC–controller的实现方式2</strong><br>这样是一种改进型的方法，我们把视图1和视图2的控制器分开，分别控制。但是如果我们视图1和视图2有两个一模一样的方法怎么办？就出现了下面的方式3.<br><img src="http://www.cailidan.cn/images/mk4.png" alt=""></p>
+<p><strong>MVC–controller的实现方式2</strong><br>这样是一种改进型的方法，我们把视图1和视图2的控制器分开，分别控制。但是如果我们视图1和视图2有两个一模一样的方法怎么办？就出现了下面的方式3.</p>
 <hr>
-<p><strong>MVC–controller的实现方式3</strong><br>看起来时一种好方法，我们让控制器1和2继承这个公用控制器。但这种方法是不可以实行的。这在angular中是不允许，不可行的，不推荐的。<br><img src="http://www.cailidan.cn/images/mk5.png" alt=""></p>
+<p><strong>MVC–controller的实现方式3</strong><br>看起来时一种好方法，我们让控制器1和2继承这个公用控制器。但这种方法是不可以实行的。这在angular中是不允许，不可行的，不推荐的。</p>
 <hr>
-<p><strong>MVC–controller的实现方式4</strong><br>通过sevice来做，把通用的东西抽象成服务，让控制器调用，而不是来继承这个通用控制器。<br><img src="http://www.cailidan.cn/images/mk6.png" alt=""></p>
+<p><strong>MVC–controller的实现方式4</strong><br>通过sevice来做，把通用的东西抽象成服务，让控制器调用，而不是来继承这个通用控制器。</p>
 <hr>
 <p><strong>Controller使用过程中的注意点</strong></p>
 <pre><code>不要试图去复用Controller,一般一个控制器只负责一小块试图
@@ -409,19 +397,19 @@ js的原型继承也给前端编程带来了很多困难。
 一般来说，Controller是不会互相调用的，控制器之间的交互会通过事件进行。
 </code></pre><p>对上面的几点的稍微解释：控制器是把业务逻辑放进去，业务逻辑一般不会大段大段的相同。操作DOM时指令的工作，而不是控制器的工作。数据过滤和数据格式化都可以用angular自己的服务和控件。Controller不要相互调用，否则耦合性太强。</p>
 <hr>
-<h4 id="关于数据模型MODEL"><a href="#关于数据模型MODEL" class="headerlink" title="关于数据模型MODEL"></a>关于数据模型MODEL</h4><p>首先找ng-app，找到后，里面所有的东西归angular管，然后找这里面所有的指令编译。比如找到了ng-modal，这是挂在rootscope，在ng-app下面的任意一个都可以获得。<br><img src="http://www.cailidan.cn/images/mk8.png" alt=""><br>虽然上面的例子不是angular推荐的，主要看内部的$scope里面的设置。这就是主要实现modal的方法。</p>
+<h4 id="关于数据模型MODEL"><a href="#关于数据模型MODEL" class="headerlink" title="关于数据模型MODEL"></a>关于数据模型MODEL</h4><p>首先找ng-app，找到后，里面所有的东西归angular管，然后找这里面所有的指令编译。比如找到了ng-modal，这是挂在rootscope，在ng-app下面的任意一个都可以获得。<br>虽然上面的例子不是angular推荐的，主要看内部的$scope里面的设置。这就是主要实现modal的方法。</p>
 <hr>
 <h3 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h3><p>不推荐的写法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hello</span>(<span class="params">$scope</span>)</span>&#123;</span><br><span class="line">	$scope.textInput = &#123;</span><br><span class="line">		text:<span class="string">"cailidan"</span></span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>这样定义了很多很多的全局函数，肯定是不好的，而通过定义一个模块，然后在模块上生成控制器，这是angular的实现模块方法。注意写法，[“$scope”,function()]。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myModule = angular.module(<span class="string">"myModule"</span>,[]);</span><br><span class="line"></span><br><span class="line">myModule.directive(<span class="string">"hello"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		restrict:<span class="string">"E"</span>,</span><br><span class="line">		template:<span class="string">"&lt;div&gt;cailidan&lt;/div&gt;"</span>,</span><br><span class="line">		replace:<span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://www.cailidan.cn/images/mk13.png" alt=""><br>angular一切都是从模块开始的，只有把模块定义好了，才能够在模块上调用service,controller,filter等等。就是首先就是定义模块。</p>
+<p>angular一切都是从模块开始的，只有把模块定义好了，才能够在模块上调用service,controller,filter等等。就是首先就是定义模块。</p>
 <hr>
 <h3 id="指令系统"><a href="#指令系统" class="headerlink" title="指令系统"></a>指令系统</h3><p>下面这个代码中，如果再html中写了hello就会被替换成cailidan。ng-app实际上就是angular的一个指令，相当于main。在任何一个单页中ng-app只能出现一次。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myModule = angular.module(<span class="string">"myModule"</span>,[]);</span><br><span class="line"></span><br><span class="line">myModule.directive(<span class="string">"hello"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		restrict:<span class="string">"E"</span>,</span><br><span class="line">		template:<span class="string">"&lt;div&gt;cailidan&lt;/div&gt;"</span>,</span><br><span class="line">		replace:<span class="literal">true</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>上面也是一种如何复用View的方法。我们可以定义很多个不用的指令，然后在需要他们地方加载他们，这样也就达到了复用模板的目的。<br><img src="http://www.cailidan.cn/images/mk14.png" alt=""></p>
+<p>上面也是一种如何复用View的方法。我们可以定义很多个不用的指令，然后在需要他们地方加载他们，这样也就达到了复用模板的目的。</p>
 <hr>
-<h3 id="双向数据绑定"><a href="#双向数据绑定" class="headerlink" title="双向数据绑定"></a>双向数据绑定</h3><h4 id="单项数据绑定"><a href="#单项数据绑定" class="headerlink" title="单项数据绑定"></a>单项数据绑定</h4><p>目前大多数前端框架都是实现单向数据绑定，jqueryUI,BackBone,Flex。单向数据绑定的过程是：首先是把模板写好，然后加上数据，数据可能是从后台读出来的。把模板和数据绑定在一起，生成html标签，然后插入到模板中，这样不好的地方是，html一旦生成完后就没法变了，当有新的数据来时，只能重新绑定生成。所以angular就实现了双向事件绑定。<br><img src="http://www.cailidan.cn/images/mk15.png" alt=""></p>
+<h3 id="双向数据绑定"><a href="#双向数据绑定" class="headerlink" title="双向数据绑定"></a>双向数据绑定</h3><h4 id="单项数据绑定"><a href="#单项数据绑定" class="headerlink" title="单项数据绑定"></a>单项数据绑定</h4><p>目前大多数前端框架都是实现单向数据绑定，jqueryUI,BackBone,Flex。单向数据绑定的过程是：首先是把模板写好，然后加上数据，数据可能是从后台读出来的。把模板和数据绑定在一起，生成html标签，然后插入到模板中，这样不好的地方是，html一旦生成完后就没法变了，当有新的数据来时，只能重新绑定生成。所以angular就实现了双向事件绑定。</p>
 <hr>
-<h4 id="双向数据绑定-1"><a href="#双向数据绑定-1" class="headerlink" title="双向数据绑定"></a>双向数据绑定</h4><p>核心想法是:视图和模型是对应的，当数据模型发生变化的时候，它希望视图自动更新，当视图发生变化的时候，数据模型也发生变化。这中间需要一种时间机制。比如表单中，视图会自动变化，当表单的视图发生变化时，就可以自动反应到数据模型。下面是一个实例。<br><img src="http://www.cailidan.cn/images/mk16.png" alt=""></p>
+<h4 id="双向数据绑定-1"><a href="#双向数据绑定-1" class="headerlink" title="双向数据绑定"></a>双向数据绑定</h4><p>核心想法是:视图和模型是对应的，当数据模型发生变化的时候，它希望视图自动更新，当视图发生变化的时候，数据模型也发生变化。这中间需要一种时间机制。比如表单中，视图会自动变化，当表单的视图发生变化时，就可以自动反应到数据模型。下面是一个实例。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-app</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">ng-model</span>=<span class="string">"textInput"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123;textInput&#125;&#125;,hello<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"./js/angular-1.3.0.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>双大括号是用来取值的。当input里面发生变化时，ng-modal的值也会发生变化。</p>
 <hr>
@@ -429,8 +417,8 @@ js的原型继承也给前端编程带来了很多困难。
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">GreetCtrl</span>(<span class="params">$scope,$rootScope</span>)</span>&#123;</span><br><span class="line">	$scope.name = <span class="string">"world"</span>;</span><br><span class="line">	$root.department = <span class="string">"Angular"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ListCtrl</span>(<span class="params">$scope</span>)</span>&#123;</span><br><span class="line">	$scope.names = [<span class="string">"Igor"</span>,<span class="string">"Misko"</span>,<span class="string">"Vojta"</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这里$rootScope就是根作用域，整个的作用域就像一个树形结构一样。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"GreetCtrl"</span>&gt;</span></span><br><span class="line">	Hello&#123;&#123;name&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"ListCtrl"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">ol</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">li</span> <span class="attr">ng-repeat</span> = <span class="string">"name in names"</span>&gt;</span></span><br><span class="line">			&#123;&#123;name&#125;&#125; from &#123;&#123;department&#125;&#125;</span><br><span class="line">		<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>这里的department虽然不是在ListCtrl中定义的，但由于是全局作用域，所以根目录下所有的模块都能访问到。跟作用域链有点像，如果再自己的$scope里面没有，就一直往上找，一直到$rootScope为止。</p>
-<p><img src="http://www.cailidan.cn/images/mk10.png" alt=""><br>可以用插件来看到$scope的树形结构。</p>
-<p>$scope的生命周期<br><img src="http://www.cailidan.cn/images/mk11.png" alt=""><br>首先是创建一个$scope，然后是注册一个监控，然后检测模型变化，然后观察模型，最后销毁（自动或手动）。</p>
+<p>可以用插件来看到$scope的树形结构。</p>
+<p>$scope的生命周期<br>首先是创建一个$scope，然后是注册一个监控，然后检测模型变化，然后观察模型，最后销毁（自动或手动）。</p>
 
       
     </div>

@@ -89,12 +89,10 @@
 <meta property="og:site_name" content="Seven&#39;s Blog">
 <meta property="og:description" content="Hash maps without side effects简单的来说，当我们用 对象字面量 {} 来创建这个 hash 表时，他会默认从 Object 继承属性，这等同于 Object.create(Object.prototype) , 这么来创建的话，就会有脏数据，因为其实你只是需要一个 map 而已。并且在 for in 的时候，还需要使用 hasOwnProperty 来判断。 但如果使">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://cailidan.cn/images/bijinode.jpg">
-<meta property="og:updated_time" content="2017-10-20T12:14:52.000Z">
+<meta property="og:updated_time" content="2017-12-19T12:40:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="嗯，又是纪录几个小的知识点">
 <meta name="twitter:description" content="Hash maps without side effects简单的来说，当我们用 对象字面量 {} 来创建这个 hash 表时，他会默认从 Object 继承属性，这等同于 Object.create(Object.prototype) , 这么来创建的话，就会有脏数据，因为其实你只是需要一个 map 而已。并且在 for in 的时候，还需要使用 hasOwnProperty 来判断。 但如果使">
-<meta name="twitter:image" content="http://cailidan.cn/images/bijinode.jpg">
 
 
 
@@ -380,7 +378,6 @@
 <p>其实不是的，百度首页再资源在刷新后实际没有发送任何请求， 因为 caache-control 的缓存时间还没到期，也就是在 chrome 中根本没有发送请求。只要是 chrome 没有发送请求，资源从本地读取，都会在 network 中显示 状态为 200， from cache, 其中的 response 只是上一次回包留下的数据。如果 cache-control 的缓存到期了，然后发了请求到服务器，但是服务器通过 etag 等，发现资源没改变，这时候肯定就是返回 304 了。不要被绕道坑里了。</p>
 <hr>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>开始工作了以后，基本上都是零零散散的学习。有些东西想要系统的写成博客，但是基本上一篇精心想写的文章，要花至少3个小时，时间略不够。我会想办法解决。比如上面的双向绑定，想仔细的写篇文章说说里面的原理，再比如 http 缓存。</p>
-<p><img src="http://cailidan.cn/images/bijinode.jpg" alt="keep notes"></p>
 
       
     </div>

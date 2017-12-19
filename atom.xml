@@ -55,7 +55,7 @@
     <link href="http://sevencai.github.io/2017/10/20/%E5%97%AF%EF%BC%8C%E5%8F%88%E6%98%AF%E7%BA%AA%E5%BD%95%E5%87%A0%E4%B8%AA%E5%B0%8F%E7%9A%84%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
     <id>http://sevencai.github.io/2017/10/20/嗯，又是纪录几个小的知识点/</id>
     <published>2017-10-20T11:54:29.000Z</published>
-    <updated>2017-10-20T12:14:52.000Z</updated>
+    <updated>2017-12-19T12:40:23.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Hash-maps-without-side-effects"><a href="#Hash-maps-without-side-effects" class="headerlink" title="Hash maps without side effects"></a>Hash maps without side effects</h3><p>简单的来说，当我们用 对象字面量 <code>{}</code> 来创建这个 hash 表时，他会默认从 Object 继承属性，这等同于 <code>Object.create(Object.prototype)</code> , 这么来创建的话，就会有脏数据，因为其实你只是需要一个 map 而已。并且在 <code>for in</code> 的时候，还需要使用 <code>hasOwnProperty</code> 来判断。</p>
 <p>但如果使用 <code>Object.create(null)</code>, 我们明确的指定其原型为 null, 因此他才是真正的没有构造器，没有 <code>toString()</code>, <code>hasOwnProperty</code>, <code>valueOf</code> 等。注意这里不要使用 <code>Object.create({})</code>,这个效果跟前面是一样的。</p>
@@ -92,7 +92,6 @@
 <p>其实不是的，百度首页再资源在刷新后实际没有发送任何请求， 因为 caache-control 的缓存时间还没到期，也就是在 chrome 中根本没有发送请求。只要是 chrome 没有发送请求，资源从本地读取，都会在 network 中显示 状态为 200， from cache, 其中的 response 只是上一次回包留下的数据。如果 cache-control 的缓存到期了，然后发了请求到服务器，但是服务器通过 etag 等，发现资源没改变，这时候肯定就是返回 304 了。不要被绕道坑里了。</p>
 <hr>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>开始工作了以后，基本上都是零零散散的学习。有些东西想要系统的写成博客，但是基本上一篇精心想写的文章，要花至少3个小时，时间略不够。我会想办法解决。比如上面的双向绑定，想仔细的写篇文章说说里面的原理，再比如 http 缓存。</p>
-<p><img src="http://cailidan.cn/images/bijinode.jpg" alt="keep notes"></p>
 ]]></content>
     
     <summary type="html">
@@ -157,10 +156,9 @@
     <link href="http://sevencai.github.io/2017/08/24/%E7%BA%AA%E5%BD%95%E5%87%A0%E4%B8%AA%E7%82%B9/"/>
     <id>http://sevencai.github.io/2017/08/24/纪录几个点/</id>
     <published>2017-08-24T08:24:32.000Z</published>
-    <updated>2017-08-25T02:56:54.000Z</updated>
+    <updated>2017-12-19T12:40:23.000Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="http://cailidan.cn/images/bijinode.jpg" alt="纪录最近想纪录的几个点"></p>
-<hr>
+    <content type="html"><![CDATA[<hr>
 <h3 id="Object-create"><a href="#Object-create" class="headerlink" title="Object.create()"></a>Object.create()</h3><p>创建Object的实例有下面三种方法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o1 = <span class="built_in">Object</span>.create(<span class="built_in">Object</span>.prototype);</span><br><span class="line"><span class="keyword">var</span> o2 = <span class="keyword">new</span> <span class="built_in">Object</span>;</span><br><span class="line"><span class="keyword">var</span> o3 = &#123;&#125;;</span><br></pre></td></tr></table></figure></p>
 <p>通过：<code>var o4 = Object.create(null);</code>可以创建没有原型的Object,这个对象不能使用 <code>toString,valueOf</code>等函数。</p>
 <p>创建一个以另一个空对象为原型,且拥有一个属性p的对象<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o = <span class="built_in">Object</span>.create(&#123;&#125;, &#123; <span class="attr">p</span>: &#123; <span class="attr">value</span>: <span class="number">42</span> &#125; &#125;)</span><br></pre></td></tr></table></figure></p>
@@ -217,9 +215,8 @@
     
     <summary type="html">
     
-      &lt;p&gt;&lt;img src=&quot;http://cailidan.cn/images/bijinode.jpg&quot; alt=&quot;纪录最近想纪录的几个点&quot;&gt;&lt;/p&gt;
-&lt;hr&gt;
-&lt;h3 id=&quot;Object-create&quot;&gt;&lt;a href=&quot;#Object-create&quot; class=&quot;head
+      &lt;hr&gt;
+&lt;h3 id=&quot;Object-create&quot;&gt;&lt;a href=&quot;#Object-create&quot; class=&quot;headerlink&quot; title=&quot;Object.create()&quot;&gt;&lt;/a&gt;Object.create()&lt;/h3&gt;&lt;p&gt;创建Object的实例有下面三种方
     
     </summary>
     
@@ -368,10 +365,9 @@
     <link href="http://sevencai.github.io/2017/02/27/%E6%B7%B1%E5%BA%A6%E6%8E%A2%E7%B4%A2Promise%E6%9C%BA%E5%88%B6/"/>
     <id>http://sevencai.github.io/2017/02/27/深度探索Promise机制/</id>
     <published>2017-02-27T13:36:38.000Z</published>
-    <updated>2017-07-11T09:25:01.000Z</updated>
+    <updated>2017-12-19T12:40:23.000Z</updated>
     
     <content type="html"><![CDATA[<p>以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。</p>
-<p><img src="http://www.cailidan.cn/images/promise.jpg" alt="promise"></p>
 <hr>
 <h3 id="为什么使用-Promise"><a href="#为什么使用-Promise" class="headerlink" title="为什么使用 Promise"></a><strong>为什么使用 Promise</strong></h3><p>Promise 可以让我们避免回调的地狱。以前我们可能使用的是 bluebird 或者 Q,现在我们已经有了原生的实现。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">func1(<span class="function"><span class="keyword">function</span> (<span class="params">value1</span>) </span>&#123;</span><br><span class="line">    func2(value1, <span class="function"><span class="keyword">function</span> (<span class="params">value2</span>) </span>&#123;</span><br><span class="line">        func3(value2, <span class="function"><span class="keyword">function</span> (<span class="params">value3</span>) </span>&#123;</span><br><span class="line">            func4(value3, <span class="function"><span class="keyword">function</span> (<span class="params">value4</span>) </span>&#123;</span><br><span class="line">                func5(value4, <span class="function"><span class="keyword">function</span> (<span class="params">value5</span>) </span>&#123;</span><br><span class="line">                    <span class="comment">// Do something with value 5</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
 <p>使用 Promise 后，可以把平行的代码变成竖状的易读的代码。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func1(value)</span><br><span class="line">	.then(func2)</span><br><span class="line">	.then(func3)</span><br><span class="line">	.then(func4)</span><br><span class="line">	.then(func5)</span><br></pre></td></tr></table></figure></p>
@@ -433,7 +429,8 @@
     <summary type="html">
     
       &lt;p&gt;以前就会经常用到 Promise，但是没有去探究内部的实现机制。 正好由这次在小程序中引入了 Promise ，探究下内部原理。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://www.cailidan.cn/images/promise.jpg&quot; alt=&quot;promise
+&lt;hr&gt;
+&lt;h3 id=&quot;为什么使用-Promise&quot;&gt;&lt;a href=&quot;#为什么使用-Promise&quot; class=&quot;headerli
     
     </summary>
     
@@ -789,12 +786,11 @@
     <link href="http://sevencai.github.io/2016/10/09/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98-Dom-XSS-%E6%BC%8F%E6%B4%9E/"/>
     <id>http://sevencai.github.io/2016/10/09/记一次实战-Dom-XSS-漏洞/</id>
     <published>2016-10-09T14:33:55.000Z</published>
-    <updated>2016-12-12T02:40:38.000Z</updated>
+    <updated>2017-12-19T12:41:00.000Z</updated>
     
     <content type="html"><![CDATA[<p>国庆的前一天，突然有一个漏洞单接到我这里来，当时心里很着急，第一实习生小白，对于我们这种支付部门有漏洞不是很可怕，以前没见过，觉得有点吓人。第二，为什么是国庆的前一天呢，不能发版本。看了下，就是熟悉又不太熟悉的 Dom xss 漏洞。熟悉是因为以前书里经常见，不熟悉是因为以前没有实践过。</p>
 <hr>
 <h4 id="现象及解决办法"><a href="#现象及解决办法" class="headerlink" title="现象及解决办法"></a><strong>现象及解决办法</strong></h4><p>安全部门的同事说，它更改了 uin, 然后就可以输出 用户uin, 也就是俗称的 alert 出来。</p>
-<p><img src="http://cailidan.cn/images/xss1.png" alt="xss 漏洞"></p>
 <p>大概是这样一个步骤</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie = <span class="string">"uin=&lt;img src=x onerror=alert('')&gt;"</span></span><br><span class="line">然后刷新了我的网页，由于我获取cookie的方法不严谨，这个时候就alert出来了。</span><br></pre></td></tr></table></figure>
 <p>解决方法当然是换掉我不严谨的获取cookie的方法，正确获取 cookie 的方法应该如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getCookie</span>(<span class="params">b</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> filterXSS = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!e) <span class="keyword">return</span> e;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (; e != <span class="built_in">unescape</span>(e);) e = <span class="built_in">unescape</span>(e);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> r = [<span class="string">"&lt;"</span>, <span class="string">"&gt;"</span>, <span class="string">"'"</span>, <span class="string">'"'</span>, <span class="string">"%3c"</span>, <span class="string">"%3e"</span>, <span class="string">"%27"</span>, <span class="string">"%22"</span>, <span class="string">"%253c"</span>, <span class="string">"%253e"</span>, <span class="string">"%2527"</span>, <span class="string">"%2522"</span>], n = [<span class="string">"&amp;#x3c;"</span>, <span class="string">"&amp;#x3e;"</span>, <span class="string">"&amp;#x27;"</span>, <span class="string">"&amp;#x22;"</span>, <span class="string">"%26%23x3c%3B"</span>, <span class="string">"%26%23x3e%3B"</span>, <span class="string">"%26%23x27%3B"</span>, <span class="string">"%26%23x22%3B"</span>, <span class="string">"%2526%2523x3c%253B"</span>, <span class="string">"%2526%2523x3e%253B"</span>, <span class="string">"%2526%2523x27%253B"</span>, <span class="string">"%2526%2523x22%253B"</span>], a = <span class="number">0</span>; a &lt; r.length; a++) e = e.replace(<span class="keyword">new</span> <span class="built_in">RegExp</span>(r[a], <span class="string">"gi"</span>), n[a]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> e</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> a;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> filterXSS((a=<span class="built_in">document</span>.cookie.match(<span class="built_in">RegExp</span>(<span class="string">"(^|;\\s*)"</span>+b+<span class="string">"=([^;]*)(;|$)"</span>)))?<span class="built_in">unescape</span>(a[<span class="number">2</span>]):<span class="literal">null</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>

@@ -81,23 +81,18 @@
 
 
 
-<meta name="description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 下面先来看一张简单的图：  所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，">
+<meta name="description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，记录哪些已经被分配，哪些没有">
 <meta name="keywords" content="other">
 <meta property="og:type" content="article">
 <meta property="og:title" content="操作系统存储管理">
 <meta property="og:url" content="http://sevencai.github.io/2016/05/29/操作系统存储管理/index.html">
 <meta property="og:site_name" content="Seven&#39;s Blog">
-<meta property="og:description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 下面先来看一张简单的图：  所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，">
+<meta property="og:description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，记录哪些已经被分配，哪些没有">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://www.cailidan.cn/images/jiegou.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/test44.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/ncfp3.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/yeshi.jpg">
-<meta property="og:updated_time" content="2016-12-12T02:33:46.000Z">
+<meta property="og:updated_time" content="2017-12-19T12:40:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="操作系统存储管理">
-<meta name="twitter:description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 下面先来看一张简单的图：  所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，">
-<meta name="twitter:image" content="http://www.cailidan.cn/images/jiegou.png">
+<meta name="twitter:description" content="任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。 下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。 所以存储管理的功能主要包括下面三个部分：   建立内存分配登记表，记录哪些已经被分配，哪些没有">
 
 
 
@@ -372,8 +367,6 @@
       
         <p><strong>任何的程序指令必须先装入内存。当用户提出主存空间的要求时，应该要能快速响应。并且为它分配相应的内存空间。然后，当用户使用完毕后，应该立即回收其存储空间，以供其他用户使用。</strong></p>
 <p>下面这篇文章就是我总结的存储管理需要知道的一些基本知识。最重要的一部分是【实现内存空间的分配和回收】，这也是操作系统存储管理的核心。</p>
-<p>下面先来看一张简单的图：</p>
-<p><img src="http://www.cailidan.cn/images/jiegou.png" alt=""></p>
 <p>所以存储管理的功能主要包括下面三个部分：</p>
 <blockquote>
 <ol>
@@ -388,7 +381,6 @@
 <p>源程序经过汇编或者编译后，形成目标程序，<strong>每个目标程序都是以0为基址顺序进行编制的</strong>。这样生成的目标程序就会占据一定空间。成为作业的逻辑空间。</p>
 <h4 id="物理地址与物理空间"><a href="#物理地址与物理空间" class="headerlink" title="物理地址与物理空间"></a><strong>物理地址与物理空间</strong></h4><p>内存以字节为编址空间。分别由0，1，2….这样编号。这个唯一的编号就是内存单元中的物理地址。<strong>可以直接通过这个编号寻址</strong>。  </p>
 <p>一个编译好的程序在自己的逻辑空间中。运行时，要把它装入内存空间。在多道程序中，每个用户不可能用内存的物理地址来编写程序。我们需要一种存储管理机制提供地址映射功能将用户程序中的逻辑地址转换成运行时机器可以直接寻址的物理地址。这个功能叫做<strong>地址映射或者地址重定位</strong>。</p>
-<p><img src="http://www.cailidan.cn/images/test44.png" alt=""></p>
 <hr>
 <h3 id="地址重定位方式"><a href="#地址重定位方式" class="headerlink" title="地址重定位方式"></a><strong>地址重定位方式</strong></h3><h4 id="静态地址重定位"><a href="#静态地址重定位" class="headerlink" title="静态地址重定位"></a><strong>静态地址重定位</strong></h4><p>静态重定位是在程序装入过程中，由操作系统的重定位装入程序一次完成作业的地址转换过程。以后不再转换。即直接修改指令中的地址代码，把这些地址代码从逻辑转换成物理。</p>
 <h5 id="静态地址重定位优点"><a href="#静态地址重定位优点" class="headerlink" title="静态地址重定位优点"></a><strong>静态地址重定位优点</strong></h5><ol>
@@ -430,7 +422,6 @@
 <p><strong>最佳适应算法(best-fit)</strong>：按分区在内存的先后次序从头查找，找到其大小与要求相差最小的空闲分区进行分配。从个别来看，外碎片较小；但从整体来看，会形成较多外碎片优点是较大的空闲分区可以被保留。</p>
 <p><strong>最坏适应算法(worst- fit)</strong>：按分区在内存的先后次序从头查找，找到最大的空闲分区进行分配。基本不留下小空闲分区，不易形成外碎片。但由于较大的空闲分区不被保留，当对内存需求较大的进程需要运行时，其要求不易被满足。</p>
 </blockquote>
-<p><img src="http://www.cailidan.cn/images/ncfp3.png" alt="ncfp3"></p>
 <hr>
 <h3 id="页式存储管理"><a href="#页式存储管理" class="headerlink" title="页式存储管理"></a><strong>页式存储管理</strong></h3><p>将进程分配在不连续但大小先疼痛的存储区域中，实现内存见缝插针的分配，同时又保证进程的连续执行。页式技术包括：先把内存空间分块，再把用户程序逻辑空间分页，再以页为单位分配内存。</p>
 <h4 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a><strong>具体步骤</strong></h4><ol>
@@ -445,7 +436,6 @@
 <p> 对<strong>程序地址空间的分页是系统自动进行的，即对用户是透明的</strong>。<br> 由于页面尺寸为2的整数次幂，故相对地址中的高位部分即为页号，低位部分为页内地址。</p>
 </li>
 </ol>
-<p><img src="http://www.cailidan.cn/images/yeshi.jpg" alt=""></p>
 <hr>
 <h4 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a><strong>实现原理</strong></h4><p>1．页表</p>
 <p>   系统为<strong>每个</strong>进程建立一张页表，用于记录进程逻辑页面与内存物理页面之间的对应关系。地址空间有多少页，该页表里就登记多少行，且按逻辑页的顺序排列。</p>

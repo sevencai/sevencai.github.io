@@ -89,8 +89,6 @@
 <meta property="og:site_name" content="Seven&#39;s Blog">
 <meta property="og:description" content="以前知道BFC,但是感觉理解的不是很清楚，今天查了些资料总结记录如下。 A Block Formatting Context is part of the visual CSS rendering of a web page in which block boxes are laid out. The positioning scheme to which it belongs is normal">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://www.cailidan.cn/images/bfc4.png">
-<meta property="og:image" content="http://www.cailidan.cn/images/bfc5.png">
 <meta property="og:image" content="http://www.cailidan.cn/images/bfc7.png">
 <meta property="og:image" content="http://www.cailidan.cn/images/bfc8.png">
 <meta property="og:image" content="http://www.cailidan.cn/images/bfc9.png">
@@ -98,11 +96,11 @@
 <meta property="og:image" content="http://www.cailidan.cn/images/bfc2.png">
 <meta property="og:image" content="http://www.cailidan.cn/images/bfc3.png">
 <meta property="og:image" content="http://www.cailidan.cn/images/bfc10.png">
-<meta property="og:updated_time" content="2016-12-12T02:59:12.000Z">
+<meta property="og:updated_time" content="2017-12-19T12:40:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="BFC-Block Formatting Context">
 <meta name="twitter:description" content="以前知道BFC,但是感觉理解的不是很清楚，今天查了些资料总结记录如下。 A Block Formatting Context is part of the visual CSS rendering of a web page in which block boxes are laid out. The positioning scheme to which it belongs is normal">
-<meta name="twitter:image" content="http://www.cailidan.cn/images/bfc4.png">
+<meta name="twitter:image" content="http://www.cailidan.cn/images/bfc7.png">
 
 
 
@@ -425,12 +423,11 @@
 <p>In a block formatting context, each box’s left outer edge touches the left edge of the containing block (for right-to-left formatting, right edges touch). This is true even in the presence of floats (although a box’s line boxes may shrink due to the floats), unless the box establishes a new block formatting context (in which case the box itself may become narrower due to the floats).</p>
 <p>在BFC上下文中，每个盒子的左外侧紧贴包含块的左侧（从右到左的格式里，则为盒子右外侧紧贴包含块右侧），甚至有浮动也是如此（尽管盒子里的行盒子Line Box可能由于浮动而变窄），除非盒子创建了一个新的BFC（在这种情况下盒子本身可能由于浮动而变窄）。</p>
 </blockquote>
-<p><img src="http://www.cailidan.cn/images/bfc4.png" alt="BFC"><br>这是BFC的一个特点。简单来说，如上图所示，所以属于BFC的盒子都是左对齐（在从左到右的格式下）并且他们的左外侧紧贴包含块的左侧。在最后一个盒子中我们可以看到，尽管左侧存在一个浮动元素（棕色），另外一个元素（绿色）仍然紧贴包含块的左侧。该情况的产生原理将在下文关于文字环绕的部分中讨论。</p>
+<p>这是BFC的一个特点。简单来说，如上图所示，所以属于BFC的盒子都是左对齐（在从左到右的格式下）并且他们的左外侧紧贴包含块的左侧。在最后一个盒子中我们可以看到，尽管左侧存在一个浮动元素（棕色），另外一个元素（绿色）仍然紧贴包含块的左侧。该情况的产生原理将在下文关于文字环绕的部分中讨论。</p>
 <hr>
 <h4 id="使用BFC避免文字环绕"><a href="#使用BFC避免文字环绕" class="headerlink" title="使用BFC避免文字环绕"></a>使用BFC避免文字环绕</h4><p>Using Block Formatting Contexts to Prevent Text Wrapping</p>
 <p>浮动最初设计的目的就是文字环绕，这一个目的导致我们后来用浮动的时候会出现一些问题，比如说，我本就不想要文字环绕这一特点，我就需要想办法去除它。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"floated"</span>&gt;</span></span><br><span class="line">        Floated div</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">        Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span><br><span class="line">        Dolorum rerum minima tenetur qui provident laudantium reprehenderit porro maiores facilis vitae, quas, </span><br><span class="line">        quos quibusdam eum accusamus suscipit. Quos molestiae saepe unde.</span><br><span class="line">    <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>当我们把floated设置为浮动的时候，整个样子如图1所示。<br><img src="http://www.cailidan.cn/images/bfc5.png" alt="BFC"></p>
-<p>我们来看看为什么会这样。<strong>其实我们以为的是这样的</strong>：<br><img src="http://www.cailidan.cn/images/bfc7.png" alt="BFC"></p>
+<p><img src="http://www.cailidan.cn/images/bfc7.png" alt="BFC"></p>
 <p><strong>但事实是当我们把浮动的颜色去掉后是这样的</strong>：<br><img src="http://www.cailidan.cn/images/bfc8.png" alt="BFC"><br>如我们所见，p 元素没有移位但它叠在了浮动元素之下，而p元素的行盒子（即文本行）却移位了，行盒子水平变窄来给浮动元素腾出了空间。</p>
 <p>随着文本的增加，最后文本将环绕在浮动元素之下，因为那时候行盒子不再需要移位，也就成了图1的样子。这就是为什么即便有浮动元素，段落仍紧贴包含块的左侧，而行盒子会变窄来给浮动元素腾位子。</p>
 <p>如果我们能位移整个 p 元素，这个环绕问题也就迎刃而解了。</p>

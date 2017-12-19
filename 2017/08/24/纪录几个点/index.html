@@ -89,12 +89,10 @@
 <meta property="og:site_name" content="Seven&#39;s Blog">
 <meta property="og:description" content="Object.create()创建Object的实例有下面三种方法：123var o1 = Object.create(Object.prototype);var o2 = new Object;var o3 = &amp;#123;&amp;#125;; 通过：var o4 = Object.create(null);可以创建没有原型的Object,这个对象不能使用 toString,valueOf等函数。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://cailidan.cn/images/bijinode.jpg">
-<meta property="og:updated_time" content="2017-08-25T02:56:54.000Z">
+<meta property="og:updated_time" content="2017-12-19T12:40:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="纪录几个点">
 <meta name="twitter:description" content="Object.create()创建Object的实例有下面三种方法：123var o1 = Object.create(Object.prototype);var o2 = new Object;var o3 = &amp;#123;&amp;#125;; 通过：var o4 = Object.create(null);可以创建没有原型的Object,这个对象不能使用 toString,valueOf等函数。">
-<meta name="twitter:image" content="http://cailidan.cn/images/bijinode.jpg">
 
 
 
@@ -345,8 +343,7 @@
       
 
       
-        <p><img src="http://cailidan.cn/images/bijinode.jpg" alt="纪录最近想纪录的几个点"></p>
-<hr>
+        <hr>
 <h3 id="Object-create"><a href="#Object-create" class="headerlink" title="Object.create()"></a>Object.create()</h3><p>创建Object的实例有下面三种方法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o1 = <span class="built_in">Object</span>.create(<span class="built_in">Object</span>.prototype);</span><br><span class="line"><span class="keyword">var</span> o2 = <span class="keyword">new</span> <span class="built_in">Object</span>;</span><br><span class="line"><span class="keyword">var</span> o3 = &#123;&#125;;</span><br></pre></td></tr></table></figure></p>
 <p>通过：<code>var o4 = Object.create(null);</code>可以创建没有原型的Object,这个对象不能使用 <code>toString,valueOf</code>等函数。</p>
 <p>创建一个以另一个空对象为原型,且拥有一个属性p的对象<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o = <span class="built_in">Object</span>.create(&#123;&#125;, &#123; <span class="attr">p</span>: &#123; <span class="attr">value</span>: <span class="number">42</span> &#125; &#125;)</span><br></pre></td></tr></table></figure></p>
