@@ -84,7 +84,7 @@
 <meta name="description" content="Seven的博客，用于记录和分享生活和技术">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Seven&#39;s Blog">
-<meta property="og:url" content="http://sevencai.github.io/page/9/index.html">
+<meta property="og:url" content="http://sevencai.github.io/page/15/index.html">
 <meta property="og:site_name" content="Seven&#39;s Blog">
 <meta property="og:description" content="Seven的博客，用于记录和分享生活和技术">
 <meta property="og:locale" content="zh-Hans">
@@ -120,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="http://sevencai.github.io/page/9/"/>
+  <link rel="canonical" href="http://sevencai.github.io/page/15/"/>
 
 
 
@@ -264,7 +264,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/29/HTTP报文详解/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/23/CentOS上如何把Web服务器从Apache换到Nginx/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -283,7 +283,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/29/HTTP报文详解/" itemprop="url">HTTP报文详解</a></h1>
+                <a class="post-title-link" href="/2016/02/23/CentOS上如何把Web服务器从Apache换到Nginx/" itemprop="url">CentOS上如何把Web服务器从Apache换到Nginx</a></h1>
         
 
         <div class="post-meta">
@@ -295,8 +295,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-29T13:17:54+08:00">
-                2016-04-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-23T13:43:23+08:00">
+                2016-02-23
               </time>
             
 
@@ -318,8 +318,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机网络</span>
+                  <a href="/categories/工具-配置/" itemprop="url" rel="index">
+                    <span itemprop="name">工具/配置</span>
                   </a>
                 </span>
 
@@ -336,9 +336,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/04/29/HTTP报文详解/#comments" itemprop="discussionUrl">
+                <a href="/2016/02/23/CentOS上如何把Web服务器从Apache换到Nginx/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/04/29/HTTP报文详解/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/02/23/CentOS上如何把Web服务器从Apache换到Nginx/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -368,12 +368,14 @@
       
         
           
-          
-HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我们可以把HTTP报文当做它用来搬东西的包裹了。下面是关于HTTP报文这块的详细总结和记录。主要内容有：报文时如何流动的？HTTP报文的组成是什么？我们知道报文可以分为请求报文和响应报文，那么这两个又有什么区别呢？请求报文支持的各种功能
+          先前有一篇文章是写如何通过nginx实现反向代理。但当时出现了一个问题，就是我原先centos上面装的opache由于端口原因必须停掉。并且/的配置使路由转发出现了问题。导致我以前的php网站都不能访问。今天把这个问题解决了并记录。
+
+先学习几个概念反向代理是什么
+反向代理（Reverse Prox
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/29/HTTP报文详解/#more" rel="contents">
+            <a class="btn" href="/2016/02/23/CentOS上如何把Web服务器从Apache换到Nginx/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -424,7 +426,7 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/28/Web组件结构和URL的简单介绍/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/22/理解DOM中的事件流的概念/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -443,7 +445,7 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/28/Web组件结构和URL的简单介绍/" itemprop="url">Web组件结构和URL的简单介绍</a></h1>
+                <a class="post-title-link" href="/2016/02/22/理解DOM中的事件流的概念/" itemprop="url">理解DOM中的事件流的概念</a></h1>
         
 
         <div class="post-meta">
@@ -455,168 +457,8 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-28T23:30:45+08:00">
-                2016-04-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机网络</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/04/28/Web组件结构和URL的简单介绍/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/04/28/Web组件结构和URL的简单介绍/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          
-以前大二的时候，接触到了《HTTP权威指南》这本书，当时觉得这本书好棒，容易懂，而且配了很多图，很容易就明白作者的意思。除去附录，其实也不厚。是不是可能有这样一种趋势，好像外国人都是喜欢把难的东西写的更简单，咱们国内的书可能就喜欢写的很复杂，=。=。当时看了前面三章，到后面讲代理，隧道，网关的时候
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/04/28/Web组件结构和URL的简单介绍/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/25/《Javascript-for-PHP-Developers》读书笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Seven Cai">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Seven's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/04/25/《Javascript-for-PHP-Developers》读书笔记/" itemprop="url">《Javascript for PHP Developers》读书笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-25T21:56:33+08:00">
-                2016-04-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-22T22:03:39+08:00">
+                2016-02-22
               </time>
             
 
@@ -656,9 +498,9 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/04/25/《Javascript-for-PHP-Developers》读书笔记/#comments" itemprop="discussionUrl">
+                <a href="/2016/02/22/理解DOM中的事件流的概念/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/04/25/《Javascript-for-PHP-Developers》读书笔记/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/02/22/理解DOM中的事件流的概念/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -688,11 +530,15 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
       
         
           
-          这本书一共才130多页，当时在图书馆借这本书的时候，纯粹是因为它把部分php和javascript放在一起对比。后来看下去，知识点讲的不细，但是对Javascript整体容易犯错的地方都有解释。而且由于书特别薄，所以读起来也比较方便，目录很清晰。所以还是不错的。下面记录的是我看书的时候发现的一些知识
+          
+什么是事件流流：用术语说流是对输入输出设备的抽象。以程序的角度说，流是具有方向的数据。
+事件流：从页面中接收事件的顺序。也就是说当一个事件产生时，这个事件的传播过程，就是事件流。
+事件：用户或者浏览器自身执行的某个动作，比如load，click，mousemove等
+事件处理程序：相应处理某个事件
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/25/《Javascript-for-PHP-Developers》读书笔记/#more" rel="contents">
+            <a class="btn" href="/2016/02/22/理解DOM中的事件流的概念/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -743,7 +589,7 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/20/记我最近犯过的错和知识不熟悉的地方/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/18/JS模块化工具RequireJS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -762,7 +608,7 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/20/记我最近犯过的错和知识不熟悉的地方/" itemprop="url">记我最近犯过的错和知识不熟悉的地方</a></h1>
+                <a class="post-title-link" href="/2016/02/18/JS模块化工具RequireJS/" itemprop="url">JS模块化工具requirejs</a></h1>
         
 
         <div class="post-meta">
@@ -774,8 +620,8 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-20T23:33:01+08:00">
-                2016-04-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-18T20:11:54+08:00">
+                2016-02-18
               </time>
             
 
@@ -797,8 +643,8 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB开发</span>
+                  <a href="/categories/工具-配置/" itemprop="url" rel="index">
+                    <span itemprop="name">工具/配置</span>
                   </a>
                 </span>
 
@@ -815,9 +661,9 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/04/20/记我最近犯过的错和知识不熟悉的地方/#comments" itemprop="discussionUrl">
+                <a href="/2016/02/18/JS模块化工具RequireJS/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/04/20/记我最近犯过的错和知识不熟悉的地方/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/02/18/JS模块化工具RequireJS/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -847,13 +693,13 @@ HTTP报文我们已经很熟悉了。如果说HTTP是因特网的信使，那我
       
         
           
-          前些时候，发现了自己的很多问题，因为手头当时有项目要做，所以找到问题的原因,写了demo后，就放在了一边，并没有整理心得，今天把先前的稍微整理下。对大家来说可能并没有实际意义。可以忽略。
+          上一篇文章记录的是AMD和CMD模块化标准。requireJS就基于AMD。下面看看requireJS的基本知识。
 
-js获得时间戳的东西下面是总结的五种获得时间戳的方法。12345console.log(new Date().
+RequireJs出现的原因随着网站功能逐渐丰富，网页中的js也变得越来越复杂和臃肿，原有通过script标签来导入一个个的js文件这种方式已经不能满足现在互联网开发模式，我们需要团
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/20/记我最近犯过的错和知识不熟悉的地方/#more" rel="contents">
+            <a class="btn" href="/2016/02/18/JS模块化工具RequireJS/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -904,7 +750,7 @@ js获得时间戳的东西下面是总结的五种获得时间戳的方法。123
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/04/19/监控脚本代码异常并上报的方法/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/18/AMD和CMD的区别和联系/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -923,7 +769,7 @@ js获得时间戳的东西下面是总结的五种获得时间戳的方法。123
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/04/19/监控脚本代码异常并上报的方法/" itemprop="url">监控脚本代码异常并上报的方法</a></h1>
+                <a class="post-title-link" href="/2016/02/18/AMD和CMD的区别和联系/" itemprop="url">AMD和CMD的区别和联系</a></h1>
         
 
         <div class="post-meta">
@@ -935,8 +781,8 @@ js获得时间戳的东西下面是总结的五种获得时间戳的方法。123
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-19T20:42:51+08:00">
-                2016-04-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-18T14:17:27+08:00">
+                2016-02-18
               </time>
             
 
@@ -976,9 +822,9 @@ js获得时间戳的东西下面是总结的五种获得时间戳的方法。123
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/04/19/监控脚本代码异常并上报的方法/#comments" itemprop="discussionUrl">
+                <a href="/2016/02/18/AMD和CMD的区别和联系/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/04/19/监控脚本代码异常并上报的方法/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/02/18/AMD和CMD的区别和联系/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1008,15 +854,173 @@ js获得时间戳的东西下面是总结的五种获得时间戳的方法。123
       
         
           
-          如何完成一个记录网站加载脚本时发生的错误，并把错误上报呢？这是网站上线时最经常的需求。
-一般当我们的脚本发生错误时，浏览器都会在console里体现出错误信息，并且会提示我们出错的文件，行号，堆栈信息，此时js停止往下执行：比如这样：
-
-到这里先问自己一个问题，前端异常具体是指什么呢？
-第一种情况：
+          
+模块化是指在解决某一个复杂问题或者一系列的杂糅问题时，依照一种分类的思维把问题进行系统性的分解以之处理。模块化是一种处理复杂系统分解为代码结构更合理，可维护性更高的可管理的模块的方式。可以想象一个巨大的系统代码，被整合优化分割成逻辑性很强的模块时，对于软件是一种何等意义的存在。对于软件行业来说：解
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/04/19/监控脚本代码异常并上报的方法/#more" rel="contents">
+            <a class="btn" href="/2016/02/18/AMD和CMD的区别和联系/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/02/17/Flex-布局语法及实例/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/02/17/Flex-布局语法及实例/" itemprop="url">Flex 布局语法及实例</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-17T22:26:34+08:00">
+                2016-02-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
+                    <span itemprop="name">WEB开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/02/17/Flex-布局语法及实例/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/02/17/Flex-布局语法及实例/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          Flex元素是可以让你的布局根据浏览器的大小变化进行自动伸缩。
+Flexbox布局（Flexible Box)模块旨在提供一个更加有效的方式制定、调整和分布一个容器里的项目布局，即使他们的大小是未知或者是动态的。（这里我们称为Flex）。
+Flex布局主要思想是让容器有能力让其子项目能够改变其宽度、
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/02/17/Flex-布局语法及实例/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1058,7 +1062,7 @@ js获得时间戳的东西下面是总结的五种获得时间戳的方法。123
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/14/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/16/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 

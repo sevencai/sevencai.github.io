@@ -264,7 +264,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/08/04/yield和yield-的区别和用法/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/10/25/Redux 中 combineReducers 和 createStore的实现原理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -283,7 +283,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/08/04/yield和yield-的区别和用法/" itemprop="url">yield和yield*的区别和用法</a></h1>
+                <a class="post-title-link" href="/2016/10/25/Redux 中 combineReducers 和 createStore的实现原理/" itemprop="url">Redux 中 combineReducers 和 createStore的实现原理</a></h1>
         
 
         <div class="post-meta">
@@ -295,8 +295,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-04T09:02:01+08:00">
-                2016-08-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-25T22:46:27+08:00">
+                2016-10-25
               </time>
             
 
@@ -336,9 +336,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/08/04/yield和yield-的区别和用法/#comments" itemprop="discussionUrl">
+                <a href="/2016/10/25/Redux 中 combineReducers 和 createStore的实现原理/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/04/yield和yield-的区别和用法/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/10/25/Redux 中 combineReducers 和 createStore的实现原理/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -368,11 +368,13 @@
       
         
           
-          先前在学koa的时候，学习到了很多概念，比如generator,yield,yield *再深一点，比如co,trunk,iterator,async,await这些。当时学习的时候还是有很多疑惑。现在又重新整理了一遍。感觉思路清晰了很多。记录分享如下。大部分都来自MDN的整理和学习。感谢。我觉得M
+          最近一直在学习 redux, 感到了深深的难过，都两天了，感觉还是不知道怎么写代码，倒不是不知道是Redux 里面涉及的概念，是不知道什么代码该放在哪里。怎么样组织结构。希望再过两天能更清晰。
+
+下面是中间学习到的 combineReducers 和 createStore 的实现原理，了解这些后，
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/08/04/yield和yield-的区别和用法/#more" rel="contents">
+            <a class="btn" href="/2016/10/25/Redux 中 combineReducers 和 createStore的实现原理/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -423,7 +425,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/08/03/ES6-rest-parameters和spread-operator/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/10/16/在应用-微信-浏览器-中拉起手机QQ/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -442,7 +444,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/08/03/ES6-rest-parameters和spread-operator/" itemprop="url">ES6 rest parameters和spread operator</a></h1>
+                <a class="post-title-link" href="/2016/10/16/在应用-微信-浏览器-中拉起手机QQ/" itemprop="url">在应用(微信/浏览器)中拉起手机QQ</a></h1>
         
 
         <div class="post-meta">
@@ -454,8 +456,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-03T09:04:51+08:00">
-                2016-08-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-16T18:43:30+08:00">
+                2016-10-16
               </time>
             
 
@@ -495,9 +497,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/08/03/ES6-rest-parameters和spread-operator/#comments" itemprop="discussionUrl">
+                <a href="/2016/10/16/在应用-微信-浏览器-中拉起手机QQ/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/03/ES6-rest-parameters和spread-operator/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/10/16/在应用-微信-浏览器-中拉起手机QQ/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -527,13 +529,13 @@
       
         
           
-          这篇文章主要记录和学习Rest parameters和Spread Operator的区别和联系。今天我去了解了下关于Rest解构赋值/扩展运算符的用法和区别。主要是开始的时候容易弄混淆。所以想要记录和学习下来。也分享给大家。
+          场景是：当我们做一些活动用来拉新等等时，通常会限制用户只在手Q中打开。比如用户通过微信扫码到了我们H5活动页面。那么我们就可以通过伪协议将手Q拉起，并且将H5页面打开。用户到达的途径有很多，比如通过浏览器，通过微信，通过其他APP应用。
 
-Peviewif you don’t use rest paramet
+正解代码先不看原理的话，代码应该是像下面的。今天我也参照了许
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/08/03/ES6-rest-parameters和spread-operator/#more" rel="contents">
+            <a class="btn" href="/2016/10/16/在应用-微信-浏览器-中拉起手机QQ/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -584,7 +586,7 @@ Peviewif you don’t use rest paramet
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/08/01/ES6-Symbol-Why-How-When/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/10/09/记一次实战-Dom-XSS-漏洞/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -603,7 +605,7 @@ Peviewif you don’t use rest paramet
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/08/01/ES6-Symbol-Why-How-When/" itemprop="url">ES6 Symbol ! Why ? How ? When ? </a></h1>
+                <a class="post-title-link" href="/2016/10/09/记一次实战-Dom-XSS-漏洞/" itemprop="url">记一次实战 Dom XSS 漏洞</a></h1>
         
 
         <div class="post-meta">
@@ -615,8 +617,8 @@ Peviewif you don’t use rest paramet
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-01T11:45:21+08:00">
-                2016-08-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-09T22:33:55+08:00">
+                2016-10-09
               </time>
             
 
@@ -656,9 +658,9 @@ Peviewif you don’t use rest paramet
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/08/01/ES6-Symbol-Why-How-When/#comments" itemprop="discussionUrl">
+                <a href="/2016/10/09/记一次实战-Dom-XSS-漏洞/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/08/01/ES6-Symbol-Why-How-When/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/10/09/记一次实战-Dom-XSS-漏洞/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -688,11 +690,13 @@ Peviewif you don’t use rest paramet
       
         
           
-          前几天看小胡子哥的网站，发现这么一篇文章里面有下面这样一些代码，可以看到这段代码里面用了很多ES6的新特性，比如import,class,extends,static,for..of循环,还有下面要讲的Symbol。先前知道symbol但是一直没有去用过它，其实也并不知道到底有什么实质的作用，只知道
+          国庆的前一天，突然有一个漏洞单接到我这里来，当时心里很着急，第一实习生小白，对于我们这种支付部门有漏洞不是很可怕，以前没见过，觉得有点吓人。第二，为什么是国庆的前一天呢，不能发版本。看了下，就是熟悉又不太熟悉的 Dom xss 漏洞。熟悉是因为以前书里经常见，不熟悉是因为以前没有实践过。
+
+现象及解
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/08/01/ES6-Symbol-Why-How-When/#more" rel="contents">
+            <a class="btn" href="/2016/10/09/记一次实战-Dom-XSS-漏洞/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -743,7 +747,7 @@ Peviewif you don’t use rest paramet
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/07/14/koa中间件机制和错误处理解决方案/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/09/20/Git-分支管理与多人协作/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -762,7 +766,7 @@ Peviewif you don’t use rest paramet
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/07/14/koa中间件机制和错误处理解决方案/" itemprop="url">koa中间件机制和错误处理解决方案</a></h1>
+                <a class="post-title-link" href="/2016/09/20/Git-分支管理与多人协作/" itemprop="url">Git 分支管理与多人协作</a></h1>
         
 
         <div class="post-meta">
@@ -774,8 +778,8 @@ Peviewif you don’t use rest paramet
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-14T09:11:13+08:00">
-                2016-07-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-20T23:19:04+08:00">
+                2016-09-20
               </time>
             
 
@@ -797,8 +801,8 @@ Peviewif you don’t use rest paramet
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB开发</span>
+                  <a href="/categories/工具-配置/" itemprop="url" rel="index">
+                    <span itemprop="name">工具/配置</span>
                   </a>
                 </span>
 
@@ -815,9 +819,9 @@ Peviewif you don’t use rest paramet
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/07/14/koa中间件机制和错误处理解决方案/#comments" itemprop="discussionUrl">
+                <a href="/2016/09/20/Git-分支管理与多人协作/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/07/14/koa中间件机制和错误处理解决方案/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/09/20/Git-分支管理与多人协作/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -848,11 +852,13 @@ Peviewif you don’t use rest paramet
         
           
           
-由 Express 原班人马打造的 koa，致力于成为一个更小、更健壮、更富有表现力的 Web 框架。使用 koa 编写 web 应用，通过组合不同的 generator，可以免除重复繁琐的回调函数嵌套，并极大地提升常用错误处理效率。Koa 不在内核方法中绑定任何中间件，它仅仅提供了一个轻量优雅的
+这一篇文章主要学习和记录分支管理和多人合作。我们知道 Git 的分支管理非常快，这是因为 Git 只是生成一个指向当前版本的指针。但是以前的很多管理软件都是生成一份代码的物理拷贝，可以想象，如果代码很大，是有多慢。但 Git 的这个特点，也需要我们更好的掌握它的切换，否则很容易造成错误。
+
+在 S
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/07/14/koa中间件机制和错误处理解决方案/#more" rel="contents">
+            <a class="btn" href="/2016/09/20/Git-分支管理与多人协作/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -903,7 +909,7 @@ Peviewif you don’t use rest paramet
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/07/12/用Nodejs来创建微信公众号菜单/">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/09/20/Git-基础知识重新梳理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Seven Cai">
@@ -922,7 +928,7 @@ Peviewif you don’t use rest paramet
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/07/12/用Nodejs来创建微信公众号菜单/" itemprop="url">用Nodejs来自定义微信菜单</a></h1>
+                <a class="post-title-link" href="/2016/09/20/Git-基础知识重新梳理/" itemprop="url">Git 基础知识重新梳理</a></h1>
         
 
         <div class="post-meta">
@@ -934,8 +940,8 @@ Peviewif you don’t use rest paramet
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-12T09:26:40+08:00">
-                2016-07-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-20T23:18:31+08:00">
+                2016-09-20
               </time>
             
 
@@ -957,8 +963,8 @@ Peviewif you don’t use rest paramet
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB开发</span>
+                  <a href="/categories/工具-配置/" itemprop="url" rel="index">
+                    <span itemprop="name">工具/配置</span>
                   </a>
                 </span>
 
@@ -975,9 +981,9 @@ Peviewif you don’t use rest paramet
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/07/12/用Nodejs来创建微信公众号菜单/#comments" itemprop="discussionUrl">
+                <a href="/2016/09/20/Git-基础知识重新梳理/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/07/12/用Nodejs来创建微信公众号菜单/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2016/09/20/Git-基础知识重新梳理/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1008,817 +1014,14 @@ Peviewif you don’t use rest paramet
         
           
           
-以前用php自定义过菜单。当时直接利用curl来post数据就行了。今天用nodejs重新写了下。发现nodejs的坑略多还是。下面是两种方法，第二种用了下promise。其实没有太大区别。
-中间遇到了一些问题，我把它们写到csdn上面了。小伙伴们自己看看：csdn问题。中间一定要注意的一个问题是
+以前在学校的时候用git基本上就那几个命令，一般是用于push到github上做备份。比较容易，最近涉及到了git的一些别的用途，多人合作，创建分支等，发现自己有些命令还是不熟悉，需要老是查文档，所以重头开始学习，并做记录方便以后查阅，下面是我的整理。
+
+
+Git的优点集中式 vs 分布式集中式版
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/07/12/用Nodejs来创建微信公众号菜单/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/06/22/React-mixins在多个组件中复用代码/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Seven Cai">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Seven's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/22/React-mixins在多个组件中复用代码/" itemprop="url">React-mixins在多个组件中复用代码</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-22T22:07:03+08:00">
-                2016-06-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB开发</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/06/22/React-mixins在多个组件中复用代码/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/06/22/React-mixins在多个组件中复用代码/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          React使用组合而不是继承来处理父子组件,这也是React的特点之一。组件的复合只是React提供的用于定制和特殊化组件的方式之一。React的mixins提供了一种途径，帮助我们定义可以在多组件之间共用的方法。
-
-Mixins will allow you to apply behaviors 
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/06/22/React-mixins在多个组件中复用代码/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/06/15/高大上的数据链路层的学习和整理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Seven Cai">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Seven's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/15/高大上的数据链路层的学习和整理/" itemprop="url">高大上的数据链路层的学习和整理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-15T21:29:01+08:00">
-                2016-06-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机网络</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/06/15/高大上的数据链路层的学习和整理/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/06/15/高大上的数据链路层的学习和整理/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          感觉这可能是最后一次认真的学习数据链路层了，以后TCP/IP/HTTP还会再去看专门的书，但是数据链路层有可能以后不会接触了。所以我觉得很有必要认真的记录和总结一次。大学已经过去了3/4,大四应该也都在工作中度过。最近体验比较深，珍惜现在的时光。我爱我的室友。这篇文章主要是记录我最想知道，也是我以后
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/06/15/高大上的数据链路层的学习和整理/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/06/15/计算机网络的物理层做些什么工作？/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Seven Cai">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Seven's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/15/计算机网络的物理层做些什么工作？/" itemprop="url">计算机网络的物理层做些什么工作？</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-15T13:27:14+08:00">
-                2016-06-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机网络</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/06/15/计算机网络的物理层做些什么工作？/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/06/15/计算机网络的物理层做些什么工作？/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          
-物理层解决什么问题？物理层主要关心如何传输信号,物理层的主要任务描述为确定与传输媒体的接口的一些特性，即：
-
-机械特性    指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。
-电气特性    指明在接口电缆的各条线上出现的电压的范围。
-功能特性    指明某条线上出现的某一电平
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/06/15/计算机网络的物理层做些什么工作？/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/06/14/ES6变量的解构赋值/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Seven Cai">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Seven's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/14/ES6变量的解构赋值/" itemprop="url">ES6变量的解构赋值</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-14T09:51:38+08:00">
-                2016-06-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/WEB开发/" itemprop="url" rel="index">
-                    <span itemprop="name">WEB开发</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/06/14/ES6变量的解构赋值/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/06/14/ES6变量的解构赋值/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          什么叫做解构？解构就是按照一定的模式，从数组或者对象中提取到对应的元素，然后把这些元素复制给新的变量。这样的过程叫做解构赋值。其中要注意两个地方，第一是提取对象必须是数组或者对象。如果不是对象或者数组，ES6会先把它转换成对象。如果转换不了，如null,undefined,则会报错。表示不能够解构。
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/06/14/ES6变量的解构赋值/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2016/06/10/Internet-因特网-概述/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Seven Cai">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Seven's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/06/10/Internet-因特网-概述/" itemprop="url">Internet(因特网)概述</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-06-10T16:58:11+08:00">
-                2016-06-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/计算机网络/" itemprop="url" rel="index">
-                    <span itemprop="name">计算机网络</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/06/10/Internet-因特网-概述/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/06/10/Internet-因特网-概述/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          现在的网络是指“三网”，即电信网络、有线电视网络和计算机网络。发展最快的并起到核心作用的当然是计算机网络。下面介绍下因特网的概述，包括因特网的组成，网络，节点，链路等等概念。大概会有下面这些内容。
-
-
-基本概念区分网络(network)由若干结点(node)和连接这些结点的链路(link)组成。 （
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/06/10/Internet-因特网-概述/#more" rel="contents">
+            <a class="btn" href="/2016/09/20/Git-基础知识重新梳理/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1860,7 +1063,7 @@ Mixins will allow you to apply behaviors
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
