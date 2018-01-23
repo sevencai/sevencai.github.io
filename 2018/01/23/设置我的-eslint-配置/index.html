@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="工具/配置," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本篇主要记录了我针对自己的习惯，对 eslint 的一些配置的更改。我一般用的是 Airbnb 的编码规范。  最开始我会自己去配置 webpack 的相关插件等。后来发现中间去使用的成本太高了，往往配置就花费了我不少时间，现在我主要是使用一些比较成熟的 cli, 比如 vue-cli, react-cli 等。下面的这份 eslint 继承自 airbnb-base, 覆盖了一些我不习惯使用的">
+<meta name="keywords" content="工具&#x2F;配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设置我的 eslint 配置">
+<meta property="og:url" content="http://sevencai.github.io/2018/01/23/设置我的-eslint-配置/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="本篇主要记录了我针对自己的习惯，对 eslint 的一些配置的更改。我一般用的是 Airbnb 的编码规范。  最开始我会自己去配置 webpack 的相关插件等。后来发现中间去使用的成本太高了，往往配置就花费了我不少时间，现在我主要是使用一些比较成熟的 cli, 比如 vue-cli, react-cli 等。下面的这份 eslint 继承自 airbnb-base, 覆盖了一些我不习惯使用的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-23T09:52:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设置我的 eslint 配置">
+<meta name="twitter:description" content="本篇主要记录了我针对自己的习惯，对 eslint 的一些配置的更改。我一般用的是 Airbnb 的编码规范。  最开始我会自己去配置 webpack 的相关插件等。后来发现中间去使用的成本太高了，往往配置就花费了我不少时间，现在我主要是使用一些比较成熟的 cli, 比如 vue-cli, react-cli 等。下面的这份 eslint 继承自 airbnb-base, 覆盖了一些我不习惯使用的">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2018/01/23/设置我的-eslint-配置/"/>
+
+
+
+
+
+  <title>设置我的 eslint 配置 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2018/01/23/设置我的-eslint-配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">设置我的 eslint 配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T17:16:21+08:00">
+                2018-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/23/设置我的-eslint-配置/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/23/设置我的-eslint-配置/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本篇主要记录了我针对自己的习惯，对 eslint 的一些配置的更改。我一般用的是 <a href="https://github.com/airbnb/javascrip" target="_blank" rel="noopener">Airbnb</a> 的编码规范。</p>
+</blockquote>
+<p>最开始我会自己去配置 webpack 的相关插件等。后来发现中间去使用的成本太高了，往往配置就花费了我不少时间，现在我主要是使用一些比较成熟的 cli, 比如 vue-cli, react-cli 等。下面的这份 eslint 继承自 <code>airbnb-base</code>, 覆盖了一些我不习惯使用的配置。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// https://eslint.org/docs/user-guide/configuring</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  root: <span class="literal">true</span>,</span><br><span class="line">  parserOptions: &#123;</span><br><span class="line">    parser: <span class="string">'babel-eslint'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  env: &#123;</span><br><span class="line">    browser: <span class="literal">true</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.</span></span><br><span class="line">  extends: [<span class="string">'plugin:vue/essential'</span>, <span class="string">'airbnb-base'</span>],</span><br><span class="line">  <span class="comment">// required to lint *.vue files</span></span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="string">'vue'</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="comment">// check if imports actually resolve</span></span><br><span class="line">  settings: &#123;</span><br><span class="line">    <span class="string">'import/resolver'</span>: &#123;</span><br><span class="line">      webpack: &#123;</span><br><span class="line">        config: <span class="string">'build/webpack.base.conf.js'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// add your custom rules here</span></span><br><span class="line">  rules: &#123;</span><br><span class="line">    <span class="comment">// don't require .vue extension when importing</span></span><br><span class="line">    <span class="string">'import/extensions'</span>: [<span class="string">'error'</span>, <span class="string">'always'</span>, &#123;</span><br><span class="line">      js: <span class="string">'never'</span>,</span><br><span class="line">      vue: <span class="string">'never'</span></span><br><span class="line">    &#125;],</span><br><span class="line">    <span class="comment">// disallow reassignment of function parameters</span></span><br><span class="line">    <span class="comment">// disallow parameter object manipulation except for specific exclusions</span></span><br><span class="line">    <span class="string">'no-param-reassign'</span>: [<span class="string">'error'</span>, &#123;</span><br><span class="line">      props: <span class="literal">true</span>,</span><br><span class="line">      ignorePropertyModificationsFor: [</span><br><span class="line">        <span class="string">'vm'</span>,</span><br><span class="line">        <span class="string">'state'</span>, <span class="comment">// for vuex state</span></span><br><span class="line">        <span class="string">'acc'</span>, <span class="comment">// for reduce accumulators</span></span><br><span class="line">        <span class="string">'e'</span> <span class="comment">// for e.returnvalue</span></span><br><span class="line">      ]</span><br><span class="line">    &#125;],</span><br><span class="line">    <span class="comment">// allow optionalDependencies</span></span><br><span class="line">    <span class="string">'import/no-extraneous-dependencies'</span>: [<span class="string">'error'</span>, &#123;</span><br><span class="line">      optionalDependencies: [<span class="string">'test/unit/index.js'</span>]</span><br><span class="line">    &#125;],</span><br><span class="line">    <span class="comment">// 禁止分号 auto</span></span><br><span class="line">    <span class="string">'semi'</span>: [</span><br><span class="line">      <span class="string">'error'</span>,</span><br><span class="line">      <span class="string">'never'</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="comment">// 禁止使用拖尾逗号</span></span><br><span class="line">    <span class="string">'comma-dangle'</span>: [</span><br><span class="line">      <span class="string">'error'</span>,</span><br><span class="line">      <span class="string">'never'</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="comment">// 箭头函数的括号，只在有多个参数时才使用</span></span><br><span class="line">    <span class="string">'arrow-parens'</span>: [</span><br><span class="line">      <span class="string">'error'</span>,</span><br><span class="line">      <span class="string">'as-needed'</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">'arrow-body-style'</span>: [</span><br><span class="line">      <span class="string">'error'</span>,</span><br><span class="line">      <span class="string">'always'</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="comment">// 允许我使用 表达式</span></span><br><span class="line">    <span class="string">'no-unused-expressions'</span>: [<span class="string">'error'</span>, &#123; <span class="string">'allowShortCircuit'</span>: <span class="literal">true</span>, <span class="string">'allowTernary'</span>: <span class="literal">true</span> &#125;],</span><br><span class="line">    <span class="comment">// 放宽最大的支持宽度</span></span><br><span class="line">    <span class="string">'max-len'</span>: [<span class="number">2</span>, <span class="number">150</span>, <span class="number">4</span>, &#123; <span class="string">'ignoreUrls'</span>: <span class="literal">true</span> &#125;],</span><br><span class="line">    <span class="comment">// allow debugger during development</span></span><br><span class="line">    <span class="string">'no-debugger'</span>: process.env.NODE_ENV === <span class="string">'production'</span> ? <span class="string">'error'</span> : <span class="string">'off'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这上面因为是已经继承自 <code>airbnb-base</code> ,所以很多默认的配置都没有写下来，比如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 强制单引号 auto</span></span><br><span class="line"><span class="string">"quotes"</span>: [</span><br><span class="line">    <span class="string">"error"</span>,</span><br><span class="line">    <span class="string">"single"</span></span><br><span class="line">],</span><br><span class="line"> <span class="comment">// 变量定义或参数声明未使用</span></span><br><span class="line"><span class="string">"no-cond-assign"</span>: [</span><br><span class="line">    <span class="string">"warn"</span></span><br><span class="line">],</span><br><span class="line"><span class="comment">// 关键字空格 auto</span></span><br><span class="line"><span class="string">"keyword-spacing"</span>: [</span><br><span class="line">    <span class="string">"error"</span>,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"before"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="string">"after"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">],</span><br><span class="line"><span class="comment">// 强制单行代码块中使用空格 auto</span></span><br><span class="line"><span class="string">"block-spacing"</span>: [</span><br><span class="line">    <span class="string">"error"</span>,</span><br><span class="line">    <span class="string">"always"</span></span><br><span class="line">],</span><br><span class="line"><span class="comment">// 逗号前面不能由空格, 后面要空格 auto</span></span><br><span class="line"><span class="string">"comma-spacing"</span>: [</span><br><span class="line">    <span class="string">"error"</span>,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"before"</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">"after"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">],</span><br><span class="line"><span class="comment">// 冒号前面不能有空格, 后面必须有空格, 键值需水平对齐 auto</span></span><br><span class="line"><span class="string">"key-spacing"</span>: [</span><br><span class="line">    <span class="string">"error"</span>,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"beforeColon"</span>: <span class="literal">false</span>,</span><br><span class="line">        <span class="string">"afterColon"</span>: <span class="literal">true</span>,</span><br><span class="line">        <span class="string">"align"</span>: <span class="string">"value"</span></span><br><span class="line">    &#125;</span><br><span class="line">],</span><br><span class="line"><span class="comment">// 参数未使用提示</span></span><br><span class="line"><span class="string">"no-unused-vars"</span>: [</span><br><span class="line">    <span class="string">"warn"</span>,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"var"</span>: <span class="string">"all"</span>,</span><br><span class="line">        <span class="string">"all"</span>: <span class="string">"all"</span></span><br><span class="line">    &#125;</span><br><span class="line">],</span><br><span class="line"> <span class="comment">// 函数左括号左边不能有空格 auto</span></span><br><span class="line"><span class="string">"space-before-function-paren"</span>: [</span><br><span class="line">    <span class="string">"error"</span>,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"anonymous"</span>: <span class="string">"always"</span>,</span><br><span class="line">        <span class="string">"named"</span>: <span class="string">"never"</span></span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<hr>
+<p>对了，顺便记录一个 vue-cli 配置的问题（不值得开一个新文章，但是想记录下）。</p>
+<p>有的时候，如果我们配置了 host , 在本地访问是也许会出现 invalid host 之类的错误，正常访问不了页面，这个时候只需要找到 devServer, 增加一个 <code>disableHostCheck: true</code> 即可。让它不去检测 host, 等到正式上线，再把这个去掉或者更改为 false 即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">    disableHostCheck: true,</span><br><span class="line">    clientLogLevel: &apos;warning&apos;,</span><br><span class="line">    historyApiFallback: &#123;</span><br><span class="line">      rewrites: [</span><br><span class="line">        &#123; from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, &apos;index.shtml&apos;) &#125;,</span><br><span class="line">      ],</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br></pre></td></tr></table></figure>
+<hr>
+<p>在项目中使用 eslint 当然是好处多多，规范自己的代码，心情也会好很多。下面是我记录的一些对 airbnb ，自己老是会忘记的几个点。</p>
+<h3 id="No-Object-assign"><a href="#No-Object-assign" class="headerlink" title="No Object.assign"></a>No Object.assign</h3><p>Prefer the object spread operator over Object.assign to shallow-copy objects. Use the object rest operator to get a new object with certain properties omitted.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// very bad</span><br><span class="line">const original = &#123; a: 1, b: 2 &#125;;</span><br><span class="line">const copy = Object.assign(original, &#123; c: 3 &#125;); // this mutates `original` ಠ_ಠ</span><br><span class="line">delete copy.a; // so does this</span><br><span class="line"></span><br><span class="line">// bad</span><br><span class="line">const original = &#123; a: 1, b: 2 &#125;;</span><br><span class="line">const copy = Object.assign(&#123;&#125;, original, &#123; c: 3 &#125;); // copy =&gt; &#123; a: 1, b: 2, c: 3 &#125;</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">const original = &#123; a: 1, b: 2 &#125;;</span><br><span class="line">const copy = &#123; ...original, c: 3 &#125;; // copy =&gt; &#123; a: 1, b: 2, c: 3 &#125;</span><br><span class="line"></span><br><span class="line">const &#123; a, ...noA &#125; = copy; // noA =&gt; &#123; b: 2, c: 3 &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Use-array-spreads-…-to-copy-arrays"><a href="#Use-array-spreads-…-to-copy-arrays" class="headerlink" title="Use array spreads … to copy arrays."></a>Use array spreads … to copy arrays.</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// bad</span><br><span class="line">const len = items.length;</span><br><span class="line">const itemsCopy = [];</span><br><span class="line">let i;</span><br><span class="line"></span><br><span class="line">for (i = 0; i &lt; len; i += 1) &#123;</span><br><span class="line">  itemsCopy[i] = items[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">const itemsCopy = [...items];</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="To-convert-an-array-like-object-to-an-array-use-spreads-…-instead-of-Array-from"><a href="#To-convert-an-array-like-object-to-an-array-use-spreads-…-instead-of-Array-from" class="headerlink" title="To convert an array-like object to an array, use spreads … instead of Array.from."></a>To convert an array-like object to an array, use spreads … instead of Array.from.</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="built_in">document</span>.querySelectorAll(<span class="string">'.foo'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// good</span></span><br><span class="line"><span class="keyword">const</span> nodes = <span class="built_in">Array</span>.from(foo);</span><br><span class="line"></span><br><span class="line"><span class="comment">// best</span></span><br><span class="line"><span class="keyword">const</span> nodes = [...foo];</span><br></pre></td></tr></table></figure>
+<p>Use Array.from instead of spread … for mapping over iterables, because it avoids creating an intermediate array.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// bad</span><br><span class="line">const baz = [...foo].map(bar);</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">const baz = Array.from(foo, bar);</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="Use-object-destructuring-when-accessing-and-using-multiple-properties-of-an-object-eslint-prefer-destructuring-jscs-requireObjectDestructuring"><a href="#Use-object-destructuring-when-accessing-and-using-multiple-properties-of-an-object-eslint-prefer-destructuring-jscs-requireObjectDestructuring" class="headerlink" title="Use object destructuring when accessing and using multiple properties of an object. eslint: prefer-destructuring jscs: requireObjectDestructuring"></a>Use object destructuring when accessing and using multiple properties of an object. eslint: prefer-destructuring jscs: requireObjectDestructuring</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// bad</span><br><span class="line">function getFullName(user) &#123;</span><br><span class="line">  const firstName = user.firstName;</span><br><span class="line">  const lastName = user.lastName;</span><br><span class="line"></span><br><span class="line">  return `$&#123;firstName&#125; $&#123;lastName&#125;`;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">function getFullName(user) &#123;</span><br><span class="line">  const &#123; firstName, lastName &#125; = user;</span><br><span class="line">  return `$&#123;firstName&#125; $&#123;lastName&#125;`;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// best</span><br><span class="line">function getFullName(&#123; firstName, lastName &#125;) &#123;</span><br><span class="line">  return `$&#123;firstName&#125; $&#123;lastName&#125;`;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Use-array-destructuring-eslint-prefer-destructuring-jscs-requireArrayDestructuring"><a href="#Use-array-destructuring-eslint-prefer-destructuring-jscs-requireArrayDestructuring" class="headerlink" title="Use array destructuring. eslint: prefer-destructuring jscs: requireArrayDestructuring"></a>Use array destructuring. eslint: prefer-destructuring jscs: requireArrayDestructuring</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const arr = [1, 2, 3, 4];</span><br><span class="line"></span><br><span class="line">// bad</span><br><span class="line">const first = arr[0];</span><br><span class="line">const second = arr[1];</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">const [first, second] = arr;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Never-use-arguments-opt-to-use-rest-syntax-…-instead-eslint-prefer-rest-params"><a href="#Never-use-arguments-opt-to-use-rest-syntax-…-instead-eslint-prefer-rest-params" class="headerlink" title="Never use arguments, opt to use rest syntax … instead. eslint: prefer-rest-params"></a>Never use arguments, opt to use rest syntax … instead. eslint: prefer-rest-params</h3><p>自己老是用第一种方法，哈哈，第二种多好。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// bad</span><br><span class="line">function concatenateAll() &#123;</span><br><span class="line">  const args = Array.prototype.slice.call(arguments);</span><br><span class="line">  return args.join(&apos;&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">function concatenateAll(...args) &#123;</span><br><span class="line">  return args.join(&apos;&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="Why-Modules-are-the-future-let’s-start-using-the-future-now"><a href="#Why-Modules-are-the-future-let’s-start-using-the-future-now" class="headerlink" title="Why? Modules are the future, let’s start using the future now."></a>Why? Modules are the future, let’s start using the future now.</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// bad</span><br><span class="line">const AirbnbStyleGuide = require(&apos;./AirbnbStyleGuide&apos;);</span><br><span class="line">module.exports = AirbnbStyleGuide.es6;</span><br><span class="line"></span><br><span class="line">// ok</span><br><span class="line">import AirbnbStyleGuide from &apos;./AirbnbStyleGuide&apos;;</span><br><span class="line">export default AirbnbStyleGuide.es6;</span><br><span class="line"></span><br><span class="line">// best</span><br><span class="line">import &#123; es6 &#125; from &apos;./AirbnbStyleGuide&apos;;</span><br><span class="line">export default es6;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Do-not-use-wildcard-imports"><a href="#Do-not-use-wildcard-imports" class="headerlink" title="Do not use wildcard imports."></a>Do not use wildcard imports.</h3><p>有的时候我还是会用到 * 的，因为也许里面的内容如果我都需要使用到呢。<br>Why? This makes sure you have a single default export.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// bad</span><br><span class="line">import * as AirbnbStyleGuide from &apos;./AirbnbStyleGuide&apos;;</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">import AirbnbStyleGuide from &apos;./AirbnbStyleGuide&apos;;</span><br></pre></td></tr></table></figure></p>
+<p> In modules with a single export, prefer default export over named export. eslint: import/prefer-default-export</p>
+<p>Why? To encourage more files that only ever export one thing, which is better for readability and maintainability.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// bad</span><br><span class="line">export function foo() &#123;&#125;</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">export default function foo() &#123;&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Multiline-imports-should-be-indented-just-like-multiline-array-and-object-literals"><a href="#Multiline-imports-should-be-indented-just-like-multiline-array-and-object-literals" class="headerlink" title="Multiline imports should be indented just like multiline array and object literals."></a>Multiline imports should be indented just like multiline array and object literals.</h3><p>Why? The curly braces follow the same indentation rules as every other curly brace block in the style guide, as do the trailing commas.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// bad</span><br><span class="line">import &#123;longNameA, longNameB, longNameC, longNameD, longNameE&#125; from &apos;path&apos;;</span><br><span class="line"></span><br><span class="line">// good</span><br><span class="line">import &#123;</span><br><span class="line">  longNameA,</span><br><span class="line">  longNameB,</span><br><span class="line">  longNameC,</span><br><span class="line">  longNameD,</span><br><span class="line">  longNameE,</span><br><span class="line">&#125; from &apos;path&apos;;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工具-配置/" rel="tag"># 工具/配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/02/2017我的年度小结/" rel="next" title="2017我的年度小结">
+                <i class="fa fa-chevron-left"></i> 2017我的年度小结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">93</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#No-Object-assign"><span class="nav-number">1.</span> <span class="nav-text"><a href="#No-Object-assign" class="headerlink" title="No Object.assign"></a>No Object.assign</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-array-spreads-…-to-copy-arrays"><span class="nav-number">2.</span> <span class="nav-text"><a href="#Use-array-spreads-&#x2026;-to-copy-arrays" class="headerlink" title="Use array spreads &#x2026; to copy arrays."></a>Use array spreads &#x2026; to copy arrays.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#To-convert-an-array-like-object-to-an-array-use-spreads-…-instead-of-Array-from"><span class="nav-number">3.</span> <span class="nav-text"><a href="#To-convert-an-array-like-object-to-an-array-use-spreads-&#x2026;-instead-of-Array-from" class="headerlink" title="To convert an array-like object to an array, use spreads &#x2026; instead of Array.from."></a>To convert an array-like object to an array, use spreads &#x2026; instead of Array.from.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-object-destructuring-when-accessing-and-using-multiple-properties-of-an-object-eslint-prefer-destructuring-jscs-requireObjectDestructuring"><span class="nav-number">4.</span> <span class="nav-text"><a href="#Use-object-destructuring-when-accessing-and-using-multiple-properties-of-an-object-eslint-prefer-destructuring-jscs-requireObjectDestructuring" class="headerlink" title="Use object destructuring when accessing and using multiple properties of an object. eslint: prefer-destructuring jscs: requireObjectDestructuring"></a>Use object destructuring when accessing and using multiple properties of an object. eslint: prefer-destructuring jscs: requireObjectDestructuring</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-array-destructuring-eslint-prefer-destructuring-jscs-requireArrayDestructuring"><span class="nav-number">5.</span> <span class="nav-text"><a href="#Use-array-destructuring-eslint-prefer-destructuring-jscs-requireArrayDestructuring" class="headerlink" title="Use array destructuring. eslint: prefer-destructuring jscs: requireArrayDestructuring"></a>Use array destructuring. eslint: prefer-destructuring jscs: requireArrayDestructuring</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Never-use-arguments-opt-to-use-rest-syntax-…-instead-eslint-prefer-rest-params"><span class="nav-number">6.</span> <span class="nav-text"><a href="#Never-use-arguments-opt-to-use-rest-syntax-&#x2026;-instead-eslint-prefer-rest-params" class="headerlink" title="Never use arguments, opt to use rest syntax &#x2026; instead. eslint: prefer-rest-params"></a>Never use arguments, opt to use rest syntax &#x2026; instead. eslint: prefer-rest-params</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-Modules-are-the-future-let’s-start-using-the-future-now"><span class="nav-number">7.</span> <span class="nav-text"><a href="#Why-Modules-are-the-future-let&#x2019;s-start-using-the-future-now" class="headerlink" title="Why? Modules are the future, let&#x2019;s start using the future now."></a>Why? Modules are the future, let&#x2019;s start using the future now.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Do-not-use-wildcard-imports"><span class="nav-number">8.</span> <span class="nav-text"><a href="#Do-not-use-wildcard-imports" class="headerlink" title="Do not use wildcard imports."></a>Do not use wildcard imports.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multiline-imports-should-be-indented-just-like-multiline-array-and-object-literals"><span class="nav-number">9.</span> <span class="nav-text"><a href="#Multiline-imports-should-be-indented-just-like-multiline-array-and-object-literals" class="headerlink" title="Multiline imports should be indented just like multiline array and object literals."></a>Multiline imports should be indented just like multiline array and object literals.</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2018/01/23/设置我的-eslint-配置/';
+          this.page.identifier = '2018/01/23/设置我的-eslint-配置/';
+          this.page.title = '设置我的 eslint 配置';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
