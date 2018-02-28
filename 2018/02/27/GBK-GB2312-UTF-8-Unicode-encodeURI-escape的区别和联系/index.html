@@ -88,7 +88,7 @@
 <meta property="og:site_name" content="Seven&#39;s Blog">
 <meta property="og:description" content="本篇目的主要是搞清楚UTF-8, GBK,  Unicode, ASCII码，Unicode, escape, encodeURIComponent, encodeURI 编码等等的区别和联系。   文章起源事情起源是，今天在做小程序的时候，发现我请求业务接口时，业务接口返回的是gbk编码。 然后这个在小程序中不支持，会返回内容如：fail response data convert to UT">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-27T06:44:19.000Z">
+<meta property="og:updated_time" content="2018-02-28T03:09:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GBK, GB2312, UTF-8, Unicode,encodeURI, escape的区别和联系">
 <meta name="twitter:description" content="本篇目的主要是搞清楚UTF-8, GBK,  Unicode, ASCII码，Unicode, escape, encodeURIComponent, encodeURI 编码等等的区别和联系。   文章起源事情起源是，今天在做小程序的时候，发现我请求业务接口时，业务接口返回的是gbk编码。 然后这个在小程序中不支持，会返回内容如：fail response data convert to UT">
@@ -293,7 +293,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-27T12:00:04+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-27T04:00:04+00:00">
                 2018-02-27
               </time>
             
@@ -346,7 +346,7 @@
 <p>本篇目的主要是搞清楚UTF-8, GBK,  Unicode, ASCII码，Unicode, escape, encodeURIComponent, encodeURI 编码等等的区别和联系。</p>
 </blockquote>
 <hr>
-<h2 id="文章起源"><a href="#文章起源" class="headerlink" title="文章起源"></a>文章起源</h2><p>事情起源是，今天在做小程序的时候，发现我请求业务接口时，业务接口返回的是gbk编码。</p>
+<h1 id="文章起源"><a href="#文章起源" class="headerlink" title="文章起源"></a>文章起源</h1><p>事情起源是，今天在做小程序的时候，发现我请求业务接口时，业务接口返回的是gbk编码。</p>
 <p>然后这个在小程序中不支持，会返回内容如：<code>fail response data convert to UTF8 fail</code>, 在  pc 端及 android 端表现正常，但是在 ios 下会返回此错误码。</p>
 <p>于是很不好意思的找到了业务方的同事，看能不能把返回的内容变成标准的 utf8 无 bom编码格式。话说，我遇到的这个同事真的好 nice, 以前跨部门的合作没有1-2天下不来，这个同事效率比较高，每次有问题找到他，都能够很快的反馈给我（感恩）。然后他就跟我说了下面这样一句话：</p>
 <blockquote>
@@ -365,7 +365,7 @@
 <p>大概的思路是,如果是 ASCII 码，直接 encode， 判断不是 ASCII 码后，再进行 GBK 的比对编码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">export const encodeUrlGbk = (str) =\&gt; &#123;</span><br><span class="line">    return str &amp;&amp; str.replace(/./g,function (a) &#123;</span><br><span class="line">         var code = a.charCodeAt(0);</span><br><span class="line">         if (_isAscii(code)) &#123;</span><br><span class="line">            return encodeURIComponent(a);</span><br><span class="line">         &#125; else &#123;</span><br><span class="line">            var key = code.toString(16);</span><br><span class="line">         if (key.length !== 4) &#123;</span><br><span class="line">            key = (&apos;000&apos; \+ key).match(/....$/)\[0\];</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         return _charHash.U2Ghash\[key\] || a;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>虽然问题解决了，但是发现了自己对这块是不是根本没有弄清楚，今天仔细的查了资料，从新学习和认识下，想把这些内容都了解并且比较清楚。</p>
 <hr>
-<h2 id="escape-encodeURIComponent-encodeURI-的区别和联系"><a href="#escape-encodeURIComponent-encodeURI-的区别和联系" class="headerlink" title="escape, encodeURIComponent, encodeURI 的区别和联系"></a>escape, encodeURIComponent, encodeURI 的区别和联系</h2><p>如果你想直接看结论，可以跳过下部分引用内容。</p>
+<h1 id="escape-encodeURIComponent-encodeURI-的区别和联系"><a href="#escape-encodeURIComponent-encodeURI-的区别和联系" class="headerlink" title="escape, encodeURIComponent, encodeURI 的区别和联系"></a>escape, encodeURIComponent, encodeURI 的区别和联系</h1><p>如果你想直接看结论，可以跳过下部分引用内容。</p>
 <blockquote>
 <p>escape() 函数可对字符串进行编码，这样就可以在所有的计算机上读取该字符串。</p>
 </blockquote>
@@ -386,7 +386,7 @@
 <p><strong>如果是跟url编码有关系的，先忘掉 escape 这个函数，他跟 url 编码毫无关系，它只是能够达到类似于 URL Encode 这类似的效果，但是它对于非 ASCII 字符使用了一种非标准的实现，比如某些汉字会被编码成 %uxxxx 这种形式， 在小程序中，url使用 escape, 会报错： fail request:fail _invalid url 这类似的消息。并且 W3C 把这个函数废弃了，能不使用尽量不要去使用 </strong></p>
 <p><strong>对于 url 的编码，就使用 encodeURI 及 encodeURIComponent, 他们都是为了 url 编码而设计，不同的地方在于 encodeURI 用于对完整的 url 进行编码，于是URL中的功能字符，比如&amp;, ?, /, =等等这些并不会被转义， 而 encodeURIComponent 被设计用来对某段 query（某个值） 编码。所以正确用法是 encodeURIComponent 经常用于对每个 key value 进行分别编码。</strong></p>
 <hr>
-<h2 id="延伸阅读-escape-encodeURI的编码方式-百分号编码"><a href="#延伸阅读-escape-encodeURI的编码方式-百分号编码" class="headerlink" title="延伸阅读-escape, encodeURI的编码方式-百分号编码"></a>延伸阅读-escape, encodeURI的编码方式-百分号编码</h2><blockquote>
+<h1 id="延伸阅读-escape-encodeURI的编码方式-百分号编码"><a href="#延伸阅读-escape-encodeURI的编码方式-百分号编码" class="headerlink" title="延伸阅读-escape, encodeURI的编码方式-百分号编码"></a>延伸阅读-escape, encodeURI的编码方式-百分号编码</h1><blockquote>
 <p><strong>百分号编码</strong>（英语：Percent-encoding）, 也称作URL编码（英语：URL encoding）, 是特定上下文的统一资源定位符 (URL)的编码机制. 实际上也适用于统一资源标志符（URI）的编码。也用于为”application/x-www-form-urlencoded” MIME准备数据, 因为它用于通过HTTP的请求操作(request)提交HTML表单数据。</p>
 </blockquote>
 <p>对于 escape 以及 encodeURI 都是属于 <code>percent-encoding</code>。差不多都是把 URI 非法字符转化为合法字符， 转化以后有 <code>%</code>, 所以我猜才叫 percent-encoding 吧，哈哈。</p>
@@ -395,7 +395,7 @@
 <p>比如中文的【我】字， 他的 unicode 为 0x6211,  对他进行 utf8 编码变成了 0xe6, 0x88, 0x91, 因此 escape 得到的值为 <code>\u6211</code>, 但是encodeURI 的结果是 <code>%E6%88%91</code>。</p>
 <p>对 escape, encodeURI 这些其实以前是了解的， 但是这次是真正的总结清楚了，挺开心。上面是不是提到了很多比如 utf8, gbk, unicode 之类的词。 下面对这些名词也做一些简单的归类和总结。</p>
 <hr>
-<h2 id="UTF-8-Unicode-ASCII码的区别和联系"><a href="#UTF-8-Unicode-ASCII码的区别和联系" class="headerlink" title="UTF-8, Unicode, ASCII码的区别和联系"></a>UTF-8, Unicode, ASCII码的区别和联系</h2><blockquote>
+<h1 id="UTF-8-Unicode-ASCII码的区别和联系"><a href="#UTF-8-Unicode-ASCII码的区别和联系" class="headerlink" title="UTF-8, Unicode, ASCII码的区别和联系"></a>UTF-8, Unicode, ASCII码的区别和联系</h1><blockquote>
 <p>ASCII（American Standard Code for Information Interchange，美国信息交换标准代码）是基于<a href="https://baike.baidu.com/item/%E6%8B%89%E4%B8%81%E5%AD%97%E6%AF%8D" target="_blank" rel="noopener">拉丁字母</a>的一套电脑编码系统，主要用于显示现代<a href="https://baike.baidu.com/item/%E8%8B%B1%E8%AF%AD/109997" target="_blank" rel="noopener">英语</a>和其他<a href="https://baike.baidu.com/item/%E8%A5%BF%E6%AC%A7" target="_blank" rel="noopener">西欧</a>语言。它是现今最通用的单<a href="https://baike.baidu.com/item/%E5%AD%97%E8%8A%82" target="_blank" rel="noopener">字节</a><a href="https://baike.baidu.com/item/%E7%BC%96%E7%A0%81" target="_blank" rel="noopener">编码</a>系统，并等同于<a href="https://baike.baidu.com/item/%E5%9B%BD%E9%99%85" target="_blank" rel="noopener">国际</a>标准ISO/IEC 646。</p>
 </blockquote>
 <p> 注意 ASCII 码是 <code>American Standard Code for Information Interchange</code>的简称， 后面的两个II 并不是罗马数字2哦。</p>
@@ -410,7 +410,7 @@
 <p>但是再想想中国🇨🇳就更可怕了，一共有10几万的文字。显然256种符号是没有办法完全表达的。于是又出现了多字节的形式。比如两个字节，做多表示 256*256 种。大概又6w多符号。最常见的中文编码就是这种2个字节的编码方式，如 GB2312。</p>
 <p>下面就介绍下 GB2312, GBK等的区别和联系。</p>
 <hr>
-<h2 id="GB2312-GBK-GB18030的区别和联系"><a href="#GB2312-GBK-GB18030的区别和联系" class="headerlink" title="GB2312,GBK,GB18030的区别和联系"></a>GB2312,GBK,GB18030的区别和联系</h2><p>中国用到计算机比较晚，那个时候 256个符号已经没有可以用来表达中文文字的了。并且中文10w+个，只能够另辟蹊径了。于是中国人把127号之后的字符都去掉了，并且进行了规定。</p>
+<h1 id="GB2312-GBK-GB18030的区别和联系"><a href="#GB2312-GBK-GB18030的区别和联系" class="headerlink" title="GB2312,GBK,GB18030的区别和联系"></a>GB2312,GBK,GB18030的区别和联系</h1><p>中国用到计算机比较晚，那个时候 256个符号已经没有可以用来表达中文文字的了。并且中文10w+个，只能够另辟蹊径了。于是中国人把127号之后的字符都去掉了，并且进行了规定。</p>
 <blockquote>
 <p>每个汉字及符号以两个字节表示。第一个为高字节，第二个为低字节。一个小于127的字符的意义与原来相同，但两个大于127的字符连在一起时，就表示一个汉字，前面的一个字节（高字节）从0xA1用到 0xF7，后面一个字节（低字节）从0xA1到0xFE。</p>
 </blockquote>
@@ -428,7 +428,7 @@
 <p>于是就出现了后来编程时候的默念： <strong>一个中文字符占两个字节，1个英文字符占用1个字节</strong>。</p>
 <p>注意这个时候 GBK, GB2312 等，只是中文对于ASCII码的扩展，和 UTF8,Unicode 这些并无联系。下面再来看看 Unicode 及 UTF-8。</p>
 <hr>
-<h2 id="Unicode-及-UTF-8"><a href="#Unicode-及-UTF-8" class="headerlink" title="Unicode 及 UTF-8"></a>Unicode 及 UTF-8</h2><blockquote>
+<h1 id="Unicode-及-UTF-8"><a href="#Unicode-及-UTF-8" class="headerlink" title="Unicode 及 UTF-8"></a>Unicode 及 UTF-8</h1><blockquote>
 <p>结论： UTF-8 是 Unicode 的实现方式之一。</p>
 </blockquote>
 <p>前面我们说过，世界上存在着很多编码方式，每个国家可能会去规定和制作自己的编码方式。不同的二进制因而有可能会被解释成不同的内容。 因此如果你不知道一个文件的编码，然后随意用编辑器打开了就会出现我们经常出现的乱码现象。</p>
@@ -459,7 +459,7 @@
 </blockquote>
 <p>跟据上表，解读 UTF-8 编码非常简单。如果一个字节的第一位是<code>0</code>，则这个字节单独就是一个字符；如果第一位是<code>1</code>，则连续有多少个<code>1</code>，就表示当前字符占用多少个字节。</p>
 <hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>好开心，大概的把这些东西都有了一些了解。不再只是停留在认识阶段，而是了解阶段了。算是对这两天的一个交代了。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>好开心，大概的把这些东西都有了一些了解。不再只是停留在认识阶段，而是了解阶段了。算是对这两天的一个交代了。</p>
 
       
     </div>
@@ -493,6 +493,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/27/函数立即表达式整理/" rel="prev" title="函数立即表达式整理">
+                函数立即表达式整理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -579,7 +583,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">94</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -643,7 +647,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文章起源"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x6587;&#x7AE0;&#x8D77;&#x6E90;" class="headerlink" title="&#x6587;&#x7AE0;&#x8D77;&#x6E90;"></a>&#x6587;&#x7AE0;&#x8D77;&#x6E90;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#escape-encodeURIComponent-encodeURI-的区别和联系"><span class="nav-number">2.</span> <span class="nav-text"><a href="#escape-encodeURIComponent-encodeURI-&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;" class="headerlink" title="escape, encodeURIComponent, encodeURI &#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;"></a>escape, encodeURIComponent, encodeURI &#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延伸阅读-escape-encodeURI的编码方式-百分号编码"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5EF6;&#x4F38;&#x9605;&#x8BFB;-escape-encodeURI&#x7684;&#x7F16;&#x7801;&#x65B9;&#x5F0F;-&#x767E;&#x5206;&#x53F7;&#x7F16;&#x7801;" class="headerlink" title="&#x5EF6;&#x4F38;&#x9605;&#x8BFB;-escape, encodeURI&#x7684;&#x7F16;&#x7801;&#x65B9;&#x5F0F;-&#x767E;&#x5206;&#x53F7;&#x7F16;&#x7801;"></a>&#x5EF6;&#x4F38;&#x9605;&#x8BFB;-escape, encodeURI&#x7684;&#x7F16;&#x7801;&#x65B9;&#x5F0F;-&#x767E;&#x5206;&#x53F7;&#x7F16;&#x7801;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTF-8-Unicode-ASCII码的区别和联系"><span class="nav-number">4.</span> <span class="nav-text"><a href="#UTF-8-Unicode-ASCII&#x7801;&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;" class="headerlink" title="UTF-8, Unicode, ASCII&#x7801;&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;"></a>UTF-8, Unicode, ASCII&#x7801;&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GB2312-GBK-GB18030的区别和联系"><span class="nav-number">5.</span> <span class="nav-text"><a href="#GB2312-GBK-GB18030&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;" class="headerlink" title="GB2312,GBK,GB18030&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;"></a>GB2312,GBK,GB18030&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unicode-及-UTF-8"><span class="nav-number">6.</span> <span class="nav-text"><a href="#Unicode-&#x53CA;-UTF-8" class="headerlink" title="Unicode &#x53CA; UTF-8"></a>Unicode &#x53CA; UTF-8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#文章起源"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x6587;&#x7AE0;&#x8D77;&#x6E90;" class="headerlink" title="&#x6587;&#x7AE0;&#x8D77;&#x6E90;"></a>&#x6587;&#x7AE0;&#x8D77;&#x6E90;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#escape-encodeURIComponent-encodeURI-的区别和联系"><span class="nav-number">2.</span> <span class="nav-text"><a href="#escape-encodeURIComponent-encodeURI-&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;" class="headerlink" title="escape, encodeURIComponent, encodeURI &#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;"></a>escape, encodeURIComponent, encodeURI &#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#延伸阅读-escape-encodeURI的编码方式-百分号编码"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5EF6;&#x4F38;&#x9605;&#x8BFB;-escape-encodeURI&#x7684;&#x7F16;&#x7801;&#x65B9;&#x5F0F;-&#x767E;&#x5206;&#x53F7;&#x7F16;&#x7801;" class="headerlink" title="&#x5EF6;&#x4F38;&#x9605;&#x8BFB;-escape, encodeURI&#x7684;&#x7F16;&#x7801;&#x65B9;&#x5F0F;-&#x767E;&#x5206;&#x53F7;&#x7F16;&#x7801;"></a>&#x5EF6;&#x4F38;&#x9605;&#x8BFB;-escape, encodeURI&#x7684;&#x7F16;&#x7801;&#x65B9;&#x5F0F;-&#x767E;&#x5206;&#x53F7;&#x7F16;&#x7801;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UTF-8-Unicode-ASCII码的区别和联系"><span class="nav-number">4.</span> <span class="nav-text"><a href="#UTF-8-Unicode-ASCII&#x7801;&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;" class="headerlink" title="UTF-8, Unicode, ASCII&#x7801;&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;"></a>UTF-8, Unicode, ASCII&#x7801;&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GB2312-GBK-GB18030的区别和联系"><span class="nav-number">5.</span> <span class="nav-text"><a href="#GB2312-GBK-GB18030&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;" class="headerlink" title="GB2312,GBK,GB18030&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;"></a>GB2312,GBK,GB18030&#x7684;&#x533A;&#x522B;&#x548C;&#x8054;&#x7CFB;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Unicode-及-UTF-8"><span class="nav-number">6.</span> <span class="nav-text"><a href="#Unicode-&#x53CA;-UTF-8" class="headerlink" title="Unicode &#x53CA; UTF-8"></a>Unicode &#x53CA; UTF-8</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
             
 
           </div>
