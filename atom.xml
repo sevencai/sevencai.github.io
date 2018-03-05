@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-02-28T03:22:57.000Z</updated>
+  <updated>2018-03-05T13:46:29.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,51 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>小程序使用 component 组件重构</title>
+    <link href="http://sevencai.github.io/2018/03/05/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BD%BF%E7%94%A8-component-%E7%BB%84%E4%BB%B6%E9%87%8D%E6%9E%84/"/>
+    <id>http://sevencai.github.io/2018/03/05/小程序使用-component-组件重构/</id>
+    <published>2018-03-05T13:40:58.000Z</published>
+    <updated>2018-03-05T13:46:29.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>世界上没有一蹴而就的事情，任何事情，都有起源，发展和未来。如果你跟他就关，那就适应它，而不要抱怨它的变化，或者抱怨他为什么不就这么做。</p>
+</blockquote>
+<hr>
+<h1 id="小记"><a href="#小记" class="headerlink" title="小记"></a>小记</h1><p>小程序后来出了 component, 看了看自己的代码，还是最初的 template + class,心里好难受。 于是花了2天时间重构了。这段时间没有产品排期，也就是说我是拿别的项目的时间去重构的。时间略紧张，不过还是一点点的完成了。</p>
+<p>component 相当于一个完整的组件，你可以对这个组件定义不同的内容。有自己的事件和 data, 这个倒是跟 vue 很像。</p>
+<p>但是注意 component 中的 css 除了继承属性（h1,em）等以外，其他的样子必须都写入 component 中。如果你不想做这件事，就把 app.wxss 引入到 component 中吧。（虽然我也很不情愿）</p>
+<hr>
+<h1 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h1><p>用 <code>Component({})</code>声明。内部可以有自己的 data, methods, behaviors,还有类似于 vue 的 attach, ready 等函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> rechargeItem <span class="keyword">from</span> <span class="string">'behaviors/jump-to-order'</span></span><br><span class="line"></span><br><span class="line">Component(&#123;</span><br><span class="line">  behaviors: [rechargeItem],</span><br><span class="line"></span><br><span class="line">  properties: &#123;</span><br><span class="line">     recommendList: &#123;</span><br><span class="line">      type: <span class="built_in">Array</span>,</span><br><span class="line">      value: []</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  methods: &#123;</span><br><span class="line">     bindClickEvent() &#123;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>behaviors 可以理解为 mixins, 多个组件都可能用到同样的内容，就把它抽离为 behaviors 吧。 比如上面，调到订单页可以从很多 component 过来，比如 推荐，搜索。那么就抽离成一个 behavior, 用到的时候引入进来即可。</p>
+<p>注意任何一个 component 都需要声明它是一个 component, 我猜测是要语义更好吧，免得跟 page 搞混了(但是 component 和 page 声明就不一样，其实没必要单独再在 json 中声明下？)。component 不需要再在 app.json 里面声明，因为它不是一个 page。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;component&quot;: true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后需要引入这个组件的地方，这样引入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;usingComponents&quot;: &#123;</span><br><span class="line">    &quot;recommend&quot;: &quot;../page_component/recommend/recommend&quot;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用的时候，直接引入即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;recommend recommendList=&quot;&#123;&#123;recommendList&#125;&#125;&quot;&gt;&lt;/recommend&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这里的 recommendList 类似于 vue 的 props, 可以用于从父组件（page）传递内容到子组件。</p>
+<p>然后就再原先的 properties 中接受即可。也可以用 <code>this.data</code>访问到。</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实是不想写这个文章的的，因为文章本身没有啥太大的意义，这些好好学习官网都可以知道的。但是不写的话总觉得自己这两天没干啥。但实际上，我觉得我自己做的事情有意义，因为代码更好了呀。而且可读性也更强了，是 component 的，template的，page的，api modules 的，都清清楚楚了。开心。</p>
+<p>估计随后的一段时间都不会再碰小程序了，下次讲讲学习到的 vue 源码的内容吧。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;世界上没有一蹴而就的事情，任何事情，都有起源，发展和未来。如果你跟他就关，那就适应它，而不要抱怨它的变化，或者抱怨他为什么不就这么做。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;小记&quot;&gt;&lt;a href=&quot;#小记&quot; class=&quot;
+    
+    </summary>
+    
+    
+      <category term="小程序" scheme="http://sevencai.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>函数立即表达式整理</title>
@@ -1469,91 +1514,6 @@ git merge origin/next
     
       &lt;blockquote&gt;
 &lt;p&gt;以前在学校的时候用git基本上就那几个命令，一般是用于push到github上做备份。比较容易，最近涉及到了git的一些别的用途，多人合作，创建分支等，发现自己有些命令还是不熟悉，需要老是查文档，所以重头开始学习，并做记录方便以后查阅，下面是我的整
-    
-    </summary>
-    
-      <category term="工具/配置" scheme="http://sevencai.github.io/categories/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
-    
-    
-      <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>fis3基本用法介绍</title>
-    <link href="http://sevencai.github.io/2016/08/24/fis3%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95%E4%BB%8B%E7%BB%8D/"/>
-    <id>http://sevencai.github.io/2016/08/24/fis3基本用法介绍/</id>
-    <published>2016-08-24T08:21:08.000Z</published>
-    <updated>2016-12-12T02:28:04.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>今天有这样一个需求，其实是很常见的。一般我们公司都是静态资源放在一个机器上，比如是cdn上。然后内容页面放在另外一个机器上。这样很好的一点是cdn可以做缓存。而且整个分离看起来也比较清楚。</p>
-<p>在本地，我用的相对路径比如<code>./images/1.png</code> 或者绝对路径 <code>images/1.png</code> 。这样写第一不统一。第二，我需要把图片，js，css放到cdn上，比如说是：<code>**.qq.com</code>上。但是页面又是在另外一个机器上，或者说域名下，所以很明显这个时候不能用相对路径了，只能用url的形式。</p>
-<p>那么，我要怎么去改呢？难道手工一个个的去改？那不是很麻烦，而且应该想到公司那么多人，肯定不是用的这种笨一点的方法。一般有用gulp的，有用webpack的。今天我在师傅的建议下去学习了fis的。fis用很少量的配置，就完成了我需要的功能。唯一一点我觉得不好的，就是文档了，文档要是写的更好一点，接地气一点就更好啦。</p>
-<hr>
-<h3 id="FIS简介"><a href="#FIS简介" class="headerlink" title="FIS简介"></a><strong>FIS简介</strong></h3><blockquote>
-<p><code>FIS3</code> 是面向前端的工程构建工具。解决前端工程中性能优化、资源加载（异步、同步、按需、预加载、依赖管理、合并、内嵌）、模块化开发、自动化工具、开发规范、代码部署等问题。</p>
-</blockquote>
-<p><code>FIS</code>是百度出品的，一般的<code>gulp</code>有的功能，它基本都有。下面有几个<code>fis</code>的几个特点：</p>
-<ol>
-<li><code>FIS3</code> 的构建<strong>不会修改源码</strong>，而是会通过用户设置，将构建结果输出到指定的目录。</li>
-<li><strong>文件指纹</strong>，唯一标识一个文件。在开启强缓存的情况下，如果文件的 URL 不发生变化，无法刷新浏览器缓存。一般都需要通过一些手段来强刷缓存，一种方式是添加时间戳，每次上线更新文件，给这个资源文件的 URL 添加上时间戳。</li>
-<li>CssSprite图片合并压缩了静态资源，我们还可以对图片进行合并，来减少请求数量。FIS3 提供了比较简易、使用方便的图片合并工具。<strong>通过配置即可调用此工具并对资源进行合并。FIS3 构建会对 CSS 中，路径带 ?__sprite 的图片进行合并。为了节省编译的时间，分配到 useSprite: true 的 CSS 文件才会被处理。</strong></li>
-</ol>
-<p>其实这些功能其它的几种方案应该都有，但是fis会更加方便。第一个深深的吸引着我。不改变源码真是太好了。具体原因下文分析。</p>
-<hr>
-<h3 id="FIS初识"><a href="#FIS初识" class="headerlink" title="FIS初识"></a><strong>FIS初识</strong></h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a><strong>安装</strong></h4><p>安装必须在全局环境下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install -g fis3  <span class="comment">//安装</span></span><br><span class="line">fis3 -v  <span class="comment">//查看</span></span><br><span class="line">npm update -g fis3  <span class="comment">//升级</span></span><br></pre></td></tr></table></figure></p>
-<hr>
-<h4 id="完整例子"><a href="#完整例子" class="headerlink" title="完整例子"></a><strong>完整例子</strong></h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch fis-conf.js  <span class="comment">//生成默认配置文件</span></span><br><span class="line">fis3 release -d ../output    <span class="comment">//构建到上级目录下 ../output可以换成任意path</span></span><br></pre></td></tr></table></figure>
-<p>简单的对比下output和源文件中的内容，可以发现不同，资源路径已经被换了。可以利用diffmerge工具来看。下面来自文档中的一个图片。</p>
-<p><img src="http://fis.baidu.com/fis3/docs/beginning/img/demo-uri-html-diff_cc9e2f5.png" alt="比较图片"></p>
-<p>我们可以很明显看到相对路径已经被替换成了绝对路径。再加深一点，如何压缩js,css呢？我们只需要调用它内置的插件就可以了。</p>
-<p>fis通过正则匹配文件。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/ 清除其他配置，只保留如下配置</span><br><span class="line">fis.match(<span class="string">'*.js'</span>, &#123;</span><br><span class="line">  <span class="comment">// fis-optimizer-uglify-js 插件进行压缩，已内置</span></span><br><span class="line">  optimizer: fis.plugin(<span class="string">'uglify-js'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">fis.match(<span class="string">'*.css'</span>, &#123;</span><br><span class="line">  <span class="comment">// fis-optimizer-clean-css 插件进行压缩，已内置</span></span><br><span class="line">  optimizer: fis.plugin(<span class="string">'clean-css'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">fis.match(<span class="string">'*.png'</span>, &#123;</span><br><span class="line">  <span class="comment">// fis-optimizer-png-compressor 插件进行压缩，已内置</span></span><br><span class="line">  optimizer: fis.plugin(<span class="string">'png-compressor'</span>)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>那么怎么解决我们开头说的那个问题呢？很简单，我们加一个release和url：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">fis.match(<span class="string">'*'</span>, &#123;</span><br><span class="line">  useHash: <span class="literal">false</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 所有的 js</span></span><br><span class="line">fis.match(<span class="string">'js/*.js'</span>, &#123;</span><br><span class="line">    <span class="comment">//发布到/static/js/xxx目录下</span></span><br><span class="line">    optimizer: fis.plugin(<span class="string">'uglify-js'</span>),</span><br><span class="line">    release : <span class="string">'/dist/$0'</span>,</span><br><span class="line">    url : <span class="string">'//midas.gtimg.cn/**/dist$0'</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 所有的 css</span></span><br><span class="line">fis.match(<span class="string">'css/*.css'</span>, &#123;</span><br><span class="line">    <span class="comment">//发布到/static/css/xxx目录下</span></span><br><span class="line">    optimizer: fis.plugin(<span class="string">'clean-css'</span>),</span><br><span class="line">    release : <span class="string">'/dist/$0'</span>,</span><br><span class="line">    url : <span class="string">'//midas.gtimg.cn/**/dist$0'</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p><strong>先压缩，在发布到某个dist下去，然后真正发布的时候用某个url替换。这个url就可以换成我们的cdn上的链接。然后我们把压缩后的dist文件对应上传到cdn上去就可以了。</strong> 我们看下最后的结果是不是跟我们想的一样： :)</p>
-<p><img src="http://www.cailidan.cn/images/differ.png" alt="differ对比结果"></p>
-<p>是不是很简单的配置就完成了？这里可以留一个思考的地方，就是你会发现上面替换都是替换html里面的，那如果css/js里面也有路径要替换，打比方css里面引入了图片路径怎么破呢？</p>
-<hr>
-<h3 id="FIS其他功能"><a href="#FIS其他功能" class="headerlink" title="FIS其他功能"></a><strong>FIS其他功能</strong></h3><p>刚刚是已一个简单的例子，告诉我们fis的工作很简单的配置就可以完成了。现在我们看看fis还能干什么。</p>
-<ol>
-<li>压缩文件,图片（资源）</li>
-<li>重定向文件目录和url</li>
-</ol>
-<p>刚刚已经说了上面，下面我们看看还有什么功能：</p>
-<hr>
-<h4 id="文件指纹"><a href="#文件指纹" class="headerlink" title="文件指纹"></a><strong>文件指纹</strong></h4><blockquote>
-<p>文件指纹，唯一标识一个文件。在开启强缓存的情况下，如果文件的 URL 不发生变化，无法刷新浏览器缓存。一般都需要通过一些手段来强刷缓存，一种方式是添加时间戳，每次上线更新文件，给这个资源文件的 URL 添加上时间戳。 <strong>FIS3 选择的是添加 MD5 戳，直接修改文件的 URL，而不是在其后添加 query。</strong></p>
-</blockquote>
-<p>对 js、css、png 图片引用 URL 添加 md5 戳，配置如下</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//一般方法</span></span><br><span class="line">&lt;img src=<span class="string">"a.png?t=12012121"</span>&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">//清除其他配置，只剩下如下配置 </span></span><br><span class="line">fis.match(<span class="string">'*.&#123;js,css,png&#125;'</span>, &#123;</span><br><span class="line">  useHash: <span class="literal">true</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//执行输出</span></span><br><span class="line">fis3 release -d ../output</span><br></pre></td></tr></table></figure>
-<p><img src="http://www.cailidan.cn/images/differ2.png" alt="对比结果"></p>
-<hr>
-<h4 id="CssSprite图片合并"><a href="#CssSprite图片合并" class="headerlink" title="CssSprite图片合并"></a><strong>CssSprite图片合并</strong></h4><blockquote>
-<p>压缩了静态资源，我们还可以对图片进行合并，来减少请求数量。</p>
-<p>FIS3 提供了比较简易、使用方便的图片合并工具。通过配置即可调用此工具并对资源进行合并。</p>
-<p>FIS3 构建会对 CSS 中，路径带 ?__sprite 的图片进行合并。为了节省编译的时间，分配到 useSprite: true 的 CSS 文件才会被处理。</p>
-</blockquote>
-<p>在上一张对比图片里面是不是有一个多余的style开头的png,那个就是图片合并后的两个文件：</p>
-<p>因为我们在css里面：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">li</span><span class="selector-class">.list-1</span><span class="selector-pseudo">::before</span> &#123;</span><br><span class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(<span class="string">'./img/list-1.png?__sprite'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">li</span><span class="selector-class">.list-2</span><span class="selector-pseudo">::before</span> &#123;</span><br><span class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(<span class="string">'./img/list-2.png?__sprite'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>设置了两个以?__sprite的图片，所以他们会合并了。好方便。当然不以这个结尾的肯定不会合并了。合并的好处当然就是减少请求数量。当然了，fis会自动帮你把精灵图重新定位。所以你会发现你的css会多了下面这些代码：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">content</span><span class="selector-pseudo">:""</span>;</span><br><span class="line"><span class="selector-tag">position</span><span class="selector-pseudo">:absolute</span>;</span><br><span class="line"><span class="selector-tag">height</span><span class="selector-pseudo">:15px</span>;</span><br><span class="line"><span class="selector-tag">width</span><span class="selector-pseudo">:15px</span>;</span><br><span class="line"><span class="selector-tag">left</span><span class="selector-pseudo">:-15px</span></span><br></pre></td></tr></table></figure></p>
-<hr>
-<h4 id="关闭默认配置、查看文件属性"><a href="#关闭默认配置、查看文件属性" class="headerlink" title="关闭默认配置、查看文件属性"></a><strong>关闭默认配置、查看文件属性</strong></h4><p>这个时候我们利用重要的指令<code>fis3 inspect</code>可以查看文件分配到的属性，这些属性决定了文件将如何被编译处理。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fis3 inspect <span class="comment">//查看文件命中属性的情况</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="http://www.cailidan.cn/images/inspect.png" alt="查看文件属性"></p>
-<p>因为有一些功能是默认开启了，所以我们可以利用开启debug模式，关闭这些：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fis.media(<span class="string">'debug'</span>).match(<span class="string">'*.&#123;js,css,png&#125;'</span>, &#123;</span><br><span class="line">  useHash: <span class="literal">false</span>,</span><br><span class="line">  useSprite: <span class="literal">false</span>,</span><br><span class="line">  optimizer: <span class="literal">null</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p><code>fis3 release debug</code> 启用 <code>media debug</code> 的配置，覆盖上面的配置，把诸多功能关掉。</p>
-<hr>
-<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a><strong>调试</strong></h3><p>FIS3 构建后，默认情况下会对资源的 URL 进行修改，改成绝对路径。这时候本地双击打开文件是无法正常工作的。这给开发调试带来了绝大的困惑。</p>
-<p>FIS3 内置一个简易 Web Server，可以方便调试构建结果。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//构建时不指定输出目录，即不指定 -d 参数时，构建结果被发送到内置 Web Server 的根目录下。此目录可以通过执行以下命令打开。</span></span><br><span class="line">fis3 server open</span><br><span class="line"></span><br><span class="line"><span class="comment">//不加 -d 参数默认被发布到内置 Web Server的根目录下，当启动服务时访问此目录下的资源。</span></span><br><span class="line">fis3 release</span><br><span class="line"></span><br><span class="line"><span class="comment">//启动本地 Web Server访问http://127.0.0.1:8080</span></span><br><span class="line">fis3 server start</span><br><span class="line"></span><br><span class="line"><span class="comment">//FIS3 支持文件监听</span></span><br><span class="line">fis3 release -w</span><br><span class="line"><span class="comment">//浏览器自动刷新</span></span><br><span class="line">fis3 release -wL</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>上面的内容只是一小部分功能，还有很多其他的功能，比如嵌入资源（import等等），定位资源（从html,css,js中定位分离资源），部署到服务器上，声明依赖能力等等功能。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;今天有这样一个需求，其实是很常见的。一般我们公司都是静态资源放在一个机器上，比如是cdn上。然后内容页面放在另外一个机器上。这样很好的一点是cdn可以做缓存。而且整个分离看起来也比较清楚。&lt;/p&gt;
-&lt;p&gt;在本地，我用的相对路径比如&lt;code&gt;./images/1.png&lt;/
     
     </summary>
     
