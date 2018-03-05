@@ -58,6 +58,11 @@ h1 {
   font-size: 2em;
   margin: 0.67em 0;
 }
+h2 {
+  font-size: 2em;
+  margin: 0.67em 0;
+  color: #2e7ac4;
+}
 mark {
   background: #ff0;
   color: #000;
@@ -1822,7 +1827,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #b08f60;
+  background: #20d06b;
 }
 .links-of-blogroll {
   font-size: 13px;
