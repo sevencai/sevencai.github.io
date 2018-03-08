@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-03-05T13:48:41.000Z</updated>
+  <updated>2018-03-08T08:34:59.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,79 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>记最新几个新的小知识点</title>
+    <link href="http://sevencai.github.io/2018/03/08/%E8%AE%B0%E6%9C%80%E6%96%B0%E5%87%A0%E4%B8%AA%E6%96%B0%E7%9A%84%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    <id>http://sevencai.github.io/2018/03/08/记最新几个新的小知识点/</id>
+    <published>2018-03-08T08:15:01.000Z</published>
+    <updated>2018-03-08T08:34:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>记录下最近零零散散学的几个知识点。</p>
+<hr>
+<h1 id="图片显示方式"><a href="#图片显示方式" class="headerlink" title="图片显示方式"></a>图片显示方式</h1><p>有的时候看到网络上有些图示由模糊变清晰，有些是一直清晰，但是会逐行显示（慢慢的展示全）， 是什么因素导致了他们的显示方式？</p>
+<p>实际是图片在<strong>压缩的时候算法</strong>决定了它的显示方式。比如：<br>小波算法：先模糊然后清晰<br>离散余弦变换：清晰，逐行显示</p>
+<p>前端可以准备多种样子或者分辨率的图片，当网络好或者网络不好，再或者不同的屏幕分辨率的图片。现在出来了一种新的方式：</p>
+<p>HTML <code>&lt;picture&gt;</code>元素是一个容器，用来为其内部特定的 <code>&lt;img&gt;</code>元素提供多样的 <code>&lt;source&gt;</code> 元素。浏览器会根据当前页面（即图片所在的盒子的容器）的布局以及当前浏览的设备（比如普通的屏幕和高清屏幕）去从中选择最合适的资源。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;picture&gt;</span><br><span class="line">	&lt;source srcset=&quot;smaller.png&quot; media=&quot;(max-width:700px)&quot;&gt;&lt;/source&gt;</span><br><span class="line">	&lt;source srcset=&quot;bigger.png&quot; media=&quot;(max-width:1000px)&quot;&gt;&lt;/source&gt;</span><br><span class="line">	&lt;img srcset=&quot;default.png&quot; alt=&quot;美女&quot;&gt;</span><br><span class="line">&lt;/picture&gt;</span><br></pre></td></tr></table></figure></p>
+<p>当然并不是每个浏览器都支持,在实验中。</p>
+<hr>
+<h1 id="图片分类"><a href="#图片分类" class="headerlink" title="图片分类"></a>图片分类</h1><ol>
+<li>jpg,jpeg,以24位颜色存储单个位图，可压缩</li>
+<li>png，可做透明图片，体积较大，需要清晰的显示颜色丰富的图片时用</li>
+<li>gif，全透/全不透，不支持半透明</li>
+<li>svg，矢量图，地图中用的多，体积小</li>
+</ol>
+<p>注意有的时候只把 尾缀比如.jpg更改为.png 不行，因为只是名称改了，实际上它本质没有更改。需要用工具转换。</p>
+<hr>
+<h1 id="播放器形式"><a href="#播放器形式" class="headerlink" title="播放器形式"></a>播放器形式</h1><p>【video播放器】<br>优点：不需要下载额外资源（如：flash播放器需要下载.swf辅助插件），控制简单有较为完整的api。<br>缺点：每个浏览器的外观都不一样，如果要统一需要自己写ui实现。</p>
+<p>【flash播放器】<br>flash 播放器，兼容性比较好，只需要下载 flash player 即可使用。<br>缺点是必须要下载额外的 swf 才可以。</p>
+<p>视频的外部资源可使用<strong> link 加载样式</strong>，这样可以被提前加载。让视频先运行。这是个小 hack。</p>
+<hr>
+<h1 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h1><p><strong>页面刷新的时候 sessionStorage (标准浏览器) 是仍然存在的，只有关闭的时候才不存在。同一个浏览器，不同的标签，也是不共享的。</strong></p>
+<p>userData 是 IE 的先驱者。</p>
+<p>cookie 所有浏览器基本都支持，大小限制不同浏览器也不同，会把数据带给服务器。</p>
+<p>openDataBase 是类似于本地数据库这种形式。可以做的东西更多。</p>
+<p>localStorage 的缺点是 IE9, IE10 不支持, 注意下 safari 读不到 chrome 的 localStorage。</p>
+<p>localStorage 不能跨域，所以存储的时候是在 localStorage 下，按照域名存放的。</p>
+<hr>
+<h1 id="造成页面卡死的原因"><a href="#造成页面卡死的原因" class="headerlink" title="造成页面卡死的原因"></a>造成页面卡死的原因</h1><p>如果页面突然一直 loading 或者 卡死，可能有以下一些原因。</p>
+<ol>
+<li>死循环 (while 1 了 ？)</li>
+<li>大文件占用资源 loading</li>
+<li>频繁的读写本地资源</li>
+</ol>
+<hr>
+<h1 id="页面的重绘和回流"><a href="#页面的重绘和回流" class="headerlink" title="页面的重绘和回流"></a>页面的重绘和回流</h1><p>回流一定触发重绘，但是重绘不一定触发回流。<br>DOM元素的添加、修改(内容)、删除(Reflow+Repaint)<br>仅修改DOM元素的字体颜色(只有Repaint、因为不需要调整布局)</p>
+<p>如何判断是否重绘了呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome 开发者工具 =&gt;  settings ,more tools, rendering, Paint flashing即可, 看到绿色的部分即为发生了重绘的部分</span><br></pre></td></tr></table></figure></p>
+<p>触发重绘可能有的情况：<br>1、改变字体<br>2、增加或移除样式表<br>3、内容变化，如用户在input框输入文字<br>4、激活css伪类，如:hover<br>5、脚本操作DOM<br>6、计算可见的宽高属性<br>7、设置style属性的值</p>
+<hr>
+<h1 id="git-常用命令总结"><a href="#git-常用命令总结" class="headerlink" title="git 常用命令总结"></a>git 常用命令总结</h1><p>我总结了已经好多次了，有些命令一段时间不用又会忘记。好记性不如烂笔头。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">git log --pretty=oneline</span><br><span class="line">git log --graph</span><br><span class="line"></span><br><span class="line">git reset --hard HEAD^</span><br><span class="line">git reset --hard 版本（可省略写）</span><br><span class="line"></span><br><span class="line">// add 后放弃</span><br><span class="line">git checkout -- file</span><br><span class="line"></span><br><span class="line">// add -&gt; commit 后放弃</span><br><span class="line">git reset HEAD file</span><br><span class="line">git checkout --file</span><br><span class="line"></span><br><span class="line">git remote add origin git@server-name:path/repo-name.git</span><br><span class="line">git push -u origin master</span><br><span class="line"></span><br><span class="line">git checkout -b dev</span><br><span class="line">等同于</span><br><span class="line">git branch dev</span><br><span class="line">git checkout dev</span><br><span class="line"></span><br><span class="line">git branch -d/-D dev</span><br><span class="line"></span><br><span class="line">git stash apply 恢复</span><br><span class="line">git stash drop 恢复后删除 stash</span><br><span class="line">git stash pop = git stash apply + git stash drop</span><br><span class="line"></span><br><span class="line">git stash list</span><br><span class="line"></span><br><span class="line">git branch --set-upstream dev origin/dev</span><br><span class="line"></span><br><span class="line">git tag name 打标签</span><br><span class="line">git tag 显示所有 tag</span><br><span class="line">git tag -d v0.1 删除某个tag</span><br><span class="line">git push origin v1.0 推送某个标签</span><br><span class="line">git push origin --tags 一次推送所有 tag</span><br></pre></td></tr></table></figure>
+<p><strong>当手头工作没有完成时，先把工作现场<code>git stash</code>一下，然后去修复bug，修复后，再<code>git stash pop</code>，回到工作现场。</strong></p>
+<p>rebase merge 的使用法则。</p>
+<blockquote>
+<p>In general the way to get the best of both worlds is to rebase local changes you’ve made but haven’t shared yet before you push them in order to clean up your story, but never rebase anything you’ve pushed somewhere</p>
+</blockquote>
+<hr>
+<h1 id="学习一段代码"><a href="#学习一段代码" class="headerlink" title="学习一段代码"></a>学习一段代码</h1><p>这是最近在慕课上看到的一段代码，没事没事看看别人的代码还是有点收获的，比较下自己觉得好的和自己觉得别人可能有所需要改进的。下面这些代码是一位老师写的，大概就是根据版本号来判断资源是不是需要缓存，如果版本号更新了，就去重新拉取资源，并且更新本地缓存。如果版本号没有更新，就直接用本地的缓存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br></pre></td><td class="code"><pre><span class="line">window.Xhrfactory = function() &#123;</span><br><span class="line">    this.init.apply(this, arguments);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">window.Xhrfactory.prototype = &#123;</span><br><span class="line">    init: function() &#123;</span><br><span class="line">        this.xhr = this.create();</span><br><span class="line">    &#125;,</span><br><span class="line">    create: function() &#123;</span><br><span class="line">        var xhr = null;</span><br><span class="line">        if (window.XMLHttpRequest) &#123;</span><br><span class="line">            xhr = new XMLHttpRequest();</span><br><span class="line">        &#125; else if (window.ActiveXobject) &#123;</span><br><span class="line">            xhr = new ActiveXobject(&apos;Msml2.Xmlhttp&apos;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            xhr = new ActiveXobject(&apos;Microsoft.Xmlhttp&apos;);</span><br><span class="line">        &#125;</span><br><span class="line">        return xhr;</span><br><span class="line">    &#125;,</span><br><span class="line">    readystate: function(callback) &#123;</span><br><span class="line">        this.xhr.onreadystatechange = function() &#123;</span><br><span class="line">            if (this.readyState === 4 &amp;&amp; this.status === 200) &#123;</span><br><span class="line">                callback(this.responseText);</span><br><span class="line">                console.log(this);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    para: function(data) &#123;</span><br><span class="line">        var datastr = &apos;&apos;;</span><br><span class="line">        if (data &amp;&amp; Object.prototype.toString.call(data) === &quot;[object object]&quot;) &#123;</span><br><span class="line">            for (var i in data) &#123;</span><br><span class="line">                for (var i = 0; i &lt; lenght; i++) &#123;</span><br><span class="line">                    datastr += i + &apos;=&apos;</span><br><span class="line">                    data[i] + &apos;&amp;&apos;;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    get: function(url, data, callback) &#123;</span><br><span class="line"></span><br><span class="line">        this.readystate(callback);</span><br><span class="line">        var newurl = url;</span><br><span class="line">        var datastr = this.para(data);</span><br><span class="line">        newurl = url + &apos;?&apos; + datastr;</span><br><span class="line">        this.xhr.open(&apos;get&apos;, newurl, true);</span><br><span class="line">        this.xhr.send(null);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 后台程序的模板变量</span><br><span class="line">var localStorageSign = &apos;on&apos;;</span><br><span class="line">// 版本控制</span><br><span class="line">var resourceVersion = &apos;12312443243202&apos;;</span><br><span class="line"></span><br><span class="line">// 本地的Sdk主方法</span><br><span class="line">window.mLocalSdk = &#123;</span><br><span class="line"></span><br><span class="line">    resourceJavascriptList: [&#123;</span><br><span class="line">        id: &apos;1232131241&apos;,</span><br><span class="line">        url: &apos;/dest/js/lib/core.js&apos;,</span><br><span class="line">        type: &apos;javascript&apos;</span><br><span class="line">    &#125;, &#123;</span><br><span class="line">        id: &apos;1232131242&apos;,</span><br><span class="line">        url: &apos;/dest/js/lib/log.js&apos;,</span><br><span class="line">        type: &apos;javascript&apos;</span><br><span class="line">    &#125;, &#123;</span><br><span class="line">        id: &apos;1232131243&apos;,</span><br><span class="line">        url: &apos;/dest/js/lib/report.js&apos;,</span><br><span class="line">        type: &apos;javascript&apos;</span><br><span class="line">    &#125;],</span><br><span class="line"></span><br><span class="line">    needUpdate: (function() &#123;</span><br><span class="line">        return localStorage.getItem(&apos;resourceVersion&apos;) === resourceVersion;</span><br><span class="line">    &#125;)(),</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    isIE: (function() &#123;</span><br><span class="line">            var v = 3;</span><br><span class="line">            var div = document.createElement(&apos;div&apos;);</span><br><span class="line">            var all = div.getElementsByTagName(&apos;i&apos;);</span><br><span class="line">            while (</span><br><span class="line">                div.innerHTML = &apos;&lt;!-- [if gt IE&apos; + (++v) + &apos;]&gt;&lt;i&gt;&lt;/i&gt;&lt;![endif] --&gt;&apos;, !all[0])</span><br><span class="line">                 &#123;</span><br><span class="line">                    if(v &gt; 11)&#123;return false&#125;</span><br><span class="line">                &#125;</span><br><span class="line">            return v &gt; 3 ? v : false;</span><br><span class="line">        &#125;)(),</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    checkHedge: function() &#123;</span><br><span class="line">        var localStorageLength = localStorage.length;</span><br><span class="line">        var localStorageSize = 0;</span><br><span class="line">        for (var i = 0; i &lt; localStorageLength; i++) &#123;</span><br><span class="line">            var key = localStorage.key(i);</span><br><span class="line">            localStorageSize += localStorage.getItem(key).length;</span><br><span class="line">        &#125;</span><br><span class="line">        return localStorageSize;</span><br><span class="line">    &#125;,</span><br><span class="line">    saveSdk: function() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            localStorage.setItem(&apos;resourceVersion&apos;, resourceVersion);</span><br><span class="line">        &#125; catch (oException) &#123;</span><br><span class="line">            if (oException.name == &apos;QuotaExceededError&apos;) &#123;</span><br><span class="line">                localStorage.clear();</span><br><span class="line">                localStorage.setItem(&apos;resourceVersion&apos;, resourceVersion);</span><br><span class="line">            &#125;</span><br><span class="line">            alert(&apos;QuotaExceededError&apos;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (var i = 0; i &lt; this.resourceJavascriptList.length; i++) &#123;</span><br><span class="line">            _self = this;</span><br><span class="line">            (function(i)&#123;</span><br><span class="line">                var scriptId = _self.resourceJavascriptList[i][&apos;id&apos;];</span><br><span class="line">                var xhr = new Xhrfactory();</span><br><span class="line">                xhr.get(_self.resourceJavascriptList[i][&apos;url&apos;], null, function(data) &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        localStorage.setItem(scriptId, data);</span><br><span class="line">                    &#125; catch (oException) &#123;</span><br><span class="line">                        console.log(&apos;oException&apos;,oException);</span><br><span class="line">                        if (oException.name == &apos;QuotaExceededError&apos;) &#123;</span><br><span class="line">                            localStorage.clear();</span><br><span class="line">                            localStorage.setItem(scriptId, data);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;)(i);</span><br><span class="line">            // XXX addhtml 加载到页面</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    startup: function() &#123;</span><br><span class="line">        // 满足一下条件</span><br><span class="line">        var _self = this;</span><br><span class="line">        if (localStorageSign === &apos;on&apos; &amp;&amp; !this.isIE &amp;&amp; window.localStorage) &#123;</span><br><span class="line"></span><br><span class="line">            if (this.needUpdate === true) &#123;</span><br><span class="line">                //不需要更新</span><br><span class="line">                return (function() &#123;</span><br><span class="line"></span><br><span class="line">                    for (var i = 0; i &lt; _self.resourceJavascriptList.length; i++) &#123;</span><br><span class="line">                        // 获取本地缓存列表 输入到html上</span><br><span class="line">                        var scriptId = _self.resourceJavascriptList[i][&apos;id&apos;];</span><br><span class="line">                        // 把我们的列表中的js文件 渲染到页面</span><br><span class="line"></span><br><span class="line">                        // 去读取本地文件</span><br><span class="line">                        window.mDomUtils.addJavascriptByInline(scriptId);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)();</span><br><span class="line"></span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                // 保存我们请求到的js文件</span><br><span class="line">                return (function() &#123;</span><br><span class="line">                    _self.saveSdk();</span><br><span class="line">                    for (var i = 0; i &lt; _self.resourceJavascriptList.length; i++) &#123;</span><br><span class="line">                        // 获取本地缓存列表 输入到html上</span><br><span class="line">                        var scriptId = _self.resourceJavascriptList[i][&apos;id&apos;];</span><br><span class="line">                        // 把我们的 列表中的js文件 渲染到页面</span><br><span class="line"></span><br><span class="line">                        // 去读取本地文件</span><br><span class="line">                        window.mDomUtils.addJavascriptByInline(scriptId);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                //***</span><br><span class="line">                // 把从网络获取到的javascript 输入到html上；</span><br><span class="line">                // save localstroage</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line"></span><br><span class="line">            return function() &#123;</span><br><span class="line">                alert(2);</span><br><span class="line">                    for (var i = 0; i &lt; resourceJavascriptList.length; i++) &#123;</span><br><span class="line">                        // 获取本地缓存列表 输入到html上</span><br><span class="line">                        var scriptId = resourceJavascriptList[i][&apos;scriptId&apos;];</span><br><span class="line">                        // 把我们的列表中的js文件 渲染到页面</span><br><span class="line"></span><br><span class="line">                        // 读取网络上得到的资源</span><br><span class="line">                        window.mDomUtils.addJavascriptByLink(scriptId, resourceJavascriptList[i][&apos;url&apos;]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                //***</span><br><span class="line">                // 把从网络获取到的javascript 输入到html上；</span><br><span class="line">                // 原始方法加载javascriopt</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    // 写入本地localstorage</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">window.mDomUtils = &#123;</span><br><span class="line">    // 内联方式添加javascript</span><br><span class="line">    addJavascriptByInline: function(scriptId) &#123;</span><br><span class="line">        var script = document.createElement(&apos;script&apos;);</span><br><span class="line">        script.setAttribute(&apos;type&apos;, &apos;text/javascript&apos;);</span><br><span class="line">        script.id = scriptId;</span><br><span class="line">        var heads = document.getElementsByTagName(&apos;head&apos;);</span><br><span class="line">        if (heads.lenght) &#123;</span><br><span class="line">            heads[0].appendChild(script);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            document.documentElement.appendChild(script);</span><br><span class="line">        &#125;</span><br><span class="line">        script.innerHTML = localStorage.getItem(scriptId);</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    // 外链方式添加javascript</span><br><span class="line">    addJavascriptByLink: function(scriptId, url) &#123;</span><br><span class="line">        var script = document.createElemet(&apos;script&apos;);</span><br><span class="line">        script.setAttribute(&apos;type&apos;, &apos;text/javascript&apos;);</span><br><span class="line">        script.setAttribute(&apos;src&apos;, url);</span><br><span class="line">        script.id = scriptId;</span><br><span class="line">        var heads = document.getElementsByTagName(&apos;head&apos;);</span><br><span class="line">        if (heads.length) &#123;</span><br><span class="line">            heads[0].appendChild(script);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            document.documentElement.appendChild(script);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    // 外链方式添加css</span><br><span class="line"></span><br><span class="line">    addCssByLink: function(url) &#123;</span><br><span class="line">        var doc = document;</span><br><span class="line">        var link = doc.createElemet(&apos;link&apos;);</span><br><span class="line">        link.setAttribute(&apos;type&apos;, &apos;text/css&apos;);</span><br><span class="line">        link.setAttribute(&apos;rel&apos;, &apos;stylesheet&apos;);</span><br><span class="line">        link.setAttribute(&apos;href&apos;, url);</span><br><span class="line">        var heads = doc.getElementsByTagName(&apos;head&apos;);</span><br><span class="line">        if (heads.length) &#123;</span><br><span class="line">            heads[0].appendChild(link);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            doc.documentElement.appendChild(link);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    // 外链方式添加css</span><br><span class="line"></span><br><span class="line">        addCssByLink: function(cssString) &#123;</span><br><span class="line">        var doc = document;</span><br><span class="line">        var link = doc.createElemet(&apos;link&apos;);</span><br><span class="line">        link.setAttribute(&apos;type&apos;, &apos;text/css&apos;);</span><br><span class="line">        link.setAttribute(&apos;rel&apos;, &apos;stylesheet&apos;);</span><br><span class="line"></span><br><span class="line">        if (link.stylesheet) &#123;</span><br><span class="line">            // IE支持</span><br><span class="line">            link.stylesheet.cssText = cssString;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // w3c</span><br><span class="line">            var cssText = doc.createTextNode(cssString);</span><br><span class="line">            link.appendChild(cssText);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        var heads = doc.getElementsByTagName(&apos;head&apos;);</span><br><span class="line">        if (heads.length) &#123;</span><br><span class="line">            heads[0].appendChild(link);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            doc.documentElement.appendChild(link);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>觉得比较好的，一个是它判断 IE 的方法，利用了只有 IE 可以识别的特性。另外一个是它判断 localStorage 缓存的大小。</p>
+<p>还有一个是它利用了自执行函数来去做其实只用去初始化一次的工作。比如判断本地的缓存是否是需要跟新（根据版本号），而不是做成一个函数每次去执行一次。</p>
+<p>不好的就是，可能是因为现场写代码，随机想的，所以有些地方可以封装，都没有封装好。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;记录下最近零零散散学的几个知识点。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;图片显示方式&quot;&gt;&lt;a href=&quot;#图片显示方式&quot; class=&quot;headerlink&quot; title=&quot;图片显示方式&quot;&gt;&lt;/a&gt;图片显示方式&lt;/h1&gt;&lt;p&gt;有的时候看到网络上有些图示由模糊变清晰，有些是一
+    
+    </summary>
+    
+    
+      <category term="知识点" scheme="http://sevencai.github.io/tags/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+  </entry>
   
   <entry>
     <title>小程序使用 component 组件重构</title>
@@ -1283,237 +1356,6 @@ git push origin dev
     
       &lt;blockquote&gt;
 &lt;p&gt;这一篇文章主要学习和记录分支管理和多人合作。我们知道 Git 的分支管理非常快，这是因为 Git 只是生成一个指向当前版本的指针。但是以前的很多管理软件都是生成一份代码的物理拷贝，可以想象，如果代码很大，是有多慢。但 Git 的这个特点，也需要我们
-    
-    </summary>
-    
-      <category term="工具/配置" scheme="http://sevencai.github.io/categories/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
-    
-    
-      <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git 基础知识重新梳理</title>
-    <link href="http://sevencai.github.io/2016/09/20/Git-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E9%87%8D%E6%96%B0%E6%A2%B3%E7%90%86/"/>
-    <id>http://sevencai.github.io/2016/09/20/Git-基础知识重新梳理/</id>
-    <published>2016-09-20T15:18:31.000Z</published>
-    <updated>2016-12-12T02:51:54.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>以前在学校的时候用git基本上就那几个命令，一般是用于push到github上做备份。比较容易，最近涉及到了git的一些别的用途，多人合作，创建分支等，发现自己有些命令还是不熟悉，需要老是查文档，所以重头开始学习，并做记录方便以后查阅，下面是我的整理。</p>
-</blockquote>
-<hr>
-<h3 id="Git的优点"><a href="#Git的优点" class="headerlink" title="Git的优点"></a><strong>Git的优点</strong></h3><h4 id="集中式-vs-分布式"><a href="#集中式-vs-分布式" class="headerlink" title="集中式 vs 分布式"></a><strong>集中式 vs 分布式</strong></h4><p>集中式版本控制系统，版本库是集中存放在中央服务器，必须联网工作。因此如果是局域网带宽大，尚可。如果是在互联网上，可能会导致花费时间长。</p>
-<p>分布式版本控制系统，每个人电脑里都有完整的版本库， 安全性高，一个人电脑坏了，可以复制别的人的即可。不需要联网工作。a和b改了相同的文件，互相推送到对方的电脑，就可以看到修改的内容。</p>
-<p><img src="http://www.cailidan.cn/images/svnvsgit.png.jpg" alt="集中式 vs 分布式"></p>
-<blockquote>
-<p>在实际使用分布式版本控制系统的时候，其实很少在两人之间的电脑上推送版本库的修改，因为可能你们俩不在一个局域网内，两台电脑互相访问不了，也可能今天你的同事病了，他的电脑压根没有开机。因此，分布式版本控制系统通常也有一台充当“中央服务器”的电脑，但这个服务器的作用仅仅是用来方便“交换”大家的修改，没有它大家也一样干活，只是交换修改不方便而已。           –from <a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/001374027586935cf69c53637d8458c9aec27dd546a6cd6000" target="_blank" rel="noopener">廖雪峰的git网站</a></p>
-</blockquote>
-<p>那这个时候有人会问，包括我自己最开始也觉得奇怪：</p>
-<p>分布式的版本控系统如果要在多个人之间协作不也是需要一个像github一样的的远程版本库吗，这与集中式的有什么区别呢？</p>
-<p><strong>区别在于，Git不仅包含代码库还包含了历史库，你每一次clone代码都是一个完整的和中央仓库一模一样的库。意味着你本地与中央仓库一样都有所有的提交修改记录。而SVN的只有代码库是在本地，其历史库实在中央仓库，因此每次当我们提交和比对代码的时候都要连接中央仓库才可以。这也是我们为什么说Git不需要联网的一个原因。</strong></p>
-<p>所以主要差别就在于历史版本维护的位置。一句话总结就是：<strong>分布式版本控制的每个节点都是完整仓库。这里的每个节点就是我们的终端的意思。</strong></p>
-<hr>
-<h4 id="Git-原理-工作区和暂存区"><a href="#Git-原理-工作区和暂存区" class="headerlink" title="Git 原理-工作区和暂存区"></a><strong>Git 原理-工作区和暂存区</strong></h4><p>有过一点点认识的童鞋都知道一些基本操作，比如 <code>git add , git commit</code> 为什么我们不一次性进行 commit 操作，反而要执行这么多步呢？ 所以我们一定要了解 Git 工作原理，才能够理解下面的命令的一些意思。</p>
-<p><img src="http://www.cailidan.cn/images/gitgongzuoqu.png" alt="git 原理结构"></p>
-<p>上面这张图中，我们可以认识到：</p>
-<p><strong>工作区可以当成你写代码的地方。</strong></p>
-<p>在你通过 <code>git init</code> 命令之后，会在你的文件夹下生成一个 .git 文件，这个我们称之为 git 的版本库。 它不算做工作区，在这个版本库里又包括两个部分，第一个是暂存区 Stage ，第二个是 Git 为我们自动创建的第一个分支  master ，以及指向 master 的一个指针叫 HEAD 。我们一般不要去动这个 .git 文件，否则可能破坏我们的版本库。</p>
-<p>那么当我们通过 git add 的时候，其实是把工作区的更改，提交到了暂存区 stage, 然后我们再通过 git commit 提交到 master 主分支。</p>
-<p>通过下面一张图，我们可以看的更清楚。</p>
-<p><img src="http://www.cailidan.cn/images/gitwork.png" alt="git 原理结构-学习并改自from 廖雪峰"></p>
-<hr>
-<h3 id="仓库-版本库-Repository"><a href="#仓库-版本库-Repository" class="headerlink" title="仓库/版本库-Repository"></a>仓库/版本库-Repository</h3><h4 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a><strong>创建版本库</strong></h4><p>如何创建版本库？</p>
-<pre><code>//初始化一个git仓库
-git init
-//添加文件到git仓库,可多次使用
-git add &lt;file1&gt;
-git add &lt;file2&gt;
-git commit -m &quot;说明&quot;
-//掌握仓库当前的状态
-git status
-//查看修改内容
-git diff &lt;file1&gt;
-//提交日志
-git log (--pretty=oneline)
-</code></pre><p>-m 后面输入的是本次提交的说明,最好有意义。通过 commit 我们可以一次提交很多文件，所以可以 add 多次。</p>
-<blockquote>
-<p>首先这里再明确一下，所有的版本控制系统，其实只能跟踪文本文件的改动，比如TXT文件，网页，所有的程序代码等等，Git也不例外。版本控制系统可以告诉你每次的改动，比如在第5行加了一个单词“Linux”，在第8行删了一个单词“Windows”。而图片、视频这些二进制文件，虽然也能由版本控制系统管理，但没法跟踪文件的变化，只能把二进制文件每次改动串起来，也就是只知道图片从100KB改成了120KB，但到底改了啥，版本控制系统不知道，也没法知道。 – from <a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/0013743256916071d599b3aed534aaab22a0db6c4e07fd0000" target="_blank" rel="noopener">廖雪峰的git网站</a></p>
-</blockquote>
-<hr>
-<h4 id="版本回退"><a href="#版本回退" class="headerlink" title="版本回退"></a><strong>版本回退</strong></h4><p>上面提到了可以使用 <code>git log</code> 来查看提交日志，我们可以看到</p>
-<p><img src="http://www.cailidan.cn/images/gitlog.png" alt="git log"></p>
-<p>上面的 commit 后面有一串用 sha1 计算出来的串，就是 commit_id 了。通过这  样一个个 commit_id 就可以看出我们提交历史的一条线了。那如果我们要回退版本怎么办呢？</p>
-<p>首先 Git 肯定要知道你要回退到哪个版本，很明显，我们不可能再去根据写 commit_id 来判断，因为这个很长的一串让我们重复是很费脑子的事情。</p>
-<p>在 Git 中，我们使用 HEAD 来表示当前的版本， 也就是上面图片里看到的 <code>13d436c4a928e3db2bfd08e15c9a8ce06780da91</code> 这个。 那么上一个版本我们可以使用 HEAD^ , 上上一个用 HEAD^^, 第一百个就是 HEAD~100 。</p>
-<p>具体的回退的命令，我们使用 <code>git reset</code>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard HEAD^</span><br></pre></td></tr></table></figure>
-<p>但是此时我们再往前看， 刚刚第一个 HEAD 版本已经不在了， 这可咋办？ </p>
-<p>如果我们没有关闭刚刚 <code>git log</code> 的窗口， 是可以的。</p>
-<pre><code>//版本号不用写全，git会自动去找
-git reset --hard 13d436c4a...
-</code></pre><p>那如果我关闭了呢？</p>
-<p><img src="http://www.cailidan.cn/images/biaoqing.png" alt="23333"></p>
-<p>Git 提供了一个命令记录你的每一次命令.</p>
-<pre><code>git reflog
-git reset --hard commit_id
-</code></pre><p>这下我们再在 <code>git reflog</code> 里面查看，就可以看到第一个版本的 commit_id了，然后我们再用 reset 命令即可。</p>
-<p>这里我们看到一个现象， 我们使用 git reset 做版本回退的时候，速度非常快，这是为什么呢？ 因为 Git 在内部有个指向当前版本的HEAD指针，当你回退版本的时候， Git 仅仅是把 HEAD 从指向 了新的 commit_id  并将工作区的文件更新。</p>
-<p><img src="http://www.cailidan.cn/images/githead.png.jpg" alt="git head"></p>
-<hr>
-<h4 id="撤销修改"><a href="#撤销修改" class="headerlink" title="撤销修改"></a><strong>撤销修改</strong></h4><p>可能有下面几种情形：</p>
-<ul>
-<li>修改了工作区的内容，但是并没有使用 git add 添加到暂存区， 可以使用 <code>git checkout -- file</code> 。这样就直接丢弃工作区的修改。这种情况使用 <code>git status</code> 会看到下面的提示（not staged）的：</li>
-</ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Changes not staged for commit:</span><br><span class="line">#   (use "git add &lt;file&gt;..." to update what will be committed)</span><br><span class="line">#   (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>不但修改了工作区的文件，而且还使用 git add 添加到了暂存区，如果想要丢弃更改两步走。第一步用命令git reset HEAD file，就回到了第一种情况，第二步按第一种情况来操作。</p>
-<p>  git reset HEAD file<br>  git checkout –file</p>
-</li>
-</ul>
-<p>这种情况使用 <code>git status</code> 会看到下面的提示(to be committed)的：</p>
-<pre><code># Changes to be committed:
-#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
-</code></pre><ul>
-<li>如果已经 <code>git commit</code> 了，也就是已经提交到了 master 分支上，那么应该庆幸还没有 push 到远程，这时候我们利用我们上面一个小节提到的撤销版本即可。 如果已经 push 了的话，就没办法喽 。。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard HEAD^</span><br></pre></td></tr></table></figure>
-<hr>
-<h4 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a><strong>删除文件</strong></h4><p>如果我们执行下面的操作：</p>
-<pre><code>git add test.txt
-git commit -m &quot;add test.txt&quot;
-rm test.txt
-</code></pre><p>意思比较明白，就是我们将 test.txt 添加到了 master 分支，但是我们后来不想要这个文件，就删除了。于是你利用 <code>git status</code> 就会发现如下的信息：</p>
-<pre><code># Changes not staged for commit:
-#   (use &quot;git add/rm &lt;file&gt;...&quot; to update what will be committed)
-#   (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
-#
-#       deleted:    test.txt
-#
-</code></pre><p>告诉我们已经删除了 test.txt ，要做修改了。我们可以用下面的命令来改变我们的更改：</p>
-<pre><code>git add test.txt
-git rm test.txt
-git commit -m &quot;delete test.txt&quot;
-</code></pre><p>那如果我们执行了 <code>rm test.txt</code> 之后，发现我们实际还是想要这个文件的怎么办呢？ 没关系，因为我们版本库里面确实是有这个文件的啊。所以我们利用：</p>
-<pre><code>git checkout -- test.txt
-</code></pre><p>即可恢复到我们最新版本了。<code>git checkout</code> 非常好用，注意一定要加 <code>--</code>  因为如果不加就是切换分支了。它其实就是<strong>利用版本库里面的版本替换工作区的版本</strong>，这样不管是添加，修改，删除都可以瞬间恢复。</p>
-<hr>
-<h3 id="Git-远程操作"><a href="#Git-远程操作" class="headerlink" title="Git  远程操作"></a><strong>Git  远程操作</strong></h3><h4 id="关联并向远程推送分支"><a href="#关联并向远程推送分支" class="headerlink" title="关联并向远程推送分支"></a><strong>关联并向远程推送分支</strong></h4><p>通过以下命令，我们可以关联本地库和远程库并且推送分支。</p>
-<pre><code>//关联库
-git remote add origin git@server-name:path/repo-name.git
-//将本地分支 master  推送到远程分支
-git push -u origin master
-</code></pre><p>注意，这里的 orgin 代表的就是远程仓库的名字， Git 默认这么做，如果改成别的当然也是可以的啦。</p>
-<p>然后就是这里的 -u 是什么意思呢？ </p>
-<blockquote>
-<p>由于远程库是空的，我们第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令。–from 廖雪峰</p>
-</blockquote>
-<p>好，那我们以后如果再推送还要做写什么呢？</p>
-<pre><code>git push origin master
-</code></pre><p>以后每次推送就用这个就可以了。就不需要做     <code>remote add</code> 了。</p>
-<p>这里要强调一下，有很多人都是看着这么用，就这么用了，但是<strong>不知道 origin master 分别代表的什么意思</strong>，就导致以后比如我要把本地的 develope 分支和远程的 master 分支推送怎么写呢？所以强调如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;</span><br></pre></td></tr></table></figure>
-<p><strong>如果省略远程分支名，则表示将本地分支推送与之存在”追踪关系”的远程分支（通常两者同名），如果该远程分支不存在，则会被新建。如果不同名字，我们可以用下面的命令使之关联</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch --set-upstream master origin/next</span><br></pre></td></tr></table></figure>
-<p>上面命令指定 <code>master</code> 分支追踪 <code>origin/next</code> 分支。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
-<p>上面的简写命令就表示的是：将本地的master分支推送到origin主机的master分支。<strong>如果后者不存在，则会被新建。</strong></p>
-<p>千万要注意的是，上面的命令是省略了远程分支名，这是因为一般我们可以认为远程分支和本地分支名相同的原因。那如果我们省略了本地分支名呢？</p>
-<pre><code>//删除 origin 主机上的 master 分支
-git push origin :master
-# 等同于
-git push origin --delete master
-</code></pre><p><strong>如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支。</strong>是不是很可怕。。所以一定要注意了。你还可能见过下面三种用法：</p>
-<pre><code>//将当前分支推送到origin主机的对应分支
-git push origin
-git push
-git push -u origin master
-git push --all origin
-git push --force origin 
-</code></pre><p><code>git push origin</code> 如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略。</p>
-<p><code>git push</code> 如果当前分支只有一个追踪分支，那么主机名都可以省略。</p>
-<p><code>git push -u origin master</code> 如果当前分支与多个主机存在追踪关系，则可以使用-u选项指定一个默认主机，这样后面就可以不加任何参数使用git push。(此命令表示将master分支推送到origin主机的master分支，同时指定了 orgin 为默认分支，以后可以直接使用 <code>git push</code> 了。)</p>
-<p><code>git push --all origin</code> 表示将所有本地分支都推送到origin主机。如果你远程主机上的版本比本地的要新，你可以使用 <code>git push --force origin</code> 这样导致远程主机上更新的版本被覆盖。所以要慎用。</p>
-<hr>
-<h3 id="git-clone-pull-fetch-remote"><a href="#git-clone-pull-fetch-remote" class="headerlink" title="git clone/pull/fetch/remote"></a><strong>git clone/pull/fetch/remote</strong></h3><p>刚刚讲了最重要的 <code>git push</code> 我们下面来看看稍微简单一点的 其他命令。</p>
-<hr>
-<h4 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a><strong>git clone</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone &lt;版本库的网址&gt;</span><br><span class="line">git clone &lt;版本库的网址&gt; &lt;本地目录名&gt;</span><br></pre></td></tr></table></figure>
-<p>后面的网址有很多情况，比如以 http, https, ssh, ftp等等。其中 Git 协议的下载速度会稍微快一些，然后 SSH就是要认证了。</p>
-<pre><code>git clone https://github.com/Christine95/Blog.git
-git clone git@github.com:Christine95/Blog.git
-
-git clone git@github.com:Christine95/Blog.git myBlog
-
-git clone -o Blog https://github.com/Christine95/Blog.git
-</code></pre><p>如果不指定后面的本地目录名(myBlog)的话，就是与远程库相同的名字。</p>
-<p>如果不指定 -o 选项，我们通过 <code>git remote -v</code> 查询时，就是名字默认为 origin, 指定就是刚刚的 Blog 啦。</p>
-<hr>
-<h4 id="git-remote"><a href="#git-remote" class="headerlink" title="git remote"></a><strong>git remote</strong></h4><pre><code>//只有名字
-git remote
-//有名字有路径
-git remote -v
-//远程主机详情
-git remote show &lt;主机名&gt;
-//添加远程主机
-git remote add &lt;主机名&gt; &lt;网址&gt;
-//删除远程主机
-git remote rm &lt;主机名&gt;
-//重命名
-git remote rename &lt;原主机名&gt; &lt;新主机名&gt;
-</code></pre><p>我感觉这个就没啥说的了。经常用就好了。</p>
-<hr>
-<h4 id="git-fetch"><a href="#git-fetch" class="headerlink" title="git fetch"></a><strong>git fetch</strong></h4><p>当我们远程主机有了更新后，可以使用 <code>git fetch</code> 取回这些更新至本地。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch</span><br><span class="line">git fetch &lt;远程主机名&gt; &lt;分支名&gt;</span><br></pre></td></tr></table></figure>
-<p><code>git fetch</code> 表示将某个远程主机的更新，全部取回本地。<br><code>git fetch origin develope</code> 表示只更新远程主机的 develope 分支。</p>
-<p>注意：取回了更新后，必须用”远程主机名/分支名”的形式读取。如我们上面的例子，就必须用 <code>origin/develope</code> 读取。比如：</p>
-<pre><code>git branch -r 
-//会得到类似：
-origin/HEAD -&gt; origin/master
-origin/develope
-origin/html
-origin/master
-origin/test_d002
-
-git branch -a 
-//会得到类似：
-remotes/origin/HEAD -&gt; origin/master
-remotes/origin/develope
-remotes/origin/html
-remotes/origin/master
-remotes/origin/test_d002
-</code></pre><p><code>git branch</code> 命令的 -r 选项，可以用来查看远程分支，-a 选项查看所有分支。<br>这里注意： <code>git pull</code> = <code>git fetch</code> + <code>git merge</code></p>
-<hr>
-<h4 id="git-pull"><a href="#git-pull" class="headerlink" title="git pull"></a><strong>git pull</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;</span><br></pre></td></tr></table></figure>
-<p>注意不要和 <code>git push</code> 的&lt;本地&gt;:&lt;远程&gt; 弄混淆了。有例子如下：</p>
-<pre><code>//将orgin主机上的next分支取回并和本地master分支合并
-git pull origin next:master
-
-//将origin主机的next分支取回并和当前分支合并
-git pull origin next
-
-//上面一句命令等于下面两条命令
-git fetch origin
-git merge origin/next
-</code></pre><p>有一个地方需要注意：</p>
-<p><strong>当我们使用某些命令的时候，Git会自动在本地分支和远程分支之间，建立一种追踪关系，也就是说关联起来啦。比如你使用 git clone 的时候，会默认将远程主机和本地分支建立相同的名字。比如你克隆的是远程的 develope 分支，那么你本地克隆下来也会是 develope 分支，然后自动追踪 origin/develope分支。</strong></p>
-<p>但是，比如说有这样一种情况，我就遇到过，同事让我看一个项目，我很自然的去 clone master 分支了。这个时候发现 master 分支并不对，我应该去 clone develope 分支的。因为同事有些代码在 develope 分支上，不再 master 分支上。这个时候，我当然可以去利用 <code>git pull origin develope master</code>，但是为了方便，我最好这么做：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch --set-upstream master origin/develope</span><br></pre></td></tr></table></figure>
-<p>这样就把本地的 master 分支和远程的 develope 分支关联啦。这样我们就可以用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin</span><br></pre></td></tr></table></figure></p>
-<p>来 pull 代码啦。这样连主机名都省略了。只用告诉从那个远程主机 pull 就可以。</p>
-<hr>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>本来想这一篇文章能总结完的，结果连分支管理都没讲完。还是决定下一篇文章再将啦。要不然篇幅太长，就不适合阅读了。感谢下面两篇文章，让我清晰了很多，也准备小额资助感谢下廖雪峰老师的网站啦，毕竟是花心血写这么好的教程：</p>
-<ol>
-<li><a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137621280731812dec22ecc9b44f4b2ca1c680f181a5b000" target="_blank" rel="noopener">廖雪峰的git教程</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2014/06/git_remote.html" target="_blank" rel="noopener">阮一峰的git文章</a></li>
-</ol>
-<p>最后贴一张阮一峰老师这个文字里的一幅图，我觉得太棒了。<br><img src="http://cailidan.cn/images/fromruanyifeng.png" alt="总结图片来自阮一峰老师文章"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;以前在学校的时候用git基本上就那几个命令，一般是用于push到github上做备份。比较容易，最近涉及到了git的一些别的用途，多人合作，创建分支等，发现自己有些命令还是不熟悉，需要老是查文档，所以重头开始学习，并做记录方便以后查阅，下面是我的整
     
     </summary>
     
