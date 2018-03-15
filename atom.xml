@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-03-08T08:34:59.000Z</updated>
+  <updated>2018-03-15T13:17:03.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,105 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>进阶我的Vim</title>
+    <link href="http://sevencai.github.io/2018/03/15/%E8%BF%9B%E9%98%B6%E6%88%91%E7%9A%84Vim/"/>
+    <id>http://sevencai.github.io/2018/03/15/进阶我的Vim/</id>
+    <published>2018-03-15T13:02:14.000Z</published>
+    <updated>2018-03-15T13:17:03.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>这两天做了一个很繁琐的需求，简单的来说，就是把一个产品配置的复杂的excel表，转入为json, 然后再用 javascript 脚本拼接为对应 php 页面可执行代码。繁琐的是配置多且杂，并且产品的归类excel 转换为的 json 并不可用。于是我还需要在他们的excel表里，进行更改。其实这个工作应该做一个配置台，让产品去维护。 以后就不用开发手动维护这个配置表。</p>
+</blockquote>
+<p>总之是提前做完了，虽然做的过程中, 不是怀着非常愉快的心情做的。晚上剩了点多的时间，把 vim 稍微进阶了一点。以前的基本命令都已经熟练使用了。现在总结下用的不是很熟的几个地方。</p>
+<hr>
+<h1 id="几个还没有用熟练的指令"><a href="#几个还没有用熟练的指令" class="headerlink" title="几个还没有用熟练的指令"></a>几个还没有用熟练的指令</h1><p><code>cw</code> 替换从光标所在位置后到一个单词结尾的字符, 不同于<code>a,i,o</code>哦。</p>
+<p><code>0,$,^,g_</code> 的区别和联系。<code>0,$</code>是到行头和行尾，<code>^,g_</code>到非blank字符位置。</p>
+<p><code>ctrl+r</code> 和 <code>u</code>, 因为 WebStorm 里这些都还可以用以前的 <code>ctrl+z</code> 之类的执行。所以这两个命令有点被我忽略了。其实应该改过来。</p>
+<p><code>w</code> 到下一个单词的开头。<code>e</code>  到下一个单词的结尾。如果你认为单词是由blank字符分隔符，那么你需要使用大写的E和W。</p>
+<hr>
+<h1 id="查找超能力"><a href="#查找超能力" class="headerlink" title="查找超能力"></a>查找超能力</h1><ol>
+<li><code>fa</code>  到下一个为a的字符处，你也可以fs到下一个为s的字符。</li>
+<li><code>t,</code>  到逗号前的第一个字符。逗号可以变成其它字符。</li>
+<li><code>3fa</code>  在当前行查找第三个出现的a。</li>
+<li><code>F和T</code> 和 <code>f和t</code> 一样，只不过是相反方向。</li>
+<li><code>/pattern</code>  搜索 <code>pattern</code>  的字符串, 如果又多个，按n到下一个。</li>
+<li><code>t,</code> 到逗号前的第一个字符。逗号可以变成其它字符。</li>
+<li><code>dt.</code> 删除当前字符到<code>.</code>为止的所有内容。</li>
+</ol>
+<p>注意补充下<code>normal</code>模式下按<code>/</code>即可进入查找模式， n为下一个，N为上一个。如果是 <code>/singer\c</code>代表查找singer,并且大小写不敏感。因为默认情况下，它是大小写敏感的。相应的，<code>\C</code>代表大小写敏感。</p>
+<p>你还可以在此模式下加入正则表达式，比如<code>/inger$</code> ，这时以<code>inger</code>结尾的都会被查出来。</p>
+<p>在<code>normal</code>模式下的查找，还可以使用直接按<code>*</code>,来查找当前光标所在的单词。这时候的查找的单词前后都是空白字符或者标点符号。例如当前为<code>foo</code>， 可以匹配<code>foo bar</code>中的<code>foo</code>，但不可匹配<code>foobar</code>中的<code>foo</code>。<strong>经常用于查找函数</strong>。如果想要包含关系，使用<code>g*</code>即可。</p>
+<hr>
+<h1 id="替换能力"><a href="#替换能力" class="headerlink" title="替换能力"></a>替换能力</h1><p>刚刚提到了查找的能力，<code>normal</code>下使用<code>/</code>即可进入查找模式。替换模式则是使用<code>:s</code>。具体情况如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>:%s/singer/author/g</code>会在全局范围(<code>%</code>)查找<code>singer</code>并替换为<code>author</code>，所有出现都会被替换（<code>g</code>）。如果使用<code>:s/singer/author</code>则只会在当前行替换一个。</p>
+<p>这里的<strong>作用范围</strong>可以总结如下：</p>
+<blockquote>
+<ol>
+<li>%全文查找， 如 :%s/singer/author/g</li>
+<li>不填写默认当前行，如:s/singer/author/g</li>
+<li>:5,12s/singer/author/g, 第5-12行</li>
+<li>:.,+2s/singer/author/g， 当前行和接下来的2行。 注意<code>.</code>是当前行， <code>,</code>是分隔符</li>
+<li>:’&lt;,’&gt;s/singer/author/g把选区内的内容替换。注意下：在Visual模式下选择区域后输入<code>:</code>，Vim即可自动补全为 <code>:&#39;&lt;,&#39;&gt;</code>。WebStorm也会做同样的事情。</li>
+</ol>
+</blockquote>
+<p>这里的<strong>替换标识</strong>可以总结如下代表：</p>
+<blockquote>
+<ol>
+<li><code>%s/singer/author</code>, 空标识表示：只替换从光标位置开始，目标的第一次出现</li>
+<li><code>%s/singer/author/g</code>, global 表示全局</li>
+<li><code>i</code>表示大小写不敏感查找，<code>I</code>表示大小写敏感</li>
+<li><code>:%s/singer/author/gc</code> c表示全局查找后替换需要被确认。它可能会弹出一句：Replace with author ?  (y/n/…)之类的东西。</li>
+</ol>
+</blockquote>
+<hr>
+<h1 id="区域选则-lt-action-gt-a-lt-object-gt-以及-lt-action-gt-i-lt-object-gt"><a href="#区域选则-lt-action-gt-a-lt-object-gt-以及-lt-action-gt-i-lt-object-gt" class="headerlink" title="区域选则 &lt;action&gt;a&lt;object&gt;以及 &lt;action&gt;i&lt;object&gt;"></a>区域选则 <code>&lt;action&gt;a&lt;object&gt;</code>以及 <code>&lt;action&gt;i&lt;object&gt;</code></h1><p>其实这个我已经很熟了，今天看到了别人的总结（注：下面的这段为引用内容，引用地址为：<a href="https://coolshell.cn/articles/5426.html" target="_blank" rel="noopener">coolshell</a>）。</p>
+<blockquote>
+<p>action可以是任何的命令，如 <code>d</code>  (删除),  <code>y</code>  (拷贝),  <code>v</code>  (可以视模式选择)。</p>
+<p>object 可能是： <code>w</code>  一个单词， <code>W</code>  一个以空格为分隔的单词， <code>s</code>  一个句字， <code>p</code>  一个段落。也可以是一个特别的字符：<code>&quot;、</code> <code>&#39;、</code> <code>)、</code> <code>}、</code> <code>]。</code></p>
+</blockquote>
+<p>a和i的区别也很好分。i不包括，a包括了。看下面这个例子。</p>
+<p>假设你有一个字符串 <code>(map (+) (&quot;foo&quot;))</code>.而光标键在第一个 <code>o</code> 的位置。</p>
+<blockquote>
+<ul>
+<li><code>vi&quot;</code>  → 会选择 <code>foo</code>.</li>
+<li><code>va&quot;</code>  → 会选择 <code>&quot;foo&quot;</code>.</li>
+<li><code>vi)</code>  → 会选择 <code>&quot;foo&quot;</code>.</li>
+<li><code>va)</code>  → 会选择<code>(&quot;foo&quot;)</code>.</li>
+<li><code>v2i)</code>  → 会选择 <code>map (+) (&quot;foo&quot;)</code></li>
+<li><code>v2a)</code>  → 会选择 <code>(map (+) (&quot;foo&quot;))</code></li>
+</ul>
+</blockquote>
+<hr>
+<h1 id="VIM-的Visual模式"><a href="#VIM-的Visual模式" class="headerlink" title="VIM 的Visual模式"></a>VIM 的Visual模式</h1><p>vim 分为3中 visual 模式，分别是：</p>
+<h2 id="Visual-默认模式："><a href="#Visual-默认模式：" class="headerlink" title="Visual 默认模式："></a>Visual 默认模式：</h2><p><code>normal</code> 下 ，按 v 进入 <code>visual</code> 默认模式。这个模式下可以 hjkl 进行各种上下移动。选中文本后，可以进行 y,d,p,^,$等操作。</p>
+<h2 id="Visual-Line-模式"><a href="#Visual-Line-模式" class="headerlink" title="Visual Line 模式"></a>Visual Line 模式</h2><p><code>normal</code>下，按 V 进入 <code>visual line</code>模式。 使用 j/k键可以选中一行或者多行。进行正行操作。</p>
+<h2 id="Visual-Block-模式"><a href="#Visual-Block-模式" class="headerlink" title="Visual Block 模式"></a>Visual Block 模式</h2><p>按住 <code>ctrl + v</code>, 进入 <code>visual block</code>模式。此模式下，选中想要选中的内容（可以结合$^）。选中后，输入<code>I,i,A,a,C,c</code>等操作，输入想要输入的内容。再按下<code>Esc</code>键，即可全部行都有填入的内容。类似于 sublime。</p>
+<p>注意 I，A，C 的区别，就跟他们原来的意思一样，比如I,A是插入，只是插入的地方可能不同。C是替换。</p>
+<p>比如<code>Ctrl+v jj$</code>到每一行行末，再I，填入<code>;</code>，就可以几行一起填分好了。</p>
+<p><strong>Visual Block 模式下，还可以做下面这些事情</strong>：</p>
+<ul>
+<li>可以结合<code>&lt;&gt;</code>进行移动。</li>
+<li>使用<code>J</code>把选中的行连接起来变成 一行。</li>
+<li>使用<code>=</code>自动给缩进。</li>
+</ul>
+<p>这些功能都很好用。</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这里面的东西，有些大多我都用过，也知道。但是每次去用的时候有时候还要再去查下命令。怪不好的。总结下，以后忘记了就在博客里翻翻吧。开心。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;这两天做了一个很繁琐的需求，简单的来说，就是把一个产品配置的复杂的excel表，转入为json, 然后再用 javascript 脚本拼接为对应 php 页面可执行代码。繁琐的是配置多且杂，并且产品的归类excel 转换为的 json 并不可用。于
+    
+    </summary>
+    
+    
+      <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>记最新几个新的小知识点</title>
@@ -1243,126 +1342,6 @@
     
     
       <category term="WEB开发" scheme="http://sevencai.github.io/tags/WEB%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git 分支管理与多人协作</title>
-    <link href="http://sevencai.github.io/2016/09/20/Git-%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86%E4%B8%8E%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C/"/>
-    <id>http://sevencai.github.io/2016/09/20/Git-分支管理与多人协作/</id>
-    <published>2016-09-20T15:19:04.000Z</published>
-    <updated>2016-12-12T02:28:14.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>这一篇文章主要学习和记录分支管理和多人合作。我们知道 Git 的分支管理非常快，这是因为 Git 只是生成一个指向当前版本的指针。但是以前的很多管理软件都是生成一份代码的物理拷贝，可以想象，如果代码很大，是有多慢。但 Git 的这个特点，也需要我们更好的掌握它的切换，否则很容易造成错误。</p>
-</blockquote>
-<p>在 SF 上看到了一张图片，觉得非常好,图片来源是<a href="https://segmentfault.com/a/1190000005730658" target="_blank" rel="noopener">SF的这篇文章</a>,感谢：</p>
-<p><img src="http://www.cailidan.cn/images/checkoutsf.png" alt="分支管理策略"></p>
-<hr>
-<h4 id="创建与合并分支"><a href="#创建与合并分支" class="headerlink" title="创建与合并分支"></a><strong>创建与合并分支</strong></h4><p>创建和合并分支都可以看作是指针的移动。我们看下下面这样一套流程，这是最常见的：</p>
-<pre><code>git checkout -b dev   //创建一个新的dev（-b创建并切换）
-git add file.txt //在dev分支中修改 file.txt 文件
-git commit -m &quot;add change on dev&quot;  //到dev分支提交新的代码
-git checkout master   //切换到主分支
-git merge dev  //在主分支上合并dev分支
-git branch -d dev  //dev工作完成，删除该dev分支
-</code></pre><p>我画了一张图用于描述这个过程：</p>
-<p><img src="http://www.cailidan.cn/images/branchprocess.png" alt="分支过程"></p>
-<p>下面我们学习一些基本的命令：</p>
-<pre><code>查看分支：git branch
-
-创建分支：git branch &lt;name&gt;
-
-切换分支：git checkout &lt;name&gt;
-
-创建+切换分支：git checkout -b &lt;name&gt;
-
-合并某分支到当前分支：git merge &lt;name&gt;
-
-删除分支：git branch -d &lt;name&gt;
-</code></pre><p>所以： <code>git checkout -b dev</code> =     <code>git branch dev</code> +  <code>git checkout dev</code>。</p>
-<hr>
-<h4 id="合并分支碰到的问题"><a href="#合并分支碰到的问题" class="headerlink" title="合并分支碰到的问题"></a><strong>合并分支碰到的问题</strong></h4><p>有时候我们会碰到下面这个问题：</p>
-<p><img src="http://www.cailidan.cn/images/rush.jpg" alt="问题描述"></p>
-<p>可以看到，我们新建了一个 feature1 分支，这个时候比如修改了 a 文件的第一行代码。然后当我们切换到 master 分支的时候，发现 master 也已经有了新版本。然后我们按照上面将的方法 切换到 master 分支，然后利用 <code>git merge feature1</code> 来进行合并。但是发现， master 分支也是修改了 a 文件的第一行代码，这时候我们就要手动去解决冲突了。并且会在 a 文件发现下列问题：</p>
-<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-Creating a new branch is a
-=======
-Creating a new branch is b
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature1
-</code></pre><p>Git 利用 &lt;&lt;&lt;&lt;&lt;&lt;&lt; ======= &gt;&gt;&gt;&gt;&gt;&gt;&gt;来表明冲突的地方，我们手动解决后再进行简单的合并就没有问题了。然后再删除 feature1 分支。</p>
-<p><img src="http://www.cailidan.cn/images/rushafter.jpg" alt="解决冲突后"></p>
-<p>试试 <code>git log --graph</code>这个命令，你会发现分支合并图。</p>
-<p><img src="http://www.cailidan.cn/images/gitloggraph.png" alt="git log --graph"></p>
-<p>合并分支时，有时候 Git 会用 Fast forward 模式，但这种模式下，删除分支后，会丢掉分支信息。如果要强制禁用 Fast forward 模式，Git 就会在 merge 时生成一个新的 commit ，这样，从分支历史上就可以看出分支信息。可以用 –no-ff 参数，表示禁用 Fast forward 。</p>
-<pre><code>git merge --no-ff -m &quot;no-ff merge&quot; develope  //or
-git merge --no-ff develop
-</code></pre><p>看下下面这张图开了解下是否通过 –no-ff 的区别。</p>
-<p><img src="http://www.cailidan.cn/images/differnoff.jpg" alt="有无--no-ff的区别"></p>
-<p>正确的分支管理策略应该是这样的。</p>
-<p><img src="http://www.cailidan.cn/images/correctManage.png" alt="图片来自廖雪峰网站git教程"></p>
-<p>每个人干自己的活，在自己的分支上工作，别人不受影响也看不到，然后一定时候合并到 dev 分支上，这样大家就可以看到了。然后要到一定的时候发版本再合并到 git 分支上。</p>
-<hr>
-<h4 id="修复bug分支"><a href="#修复bug分支" class="headerlink" title="修复bug分支"></a><strong>修复bug分支</strong></h4><p>比如我当前在dev分支工作，此时工作还没有完成不能够 merge 到master 分支，但是这个时候发现有一个 bug 需要修复。怎么破呢？</p>
-<p>Git 还提供了一个 stash 功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作。</p>
-<pre><code>git stash //保存现场
-git status //发现现场是干净
-git checkout master  //切换到 master 分支修复 bug
-git checkout -b bug  //在 master 分支上 新建分支 bug
-git add bug001.txt
-git commit -m &quot;修复bug&quot;  //提交修改
-git checkout master    //切换到主分支
-git merge --no-ff -m &quot;merged bug&quot; bug  //合并 bug 分支
-git branch -d bug  //删除 bug 分支
-</code></pre><p>好，这时候我们已经完成了 bug 分支的修改。我们要会到我们的 dev 分支来继续我们没有完成的工作了。进行如下的过程。</p>
-<pre><code>git checkout dev 
-git status  //nothing to commit
-git stash list  //查看现场
-
-git stash apply //恢复现场
-git stash drop  //删除 stash
-git stash pop  //恢复并且删除 stash
-
-git stash list //再次查看现场
-</code></pre><p>过程解释如下：首先我们切换到了 dev 分支。<strong>但是查看 <code>git status</code> 发现却是 <code>nothing to commit</code> ，这是怎么回事呢?</strong>  我们可以利用利用 <code>git stash list</code> 查看下。发现 Git 会列出所有保存起来的现场：</p>
-<pre><code>stash@{0}: WIP on dev: 13d436c 
-</code></pre><p>工作现场还在， Git 把 stash 内容存在某个地方了，但是需要恢复一下。</p>
-<pre><code>git stash apply &lt;现场名称&gt;//恢复现场
-git stash drop  //删除 stash
-</code></pre><p>其中 <code>git stash apply stash@{0}</code> 的现场名称可以加可以不加，如果你 <code>git stash</code> 了多下，就需要指明了，如果只有一个，就直接 apply 了。 apply 后，保存的现场还在，但是我们是不需要的，所以我们删除它，再使用 <code>git stash drop</code> 即可。这两个命令合在一起可以用 <code>git stash pop</code> 代替。</p>
-<p>我们再次使用 <code>git stash list</code> 就会发现没有啦。</p>
-<p><strong>所以我们总结下，如果我们要修复 bug，我们可以创建新的bug 分支，然后合并再删除。但如果当前手头工作没有完成时，先要用 <code>git stash</code> 保存现场，然后去修复bug,最后再利用 <code>git stash pop</code> 回到工作现场。</strong></p>
-<p><strong>这时候有人会问，那我不能这样吗？ 虽然我在 dev 分支上进行了修改，我切换到 master 分支上去新建 bug 分支不行吗？这样或得到的不是从 master 分支的代码吗？ dev 上的代码又没有提交到 master 分支上。</strong></p>
-<p>答案是不行的。应为你在 dev 上的改变，即使切换到 master 分支去新建分支都不行，会把你 dev 上的更改到新建的 bug 分支上。可以试下。我做了实验是这样。</p>
-<p>测试的过程中， 我发现了一个好用的命令,比如你新建了一个 bug 分支，这个 bug分支做了修改，但是后来又不想用了，如果直接用普通的<code>git branch -d bug</code> 是删除不了的。要用下面这个命令。</p>
-<pre><code>git branch -D &lt;name&gt;
-</code></pre><p>特别注意下，我们修补了的 bug 分支，最后不仅要同步到 master 分支，可能还要同步到当前工作的 dev 分支。我们可以起名为 fixbug-* 来命名。这样或许比较清楚。</p>
-<p><img src="http://www.cailidan.cn/images/bugcheckout.jpg" alt="fix bug checkout"></p>
-<hr>
-<h4 id="多人协作"><a href="#多人协作" class="headerlink" title="多人协作"></a><strong>多人协作</strong></h4><p>两个小伙伴 A和B：</p>
-<p>A和B 都从远程库中 clone 代码，由于默认 clone 都是 把远程 master 分支和本地 master分支关联了起来，并且名称为 origin。此时 A 和 B 本地都有一个 master 分支，他们都要建立自己的 dev 分支。于是 A 和 B:</p>
-<pre><code>git checkout -b dev
-</code></pre><p>此时 A 和 B 同事把修改推送到 远程 origin 的 dev 上，如果第一次没有 dev 分支，则会自动建立。</p>
-<pre><code>git push origin dev
-</code></pre><p>若 A 和 B 同时修改了同一个地方。这时候 A 推送过去， B  再 <code>git push origin dev</code><br> 的时候，会 push 失败，要解决冲突， 所以 B 需要先  <code>git pull</code> , 但此时 <code>git pull</code> 也会失败，原因是没有指定本地 dev 分支与远程 origin/dev 分支的连接。此时我们</p>
-<pre><code>git branch --set-upstream dev origin/dev
-git pull
-git push origin dev
-</code></pre><hr>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h4><p>到目前为止分支管理就也弄完了。还有一些其他功能，比如打 tag 等等。我觉得不会经常用到的，就不用写在这里了，因为不常用，肯定还会经常忘记，知道有这个东西，以后再来查就行啦。感觉写博客还是很好的。写完这两篇文章，基本上自己的思路就清楚了。以后再遇到问题就来这里面看就好啦。再次感谢<a href="http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="noopener">廖雪峰老师</a>的文章。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;这一篇文章主要学习和记录分支管理和多人合作。我们知道 Git 的分支管理非常快，这是因为 Git 只是生成一个指向当前版本的指针。但是以前的很多管理软件都是生成一份代码的物理拷贝，可以想象，如果代码很大，是有多慢。但 Git 的这个特点，也需要我们
-    
-    </summary>
-    
-      <category term="工具/配置" scheme="http://sevencai.github.io/categories/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
-    
-    
-      <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
     
   </entry>
   
