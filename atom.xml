@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-03-21T03:16:26.000Z</updated>
+  <updated>2018-03-21T03:18:23.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://sevencai.github.io/2018/03/21/isObjEmpty-once-function-template-rendering-cdn%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E8%A7%A3%E9%87%8A/"/>
     <id>http://sevencai.github.io/2018/03/21/isObjEmpty-once-function-template-rendering-cdn的实现和解释/</id>
     <published>2018-03-21T03:03:57.000Z</published>
-    <updated>2018-03-21T03:16:26.000Z</updated>
+    <updated>2018-03-21T03:18:23.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>总结了几种判断 Object 是否为空的方法<br>总结 once function (只执行一次函数代码)<br>实现两种简单的字符串模板替换方法<br>重新归纳总结了下CDN和DNS的名词解释</p>
@@ -31,7 +31,7 @@
 <h1 id="实现简单的模板字符串替换"><a href="#实现简单的模板字符串替换" class="headerlink" title="实现简单的模板字符串替换"></a>实现简单的模板字符串替换</h1><p>经常会有下面的需求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let template = `我叫&#123;&#123;name&#125;&#125;, 我的性别是&#123;&#123;sex&#125;&#125;`</span><br><span class="line">let person = &#123;</span><br><span class="line"> name: &apos;Seven&apos;,</span><br><span class="line"> sex: &apos;female&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(&apos;我叫Seven, 我的性别是female&apos;)</span><br></pre></td></tr></table></figure></p>
 <p>下面是一种简单的实现，把模板和对象，结合为目标字符串，方法1如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const parseTemplateByRegFunc = (obj, template) =&gt; &#123;</span><br><span class="line"> return template.replace(/\&#123;\&#123;(.*?)\&#125;\&#125;/g, (match, key) =&gt; obj[key.trim()])</span><br><span class="line">&#125;</span><br><span class="line">parseTemplateByRegFunc(&#123;name: &apos;seven&apos;&#125;, &apos;我叫&#123;&#123; name&#125;&#125;&apos;) // 我叫seven</span><br></pre></td></tr></table></figure></p>
 <p>方法2比较容易想到，实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const parseTemplateByObjectKeys = (obj, template) =&gt; &#123;</span><br><span class="line"> Object.keys(obj).forEach(key =&gt; &#123;</span><br><span class="line">  template = template.replace(new RegExp(`&#123;&#123;\\s*$&#123;key&#125;\\s*&#125;&#125;`, &apos;g&apos;), obj[key])</span><br><span class="line"> &#125;)</span><br><span class="line"></span><br><span class="line"> return template</span><br><span class="line">&#125;</span><br><span class="line">parseTemplateByObjectKeys(&#123;name: &apos;seven&apos;&#125;, &apos;我叫&#123;&#123; name&#125;&#125;&apos;) // 我叫seven</span><br></pre></td></tr></table></figure></p>
-<p>简单的把 obj 里面每个key 都替换一次。方法1用到的是replace的特性。<br>如果这个方法你经常用到，还可以这么做：</p>
+<p>简单的把 obj 里面每个key 都替换一次。方法1用到的是replace的特性。</p>
 <hr>
 <h1 id="关于-CDN"><a href="#关于-CDN" class="headerlink" title="关于 CDN"></a>关于 CDN</h1><p>DNS 是域名解析系统，它作为将域名和IP地址相互映射的一个分布式数据库，能够使人更方便地访问互联网。其中有一项技术是会找到一个合适的IP给用户。这种根据每台机器的负载量，该机器离用户地理位置的距离等等，返回合适的IP的技术称之为 DNS 重定向。CDN就是利用的DNS重定向技术。</p>
 <blockquote>
