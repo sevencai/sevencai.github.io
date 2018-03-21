@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-03-15T13:17:03.000Z</updated>
+  <updated>2018-03-21T03:16:26.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,50 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>isObjEmpty/once function/template rendering/cdn的实现和解释</title>
+    <link href="http://sevencai.github.io/2018/03/21/isObjEmpty-once-function-template-rendering-cdn%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E8%A7%A3%E9%87%8A/"/>
+    <id>http://sevencai.github.io/2018/03/21/isObjEmpty-once-function-template-rendering-cdn的实现和解释/</id>
+    <published>2018-03-21T03:03:57.000Z</published>
+    <updated>2018-03-21T03:16:26.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>总结了几种判断 Object 是否为空的方法<br>总结 once function (只执行一次函数代码)<br>实现两种简单的字符串模板替换方法<br>重新归纳总结了下CDN和DNS的名词解释</p>
+</blockquote>
+<hr>
+<h1 id="once-function-让函数只执行一次"><a href="#once-function-让函数只执行一次" class="headerlink" title="once function 让函数只执行一次"></a>once function 让函数只执行一次</h1><p>这里利用了闭包很好的保存了内层函数的返回值内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 定义</span><br><span class="line">const once = (fn, context) =&gt; &#123;</span><br><span class="line"> var result</span><br><span class="line"></span><br><span class="line"> return function () &#123;</span><br><span class="line">  if (fn) &#123;</span><br><span class="line">   result = fn.apply(context || this, arguments)</span><br><span class="line">   fn = null</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return result</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 使用</span><br><span class="line">let logOnce = once(function () &#123;</span><br><span class="line"> return Array.prototype.slice.call(arguments)[0]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">logOnce(4,5)  // get 4</span><br><span class="line">logOnce(6,7)  // get 4</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h1 id="实现简单的模板字符串替换"><a href="#实现简单的模板字符串替换" class="headerlink" title="实现简单的模板字符串替换"></a>实现简单的模板字符串替换</h1><p>经常会有下面的需求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let template = `我叫&#123;&#123;name&#125;&#125;, 我的性别是&#123;&#123;sex&#125;&#125;`</span><br><span class="line">let person = &#123;</span><br><span class="line"> name: &apos;Seven&apos;,</span><br><span class="line"> sex: &apos;female&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(&apos;我叫Seven, 我的性别是female&apos;)</span><br></pre></td></tr></table></figure></p>
+<p>下面是一种简单的实现，把模板和对象，结合为目标字符串，方法1如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const parseTemplateByRegFunc = (obj, template) =&gt; &#123;</span><br><span class="line"> return template.replace(/\&#123;\&#123;(.*?)\&#125;\&#125;/g, (match, key) =&gt; obj[key.trim()])</span><br><span class="line">&#125;</span><br><span class="line">parseTemplateByRegFunc(&#123;name: &apos;seven&apos;&#125;, &apos;我叫&#123;&#123; name&#125;&#125;&apos;) // 我叫seven</span><br></pre></td></tr></table></figure></p>
+<p>方法2比较容易想到，实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const parseTemplateByObjectKeys = (obj, template) =&gt; &#123;</span><br><span class="line"> Object.keys(obj).forEach(key =&gt; &#123;</span><br><span class="line">  template = template.replace(new RegExp(`&#123;&#123;\\s*$&#123;key&#125;\\s*&#125;&#125;`, &apos;g&apos;), obj[key])</span><br><span class="line"> &#125;)</span><br><span class="line"></span><br><span class="line"> return template</span><br><span class="line">&#125;</span><br><span class="line">parseTemplateByObjectKeys(&#123;name: &apos;seven&apos;&#125;, &apos;我叫&#123;&#123; name&#125;&#125;&apos;) // 我叫seven</span><br></pre></td></tr></table></figure></p>
+<p>简单的把 obj 里面每个key 都替换一次。方法1用到的是replace的特性。<br>如果这个方法你经常用到，还可以这么做：</p>
+<hr>
+<h1 id="关于-CDN"><a href="#关于-CDN" class="headerlink" title="关于 CDN"></a>关于 CDN</h1><p>DNS 是域名解析系统，它作为将域名和IP地址相互映射的一个分布式数据库，能够使人更方便地访问互联网。其中有一项技术是会找到一个合适的IP给用户。这种根据每台机器的负载量，该机器离用户地理位置的距离等等，返回合适的IP的技术称之为 DNS 重定向。CDN就是利用的DNS重定向技术。</p>
+<blockquote>
+<p>CDN的全称是Content Delivery Network，即内容分发网络。其基本思路是尽可能避开互联网上有可能影响数据传输速度和稳定性的瓶颈和环节，使内容传输的更快、更稳定。通过在网络各处放置节点服务器所构成的在现有的互联网基础之上的一层智能虚拟网络，<strong>CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度</strong>。</p>
+</blockquote>
+<p>上面的内容以前是知道的，这里重新归纳了下。</p>
+<hr>
+<h1 id="isObjEmpty-的实现（判断对象是否为空）"><a href="#isObjEmpty-的实现（判断对象是否为空）" class="headerlink" title="isObjEmpty 的实现（判断对象是否为空）"></a>isObjEmpty 的实现（判断对象是否为空）</h1><p>使用 for … in，如果进入了循坏，代表对象不为空：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for (let key in obj) &#123;</span><br><span class="line"> if (obj.hasOwnProperty(key)) &#123;</span><br><span class="line">  return false</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line">return true</span><br></pre></td></tr></table></figure></p>
+<p>使用 Object keys， 得到空数组，则代表对象为空：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return Object.keys(obj).length === 0</span><br></pre></td></tr></table></figure></p>
+<p>使用 JSON.stringify 和 空对象对比：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return JSON.stringify(obj) === JSON.stringify(&#123;&#125;)</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;总结了几种判断 Object 是否为空的方法&lt;br&gt;总结 once function (只执行一次函数代码)&lt;br&gt;实现两种简单的字符串模板替换方法&lt;br&gt;重新归纳总结了下CDN和DNS的名词解释&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h
+    
+    </summary>
+    
+    
+      <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
+    
+  </entry>
   
   <entry>
     <title>进阶我的Vim</title>
@@ -1292,49 +1336,6 @@
       &lt;p&gt;场景是：当我们做一些活动用来拉新等等时，通常会限制用户只在手Q中打开。比如用户通过微信扫码到了我们H5活动页面。那么我们就可以通过伪协议将手Q拉起，并且将H5页面打开。用户到达的途径有很多，比如通过浏览器，通过微信，通过其他APP应用。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h4 id=&quot;正
-    
-    </summary>
-    
-      <category term="WEB开发" scheme="http://sevencai.github.io/categories/WEB%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="WEB开发" scheme="http://sevencai.github.io/tags/WEB%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>记一次实战 Dom XSS 漏洞</title>
-    <link href="http://sevencai.github.io/2016/10/09/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%9E%E6%88%98-Dom-XSS-%E6%BC%8F%E6%B4%9E/"/>
-    <id>http://sevencai.github.io/2016/10/09/记一次实战-Dom-XSS-漏洞/</id>
-    <published>2016-10-09T14:33:55.000Z</published>
-    <updated>2017-12-19T12:41:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>国庆的前一天，突然有一个漏洞单接到我这里来，当时心里很着急，第一实习生小白，对于我们这种支付部门有漏洞不是很可怕，以前没见过，觉得有点吓人。第二，为什么是国庆的前一天呢，不能发版本。看了下，就是熟悉又不太熟悉的 Dom xss 漏洞。熟悉是因为以前书里经常见，不熟悉是因为以前没有实践过。</p>
-<hr>
-<h4 id="现象及解决办法"><a href="#现象及解决办法" class="headerlink" title="现象及解决办法"></a><strong>现象及解决办法</strong></h4><p>安全部门的同事说，它更改了 uin, 然后就可以输出 用户uin, 也就是俗称的 alert 出来。</p>
-<p>大概是这样一个步骤</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie = <span class="string">"uin=&lt;img src=x onerror=alert('')&gt;"</span></span><br><span class="line">然后刷新了我的网页，由于我获取cookie的方法不严谨，这个时候就alert出来了。</span><br></pre></td></tr></table></figure>
-<p>解决方法当然是换掉我不严谨的获取cookie的方法，正确获取 cookie 的方法应该如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getCookie</span>(<span class="params">b</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> filterXSS = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!e) <span class="keyword">return</span> e;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (; e != <span class="built_in">unescape</span>(e);) e = <span class="built_in">unescape</span>(e);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> r = [<span class="string">"&lt;"</span>, <span class="string">"&gt;"</span>, <span class="string">"'"</span>, <span class="string">'"'</span>, <span class="string">"%3c"</span>, <span class="string">"%3e"</span>, <span class="string">"%27"</span>, <span class="string">"%22"</span>, <span class="string">"%253c"</span>, <span class="string">"%253e"</span>, <span class="string">"%2527"</span>, <span class="string">"%2522"</span>], n = [<span class="string">"&amp;#x3c;"</span>, <span class="string">"&amp;#x3e;"</span>, <span class="string">"&amp;#x27;"</span>, <span class="string">"&amp;#x22;"</span>, <span class="string">"%26%23x3c%3B"</span>, <span class="string">"%26%23x3e%3B"</span>, <span class="string">"%26%23x27%3B"</span>, <span class="string">"%26%23x22%3B"</span>, <span class="string">"%2526%2523x3c%253B"</span>, <span class="string">"%2526%2523x3e%253B"</span>, <span class="string">"%2526%2523x27%253B"</span>, <span class="string">"%2526%2523x22%253B"</span>], a = <span class="number">0</span>; a &lt; r.length; a++) e = e.replace(<span class="keyword">new</span> <span class="built_in">RegExp</span>(r[a], <span class="string">"gi"</span>), n[a]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> e</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> a;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> filterXSS((a=<span class="built_in">document</span>.cookie.match(<span class="built_in">RegExp</span>(<span class="string">"(^|;\\s*)"</span>+b+<span class="string">"=([^;]*)(;|$)"</span>)))?<span class="built_in">unescape</span>(a[<span class="number">2</span>]):<span class="literal">null</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h4 id="探究原因"><a href="#探究原因" class="headerlink" title="探究原因"></a><strong>探究原因</strong></h4><p>那么我的 Cookie 是怎么获取的呢？</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ret = <span class="built_in">document</span>.cookie.match(<span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"(?:^|;\\s)"</span> + name + <span class="string">"=(.*?)(?:;\\s|$)"</span>));</span><br><span class="line"><span class="keyword">return</span> ret ? ret[<span class="number">1</span>] : <span class="string">""</span>;</span><br></pre></td></tr></table></figure>
-<p>为啥我的就不严谨了呢？</p>
-<p>日常我们的cookie 是这样一种格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ts_refer=ADTAGpay.index.header.paycenter; pgv_si=s3636090880; pgv_info=ssid=s9066946176; ts_last=pay.qq.com/; pgv_pvid=2986859684; ts_uid=8406093480</span><br></pre></td></tr></table></figure></p>
-<p><strong>所以上面代码通过 = 和 ; 获得对应的 cookie , 似乎没有错，但是如果一遇到恶意攻击，没有对不合法字符进行任意转义就输出到页面上，就会造成 web 前端的安全大隐患。所以看到最上面我们的好方法里面，是有对不合法字符进行转义的。</strong>所以我们这样处理后，就会变成下面这样一个结果：</p>
-<p><img src="http://www.cailidan.cn/images/xss2.png" alt="转义后"></p>
-<hr>
-<h4 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a><strong>延伸</strong></h4><p>记得我刚来面试的时候，当时 qq 问了我获取 cookie 的方法，那时之前做项目写过获取 cookie 的方法，还是特别傻的方法，代码大概是这样的：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getCookie</span>(<span class="params">c_name</span>)</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">document</span>.cookie.length&gt;<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line"></span><br><span class="line">  c_start=<span class="built_in">document</span>.cookie.indexOf(c_name + <span class="string">"="</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (c_start!=<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">    c_start=c_start + c_name.length+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    c_end=<span class="built_in">document</span>.cookie.indexOf(<span class="string">";"</span>,c_start)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (c_end==<span class="number">-1</span>) c_end=<span class="built_in">document</span>.cookie.length</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">unescape</span>(<span class="built_in">document</span>.cookie.substring(c_start,c_end))</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="string">""</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>没错，就是正则也没用，直接去找 <code>=</code> 和 <code>;</code>之间的串是否与要查找的相同。<strong>这个方法在 w3cShool 上作为了标准方法，现在看来是误导人了。 当时 qq 问我有没有更好的方法，我说正则，但是正则还不能很快的写出来。</strong>那么这种方法除了效率不那么高以外，有没有上面提到的安全隐患呢？**做个实验：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.cookie = <span class="string">"a=123 b=other; b=678"</span>;</span><br></pre></td></tr></table></figure>
-<p>这个的意思是 cookie a 的值为 123 b=other,  b的值为 678, 但是我们通过上面的 getCookie 方法 做实验时：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getCookie(&quot;b&quot;); //输出 other</span><br><span class="line">getCookie(&quot;a&quot;); //输出 123 b=other</span><br></pre></td></tr></table></figure></p>
-<p>b的值很明显不正确了。这样就混淆了正确的 cookie。 所以这种方法也不是正确的方法，运用我们最上面提到的解决方法 可以很好的解决这个问题。</p>
-<hr>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h4><p>还是实战出真知，继续前行！不怕犯错，积累经验。我当时跟师傅说我遇到了 dom xss 漏洞，师傅马上就让我去检查 cookie 获取的方法，连整个事情的经过就没问，就可以做出准确的判断，这就是老司机啊，向他学习。希望以后知道一些更多关于安全方面的实战。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;国庆的前一天，突然有一个漏洞单接到我这里来，当时心里很着急，第一实习生小白，对于我们这种支付部门有漏洞不是很可怕，以前没见过，觉得有点吓人。第二，为什么是国庆的前一天呢，不能发版本。看了下，就是熟悉又不太熟悉的 Dom xss 漏洞。熟悉是因为以前书里经常见，不熟悉是因为以
     
     </summary>
     
