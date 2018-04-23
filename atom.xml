@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-03-22T11:17:39.000Z</updated>
+  <updated>2018-04-23T07:04:17.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,79 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>小程序支持分包加载和无需用户授权获得头像</title>
+    <link href="http://sevencai.github.io/2018/04/23/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%94%AF%E6%8C%81%E5%88%86%E5%8C%85%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%97%A0%E9%9C%80%E7%94%A8%E6%88%B7%E6%8E%88%E6%9D%83%E8%8E%B7%E5%BE%97%E5%A4%B4%E5%83%8F/"/>
+    <id>http://sevencai.github.io/2018/04/23/小程序支持分包加载和无需用户授权获得头像/</id>
+    <published>2018-04-23T06:56:06.000Z</published>
+    <updated>2018-04-23T07:04:17.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>结论：增加了分包加载特性，速度快了很多。修改了用户授权逻辑，使用 open-data 能力改为了完全不用用户授权即可获得昵称头像群名称等。</p>
+</blockquote>
+<hr>
+<h1 id="改版效果"><a href="#改版效果" class="headerlink" title="改版效果"></a>改版效果</h1><p>星期六的时候把手边的小程序改为了分包加载。产品是没有提这个需求的，但是心想下次做小程序的需求估计要很久以后了，就星期六加了下班。效果还是很好的。</p>
+<blockquote>
+<p>首屏加载时间由： 7.95s 减少到了 5.00s<br>平均 cpu 占比右：19.19% 减少到了 4.77%</p>
+</blockquote>
+<p>我并不知道很清楚这个平均 cpu 占比是怎么被算出来的。如果这个数据的变化能够微信团队能够解释的更详细些就好了。</p>
+<p>在分包的加载过程中，比如首页是一个 packageA， 到列表页是一个 packageB, 这个过程在第一次访问列表页的时候，会再去下载代码。微信在这个过程中帮助了开发者显示了提示： 类似于页面加载中。 这个还是很友好的。</p>
+<p>但是使用分包加载给开发者带来的成本也很大，基本上目录都被更改了。结构也被更改了。其实我是觉得如果能够不更改目录，只在 json 里面配置好打包的方案是最好的。其实仔细想想不更改目录也是行的吧？</p>
+<blockquote>
+<p>小程序经历过几次的“改版”，最开始的 pages, 后来的 component, 先在的 subPackage, 虽然一直再变得更好，但是对于一开始就开发小程序的开发者来说，或者至少对我来说，是不那么友好的。以后等这里逐渐更加成熟了，应该会好的。</p>
+</blockquote>
+<hr>
+<h1 id="怎么开发分包加载"><a href="#怎么开发分包加载" class="headerlink" title="怎么开发分包加载?"></a>怎么开发分包加载?</h1><p>首先开始把目录结构定好，配置在 app.json 里，这个配置实际就是小程序会怎么分包加载。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"pages"</span>: [</span><br><span class="line">    <span class="string">"pages/index/index"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"window"</span>: &#123;</span><br><span class="line">    <span class="string">"backgroundTextStyle"</span>: <span class="string">"light"</span>,</span><br><span class="line">    <span class="string">"navigationBarBackgroundColor"</span>: <span class="string">"#3b8cff"</span>,</span><br><span class="line">    <span class="string">"backgroundColor"</span>: <span class="string">"#3b8cff"</span>,</span><br><span class="line">    <span class="string">"navigationBarTitleText"</span>: <span class="string">"腾讯充值"</span>,</span><br><span class="line">    <span class="string">"navigationBarTextStyle"</span>: <span class="string">"light"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"subPackages"</span>: [</span><br><span class="line">	&#123;</span><br><span class="line">      <span class="string">"root"</span>: <span class="string">"result"</span>,</span><br><span class="line">	  <span class="string">"pages"</span>: [</span><br><span class="line">        <span class="string">"pages/result/result"</span></span><br><span class="line">	  ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"root"</span>: <span class="string">"userCenter"</span>,</span><br><span class="line">	  <span class="string">"pages"</span>: [</span><br><span class="line">        <span class="string">"pages/user_center/user_center"</span></span><br><span class="line">	  ]</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上面的目录结构，除了个人中心以及结果页以外的内容都是会在第一次下载了。 待页面跳转到 result 结果页，相关代码才会被下载并加载。</p>
+<p>注意由于页面的目录发生了变化，以前如果是通过相对路径引用如 util 里的文件，那么路径都是要更改的。建议这里都使用 <code>/images/a.png</code> or <code>/utils/a.js</code>这种绝对路径比较好。</p>
+<hr>
+<h1 id="怎么获得昵称还不需要用户授权？"><a href="#怎么获得昵称还不需要用户授权？" class="headerlink" title="怎么获得昵称还不需要用户授权？"></a>怎么获得昵称还不需要用户授权？</h1><p>前天微信发布了新的文章，地址<a href="https://mp.weixin.qq.com/s/FTVGVXHSWPlYN1oQTzj-mA" target="_blank" rel="noopener">戳这里</a>,里面讲到了：</p>
+<blockquote>
+<p> 用户在没有任何操作的情况直接弹出授权的登录方式将逐渐不再支持，受影响的有 wx.getUserInfo 接口，以及 wx.authorize 接口传入 scope=”scope.userInfo” 的情况。</p>
+</blockquote>
+<p>它推荐了两种做法：</p>
+<blockquote>
+<p>1、按钮组件的登录方式，用户主动点击按钮可以拉起用户授权弹框，获取用户头像、昵称等信息；<br>2、在不获取用户信息的情况下，可展示用户头像昵称。</p>
+</blockquote>
+<p>第一种用于你真的是需要获得到昵称和图标，做一些其他的工作，比如存储的工作。这种情况，开发者是可以得到昵称和图标的值的。但是它也需要用户去触发，比如你点击个人中心的时候，是一个 btn, 这个 button, 会调用 getUserInfo 这种操作。</p>
+<p><code>&lt;button open-type=&quot;getUserInfo&quot; bindgetuserinfo=&quot;userInfoHandler&quot;&gt;微信登录&lt;/button&gt;</code></p>
+<p>注意既然还是调用了授权，那么一定还是会弹框提示用户是否允许授权，如果用户拒绝了也是得不到的。</p>
+<p>第二种，如果你只是需要用户的昵称和头像展示在页面里，而不是真正的需要获得这些数据存储在某个地方或者向后台接口传递这些值。那么就告别<code>wx.authorize</code>和<code>wx.getUserInfo</code>吧。</p>
+<p>我仔细想了下我们的充值页面，存储的都是 openid，没有需要去真正的用到 nickName 和 avatar 这些。只是为了再页面展示而已，所以：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;open-data type=&quot;groupName&quot; open-gid=&quot;xxxxxx&quot;&gt;&lt;/open-data&gt;</span><br><span class="line">&lt;open-data type=&quot;userAvatarUrl&quot;&gt;&lt;/open-data&gt;</span><br><span class="line">&lt;open-data type=&quot;userGender&quot; lang=&quot;zh_CN&quot;&gt;&lt;/open-data&gt;</span><br></pre></td></tr></table></figure>
+<p>利用 open-data 既可以完美的解决啦。 也可以给它加入 class, 跟正常的 view 是类似的。</p>
+<p>这样就完美啦，以后再也不需要用户授权啦。嘿嘿嘿。（产品开心，我也开心）</p>
+<p>对了这里注意，open-data 只能在真机上试出来，我的目前版本的开发者工具是展示不出来的。如果你开发者工具上出不来，就试试真机。可能是版本原因。</p>
+<hr>
+<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><blockquote>
+<p>微信 6.6 客户端，1.7.3 及以上基础库开始支持，请更新至最新客户端版本，开发者工具请使用 1.01.1712150 及以上版本</p>
+</blockquote>
+<p>注意这里的分包加载必须在1.7.3及以上开始支持。为了能够在 1.7.3 以下至少页面正常。你可以兼容。或者再微信公众平台后面来设置，最低版本为 1.7.3,这种情况下：</p>
+<blockquote>
+<p>若用户使用的基础库版本低于设置的最低版本要求，则无法正常使用小程序，并提示更新微信版本。</p>
+</blockquote>
+<p>open-data 是在 1.4.4 以上，好像，所以如果你设置了分包加载的，那么这个肯定也没问题啦。</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>主要是代码目录结构改变了，导致比如以前代码里的 <code>navigateTo({url: &#39;../../result/result&#39;})</code>路径都需要改变，这些话费了时间重构。但是看到结果上是快了这么多的就好。</p>
+<p>还有就是为什么 page 里不能用 behavior? 只有 component 里面能用？ 这个我感觉不太合理。vue 里面 每个 page 也是一个 component 来着。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;结论：增加了分包加载特性，速度快了很多。修改了用户授权逻辑，使用 open-data 能力改为了完全不用用户授权即可获得昵称头像群名称等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h1 id=&quot;改版效果&quot;&gt;&lt;a href=&quot;#改版效果&quot; c
+    
+    </summary>
+    
+    
+      <category term="小程序" scheme="http://sevencai.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>长列表图片优化方式</title>
@@ -1303,51 +1376,6 @@
     
     
       <category term="javascript" scheme="http://sevencai.github.io/tags/javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redux 中 combineReducers 和 createStore的实现原理</title>
-    <link href="http://sevencai.github.io/2016/10/25/Redux%20%E4%B8%AD%20combineReducers%20%E5%92%8C%20createStore%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/"/>
-    <id>http://sevencai.github.io/2016/10/25/Redux 中 combineReducers 和 createStore的实现原理/</id>
-    <published>2016-10-25T14:46:27.000Z</published>
-    <updated>2017-01-22T09:42:08.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近一直在学习 redux, 感到了深深的难过，都两天了，感觉还是不知道怎么写代码，倒不是不知道是Redux 里面涉及的概念，是不知道什么代码该放在哪里。怎么样组织结构。希望再过两天能更清晰。</p>
-<p><img src="http://cailidan.cn/images/redux.png" alt="Redux"></p>
-<p>下面是中间学习到的 combineReducers 和 createStore 的实现原理，了解这些后，确实帮助了我更好的理解整个流程。</p>
-<hr>
-<h4 id="combineReducers-的实现原理"><a href="#combineReducers-的实现原理" class="headerlink" title="combineReducers 的实现原理"></a><strong>combineReducers 的实现原理</strong></h4><p>在探究 <code>combineReducers</code> 的实现原理之前，先看下 <code>combineReducers</code> 的用法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> todoApp = combineReducers(&#123;</span><br><span class="line">    visibilityFilter,</span><br><span class="line">    todos</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>这里为了逻辑上的分离，我们把 <code>reducers</code> 拆分成了 <code>visibilityFilter</code> 和 <code>todos</code>, 然后利用了 <code>combineReducers</code>  合成了一个 <code>reducer</code>。</p>
-<p>先看下我们的 todos  和 visibilityFilter 是这样的：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//todos </span></span><br><span class="line"><span class="keyword">const</span> todos = <span class="function">(<span class="params">state = [], action</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'ADD_TODO'</span>:</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">'TOGGLE_TODO'</span>:</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">return</span> state</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//visibilityFilter</span></span><br><span class="line"><span class="keyword">const</span> visibilityFilter = <span class="function">(<span class="params">state = <span class="string">'SHOW_ALL'</span>, action</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'SET_VISIBILITY_FILTER'</span>:</span><br><span class="line">      <span class="keyword">return</span> action.filter</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">return</span> state</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>我们的 reducers 也是跟这里的每一个分 reducer 一样，都是函数，都要通过传入 (state, action)  来唯一判断下次的状态。所以我们 <code>combineReducers</code> 的作用就是重新生成一个 可以传入 (state, action) 两个值来判断 next 的 state 的值的函数。</strong></p>
-<p>所以这下我们就可以理解下面的代码，<code>combineReducers</code> 的实现：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> combineReducers = <span class="function">(<span class="params"> reducers </span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params"> state = &#123;&#125;, action </span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Object</span>.keys(reducers).reduce(</span><br><span class="line">            ( nextState, key ) =&gt; &#123;</span><br><span class="line">                nextState[key] = reducers[key](</span><br><span class="line">                    state[key],</span><br><span class="line">                    action</span><br><span class="line">                );</span><br><span class="line">                <span class="keyword">return</span> nextState;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;&#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> combineReducers;</span><br></pre></td></tr></table></figure>
-<p>解释下：<strong>首先是返回一个可以传入两个参数的函数。所以我们先 return  一个 function, 然后再通过 reduce 函数，遍历每一个 key 值， 然后为对应的 state 赋值为新的函数。</strong></p>
-<p>当我们形成了新的 reducer 以后， 传入任何 的 action  和 status 就会返回一个明确的 状态树了。可能是下面这个样子的：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  visibilityFilter: <span class="string">'SHOW_ALL'</span>,</span><br><span class="line">    todos: &#123;</span><br><span class="line">    id: <span class="number">0</span>,</span><br><span class="line">    text: <span class="string">'Hello world'</span>,</span><br><span class="line">    completed: <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h4 id="createStore-的实现原理"><a href="#createStore-的实现原理" class="headerlink" title="createStore 的实现原理"></a><strong>createStore 的实现原理</strong></h4><p>同样我们先看下 createStore 的用法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//let &#123; subscribe, dispatch, getState &#125; = createStore(reducer);</span></span><br><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">'redux'</span>;</span><br><span class="line"><span class="keyword">const</span> store = createStore(reducer)</span><br></pre></td></tr></table></figure></p>
-<p>createStore 通过传入 我们的 reducer 形成一个全局唯一的 store,  这个形成的 store 是一个对象，它有3个方法，分别是：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">store.dispatch()</span><br><span class="line">store.subscribe()  </span><br><span class="line">store.getState()</span><br></pre></td></tr></table></figure>
-<p><strong>所以其实我们就是要编辑一个函数，这个函数里面可以有这三个方法暴露给我们使用。</strong> 原理如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> createStore = <span class="function">(<span class="params"> reducer </span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> state;</span><br><span class="line">  <span class="keyword">let</span> listeners = [];</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> getState = <span class="function"><span class="params">()</span> =&gt;</span> state;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> dispatch = <span class="function">(<span class="params"> action </span>) =&gt;</span> &#123;</span><br><span class="line">    state = reducer(state, action);</span><br><span class="line">    listeners.forEach(<span class="function"><span class="params">listener</span> =&gt;</span> listener());</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> subscribe = <span class="function">(<span class="params"> listener </span>) =&gt;</span> &#123;</span><br><span class="line">    listeners.push(listener);</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">      listeners = listeners.filter(<span class="function"><span class="params">l</span> =&gt;</span> l !== listener)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  dispatch(&#123;&#125;);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    getState,</span><br><span class="line">    dispatch,</span><br><span class="line">    subscribe</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到我们是先实现了这三个方法。下面简单看下怎么用这三个方法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123;createStore&#125; = Redux;</span><br><span class="line"><span class="keyword">const</span> store = createStore(reducer);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> render = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">document</span>.body.innerHTML = store.getState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">store.subscribe(render)</span><br><span class="line"></span><br><span class="line">render();</span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'click'</span>, ()=&gt;&#123;</span><br><span class="line">  store.dispatch(&#123;<span class="attr">type</span>:<span class="string">'INCREMENT'</span>&#125;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近一直在学习 redux, 感到了深深的难过，都两天了，感觉还是不知道怎么写代码，倒不是不知道是Redux 里面涉及的概念，是不知道什么代码该放在哪里。怎么样组织结构。希望再过两天能更清晰。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://cailidan.cn/imag
-    
-    </summary>
-    
-      <category term="WEB开发" scheme="http://sevencai.github.io/categories/WEB%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="React" scheme="http://sevencai.github.io/tags/React/"/>
     
   </entry>
   
