@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-04-23T07:04:17.000Z</updated>
+  <updated>2018-05-11T12:29:35.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -16,11 +16,68 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>解决webpack编译后导致-webkit-box被强制去除了的问题</title>
+    <link href="http://sevencai.github.io/2018/05/11/%E8%A7%A3%E5%86%B3webpack%E7%BC%96%E8%AF%91%E5%90%8E%E5%AF%BC%E8%87%B4-webkit-box%E8%A2%AB%E5%BC%BA%E5%88%B6%E5%8E%BB%E9%99%A4%E4%BA%86%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+    <id>http://sevencai.github.io/2018/05/11/解决webpack编译后导致-webkit-box被强制去除了的问题/</id>
+    <published>2018-05-11T12:12:36.000Z</published>
+    <updated>2018-05-11T12:29:35.000Z</updated>
+    
+    <content type="html"><![CDATA[<hr>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>今天遇到了一个问题，发现重构同事的 dist css 在我这里有兼容性问题。我只引用了他的源文件，未经过任何更改。排处了由于 Dom 结构不同的原因之外，唯一的不一样的地方，就是我引入他的文件后，在本地还进行了webpack 编译。那么问题只能出在了这里了。</p>
+<p>经过对比两份文件发现，对比如下<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 重构同事的css</span><br><span class="line"><span class="selector-class">.detail-title</span>&#123;</span><br><span class="line">	<span class="attribute">-ms-flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">-webkit-box-flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">box-flex</span>:<span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line">// 我编译后的文件</span><br><span class="line"><span class="selector-class">.detail-title</span>&#123;</span><br><span class="line">	<span class="attribute">-ms-flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">box-flex</span>:<span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>咦， <code>-webkit-box-flex</code> 竟然被自动去除了。难道说在某种 webpack 插件下， <code>-webkit-box</code> 会自动被去除吗？</p>
+<p>在网上搜了下，发现确实是有这种情况。有些插件的机制判断这个内容是不需要的，强行被去除了。可以看这个 <a href="https://github.com/webpack/webpack/issues/2543" target="_blank" rel="noopener">issue</a>。</p>
+<p>即使你是使用了 postCss, autoprefix 去添加了前缀，但是你用了去除的插件也会被去除。</p>
+<hr>
+<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>首先看下是什么插件导致了你的代码被强制的去除了。</p>
+<p>大概的原因可能有以下几种：</p>
+<p><strong>最开始可能是由于 <code>UglifyJsPlugin</code> 中默认把 <code>minimize = true</code> 开启了， 而这个字段在<code>css-loader</code>和<code>postcss-loader</code>中设置成 <code>true</code> 会开启优化模式，所以会对代码进行优化压缩。<br>但 <code>css-loader</code> 中又会使用 <code>cssnano</code> 进行压缩， 而 <code>cssnano</code>中又会进行无关前缀的清理。</strong></p>
+<p>为什么插件竟然会影响到loader ? 可以关注下这个 <a href="https://github.com/ShowJoy-com/showjoy-blog/issues/31" target="_blank" rel="noopener">issue</a>。</p>
+<p>这个插件(UglifyJsPlugin) 在 webpack2.x 貌似已经修复了。 <code>css-loader</code>及<code>autoprefixer</code>也已经做了相应的优化处理。如果你没有升级，你可以设置下面的方式试试：</p>
+<ol>
+<li><p>css-loader 传递参数：<code>?minimize&amp;-autoprefixer</code></p>
+</li>
+<li><p>向 <code>autoprefixer</code> 传递参数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">postcss: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> [autoprefixer, cssnano(&#123; <span class="attr">safe</span>: <span class="literal">true</span> &#125;)];</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果还有问题，再检查下，代码里有没有用到其他的去除优化工具。</p>
+<p>我这边出的问题就是在这里。用了<code>OptimizeCSSPlugin</code>,  它默认把前缀给去掉了。所以这里我直接把这个 plugin 删除了。之所以我这里可以直接删除，是因为重构同事给到的就是去除压缩好了的。没有必要再去压缩去除一次。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Compress extracted CSS. We are using this plugin so that possible</span><br><span class="line">// duplicated CSS from different components can be deduped.</span><br><span class="line"></span><br><span class="line">new OptimizeCSSPlugin(&#123;</span><br><span class="line">  cssProcessorOptions: config.build.productionSourceMap</span><br><span class="line">    ? &#123; safe: true, map: &#123; inline: false &#125; &#125;</span><br><span class="line">    : &#123; safe: true &#125;</span><br><span class="line">&#125;),</span><br></pre></td></tr></table></figure>
+<p>再来看下为什么用了<code>OptimizeCSSPlugin</code>去除了prefix呢？看了下源码，也是又引入了<code>cssnano</code>：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.options.cssProcessor === <span class="literal">undefined</span>) &#123;</span><br><span class="line">  <span class="keyword">this</span>.options.cssProcessor = <span class="built_in">require</span>(<span class="string">'cssnano'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h1 id="引申问题-ssi-找不到定义的变量"><a href="#引申问题-ssi-找不到定义的变量" class="headerlink" title="引申问题 - ssi 找不到定义的变量"></a>引申问题 - ssi 找不到定义的变量</h1><p><strong>由这个打包的问题，想到了前几天的另一个 webpack 的问题， index.shtml 文件中引入的 ssi, 如果变量用 ${variable} 读取，而不是$variable 读取，webpack 编译时就会报错。</strong>但实际上，这两种语法都是可以被 server 端解析的。探究了下会被报错的原因：</p>
+<p>webpack 的 HtmlWebpackPlugin 在编译模板的时候，用的是 lodash 的 template 方式, 也就是 <code>${variable}</code> 的形式。</p>
+<p>所以你用了 ${variable} 的形式的话，他就会去编译这个变量，但是呢，这个 variable 你是从 ssi 上读的，又没有定义，它找不到，所以就会报错了。</p>
+<p>所以就老老实实的，如果你用的 htmlWebpackPlugin 就用 <code>$varialbe</code> 的形式吧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// correct</span><br><span class="line">&lt;!--#include virtual=&quot;xxx.cgi?refresh_token=$wxRefreshToken&amp;appid=$wxAppid&quot; --&gt;&apos;;</span><br><span class="line"></span><br><span class="line">// wrong: wxAppid is not defined</span><br><span class="line">&lt;!--#include virtual=&quot;xxx.cgi?refresh_token=$wxRefreshToken&amp;appid=$&#123;wxAppid&#125;&quot; --&gt;&apos;;</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="相关参考"><a href="#相关参考" class="headerlink" title="相关参考"></a>相关参考</h2><ol>
+<li><a href="https://github.com/webpack/webpack/issues/283" target="_blank" rel="noopener">issue1: # Why does the UglifyJsPlugin affect other loaders?</a></li>
+<li><a href="https://github.com/ShowJoy-com/showjoy-blog/issues/31" target="_blank" rel="noopener">issue2: # 「前端」从UglifyJSPlugin强制开启css压缩探究webpack插件运行机制</a></li>
+<li><a href="https://github.com/webpack/webpack/issues/2543" target="_blank" rel="noopener">issue3: # Using plugin “webpack.optimize.UglifyJsPlugin” led to remove the style “display: -webkit-flex;</a></li>
+</ol>
+<p>觉得略坑。还是花了大概一下午看这个问题，呜呜呜(ಥ _ ಥ)!</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;hr&gt;
+&lt;h1 id=&quot;问题&quot;&gt;&lt;a href=&quot;#问题&quot; class=&quot;headerlink&quot; title=&quot;问题&quot;&gt;&lt;/a&gt;问题&lt;/h1&gt;&lt;p&gt;今天遇到了一个问题，发现重构同事的 dist css 在我这里有兼容性问题。我只引用了他的源文件，未经过任何更改。排处了由于 Do
+    
+    </summary>
+    
+    
+      <category term="工具" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+  </entry>
+  
+  <entry>
     <title>小程序支持分包加载和无需用户授权获得头像</title>
     <link href="http://sevencai.github.io/2018/04/23/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%94%AF%E6%8C%81%E5%88%86%E5%8C%85%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%97%A0%E9%9C%80%E7%94%A8%E6%88%B7%E6%8E%88%E6%9D%83%E8%8E%B7%E5%BE%97%E5%A4%B4%E5%83%8F/"/>
     <id>http://sevencai.github.io/2018/04/23/小程序支持分包加载和无需用户授权获得头像/</id>
     <published>2018-04-23T06:56:06.000Z</published>
-    <updated>2018-04-23T07:04:17.000Z</updated>
+    <updated>2018-04-23T07:06:23.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>结论：增加了分包加载特性，速度快了很多。修改了用户授权逻辑，使用 open-data 能力改为了完全不用用户授权即可获得昵称头像群名称等。</p>
@@ -71,6 +128,7 @@
 <hr>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>主要是代码目录结构改变了，导致比如以前代码里的 <code>navigateTo({url: &#39;../../result/result&#39;})</code>路径都需要改变，这些话费了时间重构。但是看到结果上是快了这么多的就好。</p>
 <p>还有就是为什么 page 里不能用 behavior? 只有 component 里面能用？ 这个我感觉不太合理。vue 里面 每个 page 也是一个 component 来着。</p>
+<p>其实插件的功能我也想试试，但是现在还没有想到可以使用的场景。也许是以后可以像交易记录这种做成小程序，别的外部业务就可加了吧？</p>
 ]]></content>
     
     <summary type="html">
@@ -1340,42 +1398,6 @@
     
     
       <category term="小程序 javascript" scheme="http://sevencai.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F-javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>利用onerror/onload写的jsonp在IE下不兼容的问题</title>
-    <link href="http://sevencai.github.io/2017/01/22/onload%E5%8F%8Aonerror%E5%9C%A8IE%E4%B8%8B%E4%B8%8D%E5%85%BC%E5%AE%B9%E7%9A%84%E9%97%AE%E9%A2%98/"/>
-    <id>http://sevencai.github.io/2017/01/22/onload及onerror在IE下不兼容的问题/</id>
-    <published>2017-01-22T09:01:43.000Z</published>
-    <updated>2017-01-22T09:39:55.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>某一天，我用 js 写了一段 jsonp 的代码。以前在学校也这么写，因为在学校没有测试IE所有的版本兼容性，一直觉得这段代码木有问题。</p>
-<p>代码是这样子的：</p>
-<p>简单来说就是将一个script标签添加进入dom,这样就可以伪造一次请求，因为同源策略可以用script/image之类标签回避掉。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Util.prototype.loadScript = <span class="function"><span class="keyword">function</span> (<span class="params">url, params, cb</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> path = url + <span class="string">'?'</span> + <span class="keyword">this</span>.serializeParam(params);</span><br><span class="line">  <span class="keyword">var</span> head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">var</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">  <span class="keyword">var</span> format = params.format.substr(<span class="number">6</span>), result;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">window</span>[format] = <span class="function"><span class="keyword">function</span> (<span class="params">_res</span>) </span>&#123;</span><br><span class="line">    result = _res;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> handler = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!script) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    head.removeChild(script);</span><br><span class="line">    script = <span class="literal">null</span>;</span><br><span class="line">    <span class="built_in">window</span>[format] = <span class="literal">undefined</span>;</span><br><span class="line">    <span class="keyword">typeof</span> cb == <span class="string">'function'</span> &amp;&amp; cb(result);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  script.src =  path;</span><br><span class="line">  script.async = <span class="literal">true</span>;</span><br><span class="line">  script.charset = <span class="string">'utf-8'</span>;</span><br><span class="line">  script.type = <span class="string">'text/javascript'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  script.onload = handler;</span><br><span class="line">  script.onerror = handler;</span><br><span class="line"></span><br><span class="line">  head.insertBefore(script, head.firstChild);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>直到测试同事那天在测试的时候，发现IE7,IE6的时候，请求可以发送，但是 callback 函数没有执行。导致了一个按钮好像像点不动一样。</p>
-<p>这种 bug 算得上是严重的 bug 了，经过排查，发现确实是代码不完善，没有考虑到：</p>
-<blockquote>
-<p>在多数浏览器（包括Firefox和Chrome）下会触发onload和onerror， 但是在IE下只会触发 onreadystatechange，也就是说在IE8及IE8以下，onerror和onload都不能够使用。</p>
-</blockquote>
-<p>所以要调用回调函数一定需要再写一个针对 onreadystatechange 时的操作。错误中成长。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">script.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> r = script.readyState;</span><br><span class="line">  <span class="keyword">if</span> (r === <span class="string">'loaded'</span> || r === <span class="string">'complete'</span>) &#123;</span><br><span class="line">     handler();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="http://www.cailidan.cn/images/53832.png" alt="淘宝率先不支持IE8及以下，真的是一件美好的事情"></p>
-<p>完整的代码如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">Util.prototype.loadScript = <span class="function"><span class="keyword">function</span> (<span class="params">url, params, cb</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> path = url + <span class="string">'?'</span> + <span class="keyword">this</span>.serializeParam(params);</span><br><span class="line">  <span class="keyword">var</span> head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">var</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">  <span class="keyword">var</span> format = params.format.substr(<span class="number">6</span>), result;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">window</span>[format] = <span class="function"><span class="keyword">function</span> (<span class="params">_res</span>) </span>&#123;</span><br><span class="line">    result = _res;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> handler = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!script) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    head.removeChild(script);</span><br><span class="line">    script = <span class="literal">null</span>;</span><br><span class="line">    <span class="built_in">window</span>[format] = <span class="literal">undefined</span>;</span><br><span class="line">    <span class="keyword">typeof</span> cb == <span class="string">'function'</span> &amp;&amp; cb(result);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  script.src =  path;</span><br><span class="line">  script.async = <span class="literal">true</span>;</span><br><span class="line">  script.charset = <span class="string">'utf-8'</span>;</span><br><span class="line">  script.type = <span class="string">'text/javascript'</span>;</span><br><span class="line"></span><br><span class="line">  script.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> r = script.readyState;</span><br><span class="line">    <span class="keyword">if</span> (r === <span class="string">'loaded'</span> || r === <span class="string">'complete'</span>) &#123;</span><br><span class="line">      handler();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  script.onload = handler;</span><br><span class="line">  script.onerror = handler;</span><br><span class="line"></span><br><span class="line">  head.insertBefore(script, head.firstChild);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;某一天，我用 js 写了一段 jsonp 的代码。以前在学校也这么写，因为在学校没有测试IE所有的版本兼容性，一直觉得这段代码木有问题。&lt;/p&gt;
-&lt;p&gt;代码是这样子的：&lt;/p&gt;
-&lt;p&gt;简单来说就是将一个script标签添加进入dom,这样就可以伪造一次请求，因为同源策略可以
-    
-    </summary>
-    
-    
-      <category term="javascript" scheme="http://sevencai.github.io/tags/javascript/"/>
     
   </entry>
   
