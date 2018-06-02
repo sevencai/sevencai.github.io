@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="这几天翻了下以前写的代码，发现自己以前虽然有用 debounce 或者 throttle 的意识，但是确没有把代码封装的很好。比如没有用到闭包去封装 timer, 而是把 timer 放在了 vue data 的变量里。因此就出现了这篇文章，总结下 debounce 和 throttle 运用场景以及对应的自己的实现。并且重构了以前的代码。   运用场景比如我曾经在一个项目里，就两种场景都用到了">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="优化代码之throttle &amp; debounce">
+<meta property="og:url" content="http://sevencai.github.io/2018/06/02/优化代码之-throttle-debounce/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="这几天翻了下以前写的代码，发现自己以前虽然有用 debounce 或者 throttle 的意识，但是确没有把代码封装的很好。比如没有用到闭包去封装 timer, 而是把 timer 放在了 vue data 的变量里。因此就出现了这篇文章，总结下 debounce 和 throttle 运用场景以及对应的自己的实现。并且重构了以前的代码。   运用场景比如我曾经在一个项目里，就两种场景都用到了">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2018/06/02/优化代码之-throttle-debounce/xixi.jpg">
+<meta property="og:updated_time" content="2018-06-02T06:39:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="优化代码之throttle &amp; debounce">
+<meta name="twitter:description" content="这几天翻了下以前写的代码，发现自己以前虽然有用 debounce 或者 throttle 的意识，但是确没有把代码封装的很好。比如没有用到闭包去封装 timer, 而是把 timer 放在了 vue data 的变量里。因此就出现了这篇文章，总结下 debounce 和 throttle 运用场景以及对应的自己的实现。并且重构了以前的代码。   运用场景比如我曾经在一个项目里，就两种场景都用到了">
+<meta name="twitter:image" content="http://sevencai.github.io/2018/06/02/优化代码之-throttle-debounce/xixi.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2018/06/02/优化代码之-throttle-debounce/"/>
+
+
+
+
+
+  <title>优化代码之throttle & debounce | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2018/06/02/优化代码之-throttle-debounce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">优化代码之throttle & debounce</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-02T14:09:15+08:00">
+                2018-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/02/优化代码之-throttle-debounce/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/02/优化代码之-throttle-debounce/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>这几天翻了下以前写的代码，发现自己以前虽然有用 debounce 或者 throttle 的意识，但是确没有把代码封装的很好。比如没有用到闭包去封装 timer, 而是把 timer 放在了 vue data 的变量里。因此就出现了这篇文章，总结下 debounce 和 throttle 运用场景以及对应的自己的实现。并且重构了以前的代码。</p>
+</blockquote>
+<hr>
+<h2 id="运用场景"><a href="#运用场景" class="headerlink" title="运用场景"></a>运用场景</h2><p>比如我曾经在一个项目里，就两种场景都用到了。</p>
+<p>第一种比如当用户在搜索框里输入了数据的时候，我会去向后台请求，搜索出来的对应结果。 但是用户的输入可能是不断的进行的，如果我每次都去请求，那么其实是无效并且浪费的。<strong>所以我们可以在用户输入最后一个字的时候，再去发请求。 用到的就是 debounce 的原理，每次的请求都延迟一段时间去发出，当有新的请求来的时候，清空上次的请求，然后重新执行延迟一段时间去请求，直到用户没有再请求的时候，执行的就是最后一次延迟请求</strong>。</p>
+<p>这种只去执行最后一次的就是我们说的 debounce。可以把它理解为<code>独占型的函数</code>。</p>
+<p>第二种比如当用户滚动的时候，当滑到了这个字母开头的时候，提示给用户，你已经到了 H 开头的列表内容了。正常的情况下，我们的做法是一直监听 scroll 事件，然后计算当前的 li 是不是到了对应 H 字母开头了，到了则设置相应的提示。</p>
+<p><strong>但是要知道 scroll 事件，每次都会触发很多次，如果每次进行相应的计算，就会很卡顿，尤其在一些老的机器上。 那么这个时候我们就可以用 throttle 了，每一段事件，比如 500 ms 去执行一次计算，而不是每次 scroll 都执行。</strong></p>
+<p>可以把 throttle 理解为<code>节制型</code>的函数。</p>
+<p>上面两个是我遇到过的两个场景，具体其他场景还可以参考：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当 onresize 的时候，我们只想知道最后一次的大小</span></span><br><span class="line"><span class="built_in">window</span>.onresize = debounce(caculate, <span class="number">500</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当用户一段时间频繁点击时，只以最后一次为标准</span></span><br><span class="line">button.onclick = debounce(sendMail, <span class="number">300</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// onscroll 时定位元素</span></span><br><span class="line"><span class="built_in">window</span>.onscroll = throttle(caculatePosition, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 鼠标移动，mousemove 事件</span></span><br><span class="line"><span class="built_in">window</span>.onmousemove = throttle(getElement, <span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><p>在 underscore lodash 里，都有相应的实现了。但是我感觉不太好理解额，所以按照自己的理解，写出了适应自己的 debounce 和 throttle。 具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * debounce</span><br><span class="line"> * @param fn</span><br><span class="line"> * @param wait</span><br><span class="line"> * @param leading</span><br><span class="line"> * @returns &#123;Function&#125;</span><br><span class="line"> */</span><br><span class="line">function debounce(fn, wait, &#123; leading = false &#125;) &#123;</span><br><span class="line">    let context,</span><br><span class="line">      args = arguments,</span><br><span class="line">      timer = null,</span><br><span class="line">      firstInvoke = true</span><br><span class="line"></span><br><span class="line">    function excute() &#123;</span><br><span class="line">      fn.apply(context, args)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return function () &#123;</span><br><span class="line">      context = this</span><br><span class="line"></span><br><span class="line">      if (firstInvoke &amp;&amp; leading) &#123;</span><br><span class="line">        excute()</span><br><span class="line">        firstInvoke = false</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      if (timer) &#123;</span><br><span class="line">        clearTimeout(timer)</span><br><span class="line">        timer = null</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      timer = setTimeout(excute, wait)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>leading 参数用于控制第一次是否需要在最开始就触发一次。主要的思想就是只要重新有调用，就把原来的那个被延迟执行了的方法取消。 取消的方法是设置 timer 为 null。firstInvoke 用于标识方法知否被执行了一次了。</p>
+<p>下面是 throttle 的实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* throttle</span><br><span class="line">* @param fn</span><br><span class="line">* @param wait</span><br><span class="line">* @param leading</span><br><span class="line">* @param trailing</span><br><span class="line">* @returns &#123;Function&#125;</span><br><span class="line">*/</span><br><span class="line">function throttle(fn, wait, &#123; leading = true, trailing = true &#125;) &#123;</span><br><span class="line">    let context, lastExec = 0, timer, args, firstInvoke = true</span><br><span class="line"></span><br><span class="line">    function excute() &#123;</span><br><span class="line">      fn.apply(context, args)</span><br><span class="line"></span><br><span class="line">      lastExec = +new Date()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return function (...arg) &#123;</span><br><span class="line">      let now = +new Date()</span><br><span class="line"></span><br><span class="line">      args = arg</span><br><span class="line"></span><br><span class="line">      context = this</span><br><span class="line">      clearTimeout(timer)</span><br><span class="line"></span><br><span class="line">      if (firstInvoke &amp;&amp; leading) &#123;</span><br><span class="line">        excute()</span><br><span class="line">        firstInvoke = false</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      if (!lastExec) &#123;</span><br><span class="line">        lastExec = now</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      if (!!wait &amp;&amp; (now - lastExec) &gt;= wait) &#123;</span><br><span class="line">        excute()</span><br><span class="line">      &#125; else if (trailing) &#123;</span><br><span class="line">        timer = setTimeout(excute, wait)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>throttle 因为是按频率触发，所以每次的时间间隔是相同的。所以当没到该执行的时间点的时候，就把剩余的时间重新设置给 setTimeout 。wait 即为多少秒执行一次的时间。看了 underscroll 里的源码，它还设置了 trailing 这些参数。trailing 表示当最后一次没到执行时间时，你不想要延迟执行这个函数了。也就是最后一次调用将被忽略。</p>
+<p>下面贴一下 underscroll 的实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">// Returns a function, that, when invoked, will only be triggered at most once</span><br><span class="line">// during a given window of time. Normally, the throttled function will run</span><br><span class="line">// as much as it can, without ever going more than once per `wait` duration;</span><br><span class="line">// but if you&apos;d like to disable the execution on the leading edge, pass</span><br><span class="line">// `&#123;leading: false&#125;`. To disable execution on the trailing edge, ditto.</span><br><span class="line">_.throttle = function(func, wait, options) &#123;</span><br><span class="line">  var timeout, context, args, result;</span><br><span class="line">  var previous = 0;</span><br><span class="line">  if (!options) options = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  var later = function() &#123;</span><br><span class="line">    previous = options.leading === false ? 0 : _.now();</span><br><span class="line">    timeout = null;</span><br><span class="line">    result = func.apply(context, args);</span><br><span class="line">    if (!timeout) context = args = null;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var throttled = function() &#123;</span><br><span class="line">    var now = _.now();</span><br><span class="line">    if (!previous &amp;&amp; options.leading === false) previous = now;</span><br><span class="line">    var remaining = wait - (now - previous);</span><br><span class="line">    context = this;</span><br><span class="line">    args = arguments;</span><br><span class="line">    if (remaining &lt;= 0 || remaining &gt; wait) &#123;</span><br><span class="line">      if (timeout) &#123;</span><br><span class="line">        clearTimeout(timeout);</span><br><span class="line">        timeout = null;</span><br><span class="line">      &#125;</span><br><span class="line">      previous = now;</span><br><span class="line">      result = func.apply(context, args);</span><br><span class="line">      if (!timeout) context = args = null;</span><br><span class="line">    &#125; else if (!timeout &amp;&amp; options.trailing !== false) &#123;</span><br><span class="line">      timeout = setTimeout(later, remaining);</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  throttled.cancel = function() &#123;</span><br><span class="line">    clearTimeout(timeout);</span><br><span class="line">    previous = 0;</span><br><span class="line">    timeout = context = args = null;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  return throttled;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>underscore 把 throttle 和 debounce 分开来实现了，但是有些别的封装的库则是用一个函数实现。下面是 underscore debounce 的实现</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// Returns a function, that, as long as it continues to be invoked, will not</span><br><span class="line">  // be triggered. The function will be called after it stops being called for</span><br><span class="line">  // N milliseconds. If `immediate` is passed, trigger the function on the</span><br><span class="line">  // leading edge, instead of the trailing.</span><br><span class="line">  _.debounce = function(func, wait, immediate) &#123;</span><br><span class="line">    var timeout, result;</span><br><span class="line"></span><br><span class="line">    var later = function(context, args) &#123;</span><br><span class="line">      timeout = null;</span><br><span class="line">      if (args) result = func.apply(context, args);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    var debounced = restArguments(function(args) &#123;</span><br><span class="line">      if (timeout) clearTimeout(timeout);</span><br><span class="line">      if (immediate) &#123;</span><br><span class="line">        var callNow = !timeout;</span><br><span class="line">        timeout = setTimeout(later, wait);</span><br><span class="line">        if (callNow) result = func.apply(this, args);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        timeout = _.delay(later, wait, this, args);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      return result;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    debounced.cancel = function() &#123;</span><br><span class="line">      clearTimeout(timeout);</span><br><span class="line">      timeout = null;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    return debounced;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>剩下的时间就是去优化代码啦。看了下别人的源码，然后自己又按照自己的方式实现了下，还是很有收获的。</p>
+<p>不过，如果 underscore 已经有这么成熟的东西，实际上，我觉得可以不用重复的去做这个工作。用别人成熟的内容就好了。自己了解了原理，自己可以实现，有问题知道怎么去查就好。</p>
+<p><img src="xixi.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/11/解决webpack编译后导致-webkit-box被强制去除了的问题/" rel="next" title="解决webpack编译后导致-webkit-box被强制去除了的问题">
+                <i class="fa fa-chevron-left"></i> 解决webpack编译后导致-webkit-box被强制去除了的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#运用场景"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x8FD0;&#x7528;&#x573A;&#x666F;" class="headerlink" title="&#x8FD0;&#x7528;&#x573A;&#x666F;"></a>&#x8FD0;&#x7528;&#x573A;&#x666F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现代码"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5B9E;&#x73B0;&#x4EE3;&#x7801;" class="headerlink" title="&#x5B9E;&#x73B0;&#x4EE3;&#x7801;"></a>&#x5B9E;&#x73B0;&#x4EE3;&#x7801;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2018/06/02/优化代码之-throttle-debounce/';
+          this.page.identifier = '2018/06/02/优化代码之-throttle-debounce/';
+          this.page.title = '优化代码之throttle & debounce';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
