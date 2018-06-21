@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="上次写 Koa 还是2016年刚来公司实习的时候，那时候我还在上大三。转眼见2年过去了，我也正式工作快一年了。 Koa 也从原来比较难用的 generator ，yield 变成了现在的 async await 。真好。  这次文章的背景是，产品需要给公众号拉新。需要生成各种带参数的二维码。这个带参数的二维码可以做很多事情，比如统计新拉的关注是从哪个场景值下来的。比如关注时，不同场景值有不同的公">
+<meta property="og:type" content="article">
+<meta property="og:title" content="koa2 生成带场景值参数的带Logo二维码">
+<meta property="og:url" content="http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="上次写 Koa 还是2016年刚来公司实习的时候，那时候我还在上大三。转眼见2年过去了，我也正式工作快一年了。 Koa 也从原来比较难用的 generator ，yield 变成了现在的 async await 。真好。  这次文章的背景是，产品需要给公众号拉新。需要生成各种带参数的二维码。这个带参数的二维码可以做很多事情，比如统计新拉的关注是从哪个场景值下来的。比如关注时，不同场景值有不同的公">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/qrcode.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/exampletest.png">
+<meta property="og:updated_time" content="2018-06-21T13:09:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="koa2 生成带场景值参数的带Logo二维码">
+<meta name="twitter:description" content="上次写 Koa 还是2016年刚来公司实习的时候，那时候我还在上大三。转眼见2年过去了，我也正式工作快一年了。 Koa 也从原来比较难用的 generator ，yield 变成了现在的 async await 。真好。  这次文章的背景是，产品需要给公众号拉新。需要生成各种带参数的二维码。这个带参数的二维码可以做很多事情，比如统计新拉的关注是从哪个场景值下来的。比如关注时，不同场景值有不同的公">
+<meta name="twitter:image" content="http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/qrcode.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/"/>
+
+
+
+
+
+  <title>koa2 生成带场景值参数的带Logo二维码 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">koa2 生成带场景值参数的带Logo二维码</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-21T20:14:37+08:00">
+                2018-06-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/21/koa2-生成带场景值参数的带Logo二维码/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/06/21/koa2-生成带场景值参数的带Logo二维码/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>上次写 Koa 还是2016年刚来公司实习的时候，那时候我还在上大三。转眼见2年过去了，我也正式工作快一年了。 Koa 也从原来比较难用的 generator ，yield 变成了现在的 async await 。真好。</p>
+</blockquote>
+<p>这次文章的背景是，产品需要给公众号拉新。需要生成各种带参数的二维码。这个带参数的二维码可以做很多事情，比如统计新拉的关注是从哪个场景值下来的。比如关注时，不同场景值有不同的公众号回复内容。</p>
+<p>在经历了好几次每次手动跟她生成后，我下定了决心，跟产品要了2天排期，给她做一个工具。自动生成带 Logo 的二维码。主要是手工去操作比较繁琐，需要经历下面[几步]：</p>
+<ol>
+<li>先去获得 access_token</li>
+<li>再调用微信创建带参数值二维码的接口qrcode/create，获得 ticket</li>
+<li>再拿 ticket 换二维码</li>
+</ol>
+<p>这其中，带参数的二维码又分为了两种，永久和临时二维码。具体接口可以<a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1443433542" target="_blank" rel="noopener">参考公众号的文档</a>， 并且每次产品自己拿到 ticket 换的二维码后，还需要自己去 P logo, 大小也要自己去调。总之比较麻烦。</p>
+<p>**所以这篇文章，主要就是用 Koa2 生成带场景值参数的公众号二维码。💗🌹</p>
+<hr>
+<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>首先我确定了 koa server 端，只做接口层。意思是只用来处理前端的请求。 GET or POST。</p>
+<p>前端主要做表单验证，获取产品想要的二维码类型信息等。然后传给后台。后台根据信息，去拿 access_token, 然后调用微信二维码，再添加 logo 等。然后返回给前端。最后的效果是这样的：</p>
+<p><img src="qrcode.png" alt="结果图"></p>
+<p>产品可以选择，是临时还是永久，选择是只要链接还是下载图片，是否添加 Logo ，图片的大小等等。</p>
+<p>最后如果图片类型选的是【我要生成图片】就可以生成类似下面二维码啦， 如果是点击的 【我只要链接】，那么我只会返回一个带ticket的链接。</p>
+<p><img src="exampletest.png" alt="生成结果图片"></p>
+<p>红色的笔部分是为了遮住二维码信息，因为是自己的测试号。主要用到了下面这些 npm 库： <code>koa-router, koa-static, qr-image, request-promise, stream-to-promise, image-size</code></p>
+<hr>
+<h2 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h2><p>写起来代码没有特别的地方，用 koa-router 做路由，比如产品选择生成链接，还是生成图片，我选择了路由到两个接口。</p>
+<p>在配置文件， route.js 中，配置相应路由的请求以及对应的 controller</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">  &apos;post /getLink&apos;: &apos;controllers/createLink&apos;,</span><br><span class="line">  &apos;post /downloadImage&apos;: &apos;controllers/createImage&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这表明：</p>
+<p>当前端 post getLink 这个接口时， 用 controllers 下的 createLink 来处理。<br>当前端 post downloadImage 这个接口时，用 controllers 下的 downloadImage 来处理。</p>
+<p>然后再在自己写个注册路由的 middleware<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function">(<span class="params">app, router</span>) =&gt;</span> (</span><br><span class="line">  <span class="built_in">Object</span>.keys(routesConfig).forEach(<span class="function"><span class="params">route</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> [method, path] = route.split(<span class="string">' '</span>)</span><br><span class="line">    <span class="keyword">const</span> controller = <span class="built_in">require</span>(<span class="string">'../'</span> + routesConfig[route])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> controller !== <span class="string">'function'</span> || <span class="keyword">typeof</span> router[method] !== <span class="string">'function'</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (method === <span class="string">'post'</span>) &#123;</span><br><span class="line">      app.use(bodyParser())</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    router.post(path, controller)</span><br><span class="line">  &#125;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>然后在 入口文件中使用这个 middleware 并且注册到 koa-router 上即可。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">routeMiddleware(App, router)</span><br><span class="line"></span><br><span class="line">App.use(router.routes()).use(router.allowedMethods())</span><br></pre></td></tr></table></figure></p>
+<p>最后是对应的 controller 里处理文件, 比如如下是 downloadImage 的 controller, 把 data 传给了核心处理业务流程的类文件。然后再返回相应的图片即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建二维码</span></span><br><span class="line"><span class="comment"> * @param ctx</span></span><br><span class="line"><span class="comment"> * @returns &#123;Promise&lt;void&gt;&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> Core = <span class="built_in">require</span>(<span class="string">'../server/core'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> data = ctx.request.body</span><br><span class="line">  <span class="keyword">const</span> core = <span class="keyword">new</span> Core(data)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> result = <span class="keyword">await</span> core.downloadQrCodeImage()</span><br><span class="line"></span><br><span class="line">  ctx.type = <span class="string">'png'</span></span><br><span class="line">  ctx.set(<span class="string">'Content-type'</span>, <span class="string">'image/png'</span>)</span><br><span class="line">  ctx.body = result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前端接受到这个 image 后，再利用 createObjectURL, revokeObjectURL 立即下载图片即可。下面展示的是前端这一部分处理的逻辑。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchApi</span> (<span class="params">url, data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> fetch(url, &#123;</span><br><span class="line">    body: <span class="built_in">JSON</span>.stringify(data),</span><br><span class="line">    headers: &#123;</span><br><span class="line">      <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    cache: <span class="string">'no-cache'</span>,</span><br><span class="line">    method: <span class="string">'POST'</span>,</span><br><span class="line">    mode: <span class="string">'cors'</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getImageData</span>(<span class="params">url, data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> fetchApi(url, data)</span><br><span class="line">    .then(<span class="function"><span class="params">response</span> =&gt;</span> response.blob())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getImage</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">  getImageData(<span class="string">'/downloadImage'</span>, data)</span><br><span class="line">    .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">let</span> a = <span class="built_in">document</span>.createElement(<span class="string">'a'</span>)</span><br><span class="line">      <span class="keyword">let</span> url = <span class="built_in">window</span>.URL.createObjectURL(response)</span><br><span class="line">      <span class="keyword">let</span> filename = <span class="string">`<span class="subst">$&#123;data.scene&#125;</span>-<span class="subst">$&#123;+<span class="keyword">new</span> <span class="built_in">Date</span>()&#125;</span>.png`</span></span><br><span class="line"></span><br><span class="line">      a.href = url</span><br><span class="line">      a.download = filename</span><br><span class="line"></span><br><span class="line">      a.click()</span><br><span class="line">      <span class="built_in">window</span>.URL.revokeObjectURL(url)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我用的浏览器原生的 Fetch Api， 因为不想在前端还引入别的库。注意 fetchApi 返回不同的内容，要用不同的内容处理。比如上面的图片是用的 response.blob() 处理，如果是返回的json， 需要用 response.json() 处理。</p>
+<hr>
+<h2 id="获取-AccessToken"><a href="#获取-AccessToken" class="headerlink" title="获取 AccessToken"></a>获取 AccessToken</h2><p>注意如果没有自己的获取 AccessToken 的中控服务器，一定要缓存 accessToken, accessToken 有过期时间，并且一天有调用上限。部门内有专门的中控服务器，但是我还是自己试了下自己做缓存的流程，如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">const</span> rp = <span class="built_in">require</span>(<span class="string">'request-promise'</span>)</span><br><span class="line"> <span class="keyword">const</span> cachePath = <span class="string">'./cache/token.txt'</span></span><br><span class="line"></span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获得 access_token</span></span><br><span class="line"><span class="comment"> * 若缓存文件存在，则从缓存中读取</span></span><br><span class="line"><span class="comment"> * 若缓存文件不存在，调用 update 接口更新</span></span><br><span class="line"><span class="comment"> * @returns &#123;Promise&lt;*&gt;&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> getAccessToken () &#123;</span><br><span class="line">  <span class="keyword">let</span> token = <span class="string">''</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (fs.existsSync(cachePath)) &#123;</span><br><span class="line">    token = <span class="built_in">JSON</span>.parse(fs.readFileSync(cachePath))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!token || token.timeout &lt; <span class="built_in">Date</span>.now()) &#123;</span><br><span class="line">    <span class="keyword">let</span> res = <span class="built_in">JSON</span>.parse(<span class="keyword">await</span> <span class="keyword">this</span>.updateAccessToken())</span><br><span class="line"></span><br><span class="line">    res.timeout = <span class="built_in">Date</span>.now() + (res.expires_in - <span class="number">200</span>) * <span class="number">1000</span></span><br><span class="line">    fs.writeFileSync(cachePath, <span class="built_in">JSON</span>.stringify(res))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> token</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 更新微信 Access_token</span></span><br><span class="line"><span class="comment"> * 此处有每天调用 2000 次限制</span></span><br><span class="line"><span class="comment"> * 2h 即失效</span></span><br><span class="line"><span class="comment"> * @returns &#123;Promise&lt;*&gt;&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> updateAccessToken () &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; appid, appkey &#125; = serverConfig</span><br><span class="line">  <span class="keyword">const</span> url = <span class="string">`https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=<span class="subst">$&#123;appid&#125;</span>&amp;secret=<span class="subst">$&#123;appkey&#125;</span>`</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> rp.get(url)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>相当于每次调用后，要重新写入文件过期时间，如果过期时间到了，那么重新去更新。之所以拿 re.expires_in - 200, 是为了留点 buffer, 这个值当然可以自己去设置。</p>
+<hr>
+<h2 id="生成二维码"><a href="#生成二维码" class="headerlink" title="生成二维码"></a>生成二维码</h2><p>这里的 logo, 因为我们公众号只有一个 logo, 故直接是从文件中读取了。以后考虑把这个放在 github 的话，可能会支持用户可以自己上传 Logo。</p>
+<p>还有一个地方要注意，就是计算 logo 的位置。直接除以二维码的高宽一半是不行的，还要减去 logo 的一半哦。</p>
+<p>我这边在返回给前端下载的时候，也 save 到本地了，担心产品丢失信息。save 的时候，我以场景值和时间为名字，会方便日后好找一些。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 添加 logo</span></span><br><span class="line"><span class="comment"> * @param imageStream</span></span><br><span class="line"><span class="comment"> * @returns &#123;Promise&lt;*&gt;&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> getLogo (imageStream) &#123;</span><br><span class="line">  <span class="keyword">const</span> imgBuffer = <span class="keyword">await</span> streamToPromise(imageStream)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> &#123; <span class="attr">width</span>: imgWidth, <span class="attr">height</span>: imgHeight &#125; = imgSize(imgBuffer)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> logoWrapper = images(<span class="string">"./static/assets/logo.png"</span>).size(imgWidth / <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> x = (imgWidth - logoWrapper.width()) / <span class="number">2</span></span><br><span class="line">  <span class="keyword">const</span> y = (imgHeight - logoWrapper.height()) / <span class="number">2</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">await</span> <span class="keyword">this</span>.drawImage(imgBuffer, logoWrapper, x, y)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 画图</span></span><br><span class="line"><span class="comment"> * @param imgBuffer</span></span><br><span class="line"><span class="comment"> * @param logoWrapper</span></span><br><span class="line"><span class="comment"> * @param x</span></span><br><span class="line"><span class="comment"> * @param y</span></span><br><span class="line"><span class="comment"> * @returns &#123;Promise&lt;any&gt;&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">async</span> drawImage (imgBuffer, logoWrapper, x, y) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> image = images(imgBuffer)</span><br><span class="line">      .draw(logoWrapper, x, y)</span><br><span class="line">      .save(<span class="string">`./static/image/<span class="subst">$&#123;<span class="keyword">this</span>.scene&#125;</span>-<span class="subst">$&#123;+<span class="keyword">new</span> <span class="built_in">Date</span>()&#125;</span>.png`</span>, &#123;</span><br><span class="line">        quality : <span class="number">50</span></span><br><span class="line">      &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!image) &#123;</span><br><span class="line">      reject()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    resolve(image)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="入口文件"><a href="#入口文件" class="headerlink" title="入口文件"></a>入口文件</h2><p>入口文件跟平常的入口文件基本上没有什么大区别。比较简单。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>)</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">const</span> Router = <span class="built_in">require</span>(<span class="string">'koa-router'</span>)</span><br><span class="line"><span class="keyword">const</span> StaticServer = <span class="built_in">require</span>(<span class="string">'koa-static'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> config = <span class="built_in">require</span>(<span class="string">'./config'</span>)</span><br><span class="line"><span class="keyword">const</span> routeMiddleware = <span class="built_in">require</span>(<span class="string">'./middleware/route'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> App = <span class="keyword">new</span> Koa()</span><br><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> Router()</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> staticPath = <span class="string">'./static'</span></span><br><span class="line"></span><br><span class="line">App.use(StaticServer(path.join(__dirname, staticPath)))</span><br><span class="line"></span><br><span class="line">routeMiddleware(App, router)</span><br><span class="line"></span><br><span class="line">App.use(router.routes()).use(router.allowedMethods())</span><br><span class="line"></span><br><span class="line">App.listen(config.port, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`App listening on port <span class="subst">$&#123;config.port&#125;</span>`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>想当一个优秀的 Nodejs 工程师，但是发现自己还远远不够，比如 fs 的函数不熟。比如对 Buffer, Stream 理解的不够深入。还是写的太少了。不过总算是按时完成了。解放了劳动力。🚫</p>
+<p>下一步打算优化下代码，看能不能支持 upload logo, 支持传 appid, appkey, 这样别人也可以用了。还有很多基础工作没有做，比如 async, await 的错误处理，比如 logger, pm2 等。这个会慢慢完善，基础功能已 OK。 📚🏠</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/13/小程序内嵌复用H5并拉起微信支付解决（替代）方案/" rel="next" title="小程序内嵌复用H5并拉起微信支付解决（替代）方案">
+                <i class="fa fa-chevron-left"></i> 小程序内嵌复用H5并拉起微信支付解决（替代）方案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">106</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设计"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x8BBE;&#x8BA1;" class="headerlink" title="&#x8BBE;&#x8BA1;"></a>&#x8BBE;&#x8BA1;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程控制"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x6D41;&#x7A0B;&#x63A7;&#x5236;" class="headerlink" title="&#x6D41;&#x7A0B;&#x63A7;&#x5236;"></a>&#x6D41;&#x7A0B;&#x63A7;&#x5236;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取-AccessToken"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x83B7;&#x53D6;-AccessToken" class="headerlink" title="&#x83B7;&#x53D6; AccessToken"></a>&#x83B7;&#x53D6; AccessToken</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成二维码"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x751F;&#x6210;&#x4E8C;&#x7EF4;&#x7801;" class="headerlink" title="&#x751F;&#x6210;&#x4E8C;&#x7EF4;&#x7801;"></a>&#x751F;&#x6210;&#x4E8C;&#x7EF4;&#x7801;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#入口文件"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x5165;&#x53E3;&#x6587;&#x4EF6;" class="headerlink" title="&#x5165;&#x53E3;&#x6587;&#x4EF6;"></a>&#x5165;&#x53E3;&#x6587;&#x4EF6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/';
+          this.page.identifier = '2018/06/21/koa2-生成带场景值参数的带Logo二维码/';
+          this.page.title = 'koa2 生成带场景值参数的带Logo二维码';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
