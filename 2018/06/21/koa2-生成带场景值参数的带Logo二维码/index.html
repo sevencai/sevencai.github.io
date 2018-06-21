@@ -90,7 +90,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/qrcode.png">
 <meta property="og:image" content="http://sevencai.github.io/2018/06/21/koa2-生成带场景值参数的带Logo二维码/exampletest.png">
-<meta property="og:updated_time" content="2018-06-21T13:09:31.000Z">
+<meta property="og:updated_time" content="2018-06-21T13:13:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="koa2 生成带场景值参数的带Logo二维码">
 <meta name="twitter:description" content="上次写 Koa 还是2016年刚来公司实习的时候，那时候我还在上大三。转眼见2年过去了，我也正式工作快一年了。 Koa 也从原来比较难用的 generator ，yield 变成了现在的 async await 。真好。  这次文章的背景是，产品需要给公众号拉新。需要生成各种带参数的二维码。这个带参数的二维码可以做很多事情，比如统计新拉的关注是从哪个场景值下来的。比如关注时，不同场景值有不同的公">
@@ -349,14 +349,14 @@
 <p>上次写 Koa 还是2016年刚来公司实习的时候，那时候我还在上大三。转眼见2年过去了，我也正式工作快一年了。 Koa 也从原来比较难用的 generator ，yield 变成了现在的 async await 。真好。</p>
 </blockquote>
 <p>这次文章的背景是，产品需要给公众号拉新。需要生成各种带参数的二维码。这个带参数的二维码可以做很多事情，比如统计新拉的关注是从哪个场景值下来的。比如关注时，不同场景值有不同的公众号回复内容。</p>
-<p>在经历了好几次每次手动跟她生成后，我下定了决心，跟产品要了2天排期，给她做一个工具。自动生成带 Logo 的二维码。主要是手工去操作比较繁琐，需要经历下面[几步]：</p>
+<p>在经历了好几次每次手动跟她生成后，我下定了决心，跟产品要了2天排期，给她做一个工具。自动生成带 Logo 的二维码。<strong>主要是手工去操作比较繁琐，需要经历下面几步</strong>：</p>
 <ol>
 <li>先去获得 access_token</li>
 <li>再调用微信创建带参数值二维码的接口qrcode/create，获得 ticket</li>
 <li>再拿 ticket 换二维码</li>
 </ol>
 <p>这其中，带参数的二维码又分为了两种，永久和临时二维码。具体接口可以<a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1443433542" target="_blank" rel="noopener">参考公众号的文档</a>， 并且每次产品自己拿到 ticket 换的二维码后，还需要自己去 P logo, 大小也要自己去调。总之比较麻烦。</p>
-<p>**所以这篇文章，主要就是用 Koa2 生成带场景值参数的公众号二维码。💗🌹</p>
+<p><strong>所以这篇文章，主要就是用 Koa2 生成带场景值参数的公众号二维码</strong>。💗🌹</p>
 <hr>
 <h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>首先我确定了 koa server 端，只做接口层。意思是只用来处理前端的请求。 GET or POST。</p>
 <p>前端主要做表单验证，获取产品想要的二维码类型信息等。然后传给后台。后台根据信息，去拿 access_token, 然后调用微信二维码，再添加 logo 等。然后返回给前端。最后的效果是这样的：</p>
