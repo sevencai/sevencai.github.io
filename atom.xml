@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-08-09T13:55:46.000Z</updated>
+  <updated>2018-08-09T14:03:48.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://sevencai.github.io/2018/08/09/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/"/>
     <id>http://sevencai.github.io/2018/08/09/项目总结/</id>
     <published>2018-08-09T13:23:13.000Z</published>
-    <updated>2018-08-09T13:55:46.000Z</updated>
+    <updated>2018-08-09T14:03:48.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>最近一个多月加了很多班，做了一个比较紧急的项目 Nodejs + Vue全家桶，感觉自己收获多多。今天已经发布了现网版本，趁热总结和梳理下。</p>
@@ -63,6 +63,7 @@
 <hr>
 <h2 id="关于-PM2-的-cluster-模式"><a href="#关于-PM2-的-cluster-模式" class="headerlink" title="关于 PM2 的 cluster 模式"></a>关于 PM2 的 cluster 模式</h2><p>pm2 是很好的进程管理器，有自动重启等功能，并且还自带负载均衡。我这里就不讲具体的 cluster 模式和 pm2 了。就只讲下我遇到的坑。</p>
 <p>cluster 模式下，log4js 日志，无法正常打印。这个已经有相关的 issue,地址在<a href="https://github.com/log4js-node/log4js-node/issues/265" target="_blank" rel="noopener">这里</a>。大概的意思是 cluster 模式下，并没有 master 进程，而是只有多个 worker 子进程。而 log4js 只在 master 进程下，才会进行打印日志的操作。之所以这样是因为多个 worker 操作同一个日志文件（一般我们日志文件只有一套配置）可能会导致有错乱等问题。有解决问题的方法，都在那个 issue 里，但是我总觉得不太好。</p>
+<p>另一个问题是，在 cluster 模式下，利用 restart 命令无法完全重启进程，fork 模式下就不会，猜测是 cluster 模式有多个 worker, 重启是否需要 restart 指定是哪个子进程才可以？还发现，如果只有一个子进程，不指定也会不能重启。我明天会去验证下。</p>
 <p>遇到了一篇好文章： <a href="http://www.acuriousanimal.com/2017/08/20/using-pm2-to-manage-cluster.html" target="_blank" rel="noopener">using-pm2-to-manage-cluster</a></p>
 <hr>
 <h2 id="登录态验证"><a href="#登录态验证" class="headerlink" title="登录态验证"></a>登录态验证</h2><p>我们利用了<code>koa session</code>, <code>cookie session</code> 这种形式。开始的时候我把这里想复杂了，想要结合微信的登录态。但实际上纯 session cookie 这种反而更好。</p>
