@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Nodejs," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近一个多月加了很多班，做了一个比较紧急的项目 Nodejs + Vue全家桶，感觉自己收获多多。今天已经发布了现网版本，趁热总结和梳理下。   写在前面 Nodejs koa2,  async await用的很舒适。 Vue 全家桶,vue webpack vuex可快速开发。 前后端分离，Nodejs 端纯做 Api 层。 pm2 进程管理工具。又熟悉了很多命令和踩了一些坑。 log4js日">
+<meta name="keywords" content="Nodejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="项目总结">
+<meta property="og:url" content="http://sevencai.github.io/2018/08/09/项目总结/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="最近一个多月加了很多班，做了一个比较紧急的项目 Nodejs + Vue全家桶，感觉自己收获多多。今天已经发布了现网版本，趁热总结和梳理下。   写在前面 Nodejs koa2,  async await用的很舒适。 Vue 全家桶,vue webpack vuex可快速开发。 前后端分离，Nodejs 端纯做 Api 层。 pm2 进程管理工具。又熟悉了很多命令和踩了一些坑。 log4js日">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-09T13:55:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="项目总结">
+<meta name="twitter:description" content="最近一个多月加了很多班，做了一个比较紧急的项目 Nodejs + Vue全家桶，感觉自己收获多多。今天已经发布了现网版本，趁热总结和梳理下。   写在前面 Nodejs koa2,  async await用的很舒适。 Vue 全家桶,vue webpack vuex可快速开发。 前后端分离，Nodejs 端纯做 Api 层。 pm2 进程管理工具。又熟悉了很多命令和踩了一些坑。 log4js日">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2018/08/09/项目总结/"/>
+
+
+
+
+
+  <title>项目总结 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2018/08/09/项目总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">项目总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-09T21:23:13+08:00">
+                2018-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/09/项目总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/09/项目总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>最近一个多月加了很多班，做了一个比较紧急的项目 Nodejs + Vue全家桶，感觉自己收获多多。今天已经发布了现网版本，趁热总结和梳理下。</p>
+</blockquote>
+<hr>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><ol>
+<li><code>Nodejs koa2</code>,  <code>async await</code>用的很舒适。</li>
+<li><code>Vue 全家桶</code>,<code>vue webpack vuex</code>可快速开发。</li>
+<li>前后端分离，<code>Nodejs</code> 端纯做 <code>Api</code> 层。</li>
+<li><code>pm2</code> 进程管理工具。又熟悉了很多命令和踩了一些坑。</li>
+<li><code>log4js</code>日志打印工具。了解了部门的日志规范，用于查询问题。</li>
+<li>数据库用的 <code>sequelize</code>。</li>
+<li>登录用的 <code>koa-generic-session</code>。</li>
+<li>了解了 ToB 的一些概念及思想。</li>
+</ol>
+<p>以后就抛弃 PHP 这个世界上最好的语言吧。以下主要是自己对自己问题的一些梳理。并不涉及到任何的真实项目代码⌨️🏠。</p>
+<hr>
+<h2 id="获取用户的IP信息"><a href="#获取用户的IP信息" class="headerlink" title="获取用户的IP信息"></a>获取用户的IP信息</h2><p>在很多种情况下，我们Nodejs层需要把用户的 ip 传给后台的 cgi, cgi 会根据这个 ip 做一些策略，如风控，营销等等。这就涉及到 ip 怎么取的概念，你可能会接触到这几个 ip:</p>
+<ol>
+<li>ctx.request.ip</li>
+<li>ctx.headers[‘x-forwarded-for’]</li>
+<li>ctx.headers[‘x-real-ip’]</li>
+</ol>
+<p>先来普及下 <code>x-forwarded-for</code>及 <code>x-real-ip</code>。</p>
+<p><code>x-forwarded-for</code>的格式一般为：<code>X-Forwarded-For: client1, proxy1, proxy2</code>  如：<code>X-Forwarded-For: 1.1.1.1, 2.2.2.2, 3.3.3.3</code></p>
+<blockquote>
+<p>最左边（client1）是最原始客户端的IP地址, 代理服务器每成功收到一个请求，就把<strong>请求来源IP地址</strong>添加到右边。 在上面这个例子中，这个请求成功通过了三台代理服务器：proxy1, proxy2 及 proxy3。请求由client1发出，到达了proxy3（proxy3可能是请求的终点）。请求刚从client1中发出时，XFF是空的，请求被发往proxy1；通过proxy1的时候，client1被添加到XFF中，之后请求被发往proxy2;通过proxy2的时候，proxy1被添加到XFF中，之后请求被发往proxy3；通过proxy3时，proxy2被添加到XFF中，之后请求的的去向不明，如果proxy3不是请求终点，请求会被继续转发。<strong>鉴于伪造这一字段非常容易，应该谨慎使用X-Forwarded-For字段。正常情况下XFF中最后一个IP地址是最后一个代理服务器的IP地址, 这通常是一个比较可靠的信息来源。</strong> –维基百科</p>
+</blockquote>
+<p>而 <code>x-real-ip</code>没有相关标准，但是在反向代理和正向代理下，它的值可能不同。<strong>正向代理时，记录的是客户端的真实ip。 反向代理时，记录的是最后一级的代理ip。</strong></p>
+<p>所以：<code>x-real-ip</code> 及 <code>x-forwarded-for</code>这两个 ip 就是很普通的请求头，它们是可以被篡改的。比如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://www.my.com:8089 -H <span class="string">'X-Forwarded-For: 1.1.1.1'</span> -H <span class="string">'X-Real-IP: 2.2.2.2'</span></span><br></pre></td></tr></table></figure></p>
+<p>那么这两个值都容易被篡改，不可信，我们要拿到用户真实的 ip 怎么办呢？</p>
+<p>一般在建立  TCP 连接时，会产生真实的 IP, 叫做 <code>Remote Address</code>。因为是建立在 TCP 中，所以这个 ip 不能被篡改。一旦篡改，握手不成功，那么后面自然就没有了。所以如果我们要取真实的 ip,应该从这个字段里取。</p>
+<p>实际上应该取那个值，跟你 nginx 的配置有关系。比如一般配置 nginx 反向代理的时候可能这样配置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">// 若 XFF 有值，则 <span class="variable">$proxy_add_x_forwarded_for</span> = <span class="variable">$XFF</span>, <span class="variable">$remote_addr</span>  (<span class="variable">$XFF</span>与<span class="variable">$remote_addr</span>逗号分割，<span class="variable">$remote_addr</span>在其后)</span><br><span class="line">// 若 XFF 没有值，则 <span class="variable">$proxy_add_x_forwarded_for</span> = <span class="variable">$remote_addr</span></span><br></pre></td></tr></table></figure></p>
+<p>像这样赋值后，如果你是通过 nginx 反向代理来的，nginx 会把用户实际 ip （$remote_addr）赋值给 <code>X-Real-IP</code>,这时候它也是真实的用户IP了。而 XFF 也是有了用户的真实IP。</p>
+<p>通过这样的 nginx 配置。整个内容就无法被篡改和构造，我们就可以从 <code>X-Real-IP</code> 和 <code>XFF</code>的最后一截 获得用户真实的 IP 了。</p>
+<p>所以我最后是怎么传什么字段给后台的呢？<strong>我最后传的是 <code>x-forwarded-ip</code>， 拿到这一系列的 ip list 后，后台会去通过网段校验，判断出哪个是外网 ip, 然后把这个 ip 当成是用户真实的 ip。</strong> cgi 还是很严谨的。</p>
+<p>最开始谈到的 <code>ctx.request.ip</code> 是最后一次的 ip, 所以有可能是代理机器的 ip。</p>
+<p>遇到一篇好文章：<a href="https://imququ.com/post/x-forwarded-for-header-in-http.html" target="_blank" rel="noopener">x-forwarded-for-header-in-http</a></p>
+<p>一个实例，判断用户IP是否正常：<a href="https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=15_5" target="_blank" rel="noopener">微信H5支付需判断下单IP和支付IP是否一致</a></p>
+<hr>
+<h2 id="关于-PM2-的-cluster-模式"><a href="#关于-PM2-的-cluster-模式" class="headerlink" title="关于 PM2 的 cluster 模式"></a>关于 PM2 的 cluster 模式</h2><p>pm2 是很好的进程管理器，有自动重启等功能，并且还自带负载均衡。我这里就不讲具体的 cluster 模式和 pm2 了。就只讲下我遇到的坑。</p>
+<p>cluster 模式下，log4js 日志，无法正常打印。这个已经有相关的 issue,地址在<a href="https://github.com/log4js-node/log4js-node/issues/265" target="_blank" rel="noopener">这里</a>。大概的意思是 cluster 模式下，并没有 master 进程，而是只有多个 worker 子进程。而 log4js 只在 master 进程下，才会进行打印日志的操作。之所以这样是因为多个 worker 操作同一个日志文件（一般我们日志文件只有一套配置）可能会导致有错乱等问题。有解决问题的方法，都在那个 issue 里，但是我总觉得不太好。</p>
+<p>遇到了一篇好文章： <a href="http://www.acuriousanimal.com/2017/08/20/using-pm2-to-manage-cluster.html" target="_blank" rel="noopener">using-pm2-to-manage-cluster</a></p>
+<hr>
+<h2 id="登录态验证"><a href="#登录态验证" class="headerlink" title="登录态验证"></a>登录态验证</h2><p>我们利用了<code>koa session</code>, <code>cookie session</code> 这种形式。开始的时候我把这里想复杂了，想要结合微信的登录态。但实际上纯 session cookie 这种反而更好。</p>
+<blockquote>
+<p>大概流程是：用户登录网站，调用微信登录，拉起授权，授权的地址调用 Nodejs 后台的一个自己封装的接口。在这个接口里获得用户的 openid ，校验用户的权限并且设置 <code>ctx.session.sessionId</code>，然后返回到前端，前端调用后台的接口，通过已经种下的 <code>sessionId</code> 即可判断出用户的权限，然后再返回给前端。前端再针对身份到对应的路由。</p>
+</blockquote>
+<p>那么你肯定会问，为什么不在直接设置 sessionId 的时候把用户信息返回了呢？这样也可以的，那么相当于你微信授权的回调地址要写一个前端的页面， 然后在这个页面中再来判断用户根据身份到哪个页面。这个前端页面你需要单独的也去维护。这样也是可以的。你也许会问，我不用单独再写个页面，用首页就好了。但是用首页会存在一个问题，就是最终由于授权，你的首页就带上了 code, 还要用 replaceState 什么的去掉，我觉得很不整洁。但是也是可以的。这两种方式本质上都可以。只不过第一种偷懒了，直接redirect到首页，首页再发一次请求。</p>
+<p>我用的登录中间件是： <code>koa-generic-session</code>。<code>app.use</code>下面这个中间件即可。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sequelizeObj = connectDb.db[dbName]</span><br><span class="line"></span><br><span class="line">sessionConfig.options.store = <span class="keyword">new</span> SequelizeStore(sequelizeObj, &#123;</span><br><span class="line">  sync: <span class="literal">false</span>,</span><br><span class="line">  tableName: <span class="string">'t_session'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> session(sessionConfig.options)</span><br></pre></td></tr></table></figure></p>
+<p>存储并没有存在内存中，而是存在了数据库里，这里用的<code>koa-generic-session-sequelize</code>。<strong>不放在内存里的原因是有多台机器，存在内存中不能共享应该会有问题。</strong></p>
+<p>设置 session cookie 的时候，在前端 cookie 里，就会有对应的值，然后每次请求页面，都会把这个 cookie 带上，去数据库里找对应的 session 是否失效。如果没有失效，认为ok,那么就可以跳过验证的过称了。</p>
+<p>还可以加上 app.keys ，然后再对应的 options 里加上  signkeys。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app.keys = [<span class="string">'im a newer secret'</span>, <span class="string">'i like turtle'</span>];</span><br><span class="line">app.keys = <span class="keyword">new</span> KeyGrip([<span class="string">'im a newer secret'</span>, <span class="string">'i like turtle'</span>], <span class="string">'sha256'</span>);</span><br><span class="line"></span><br><span class="line">ctx.cookies.set(<span class="string">'name'</span>, <span class="string">'tobi'</span>, &#123; <span class="attr">signed</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<p>这样，你的 cookie 的值，就会被加密了。前端看到的 cookie 可能是一个加密过的串。然后你到服务器端 get cookie 的时候，它会自动帮你解密。得到对应的值去和数据库里的session进行比对。</p>
+<p>那如果前端的微信登录态过期了怎么办呢？比较简单，前端发现登录态失败，比如登录态失败的返回码是1111，那么1111时重新拉起微信登录即可。</p>
+<hr>
+<h2 id="日志管理"><a href="#日志管理" class="headerlink" title="日志管理"></a>日志管理</h2><p>日志管理对于一个大型的项目来说，尤其是涉及到支付的非常重要，他用于帮你查看用户做了什么事情，或者系统出了什么❌。非常的重要。</p>
+<p><strong>日志我这里用的 log4js, 分为了四种 category, 分别用来记录 db 操作，访问日志，开发者 debug 信息，cgi 信息日志，错误日志。这些需要放在不同的文件里，便于开发者找问题。</strong></p>
+<p>你可以设置不同的 categories, 每个 categories 里设置 level 和不同的 appenders。 每一个 appenders 都可以设置不同 filename 等等。</p>
+<p>那么这个 db 的操作日志，怎么打印呢？ sequelize 建立跟 db 链接时，可以传入 logging 这个 option, 在这个 logging 里设置 sequelize 的打印方法。如下面我就是把打印db的操作日志通过 log4js 打入了日志中：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.options.logging = <span class="function"><span class="params">msg</span> =&gt;</span> &#123;</span><br><span class="line">  dbLogger.debug(msg)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="koa2-的错误处理"><a href="#koa2-的错误处理" class="headerlink" title="koa2 的错误处理"></a>koa2 的错误处理</h2><p>这个错误处理的方法，网上到处都是的了：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误处理中间件</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> next()</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    ctx.response.status = err.statusCode || err.status || <span class="number">500</span></span><br><span class="line"></span><br><span class="line">    ctx.response.body = &#123;</span><br><span class="line">      message: <span class="string">'系统繁忙，请稍后再试!'</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ctx.app.emit(<span class="string">'error'</span>, err, ctx)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// app.js 中接收 error 事件，并且上报到错误日志中</span></span><br><span class="line">app.on(<span class="string">'error'</span>, (err, ctx) =&gt; &#123;</span><br><span class="line"> ctx.errorLogger(<span class="string">`name=<span class="subst">$&#123;err.name&#125;</span>&amp;msg=<span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(err.message)&#125;</span>&amp;stack=<span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(err.stack)&#125;</span>`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>这里注意如果你直接打印的是 err 对象，一般只有它的 msg 会被打印出来，如果你想要更多信息，一定要把 stack 打出来。这个我疏忽了，同事帮我提出来了，很棒很优秀。</p>
+<p>我去网上查了下，这个错误处理其实是 koa2 里的默认方式，只不过我们又自己去重写了，他本身的是这样的：</p>
+<p>可以看下这篇文档：<a href="https://github.com/koajs/koa/blob/master/docs/error-handling.md#default-error-handler" target="_blank" rel="noopener">error-handling.md#default-error-handler</a></p>
+<p>他里面推荐了一种写法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">app.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> next();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="comment">// will only respond with JSON</span></span><br><span class="line">    ctx.status = err.statusCode || err.status || <span class="number">500</span>;</span><br><span class="line">    ctx.body = &#123;</span><br><span class="line">      message: err.message</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p><strong>我觉得这种写法并不是很好，因为如果你这个是数据库的某些地方出错了，可能会在 err.message 里暴露一些你机器 ip 及一些其他的信息，这个是不安全的。统一给用户一个回复，然后打到系统错误日志中，是比较好的做法。</strong></p>
+<p>这里途中看到了一篇文章： <a href="http://www.52cik.com/2018/05/27/koa-error.html" target="_blank" rel="noopener">大概讲的是koa错误处理的写法</a></p>
+<p>注意错误处理最好被当做最前面的一个中间件。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>先写这么多，其实还有很多很小的细节。下次再整理整理，当然上面只是我自己的理解，可能也有我理解错了的。我会经常看它，然后看自己是否后面又新的认识来推翻现在的想法。这个项目是我跟着组里另外一个很多年经验的老司机一起做的，在他身上，我学习到了严谨的态度。有很多地方他都比我有经验，也给我指出了一些问题。所以说公司和老板给他那么多工资是应该的啊。优秀哈哈。👍📚</p>
+<p>🌲希望下次有机会试下 Vue SSR。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/11/Ajax-请求后台接口下载文件方法/" rel="next" title="Ajax 请求后台接口【下载文件】方法">
+                <i class="fa fa-chevron-left"></i> Ajax 请求后台接口【下载文件】方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">108</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5199;&#x5728;&#x524D;&#x9762;" class="headerlink" title="&#x5199;&#x5728;&#x524D;&#x9762;"></a>&#x5199;&#x5728;&#x524D;&#x9762;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取用户的IP信息"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x83B7;&#x53D6;&#x7528;&#x6237;&#x7684;IP&#x4FE1;&#x606F;" class="headerlink" title="&#x83B7;&#x53D6;&#x7528;&#x6237;&#x7684;IP&#x4FE1;&#x606F;"></a>&#x83B7;&#x53D6;&#x7528;&#x6237;&#x7684;IP&#x4FE1;&#x606F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-PM2-的-cluster-模式"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5173;&#x4E8E;-PM2-&#x7684;-cluster-&#x6A21;&#x5F0F;" class="headerlink" title="&#x5173;&#x4E8E; PM2 &#x7684; cluster &#x6A21;&#x5F0F;"></a>&#x5173;&#x4E8E; PM2 &#x7684; cluster &#x6A21;&#x5F0F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#登录态验证"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x767B;&#x5F55;&#x6001;&#x9A8C;&#x8BC1;" class="headerlink" title="&#x767B;&#x5F55;&#x6001;&#x9A8C;&#x8BC1;"></a>&#x767B;&#x5F55;&#x6001;&#x9A8C;&#x8BC1;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志管理"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x65E5;&#x5FD7;&#x7BA1;&#x7406;" class="headerlink" title="&#x65E5;&#x5FD7;&#x7BA1;&#x7406;"></a>&#x65E5;&#x5FD7;&#x7BA1;&#x7406;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#koa2-的错误处理"><span class="nav-number">6.</span> <span class="nav-text"><a href="#koa2-&#x7684;&#x9519;&#x8BEF;&#x5904;&#x7406;" class="headerlink" title="koa2 &#x7684;&#x9519;&#x8BEF;&#x5904;&#x7406;"></a>koa2 &#x7684;&#x9519;&#x8BEF;&#x5904;&#x7406;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2018/08/09/项目总结/';
+          this.page.identifier = '2018/08/09/项目总结/';
+          this.page.title = '项目总结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
