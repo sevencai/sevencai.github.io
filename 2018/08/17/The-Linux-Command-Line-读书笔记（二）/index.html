@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="读书笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="第九章-权限管理🏫 Unix 传统中的操作系统不同于那些 MS-DOS 传统中的系统，区别在于它们不仅是多任务系统，而且也是 多用户系统。这到底意味着什么？它意味着多个用户可以在同一时间使用同一台计算机。为了使多用户特性付诸实践，那么必须发明一种方法来阻止用户彼此之间受到影响。毕竟，一个 用户的行为不能导致计算机崩溃，也不能乱动属于另一个用户的文件。  主要的命令有：12345678id – 显">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Linux Command Line 读书笔记（二）">
+<meta property="og:url" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="第九章-权限管理🏫 Unix 传统中的操作系统不同于那些 MS-DOS 传统中的系统，区别在于它们不仅是多任务系统，而且也是 多用户系统。这到底意味着什么？它意味着多个用户可以在同一时间使用同一台计算机。为了使多用户特性付诸实践，那么必须发明一种方法来阻止用户彼此之间受到影响。毕竟，一个 用户的行为不能导致计算机崩溃，也不能乱动属于另一个用户的文件。  主要的命令有：12345678id – 显">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/firstletter.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/filemode.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/attribute.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/otcal.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/ugoa.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/other.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/chown.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/kill.png">
+<meta property="og:updated_time" content="2018-08-17T09:29:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Linux Command Line 读书笔记（二）">
+<meta name="twitter:description" content="第九章-权限管理🏫 Unix 传统中的操作系统不同于那些 MS-DOS 传统中的系统，区别在于它们不仅是多任务系统，而且也是 多用户系统。这到底意味着什么？它意味着多个用户可以在同一时间使用同一台计算机。为了使多用户特性付诸实践，那么必须发明一种方法来阻止用户彼此之间受到影响。毕竟，一个 用户的行为不能导致计算机崩溃，也不能乱动属于另一个用户的文件。  主要的命令有：12345678id – 显">
+<meta name="twitter:image" content="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/firstletter.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/"/>
+
+
+
+
+
+  <title>The Linux Command Line 读书笔记（二） | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">The Linux Command Line 读书笔记（二）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-17T17:11:25+08:00">
+                2018-08-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/17/The-Linux-Command-Line-读书笔记（二）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/17/The-Linux-Command-Line-读书笔记（二）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="第九章-权限管理🏫"><a href="#第九章-权限管理🏫" class="headerlink" title="第九章-权限管理🏫"></a>第九章-权限管理🏫</h1><blockquote>
+<p>Unix 传统中的操作系统不同于那些 MS-DOS 传统中的系统，区别在于它们不仅是多任务系统，而且也是 多用户系统。这到底意味着什么？它意味着多个用户可以在同一时间使用同一台计算机。<br>为了使多用户特性付诸实践，那么必须发明一种方法来<strong>阻止用户彼此之间受到影响</strong>。毕竟，一个 用户的行为不能导致计算机崩溃，也不能乱动属于另一个用户的文件。</p>
+</blockquote>
+<p>主要的命令有：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">id – 显示用户身份号（每个用户都会有个 id）</span><br><span class="line">chmod – 更改文件模式</span><br><span class="line"><span class="built_in">umask</span> – 设置默认的文件权限 (这个我基本不会用到，暂时忽略)</span><br><span class="line">su – 以另一个用户的身份来运行 shell</span><br><span class="line">sudo – 以另一个用户的身份来执行命令</span><br><span class="line">chown – 更改文件所有者</span><br><span class="line">chgrp – 更改文件组所有权</span><br><span class="line">passwd – 更改用户密码</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="chmod-更改文件模式"><a href="#chmod-更改文件模式" class="headerlink" title="chmod-更改文件模式"></a>chmod-更改文件模式</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-rw-r--r--    1 sevencai  TENCENT\Domain Users     523  8 15 15:36 README.md</span><br></pre></td></tr></table></figure>
+<p><strong>列表的前十个字符是文件的属性。这十个字符的第一个字符表明文件类型。</strong></p>
+<p>具体可能有的值有：</p>
+<p><img src="firstletter.png" alt="first letter"></p>
+<p><strong>剩下的九个字符叫做文件模式，代表着文件所有者、文件组所有者和其他人的读、写和执行权限。</strong></p>
+<p><img src="filemode.png" alt="filemode"></p>
+<p><img src="attribute.png" alt="attribute"></p>
+<p>如<code>-rwxr-xr-x</code>标识的含义是：一个普通文件，对文件所有者来说可读、可写、可执行。也可以被其他的所有人读取和执行。</p>
+<p><strong>我们使用八进制数字来设置所期望的权限模式。因为每个八进制数字代表了 3个二进制数字，这种对应关系，正好映射到用来存储文件模式所使用的方案上。</strong></p>
+<p>对应的值为：</p>
+<p><img src="otcal.png" alt="octal"></p>
+<p>通过使用3个八进制数字，我们能够设置文件所有者、用户组和其他人的权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod 600 foo.txt</span><br><span class="line">chmod 755 shell.sh</span><br></pre></td></tr></table></figure>
+<p>通过传递参数 “600”，我们能够设置文件所有者的权限为读写权限，而删除用户组和其他人的所有 权限。虽然八进制到二进制的映射看起来不方便，但通常只会用到一些常见的映射关系： 7 (rwx)，6 (rw-)，5 (r-x)，4 (r–)，和 0 (—)。</p>
+<p>chmod 命令还支持一种符号表示法，来指定文件模式。符号表示法分为三部分：更改会影响谁， 要执行哪个操作，要设置哪种权限。通过字符 “u”、“g”、“o”和 “a” 的组合来指定 要影响的对象，如下所示：</p>
+<p><img src="ugoa.png" alt="ugoa"></p>
+<p><strong>如果没有指定字符，则假定使用”all”。执行的操作可能是一个“＋”字符，表示加上一个权限， 一个“－”，表示删掉一个权限，或者是一个“＝”，表示只有指定的权限可用，其它所有的权限被删除。</strong></p>
+<p>有下面这些例子（我感觉这种我应该不会经常用，先前一直用上面的二进制模式比较多）：</p>
+<p><img src="other.png" alt="ugoa+-"></p>
+<hr>
+<h2 id="su-及-sudo"><a href="#su-及-sudo" class="headerlink" title="su 及 sudo"></a>su 及 sudo</h2><blockquote>
+<p>su － 以其他用户身份和组 ID 运行一个 shell<br>语法类似： su [-[l]] [user]</p>
+</blockquote>
+<p>如果包含”-l”选项，那么会为指定用户启动一个需要登录的 shell。这意味着会加载此用户的 shell 环境， 并且工作目录会更改到这个用户的家目录。这通常是我们所需要的。如果不指定用户，那么就假定是 超级用户。注意（不可思议地），选项”-l”可以缩写为”-“，这是经常用到的形式。</p>
+<p>因此为了启动超级用户我们可能会这样执行<code>su -</code>。</p>
+<p>如果以<code>su -c &#39;command&#39;</code>这样的方式启动一个 shell, 是可以执行单个的<code>command</code>命令，而不是重新启动了一个可以交互的shell。注意 command 要用 引号引起来。如<code>su -c &#39;ls -l /root/*&#39;</code>。</p>
+<p><strong>sudo 命令在很多方面都相似于 su 命令，但是 sudo 还有一些非常重要的功能。管理员能够配置 sudo 命令，从而允许一个普通用户以不同的身份（通常是超级用户），通过一种非常可控的方式 来执行命令。尤其是，只有一个用户可以执行一个或多个特殊命令时，（更体现了 sudo 命令的方便性）。</strong></p>
+<p>执行 <code>sudo -l</code>可以看当前被赋予了哪些权限如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">➜  midas-welfare git:(master) sudo -l</span><br><span class="line">Password:</span><br><span class="line">Matching Defaults entries for sevencai on SEVENCAI-MB2:</span><br><span class="line">    env_reset ......</span><br><span class="line">User sevencai may run the following commands on SEVENCAI-MB2:</span><br><span class="line">    (ALL) ALL</span><br></pre></td></tr></table></figure></p>
+<p>所以这里总结下 su 和 sudo 的区别和联系：</p>
+<ol>
+<li><code>sudo</code> 命令需要输入当前用户的密码，<code>su</code> 命令需要输入 root 用户的密码。</li>
+<li><code>sudo</code> 命令只允许使用提升的权限运行单个命令，而 <code>su</code> 命令会启动一个新的 shell，同时允许使用 root 权限运行尽可能多的命令，直到明确退出登录</li>
+</ol>
+<p><strong>所以根据第一条，我们可以知道就安全性而言，<code>sudo</code> 比 <code>su</code> 更好。<code>su</code>意味着要与其他用户共享 root 密码，这是一件比较危险的事情。并且对于 <code>su</code> 而言如果要撤销特定用户的超级（root）权限，唯一的办法就是更改 root 密码，然后再告知其他用户。很麻烦。但是 <code>sudo</code> 就不一样了,如果想要阻止某个用户访问 root 权限，只需要调整 <code>sudoers</code> 这个文件中的配置即可。</strong></p>
+<p>The key difference between <code>sudo</code> and <code>su</code> is <code>sudo</code> runs a command as root, whereas <code>su</code> makes you root.</p>
+<hr>
+<h2 id="chown-－-更改文件所有者和用户组"><a href="#chown-－-更改文件所有者和用户组" class="headerlink" title="chown － 更改文件所有者和用户组"></a>chown － 更改文件所有者和用户组</h2><p><strong>chown 命令被用来更改文件或目录的所有者和用户组。使用这个命令需要超级用户权限。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown [owner][:[group]] file...</span><br></pre></td></tr></table></figure>
+<p><img src="chown.png" alt="chown"></p>
+<p>下面这个例子比较实用，有两个用户，janet拥有超级用户访问权限，而 tony 没有。用户 janet 想要从 她的家目录复制一个文件到用户 tony 的家目录。因为用户 janet 想要 tony 能够编辑这个文件， janet 把这个文件的所有者更改为 tony:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[janet@linuxbox ~]$ sudo cp myfile.txt ~tony</span><br><span class="line">Password:</span><br><span class="line">[janet@linuxbox ~]$ sudo ls -l ~tony/myfile.txt</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root  root <span class="number">8031</span> <span class="number">2008</span><span class="number">-03</span><span class="number">-20</span> <span class="number">14</span>:<span class="number">30</span> /home/tony/myfile.txt</span><br><span class="line">[janet@linuxbox ~]$ sudo chown tony: ~tony/myfile.txt</span><br><span class="line">[janet@linuxbox ~]$ sudo ls -l ~tony/myfile.txt</span><br><span class="line">-rw-r--r-- <span class="number">1</span> tony  tony <span class="number">8031</span> <span class="number">2008</span><span class="number">-03</span><span class="number">-20</span> <span class="number">14</span>:<span class="number">30</span> /home/tony/myfile.txt</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="更改用户密码"><a href="#更改用户密码" class="headerlink" title="更改用户密码"></a>更改用户密码</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">passwd [user]</span><br><span class="line">sudo passwd root 更改 root 用户的密码</span><br></pre></td></tr></table></figure>
+<p>passwd 命令将会试着强迫你使用“强”密码。这意味着它会拒绝接受太短的密码、与先前相似的密码、 字典中的单词作为密码或者是太容易猜到的密码。</p>
+<hr>
+<h1 id="第十章：进程🚓"><a href="#第十章：进程🚓" class="headerlink" title="第十章：进程🚓"></a>第十章：进程🚓</h1><p>内核维护每个进程的信息，以此来保持事情有序。例如，系统分配给每个进程一个数字，这个数字叫做 进程(process) ID 或 PID。PID 号按升序分配，init 进程的 PID 总是1。内核也对分配给每个进程的内存和就绪状态进行跟踪以便继续执行这个进程。 像文件一样，进程也有所有者和用户 ID，有效用户 ID，等等。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-   ps – 报告当前进程快照</span><br><span class="line">-   top – 显示任务</span><br><span class="line">-   <span class="built_in">jobs</span> – 列出活跃的任务</span><br><span class="line">-   <span class="built_in">bg</span> – 把一个任务放到后台执行</span><br><span class="line">-   <span class="built_in">fg</span> – 把一个任务放到前台执行</span><br><span class="line">-   <span class="built_in">kill</span> – 给一个进程发送信号</span><br><span class="line">-   killall – 杀死指定名字的进程</span><br><span class="line">-   shutdown – 关机或重启系统</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="查看进程"><a href="#查看进程" class="headerlink" title="查看进程"></a>查看进程</h2><p>查看进程，最常使用地命令（有几个命令）是 ps(process)。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ps</span><br><span class="line"></span><br><span class="line">  PID TTY           TIME CMD</span><br><span class="line">54944 ttys000    0:00.14 /Applications/iTerm.app/Contents/MacOS/iTerm2 --server login -fp sevencai</span><br><span class="line">55003 ttys000    0:00.61 -zsh</span><br><span class="line">10488 ttys001    0:00.27 /Applications/iTerm.app/Contents/MacOS/iTerm2 --server login -fp sevencai</span><br><span class="line">10492 ttys001    0:02.66 -zsh</span><br></pre></td></tr></table></figure></p>
+<p>默认情况下，ps 不会显示很多进程信息，只是列出与当前终端会话相关的进程。为了得到更多信息， 我们需要加上一些选项。TTY 是 “Teletype”(直译电传打字机) 的简写，是指进程的控制终端。TIME 字段表示 进程所消耗的 CPU 时间数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加上 “x” 选项（注意没有开头的 “-“ 字符），告诉 ps 命令，展示所有进程，不管它们由什么 终端（如果有的话）控制。在 TTY 一栏中出现的 “?” ，表示没有控制终端。使用这个 “x” 选项，可以 看到我们所拥有的每个进程的信息。</span></span><br><span class="line">ps x</span><br><span class="line">ps x | less</span><br><span class="line"></span><br><span class="line"><span class="comment">// 能够显示属于每个用户的进程信息。使用这个选项，可以唤醒 “BSD 风格” 的输出结果。</span></span><br><span class="line">ps aux</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="用-top-命令动态查看进程"><a href="#用-top-命令动态查看进程" class="headerlink" title="用 top 命令动态查看进程"></a>用 top 命令动态查看进程</h2><p><strong>虽然 ps 命令能够展示许多计算机运行状态的信息，但是它只是提供 ps 命令执行时刻的机器状态快照。 为了看到更多动态的信息，我们使用 <code>top</code> 命令。</strong></p>
+<p>top 程序接受一系列从键盘输入的命令。两个最有趣的命令是 h 和 q。h，显示程序的帮助屏幕，q， 退出 top 程序。</p>
+<hr>
+<h2 id="通过-kill-命令给进程发送信号"><a href="#通过-kill-命令给进程发送信号" class="headerlink" title="通过 kill 命令给进程发送信号"></a>通过 kill 命令给进程发送信号</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> [-signal] PID...</span><br><span class="line"></span><br><span class="line"><span class="built_in">kill</span> -1 13546</span><br><span class="line"><span class="built_in">kill</span> -9 pid (我经常用)</span><br></pre></td></tr></table></figure>
+<p>具体的 <code>-signal</code> 的可选值，如下所示：</p>
+<p><img src="kill.png" alt="kill"></p>
+<hr>
+<h1 id="总结🌹"><a href="#总结🌹" class="headerlink" title="总结🌹"></a>总结🌹</h1><p>加上这篇文章，<code>The Linux Command Line</code> 的第一章就结束了。我零零散散的花的时间去整理的，中间也去除了一些我基本上不怎么用到的，着重加强了下我经常用到的一些命令。</p>
+<p>比如 kill ，我以前经常用到 kill -9, 但是其实一直不知道这个 -9 是什么东西。现在进行稍微系统一点的学习，打命令不再依靠熟悉和曾经用过，而是有理解的。📚❄️</p>
+<p>包括还有  sudo 及 su, 以前一直有用过，但是模拟两可，并不知道两者的区别。现在都大致的有了解。以后看运维同学敲命令，我看它敲 su or sudo 就知道它是大概的区别是什么了。想要做什么事情。🐶</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/10/The-Linux-Command-Line-读书笔记（一）/" rel="next" title="The Linux Command Line 读书笔记（一）">
+                <i class="fa fa-chevron-left"></i> The Linux Command Line 读书笔记（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">110</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第九章-权限管理🏫"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x7B2C;&#x4E5D;&#x7AE0;-&#x6743;&#x9650;&#x7BA1;&#x7406;&#x1F3EB;" class="headerlink" title="&#x7B2C;&#x4E5D;&#x7AE0;-&#x6743;&#x9650;&#x7BA1;&#x7406;&#x1F3EB;"></a>&#x7B2C;&#x4E5D;&#x7AE0;-&#x6743;&#x9650;&#x7BA1;&#x7406;&#x1F3EB;</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#chmod-更改文件模式"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#chmod-&#x66F4;&#x6539;&#x6587;&#x4EF6;&#x6A21;&#x5F0F;" class="headerlink" title="chmod-&#x66F4;&#x6539;&#x6587;&#x4EF6;&#x6A21;&#x5F0F;"></a>chmod-&#x66F4;&#x6539;&#x6587;&#x4EF6;&#x6A21;&#x5F0F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#su-及-sudo"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#su-&#x53CA;-sudo" class="headerlink" title="su &#x53CA; sudo"></a>su &#x53CA; sudo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chown-－-更改文件所有者和用户组"><span class="nav-number">1.3.</span> <span class="nav-text"><a href="#chown-&#xFF0D;-&#x66F4;&#x6539;&#x6587;&#x4EF6;&#x6240;&#x6709;&#x8005;&#x548C;&#x7528;&#x6237;&#x7EC4;" class="headerlink" title="chown &#xFF0D; &#x66F4;&#x6539;&#x6587;&#x4EF6;&#x6240;&#x6709;&#x8005;&#x548C;&#x7528;&#x6237;&#x7EC4;"></a>chown &#xFF0D; &#x66F4;&#x6539;&#x6587;&#x4EF6;&#x6240;&#x6709;&#x8005;&#x548C;&#x7528;&#x6237;&#x7EC4;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更改用户密码"><span class="nav-number">1.4.</span> <span class="nav-text"><a href="#&#x66F4;&#x6539;&#x7528;&#x6237;&#x5BC6;&#x7801;" class="headerlink" title="&#x66F4;&#x6539;&#x7528;&#x6237;&#x5BC6;&#x7801;"></a>&#x66F4;&#x6539;&#x7528;&#x6237;&#x5BC6;&#x7801;</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第十章：进程🚓"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x7B2C;&#x5341;&#x7AE0;&#xFF1A;&#x8FDB;&#x7A0B;&#x1F693;" class="headerlink" title="&#x7B2C;&#x5341;&#x7AE0;&#xFF1A;&#x8FDB;&#x7A0B;&#x1F693;"></a>&#x7B2C;&#x5341;&#x7AE0;&#xFF1A;&#x8FDB;&#x7A0B;&#x1F693;</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看进程"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x67E5;&#x770B;&#x8FDB;&#x7A0B;" class="headerlink" title="&#x67E5;&#x770B;&#x8FDB;&#x7A0B;"></a>&#x67E5;&#x770B;&#x8FDB;&#x7A0B;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用-top-命令动态查看进程"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x7528;-top-&#x547D;&#x4EE4;&#x52A8;&#x6001;&#x67E5;&#x770B;&#x8FDB;&#x7A0B;" class="headerlink" title="&#x7528; top &#x547D;&#x4EE4;&#x52A8;&#x6001;&#x67E5;&#x770B;&#x8FDB;&#x7A0B;"></a>&#x7528; top &#x547D;&#x4EE4;&#x52A8;&#x6001;&#x67E5;&#x770B;&#x8FDB;&#x7A0B;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过-kill-命令给进程发送信号"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x901A;&#x8FC7;-kill-&#x547D;&#x4EE4;&#x7ED9;&#x8FDB;&#x7A0B;&#x53D1;&#x9001;&#x4FE1;&#x53F7;" class="headerlink" title="&#x901A;&#x8FC7; kill &#x547D;&#x4EE4;&#x7ED9;&#x8FDB;&#x7A0B;&#x53D1;&#x9001;&#x4FE1;&#x53F7;"></a>&#x901A;&#x8FC7; kill &#x547D;&#x4EE4;&#x7ED9;&#x8FDB;&#x7A0B;&#x53D1;&#x9001;&#x4FE1;&#x53F7;</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结🌹"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;&#x1F339;" class="headerlink" title="&#x603B;&#x7ED3;&#x1F339;"></a>&#x603B;&#x7ED3;&#x1F339;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/';
+          this.page.identifier = '2018/08/17/The-Linux-Command-Line-读书笔记（二）/';
+          this.page.title = 'The Linux Command Line 读书笔记（二）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

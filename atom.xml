@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-08-10T13:18:59.000Z</updated>
+  <updated>2018-08-17T09:29:08.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,94 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>The Linux Command Line 读书笔记（二）</title>
+    <link href="http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+    <id>http://sevencai.github.io/2018/08/17/The-Linux-Command-Line-读书笔记（二）/</id>
+    <published>2018-08-17T09:11:25.000Z</published>
+    <updated>2018-08-17T09:29:08.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="第九章-权限管理🏫"><a href="#第九章-权限管理🏫" class="headerlink" title="第九章-权限管理🏫"></a>第九章-权限管理🏫</h1><blockquote>
+<p>Unix 传统中的操作系统不同于那些 MS-DOS 传统中的系统，区别在于它们不仅是多任务系统，而且也是 多用户系统。这到底意味着什么？它意味着多个用户可以在同一时间使用同一台计算机。<br>为了使多用户特性付诸实践，那么必须发明一种方法来<strong>阻止用户彼此之间受到影响</strong>。毕竟，一个 用户的行为不能导致计算机崩溃，也不能乱动属于另一个用户的文件。</p>
+</blockquote>
+<p>主要的命令有：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">id – 显示用户身份号（每个用户都会有个 id）</span><br><span class="line">chmod – 更改文件模式</span><br><span class="line"><span class="built_in">umask</span> – 设置默认的文件权限 (这个我基本不会用到，暂时忽略)</span><br><span class="line">su – 以另一个用户的身份来运行 shell</span><br><span class="line">sudo – 以另一个用户的身份来执行命令</span><br><span class="line">chown – 更改文件所有者</span><br><span class="line">chgrp – 更改文件组所有权</span><br><span class="line">passwd – 更改用户密码</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="chmod-更改文件模式"><a href="#chmod-更改文件模式" class="headerlink" title="chmod-更改文件模式"></a>chmod-更改文件模式</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-rw-r--r--    1 sevencai  TENCENT\Domain Users     523  8 15 15:36 README.md</span><br></pre></td></tr></table></figure>
+<p><strong>列表的前十个字符是文件的属性。这十个字符的第一个字符表明文件类型。</strong></p>
+<p>具体可能有的值有：</p>
+<p><img src="firstletter.png" alt="first letter"></p>
+<p><strong>剩下的九个字符叫做文件模式，代表着文件所有者、文件组所有者和其他人的读、写和执行权限。</strong></p>
+<p><img src="filemode.png" alt="filemode"></p>
+<p><img src="attribute.png" alt="attribute"></p>
+<p>如<code>-rwxr-xr-x</code>标识的含义是：一个普通文件，对文件所有者来说可读、可写、可执行。也可以被其他的所有人读取和执行。</p>
+<p><strong>我们使用八进制数字来设置所期望的权限模式。因为每个八进制数字代表了 3个二进制数字，这种对应关系，正好映射到用来存储文件模式所使用的方案上。</strong></p>
+<p>对应的值为：</p>
+<p><img src="otcal.png" alt="octal"></p>
+<p>通过使用3个八进制数字，我们能够设置文件所有者、用户组和其他人的权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod 600 foo.txt</span><br><span class="line">chmod 755 shell.sh</span><br></pre></td></tr></table></figure>
+<p>通过传递参数 “600”，我们能够设置文件所有者的权限为读写权限，而删除用户组和其他人的所有 权限。虽然八进制到二进制的映射看起来不方便，但通常只会用到一些常见的映射关系： 7 (rwx)，6 (rw-)，5 (r-x)，4 (r–)，和 0 (—)。</p>
+<p>chmod 命令还支持一种符号表示法，来指定文件模式。符号表示法分为三部分：更改会影响谁， 要执行哪个操作，要设置哪种权限。通过字符 “u”、“g”、“o”和 “a” 的组合来指定 要影响的对象，如下所示：</p>
+<p><img src="ugoa.png" alt="ugoa"></p>
+<p><strong>如果没有指定字符，则假定使用”all”。执行的操作可能是一个“＋”字符，表示加上一个权限， 一个“－”，表示删掉一个权限，或者是一个“＝”，表示只有指定的权限可用，其它所有的权限被删除。</strong></p>
+<p>有下面这些例子（我感觉这种我应该不会经常用，先前一直用上面的二进制模式比较多）：</p>
+<p><img src="other.png" alt="ugoa+-"></p>
+<hr>
+<h2 id="su-及-sudo"><a href="#su-及-sudo" class="headerlink" title="su 及 sudo"></a>su 及 sudo</h2><blockquote>
+<p>su － 以其他用户身份和组 ID 运行一个 shell<br>语法类似： su [-[l]] [user]</p>
+</blockquote>
+<p>如果包含”-l”选项，那么会为指定用户启动一个需要登录的 shell。这意味着会加载此用户的 shell 环境， 并且工作目录会更改到这个用户的家目录。这通常是我们所需要的。如果不指定用户，那么就假定是 超级用户。注意（不可思议地），选项”-l”可以缩写为”-“，这是经常用到的形式。</p>
+<p>因此为了启动超级用户我们可能会这样执行<code>su -</code>。</p>
+<p>如果以<code>su -c &#39;command&#39;</code>这样的方式启动一个 shell, 是可以执行单个的<code>command</code>命令，而不是重新启动了一个可以交互的shell。注意 command 要用 引号引起来。如<code>su -c &#39;ls -l /root/*&#39;</code>。</p>
+<p><strong>sudo 命令在很多方面都相似于 su 命令，但是 sudo 还有一些非常重要的功能。管理员能够配置 sudo 命令，从而允许一个普通用户以不同的身份（通常是超级用户），通过一种非常可控的方式 来执行命令。尤其是，只有一个用户可以执行一个或多个特殊命令时，（更体现了 sudo 命令的方便性）。</strong></p>
+<p>执行 <code>sudo -l</code>可以看当前被赋予了哪些权限如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">➜  midas-welfare git:(master) sudo -l</span><br><span class="line">Password:</span><br><span class="line">Matching Defaults entries for sevencai on SEVENCAI-MB2:</span><br><span class="line">    env_reset ......</span><br><span class="line">User sevencai may run the following commands on SEVENCAI-MB2:</span><br><span class="line">    (ALL) ALL</span><br></pre></td></tr></table></figure></p>
+<p>所以这里总结下 su 和 sudo 的区别和联系：</p>
+<ol>
+<li><code>sudo</code> 命令需要输入当前用户的密码，<code>su</code> 命令需要输入 root 用户的密码。</li>
+<li><code>sudo</code> 命令只允许使用提升的权限运行单个命令，而 <code>su</code> 命令会启动一个新的 shell，同时允许使用 root 权限运行尽可能多的命令，直到明确退出登录</li>
+</ol>
+<p><strong>所以根据第一条，我们可以知道就安全性而言，<code>sudo</code> 比 <code>su</code> 更好。<code>su</code>意味着要与其他用户共享 root 密码，这是一件比较危险的事情。并且对于 <code>su</code> 而言如果要撤销特定用户的超级（root）权限，唯一的办法就是更改 root 密码，然后再告知其他用户。很麻烦。但是 <code>sudo</code> 就不一样了,如果想要阻止某个用户访问 root 权限，只需要调整 <code>sudoers</code> 这个文件中的配置即可。</strong></p>
+<p>The key difference between <code>sudo</code> and <code>su</code> is <code>sudo</code> runs a command as root, whereas <code>su</code> makes you root.</p>
+<hr>
+<h2 id="chown-－-更改文件所有者和用户组"><a href="#chown-－-更改文件所有者和用户组" class="headerlink" title="chown － 更改文件所有者和用户组"></a>chown － 更改文件所有者和用户组</h2><p><strong>chown 命令被用来更改文件或目录的所有者和用户组。使用这个命令需要超级用户权限。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown [owner][:[group]] file...</span><br></pre></td></tr></table></figure>
+<p><img src="chown.png" alt="chown"></p>
+<p>下面这个例子比较实用，有两个用户，janet拥有超级用户访问权限，而 tony 没有。用户 janet 想要从 她的家目录复制一个文件到用户 tony 的家目录。因为用户 janet 想要 tony 能够编辑这个文件， janet 把这个文件的所有者更改为 tony:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[janet@linuxbox ~]$ sudo cp myfile.txt ~tony</span><br><span class="line">Password:</span><br><span class="line">[janet@linuxbox ~]$ sudo ls -l ~tony/myfile.txt</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root  root <span class="number">8031</span> <span class="number">2008</span><span class="number">-03</span><span class="number">-20</span> <span class="number">14</span>:<span class="number">30</span> /home/tony/myfile.txt</span><br><span class="line">[janet@linuxbox ~]$ sudo chown tony: ~tony/myfile.txt</span><br><span class="line">[janet@linuxbox ~]$ sudo ls -l ~tony/myfile.txt</span><br><span class="line">-rw-r--r-- <span class="number">1</span> tony  tony <span class="number">8031</span> <span class="number">2008</span><span class="number">-03</span><span class="number">-20</span> <span class="number">14</span>:<span class="number">30</span> /home/tony/myfile.txt</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="更改用户密码"><a href="#更改用户密码" class="headerlink" title="更改用户密码"></a>更改用户密码</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">passwd [user]</span><br><span class="line">sudo passwd root 更改 root 用户的密码</span><br></pre></td></tr></table></figure>
+<p>passwd 命令将会试着强迫你使用“强”密码。这意味着它会拒绝接受太短的密码、与先前相似的密码、 字典中的单词作为密码或者是太容易猜到的密码。</p>
+<hr>
+<h1 id="第十章：进程🚓"><a href="#第十章：进程🚓" class="headerlink" title="第十章：进程🚓"></a>第十章：进程🚓</h1><p>内核维护每个进程的信息，以此来保持事情有序。例如，系统分配给每个进程一个数字，这个数字叫做 进程(process) ID 或 PID。PID 号按升序分配，init 进程的 PID 总是1。内核也对分配给每个进程的内存和就绪状态进行跟踪以便继续执行这个进程。 像文件一样，进程也有所有者和用户 ID，有效用户 ID，等等。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-   ps – 报告当前进程快照</span><br><span class="line">-   top – 显示任务</span><br><span class="line">-   <span class="built_in">jobs</span> – 列出活跃的任务</span><br><span class="line">-   <span class="built_in">bg</span> – 把一个任务放到后台执行</span><br><span class="line">-   <span class="built_in">fg</span> – 把一个任务放到前台执行</span><br><span class="line">-   <span class="built_in">kill</span> – 给一个进程发送信号</span><br><span class="line">-   killall – 杀死指定名字的进程</span><br><span class="line">-   shutdown – 关机或重启系统</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="查看进程"><a href="#查看进程" class="headerlink" title="查看进程"></a>查看进程</h2><p>查看进程，最常使用地命令（有几个命令）是 ps(process)。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ps</span><br><span class="line"></span><br><span class="line">  PID TTY           TIME CMD</span><br><span class="line">54944 ttys000    0:00.14 /Applications/iTerm.app/Contents/MacOS/iTerm2 --server login -fp sevencai</span><br><span class="line">55003 ttys000    0:00.61 -zsh</span><br><span class="line">10488 ttys001    0:00.27 /Applications/iTerm.app/Contents/MacOS/iTerm2 --server login -fp sevencai</span><br><span class="line">10492 ttys001    0:02.66 -zsh</span><br></pre></td></tr></table></figure></p>
+<p>默认情况下，ps 不会显示很多进程信息，只是列出与当前终端会话相关的进程。为了得到更多信息， 我们需要加上一些选项。TTY 是 “Teletype”(直译电传打字机) 的简写，是指进程的控制终端。TIME 字段表示 进程所消耗的 CPU 时间数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加上 “x” 选项（注意没有开头的 “-“ 字符），告诉 ps 命令，展示所有进程，不管它们由什么 终端（如果有的话）控制。在 TTY 一栏中出现的 “?” ，表示没有控制终端。使用这个 “x” 选项，可以 看到我们所拥有的每个进程的信息。</span></span><br><span class="line">ps x</span><br><span class="line">ps x | less</span><br><span class="line"></span><br><span class="line"><span class="comment">// 能够显示属于每个用户的进程信息。使用这个选项，可以唤醒 “BSD 风格” 的输出结果。</span></span><br><span class="line">ps aux</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="用-top-命令动态查看进程"><a href="#用-top-命令动态查看进程" class="headerlink" title="用 top 命令动态查看进程"></a>用 top 命令动态查看进程</h2><p><strong>虽然 ps 命令能够展示许多计算机运行状态的信息，但是它只是提供 ps 命令执行时刻的机器状态快照。 为了看到更多动态的信息，我们使用 <code>top</code> 命令。</strong></p>
+<p>top 程序接受一系列从键盘输入的命令。两个最有趣的命令是 h 和 q。h，显示程序的帮助屏幕，q， 退出 top 程序。</p>
+<hr>
+<h2 id="通过-kill-命令给进程发送信号"><a href="#通过-kill-命令给进程发送信号" class="headerlink" title="通过 kill 命令给进程发送信号"></a>通过 kill 命令给进程发送信号</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">kill</span> [-signal] PID...</span><br><span class="line"></span><br><span class="line"><span class="built_in">kill</span> -1 13546</span><br><span class="line"><span class="built_in">kill</span> -9 pid (我经常用)</span><br></pre></td></tr></table></figure>
+<p>具体的 <code>-signal</code> 的可选值，如下所示：</p>
+<p><img src="kill.png" alt="kill"></p>
+<hr>
+<h1 id="总结🌹"><a href="#总结🌹" class="headerlink" title="总结🌹"></a>总结🌹</h1><p>加上这篇文章，<code>The Linux Command Line</code> 的第一章就结束了。我零零散散的花的时间去整理的，中间也去除了一些我基本上不怎么用到的，着重加强了下我经常用到的一些命令。</p>
+<p>比如 kill ，我以前经常用到 kill -9, 但是其实一直不知道这个 -9 是什么东西。现在进行稍微系统一点的学习，打命令不再依靠熟悉和曾经用过，而是有理解的。📚❄️</p>
+<p>包括还有  sudo 及 su, 以前一直有用过，但是模拟两可，并不知道两者的区别。现在都大致的有了解。以后看运维同学敲命令，我看它敲 su or sudo 就知道它是大概的区别是什么了。想要做什么事情。🐶</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;第九章-权限管理🏫&quot;&gt;&lt;a href=&quot;#第九章-权限管理🏫&quot; class=&quot;headerlink&quot; title=&quot;第九章-权限管理🏫&quot;&gt;&lt;/a&gt;第九章-权限管理🏫&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Unix 传统中的操作系统不同于那些 MS-DOS
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://sevencai.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>The Linux Command Line 读书笔记（一）</title>
@@ -1282,61 +1370,6 @@
     
     
       <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>嗯，又是纪录几个小的知识点</title>
-    <link href="http://sevencai.github.io/2017/10/20/%E5%97%AF%EF%BC%8C%E5%8F%88%E6%98%AF%E7%BA%AA%E5%BD%95%E5%87%A0%E4%B8%AA%E5%B0%8F%E7%9A%84%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    <id>http://sevencai.github.io/2017/10/20/嗯，又是纪录几个小的知识点/</id>
-    <published>2017-10-20T11:54:29.000Z</published>
-    <updated>2017-12-19T12:40:23.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="Hash-maps-without-side-effects"><a href="#Hash-maps-without-side-effects" class="headerlink" title="Hash maps without side effects"></a>Hash maps without side effects</h3><p>简单的来说，当我们用 对象字面量 <code>{}</code> 来创建这个 hash 表时，他会默认从 Object 继承属性，这等同于 <code>Object.create(Object.prototype)</code> , 这么来创建的话，就会有脏数据，因为其实你只是需要一个 map 而已。并且在 <code>for in</code> 的时候，还需要使用 <code>hasOwnProperty</code> 来判断。</p>
-<p>但如果使用 <code>Object.create(null)</code>, 我们明确的指定其原型为 null, 因此他才是真正的没有构造器，没有 <code>toString()</code>, <code>hasOwnProperty</code>, <code>valueOf</code> 等。注意这里不要使用 <code>Object.create({})</code>,这个效果跟前面是一样的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> dirtyMap = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> cleanMap = <span class="built_in">Object</span>.create(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">dirtyMap.constructor    <span class="comment">// function Object() &#123; [native code] &#125;</span></span><br><span class="line"></span><br><span class="line">cleanMap.constructor    <span class="comment">// undefined</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Iterating maps</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> key;</span><br><span class="line"><span class="keyword">for</span>(key <span class="keyword">in</span> dirtyMap)&#123;</span><br><span class="line">  <span class="keyword">if</span> (dirtyMap.hasOwnProperty(key)) &#123;   <span class="comment">// Check to avoid iterating over inherited properties.</span></span><br><span class="line">    <span class="built_in">console</span>.log(key + <span class="string">" -&gt; "</span> + dirtyMap[key]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(key <span class="keyword">in</span> cleanMap)&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(key + <span class="string">" -&gt; "</span> + cleanMap[key]);    <span class="comment">// No need to add extra checks, as the object will always be clean</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="angular-双向绑定和-vue双向绑定"><a href="#angular-双向绑定和-vue双向绑定" class="headerlink" title="angular 双向绑定和 vue双向绑定"></a>angular 双向绑定和 vue双向绑定</h3><p>AngularJS 采用“脏值检测”的方式，数据发生变更后，对于所有的数据和视图的绑定关系进行一次检测，识别是否有数据发生了改变，有变化进行处理，可能进一步引发其他数据的改变，所以这个过程可能会循环几次，一直到不再有数据变化发生后，将变更的数据发送到视图，更新页面展现。如果是手动对 ViewModel 的数据进行变更，为确保变更同步到视图，需要手动触发一次“脏值检测”。</p>
-<p>VueJS 则使用 ES5 提供的 Object.defineProperty() 方法，监控对数据的操作，从而可以自动触发数据同步。并且，由于是在不同的数据上触发同步，可以精确的将变更发送给绑定的视图，而不是对所有的数据都执行一次检测。</p>
-<p><a href="http://www.jianshu.com/p/d3a15a1f94a0" target="_blank" rel="noopener"></a></p>
-<hr>
-<h3 id="移动端调试-eruda"><a href="#移动端调试-eruda" class="headerlink" title="移动端调试- eruda"></a>移动端调试- eruda</h3><p>eruda 类似于 小程序的 console 控制台。但是比小程序的更好，他还可以看 network,cookies,localStorage 这些都可以显示出来，非常的方便。用法也很方便。引入文件，init下就可以了。如果觉得引入了多余的文件，生产环境去掉就行。 github 地址是：<a href="https://github.com/liriliri/eruda" target="_blank" rel="noopener">eruda</a></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"//cdn.jsdelivr.net/npm/eruda"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line">&lt;script&gt;eruda.init();<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="编译和解释的区别"><a href="#编译和解释的区别" class="headerlink" title="编译和解释的区别"></a>编译和解释的区别</h3><h4 id="编译器"><a href="#编译器" class="headerlink" title="编译器"></a>编译器</h4><blockquote>
-<p>编译器是一种计算机程序，负责把一种编程语言编写的源码转换成另外一种计算机代码，后者往往是以二进制的形式被称为目标代码(object code)。这个转换的过程通常的目的是生成可执行的程序。</p>
-</blockquote>
-<p>编译器需要产出另外一个代码。他往往是执行前的一步，产出可执行或者再需要编译的代码。</p>
-<h4 id="解释器"><a href="#解释器" class="headerlink" title="解释器"></a>解释器</h4><blockquote>
-<p>解释器是一种计算机程序，它直接执行由编程语言或脚本语言编写的代码，并不会把源代码预编译成机器码。一个解释器，通常会用以下的姿势来执行程序代码：分析源代码，并且直接执行。把源代码翻译成相对更加高效率的中间码，然后立即执行它。执行由解释器内部的编译器预编译后保存的代码</p>
-</blockquote>
-<p>可以把解释器看成一个黑盒子，我们输入源码，它就会实时返回结果。</p>
-<p>总结起来可以像下面这样理解：<br>编译 Compile：把整个程序源代码翻译成另外一种代码，然后等待被执行，发生在运行之前，产物是「另一份代码」。</p>
-<p>解释 Interpret：把程序源代码一行一行的读懂然后执行，发生在运行时，产物是「运行结果」。</p>
-<p><a href="https://mp.weixin.qq.com/s/Z0uldTCJehk4SQR-98fvNA" target="_blank" rel="noopener"></a></p>
-<hr>
-<h3 id="Javascript-Style-Guide"><a href="#Javascript-Style-Guide" class="headerlink" title="Javascript Style Guide"></a>Javascript Style Guide</h3><p>最近看到了一个我觉得很合理的 Javascript 的规范指南。 github 地址是： <a href="https://github.com/airbnb/javascript" target="_blank" rel="noopener">Airbnb Javascript Style Guide</a> 可以利用他的 eslint 规范自己的代码。我觉得不错。</p>
-<hr>
-<h3 id="Google-PageSpeed-Insights"><a href="#Google-PageSpeed-Insights" class="headerlink" title="Google PageSpeed Insights"></a>Google PageSpeed Insights</h3><p>想要快速提高网站的性能，用这个网站非常好。他会给你详细的分析，根据网页的代码质量得出报告。开发者根据这个报告，进行调整。除了这个外，使用 WebPagetest 也是很好的。</p>
-<hr>
-<h3 id="什么是关键-CSS"><a href="#什么是关键-CSS" class="headerlink" title="什么是关键 CSS"></a>什么是关键 CSS</h3><p>对CSS文件的请求可以显著增加网页呈现所需的时间。 原因是默认情况下，浏览器将延迟页面呈现，直到它完成加载、解析和执行所有在“页面”中引用的CSS文件。 这样做是因为它需要计算页面的布局。</p>
-<p>不幸的是，这意味着如果我们有一个非常大的CSS文件，并且需要一段时间才能完成下载，我们的用户将在浏览器开始呈现页面之前等待整个文件被下载下来。 幸运的是，有一个巧妙的技术，使我们能够优化我们的CSS的传输并减轻阻塞。这种技术被称为优化关键渲染路径。关键渲染路径表示浏览器呈现页面的所有必须步骤。 我们想要找到最小的阻塞CSS集合 ，或者关键 CSS，以使页面显示给用户。 关键资源是可能阻塞页面首屏呈现的所有资源。 这背后的想法是，网站应该在前几个TCP数据包响应中为用户获取第一个屏幕的内容（或“首屏”内容）。</p>
-<p>人工去找 关键 CSS，当然不太方便，现在出来了很多的工具，可以帮助我们提取出关键CSS， 比如 grunt 这类工具来提取。只是单纯的好奇什么是关键 CSS， 但是我已经好久没有写过 CSS 了。</p>
-<hr>
-<h3 id="解决个-http-缓存的困惑"><a href="#解决个-http-缓存的困惑" class="headerlink" title="解决个 http 缓存的困惑"></a>解决个 http 缓存的困惑</h3><p>访问百度首页的时候，为什么刷新页面后，静态资源都是返回 200， from cache? 有的人问，from cache 不是返回 304 才合理吗？</p>
-<p>其实不是的，百度首页再资源在刷新后实际没有发送任何请求， 因为 caache-control 的缓存时间还没到期，也就是在 chrome 中根本没有发送请求。只要是 chrome 没有发送请求，资源从本地读取，都会在 network 中显示 状态为 200， from cache, 其中的 response 只是上一次回包留下的数据。如果 cache-control 的缓存到期了，然后发了请求到服务器，但是服务器通过 etag 等，发现资源没改变，这时候肯定就是返回 304 了。不要被绕道坑里了。</p>
-<hr>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>开始工作了以后，基本上都是零零散散的学习。有些东西想要系统的写成博客，但是基本上一篇精心想写的文章，要花至少3个小时，时间略不够。我会想办法解决。比如上面的双向绑定，想仔细的写篇文章说说里面的原理，再比如 http 缓存。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;Hash-maps-without-side-effects&quot;&gt;&lt;a href=&quot;#Hash-maps-without-side-effects&quot; class=&quot;headerlink&quot; title=&quot;Hash maps without side effects&quot;&gt;
-    
-    </summary>
-    
-    
-      <category term="javascript" scheme="http://sevencai.github.io/tags/javascript/"/>
     
   </entry>
   
