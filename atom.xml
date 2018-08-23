@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-08-17T09:29:08.000Z</updated>
+  <updated>2018-08-23T07:55:37.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,79 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>The Linux Command Line 读书笔记（三）</title>
+    <link href="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/"/>
+    <id>http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/</id>
+    <published>2018-08-23T07:27:57.000Z</published>
+    <updated>2018-08-23T07:55:37.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="第11章：shell-环境-🏡"><a href="#第11章：shell-环境-🏡" class="headerlink" title="第11章：shell 环境 🏡"></a>第11章：shell 环境 🏡</h1><blockquote>
+<p>shell 在 shell 会话中保存着大量信息。这些信息被称为 (shell 的) 环境。 程序获取环境中的数据（即环境变量）来了解本机的配置。虽然大多数程序用配置文件来存储程序设置， 一些程序会根据环境变量来调整他们的行为。知道了这些，我们就可以用环境变量来自定制 shell 体验。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-   printenv - 打印部分或所有的环境变量</span><br><span class="line">-   <span class="built_in">set</span> - 设置 shell 选项</span><br><span class="line">-   <span class="built_in">export</span> — 导出环境变量，让随后执行的程序知道。</span><br><span class="line">-   <span class="built_in">alias</span> - 创建命令别名</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<hr>
+<h2 id="printenv-amp-set"><a href="#printenv-amp-set" class="headerlink" title="printenv &amp; set"></a>printenv &amp; set</h2><blockquote>
+<p>shell 在环境中存储了两种基本类型的数据，虽然 bash 几乎无法分辨这些数据的类型。 它们是<strong>环境变量和 shell 变量</strong>。Shell 变量是 bash 存放的少量数据。剩下的都是 环境变量。除了变量，shell 也存储了一些可编程的数据，即别名和 shell 函数。</p>
+</blockquote>
+<p>我们可以用 bash 的内建命令 set，或者是 printenv 程序来查看环境变量。<strong>set 命令可以 显示 shell 或环境变量，而 printenv 只是显示环境变量。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">printenv | less</span><br><span class="line"></span><br><span class="line"><span class="comment">// printenv 支持查看某个环境变量</span></span><br><span class="line">printenv USER   =&gt; sevencai</span><br></pre></td></tr></table></figure>
+<p>当使用没有带选项和参数的 set 命令时，shell 变量，环境变量，和定义的 shell 函数 都会被显示。不同于 printenv 命令，set 命令的输出很友好地按照首字母顺序排列：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> | less</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$HOME</span></span><br><span class="line"></span><br><span class="line">// 别名无法通过使用 <span class="built_in">set</span> 或 printenv 来查看。 用不带参数的 <span class="built_in">alias</span> 来查看别名:</span><br><span class="line"><span class="built_in">alias</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="如何建立-shell-环境？"><a href="#如何建立-shell-环境？" class="headerlink" title="如何建立 shell 环境？"></a>如何建立 shell 环境？</h2><blockquote>
+<p>When we log on to the system, the bash program starts, and reads a series of configuration scripts called startup files, which define the default environment shared by all users. This is followed by more startup files in our home directory that define our personal environment. The exact sequence depends on the type of shell session being started. There are two kinds: a login shell session and a non-login shell session.</p>
+</blockquote>
+<p>登录shell或者非登录shell都会去读取相应的文件，但是读取的文件多少会有区别。例如：</p>
+<p>登录shell可能会读取：</p>
+<p><img src="login.png" alt="login"></p>
+<p>非登录shell可能会读取：</p>
+<p><img src="unlogin.png" alt="unlogin.png"></p>
+<p>一个典型的 .bashrc 文件可能长下面这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .bash_profile</span></span><br><span class="line"><span class="comment"># Get the aliases and functions</span></span><br><span class="line"><span class="keyword">if</span> [ -f ~/.bashrc ]; <span class="keyword">then</span></span><br><span class="line">. ~/.bashrc</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment"># User specific environment and startup programs</span></span><br><span class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$HOME</span>/bin</span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure></p>
+<p>翻译过来可能是：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">If the file ~/.bashrc exists, <span class="keyword">then</span></span><br><span class="line"><span class="built_in">read</span> the ~/.bashrc file.</span><br></pre></td></tr></table></figure></p>
+<p><strong>是否曾经对 shell 怎样知道在哪里找到我们在命令行中输入的命令感到迷惑？例如，当我们输入 ls 后， shell 不会查找整个计算机系统来找到 /bin/ls（ls 命令的全路径名），相反，它查找一个目录列表， 这些目录包含在 PATH 变量中。</strong></p>
+<p>我们对于文件 .bashrc 的修改不会生效，直到我们关闭终端会话，再重新启动一个新的会话， 因为 .bashrc 文件只是在刚开始启动终端会话时读取。然而，我们可以强迫 bash 重新读取修改过的 .bashrc 文件，使用下面的命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> l.=<span class="string">'ls -d .* --color=auto'</span></span><br><span class="line"><span class="built_in">alias</span> ll=<span class="string">'ls -l --color=auto'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> .bashrc</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h1 id="第12章：-vi简介🐩"><a href="#第12章：-vi简介🐩" class="headerlink" title="第12章： vi简介🐩"></a>第12章： vi简介🐩</h1><p>这个我已经比较熟悉了，这里还是列出下书里的总结，整体的总结书里写的挺好：</p>
+<blockquote>
+<p>vi（发音“vee eye”），大多数 Linux 发行版不包含真正的 vi；而是自带一款高级替代版本，叫做 vim（它是“vi improved”的简写）由 Bram Moolenaar 开发的。vim 相对于传统的 Unix vi 来说，取得了实质性进步。通常，vim 在 Linux 系统中是“vi”的符号链接（或别名）。</p>
+</blockquote>
+<h2 id="移动光标"><a href="#移动光标" class="headerlink" title="移动光标"></a>移动光标</h2><p><img src="move.png" alt="move"></p>
+<p>补充一个：<code>0,$,^,g_</code>  的区别和联系。<code>0,$</code>是到行头和行尾，<code>^,g_</code>到非blank字符位置。<code>J</code>合并行。</p>
+<h2 id="文本删除命令"><a href="#文本删除命令" class="headerlink" title="文本删除命令"></a>文本删除命令</h2><p><img src="delete.png" alt="delete"></p>
+<h2 id="复制命令"><a href="#复制命令" class="headerlink" title="复制命令"></a>复制命令</h2><p><img src="copy.png" alt="copy"></p>
+<h2 id="全局查找与替换"><a href="#全局查找与替换" class="headerlink" title="全局查找与替换"></a>全局查找与替换</h2><p>如<code>:%s/Line/line/g</code></p>
+<p>查找一行内的是用 <code>f</code> 命令，查找下一个出现的，是用 <code>/</code>命令。</p>
+<p><img src="replace.png" alt="replace"></p>
+<h2 id="多行编辑"><a href="#多行编辑" class="headerlink" title="多行编辑"></a>多行编辑</h2><ol>
+<li>vi file1 file2 file3…</li>
+<li>:n 从这个文件切换下一个文件，使用这个 ex 命令</li>
+<li>:N 回到先前的文件使用:N</li>
+<li>:buffers 我们可以查看正在编辑的文件列表，使用:buffers 命令。运行这个 命令后，屏幕顶部就会显示出一个文件列表, :buffers 2 就切换到2号文件了。</li>
+</ol>
+<hr>
+<h1 id="第13章：自定制-shell-提示符-💉"><a href="#第13章：自定制-shell-提示符-💉" class="headerlink" title="第13章：自定制 shell 提示符 💉"></a>第13章：自定制 shell 提示符 💉</h1><p>和 Linux 内的许多程序一样，shell 提示符是可高度配置的，虽然我们把它相当多地看作是理所当然的， 但是我们一旦学会了怎样控制它，shell 提示符是一个相当有用的工具。</p>
+<p>我们的默认提示符如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[me@linuxbox ~]$</span><br></pre></td></tr></table></figure></p>
+<p>注意它包含我们的用户名，主机名和当前工作目录，但是它又是怎样得到这些东西的呢？ 结果证明非常简单。提示符是由一个环境变量定义的，叫做 PS1（是“prompt string one” 的简写）。我们可以通过 echo 命令来查看 PS1的内容。</p>
+<h2 id="认识-PS1"><a href="#认识-PS1" class="headerlink" title="认识$PS1"></a>认识$PS1</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[me@linuxbox ~]$ <span class="built_in">echo</span> <span class="variable">$PS1</span></span><br><span class="line"><span class="variable">$&#123;ret_status&#125;</span> %&#123;<span class="variable">$fg</span>[cyan]%&#125;%c%&#123;<span class="variable">$reset_color</span>%&#125; $(git_prompt_info)</span><br></pre></td></tr></table></figure>
+<h2 id="更改-PS1"><a href="#更改-PS1" class="headerlink" title="更改 $PS1"></a>更改 $PS1</h2><p>我们可以首先备份下 $PS1, 然后再随意修改 $PS1, 最后再重新变回来就可以了。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 备份 PS1</span><br><span class="line">ps1_old=<span class="string">"<span class="variable">$PS1</span>"</span></span><br><span class="line"></span><br><span class="line">// 随意修改 PS1</span><br><span class="line">$ PS1=<span class="string">"\a\$ "</span></span><br><span class="line"></span><br><span class="line">// 最后改回来</span><br><span class="line">PS1=<span class="variable">$ps1_old</span></span><br></pre></td></tr></table></figure></p>
+<p>其实这个我平时肯定不会用，但是看着看着还挺有意思的，就随意记录了下。</p>
+<hr>
+<h1 id="总结-🌺"><a href="#总结-🌺" class="headerlink" title="总结 🌺"></a>总结 🌺</h1><p>这几个章节主要是总结了<code>配置文件和 shell 环境</code>这 一张。这章内容少用，但是对于理解整体 shell 是很有帮助的。</p>
+<p>时间都是挤出来的，事实证明利用好中午和晚上回家之前的时间，也是能有所收获。📚</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;第11章：shell-环境-🏡&quot;&gt;&lt;a href=&quot;#第11章：shell-环境-🏡&quot; class=&quot;headerlink&quot; title=&quot;第11章：shell 环境 🏡&quot;&gt;&lt;/a&gt;第11章：shell 环境 🏡&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;s
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="http://sevencai.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>The Linux Command Line 读书笔记（二）</title>
@@ -1335,41 +1408,6 @@
     
     
       <category term="生活与总结" scheme="http://sevencai.github.io/tags/%E7%94%9F%E6%B4%BB%E4%B8%8E%E6%80%BB%E7%BB%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>mac 下 zsh: command not found</title>
-    <link href="http://sevencai.github.io/2017/12/15/mac-%E4%B8%8B-zsh-command-not-found/"/>
-    <id>http://sevencai.github.io/2017/12/15/mac-下-zsh-command-not-found/</id>
-    <published>2017-12-15T02:54:30.000Z</published>
-    <updated>2017-12-15T03:53:20.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>简单来说，是我使用 <code>tnpm install -g webpack</code> 或者任何使用 -g 来安装的全局 npm 包都报错： <code>zsh: command not found</code>,</p>
-<p>想到了肯定是环境变量引起的，zsh 找不到全局包安装的位置。</p>
-<p>zsh 的配置文件在 <code>~/.zshrc</code> 文件中，里面已经有被配置了的环境变量如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> $PATH = <span class="regexp">/usr/</span>bin:<span class="regexp">/usr/</span>local/bin:<span class="regexp">/usr/</span>bin:<span class="regexp">/bin:/u</span>sr/sbin:<span class="regexp">/sbin</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 或者你可以直接在终端工具中 echo $PATH 查看暴露的全局环境变量</span></span><br></pre></td></tr></table></figure>
-<p>发现问题后，找到了 npm -g 安装的全部目录为（…为自己的目录） <code>/usr/local/bin/node/.../bin</code> 下， 添加到 $PATH 后面即可。</p>
-<p>每个 : 代表的是多个环境变量的分割。</p>
-<p>过程中做了一件特别傻的事情，没有把 npm 的目录直接在原来的 export 后面加，而是直接新建了一行，大概是下面这样：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> PATH = <span class="regexp">/usr/</span>bin:<span class="regexp">/usr/</span>local/bin:<span class="regexp">/usr/</span>bin:<span class="regexp">/bin:/u</span>sr/sbin:<span class="regexp">/sbin</span></span><br><span class="line"><span class="regexp">export PATH = /u</span>sr/local/bin/node/.../bin</span><br><span class="line"></span><br><span class="line">zsh 启动会报错：</span><br><span class="line">/Users/sevencai/.oh-my-zsh/oh-my-zsh.sh:<span class="number">3</span>: command not found: env</span><br><span class="line">env_default:<span class="number">1</span>: command not found: env</span><br><span class="line">env_default:<span class="number">1</span>: command not found: grep</span><br><span class="line">env_default:<span class="number">1</span>: command not found: env</span><br><span class="line">env_default:<span class="number">1</span>: command not found: grep</span><br></pre></td></tr></table></figure>
-<p>这样会导致最后的环境变量是后面一项，前面被覆盖了。导致一些最基本的命令，如 cat/vi/vim 都不能使用了。哈哈，连vi都不能用了，我知道错了，怎么改回来？</p>
-<p>直接在命令行中<code>export PATH=/bin:/usr/bin:/usr/local/bin</code>， 然后再去 vi ~/.zshrc 更改就好了。</p>
-<p>zshrc 是 zsh 的配置文件，如果你不是用的 zsh, 而是 bash 或者 shell , 配置文件就不是这个了，有可能是 .bash_profile 之类的。</p>
-<p>记得每次 modify …rc 文件后都 source 下哦， 要不不会生效。</p>
-<p>上面或者直接使用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> PATH = <span class="regexp">/usr/</span>bin:<span class="regexp">/usr/</span>local/bin:<span class="regexp">/usr/</span>bin:<span class="regexp">/bin:/u</span>sr/sbin:<span class="regexp">/sbin</span></span><br><span class="line"><span class="regexp">export PATH = $PATH:/u</span>sr/local/bin/node/.../bin</span><br></pre></td></tr></table></figure></p>
-<p>即在路径前或路径后添加 <code>$PATH</code> 变量，也可。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;简单来说，是我使用 &lt;code&gt;tnpm install -g webpack&lt;/code&gt; 或者任何使用 -g 来安装的全局 npm 包都报错： &lt;code&gt;zsh: command not found&lt;/code&gt;,&lt;/p&gt;
-&lt;p&gt;想到了肯定是环境变量引起的，zsh 找
-    
-    </summary>
-    
-    
-      <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
     
   </entry>
   

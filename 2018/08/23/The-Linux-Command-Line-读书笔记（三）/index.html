@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="读书笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="第11章：shell 环境 🏡 shell 在 shell 会话中保存着大量信息。这些信息被称为 (shell 的) 环境。 程序获取环境中的数据（即环境变量）来了解本机的配置。虽然大多数程序用配置文件来存储程序设置， 一些程序会根据环境变量来调整他们的行为。知道了这些，我们就可以用环境变量来自定制 shell 体验。1234-   printenv - 打印部分或所有的环境变量-   set">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Linux Command Line 读书笔记（三）">
+<meta property="og:url" content="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="第11章：shell 环境 🏡 shell 在 shell 会话中保存着大量信息。这些信息被称为 (shell 的) 环境。 程序获取环境中的数据（即环境变量）来了解本机的配置。虽然大多数程序用配置文件来存储程序设置， 一些程序会根据环境变量来调整他们的行为。知道了这些，我们就可以用环境变量来自定制 shell 体验。1234-   printenv - 打印部分或所有的环境变量-   set">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/login.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/unlogin.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/move.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/delete.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/copy.png">
+<meta property="og:image" content="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/replace.png">
+<meta property="og:updated_time" content="2018-08-23T07:55:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Linux Command Line 读书笔记（三）">
+<meta name="twitter:description" content="第11章：shell 环境 🏡 shell 在 shell 会话中保存着大量信息。这些信息被称为 (shell 的) 环境。 程序获取环境中的数据（即环境变量）来了解本机的配置。虽然大多数程序用配置文件来存储程序设置， 一些程序会根据环境变量来调整他们的行为。知道了这些，我们就可以用环境变量来自定制 shell 体验。1234-   printenv - 打印部分或所有的环境变量-   set">
+<meta name="twitter:image" content="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/login.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/"/>
+
+
+
+
+
+  <title>The Linux Command Line 读书笔记（三） | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">The Linux Command Line 读书笔记（三）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-23T15:27:57+08:00">
+                2018-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/23/The-Linux-Command-Line-读书笔记（三）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/08/23/The-Linux-Command-Line-读书笔记（三）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="第11章：shell-环境-🏡"><a href="#第11章：shell-环境-🏡" class="headerlink" title="第11章：shell 环境 🏡"></a>第11章：shell 环境 🏡</h1><blockquote>
+<p>shell 在 shell 会话中保存着大量信息。这些信息被称为 (shell 的) 环境。 程序获取环境中的数据（即环境变量）来了解本机的配置。虽然大多数程序用配置文件来存储程序设置， 一些程序会根据环境变量来调整他们的行为。知道了这些，我们就可以用环境变量来自定制 shell 体验。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-   printenv - 打印部分或所有的环境变量</span><br><span class="line">-   <span class="built_in">set</span> - 设置 shell 选项</span><br><span class="line">-   <span class="built_in">export</span> — 导出环境变量，让随后执行的程序知道。</span><br><span class="line">-   <span class="built_in">alias</span> - 创建命令别名</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<hr>
+<h2 id="printenv-amp-set"><a href="#printenv-amp-set" class="headerlink" title="printenv &amp; set"></a>printenv &amp; set</h2><blockquote>
+<p>shell 在环境中存储了两种基本类型的数据，虽然 bash 几乎无法分辨这些数据的类型。 它们是<strong>环境变量和 shell 变量</strong>。Shell 变量是 bash 存放的少量数据。剩下的都是 环境变量。除了变量，shell 也存储了一些可编程的数据，即别名和 shell 函数。</p>
+</blockquote>
+<p>我们可以用 bash 的内建命令 set，或者是 printenv 程序来查看环境变量。<strong>set 命令可以 显示 shell 或环境变量，而 printenv 只是显示环境变量。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">printenv | less</span><br><span class="line"></span><br><span class="line"><span class="comment">// printenv 支持查看某个环境变量</span></span><br><span class="line">printenv USER   =&gt; sevencai</span><br></pre></td></tr></table></figure>
+<p>当使用没有带选项和参数的 set 命令时，shell 变量，环境变量，和定义的 shell 函数 都会被显示。不同于 printenv 命令，set 命令的输出很友好地按照首字母顺序排列：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> | less</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$HOME</span></span><br><span class="line"></span><br><span class="line">// 别名无法通过使用 <span class="built_in">set</span> 或 printenv 来查看。 用不带参数的 <span class="built_in">alias</span> 来查看别名:</span><br><span class="line"><span class="built_in">alias</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="如何建立-shell-环境？"><a href="#如何建立-shell-环境？" class="headerlink" title="如何建立 shell 环境？"></a>如何建立 shell 环境？</h2><blockquote>
+<p>When we log on to the system, the bash program starts, and reads a series of configuration scripts called startup files, which define the default environment shared by all users. This is followed by more startup files in our home directory that define our personal environment. The exact sequence depends on the type of shell session being started. There are two kinds: a login shell session and a non-login shell session.</p>
+</blockquote>
+<p>登录shell或者非登录shell都会去读取相应的文件，但是读取的文件多少会有区别。例如：</p>
+<p>登录shell可能会读取：</p>
+<p><img src="login.png" alt="login"></p>
+<p>非登录shell可能会读取：</p>
+<p><img src="unlogin.png" alt="unlogin.png"></p>
+<p>一个典型的 .bashrc 文件可能长下面这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .bash_profile</span></span><br><span class="line"><span class="comment"># Get the aliases and functions</span></span><br><span class="line"><span class="keyword">if</span> [ -f ~/.bashrc ]; <span class="keyword">then</span></span><br><span class="line">. ~/.bashrc</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment"># User specific environment and startup programs</span></span><br><span class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$HOME</span>/bin</span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure></p>
+<p>翻译过来可能是：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">If the file ~/.bashrc exists, <span class="keyword">then</span></span><br><span class="line"><span class="built_in">read</span> the ~/.bashrc file.</span><br></pre></td></tr></table></figure></p>
+<p><strong>是否曾经对 shell 怎样知道在哪里找到我们在命令行中输入的命令感到迷惑？例如，当我们输入 ls 后， shell 不会查找整个计算机系统来找到 /bin/ls（ls 命令的全路径名），相反，它查找一个目录列表， 这些目录包含在 PATH 变量中。</strong></p>
+<p>我们对于文件 .bashrc 的修改不会生效，直到我们关闭终端会话，再重新启动一个新的会话， 因为 .bashrc 文件只是在刚开始启动终端会话时读取。然而，我们可以强迫 bash 重新读取修改过的 .bashrc 文件，使用下面的命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> l.=<span class="string">'ls -d .* --color=auto'</span></span><br><span class="line"><span class="built_in">alias</span> ll=<span class="string">'ls -l --color=auto'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> .bashrc</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h1 id="第12章：-vi简介🐩"><a href="#第12章：-vi简介🐩" class="headerlink" title="第12章： vi简介🐩"></a>第12章： vi简介🐩</h1><p>这个我已经比较熟悉了，这里还是列出下书里的总结，整体的总结书里写的挺好：</p>
+<blockquote>
+<p>vi（发音“vee eye”），大多数 Linux 发行版不包含真正的 vi；而是自带一款高级替代版本，叫做 vim（它是“vi improved”的简写）由 Bram Moolenaar 开发的。vim 相对于传统的 Unix vi 来说，取得了实质性进步。通常，vim 在 Linux 系统中是“vi”的符号链接（或别名）。</p>
+</blockquote>
+<h2 id="移动光标"><a href="#移动光标" class="headerlink" title="移动光标"></a>移动光标</h2><p><img src="move.png" alt="move"></p>
+<p>补充一个：<code>0,$,^,g_</code>  的区别和联系。<code>0,$</code>是到行头和行尾，<code>^,g_</code>到非blank字符位置。<code>J</code>合并行。</p>
+<h2 id="文本删除命令"><a href="#文本删除命令" class="headerlink" title="文本删除命令"></a>文本删除命令</h2><p><img src="delete.png" alt="delete"></p>
+<h2 id="复制命令"><a href="#复制命令" class="headerlink" title="复制命令"></a>复制命令</h2><p><img src="copy.png" alt="copy"></p>
+<h2 id="全局查找与替换"><a href="#全局查找与替换" class="headerlink" title="全局查找与替换"></a>全局查找与替换</h2><p>如<code>:%s/Line/line/g</code></p>
+<p>查找一行内的是用 <code>f</code> 命令，查找下一个出现的，是用 <code>/</code>命令。</p>
+<p><img src="replace.png" alt="replace"></p>
+<h2 id="多行编辑"><a href="#多行编辑" class="headerlink" title="多行编辑"></a>多行编辑</h2><ol>
+<li>vi file1 file2 file3…</li>
+<li>:n 从这个文件切换下一个文件，使用这个 ex 命令</li>
+<li>:N 回到先前的文件使用:N</li>
+<li>:buffers 我们可以查看正在编辑的文件列表，使用:buffers 命令。运行这个 命令后，屏幕顶部就会显示出一个文件列表, :buffers 2 就切换到2号文件了。</li>
+</ol>
+<hr>
+<h1 id="第13章：自定制-shell-提示符-💉"><a href="#第13章：自定制-shell-提示符-💉" class="headerlink" title="第13章：自定制 shell 提示符 💉"></a>第13章：自定制 shell 提示符 💉</h1><p>和 Linux 内的许多程序一样，shell 提示符是可高度配置的，虽然我们把它相当多地看作是理所当然的， 但是我们一旦学会了怎样控制它，shell 提示符是一个相当有用的工具。</p>
+<p>我们的默认提示符如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[me@linuxbox ~]$</span><br></pre></td></tr></table></figure></p>
+<p>注意它包含我们的用户名，主机名和当前工作目录，但是它又是怎样得到这些东西的呢？ 结果证明非常简单。提示符是由一个环境变量定义的，叫做 PS1（是“prompt string one” 的简写）。我们可以通过 echo 命令来查看 PS1的内容。</p>
+<h2 id="认识-PS1"><a href="#认识-PS1" class="headerlink" title="认识$PS1"></a>认识$PS1</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[me@linuxbox ~]$ <span class="built_in">echo</span> <span class="variable">$PS1</span></span><br><span class="line"><span class="variable">$&#123;ret_status&#125;</span> %&#123;<span class="variable">$fg</span>[cyan]%&#125;%c%&#123;<span class="variable">$reset_color</span>%&#125; $(git_prompt_info)</span><br></pre></td></tr></table></figure>
+<h2 id="更改-PS1"><a href="#更改-PS1" class="headerlink" title="更改 $PS1"></a>更改 $PS1</h2><p>我们可以首先备份下 $PS1, 然后再随意修改 $PS1, 最后再重新变回来就可以了。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 备份 PS1</span><br><span class="line">ps1_old=<span class="string">"<span class="variable">$PS1</span>"</span></span><br><span class="line"></span><br><span class="line">// 随意修改 PS1</span><br><span class="line">$ PS1=<span class="string">"\a\$ "</span></span><br><span class="line"></span><br><span class="line">// 最后改回来</span><br><span class="line">PS1=<span class="variable">$ps1_old</span></span><br></pre></td></tr></table></figure></p>
+<p>其实这个我平时肯定不会用，但是看着看着还挺有意思的，就随意记录了下。</p>
+<hr>
+<h1 id="总结-🌺"><a href="#总结-🌺" class="headerlink" title="总结 🌺"></a>总结 🌺</h1><p>这几个章节主要是总结了<code>配置文件和 shell 环境</code>这 一张。这章内容少用，但是对于理解整体 shell 是很有帮助的。</p>
+<p>时间都是挤出来的，事实证明利用好中午和晚上回家之前的时间，也是能有所收获。📚</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/17/The-Linux-Command-Line-读书笔记（二）/" rel="next" title="The Linux Command Line 读书笔记（二）">
+                <i class="fa fa-chevron-left"></i> The Linux Command Line 读书笔记（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">111</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第11章：shell-环境-🏡"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x7B2C;11&#x7AE0;&#xFF1A;shell-&#x73AF;&#x5883;-&#x1F3E1;" class="headerlink" title="&#x7B2C;11&#x7AE0;&#xFF1A;shell &#x73AF;&#x5883; &#x1F3E1;"></a>&#x7B2C;11&#x7AE0;&#xFF1A;shell &#x73AF;&#x5883; &#x1F3E1;</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#printenv-amp-set"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#printenv-amp-set" class="headerlink" title="printenv &amp; set"></a>printenv &amp; set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何建立-shell-环境？"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#&#x5982;&#x4F55;&#x5EFA;&#x7ACB;-shell-&#x73AF;&#x5883;&#xFF1F;" class="headerlink" title="&#x5982;&#x4F55;&#x5EFA;&#x7ACB; shell &#x73AF;&#x5883;&#xFF1F;"></a>&#x5982;&#x4F55;&#x5EFA;&#x7ACB; shell &#x73AF;&#x5883;&#xFF1F;</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第12章：-vi简介🐩"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x7B2C;12&#x7AE0;&#xFF1A;-vi&#x7B80;&#x4ECB;&#x1F429;" class="headerlink" title="&#x7B2C;12&#x7AE0;&#xFF1A; vi&#x7B80;&#x4ECB;&#x1F429;"></a>&#x7B2C;12&#x7AE0;&#xFF1A; vi&#x7B80;&#x4ECB;&#x1F429;</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#移动光标"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#&#x79FB;&#x52A8;&#x5149;&#x6807;" class="headerlink" title="&#x79FB;&#x52A8;&#x5149;&#x6807;"></a>&#x79FB;&#x52A8;&#x5149;&#x6807;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文本删除命令"><span class="nav-number">2.2.</span> <span class="nav-text"><a href="#&#x6587;&#x672C;&#x5220;&#x9664;&#x547D;&#x4EE4;" class="headerlink" title="&#x6587;&#x672C;&#x5220;&#x9664;&#x547D;&#x4EE4;"></a>&#x6587;&#x672C;&#x5220;&#x9664;&#x547D;&#x4EE4;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复制命令"><span class="nav-number">2.3.</span> <span class="nav-text"><a href="#&#x590D;&#x5236;&#x547D;&#x4EE4;" class="headerlink" title="&#x590D;&#x5236;&#x547D;&#x4EE4;"></a>&#x590D;&#x5236;&#x547D;&#x4EE4;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局查找与替换"><span class="nav-number">2.4.</span> <span class="nav-text"><a href="#&#x5168;&#x5C40;&#x67E5;&#x627E;&#x4E0E;&#x66FF;&#x6362;" class="headerlink" title="&#x5168;&#x5C40;&#x67E5;&#x627E;&#x4E0E;&#x66FF;&#x6362;"></a>&#x5168;&#x5C40;&#x67E5;&#x627E;&#x4E0E;&#x66FF;&#x6362;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多行编辑"><span class="nav-number">2.5.</span> <span class="nav-text"><a href="#&#x591A;&#x884C;&#x7F16;&#x8F91;" class="headerlink" title="&#x591A;&#x884C;&#x7F16;&#x8F91;"></a>&#x591A;&#x884C;&#x7F16;&#x8F91;</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第13章：自定制-shell-提示符-💉"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x7B2C;13&#x7AE0;&#xFF1A;&#x81EA;&#x5B9A;&#x5236;-shell-&#x63D0;&#x793A;&#x7B26;-&#x1F489;" class="headerlink" title="&#x7B2C;13&#x7AE0;&#xFF1A;&#x81EA;&#x5B9A;&#x5236; shell &#x63D0;&#x793A;&#x7B26; &#x1F489;"></a>&#x7B2C;13&#x7AE0;&#xFF1A;&#x81EA;&#x5B9A;&#x5236; shell &#x63D0;&#x793A;&#x7B26; &#x1F489;</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#认识-PS1"><span class="nav-number">3.1.</span> <span class="nav-text"><a href="#&#x8BA4;&#x8BC6;-PS1" class="headerlink" title="&#x8BA4;&#x8BC6;$PS1"></a>&#x8BA4;&#x8BC6;$PS1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更改-PS1"><span class="nav-number">3.2.</span> <span class="nav-text"><a href="#&#x66F4;&#x6539;-PS1" class="headerlink" title="&#x66F4;&#x6539; $PS1"></a>&#x66F4;&#x6539; $PS1</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结-🌺"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;-&#x1F33A;" class="headerlink" title="&#x603B;&#x7ED3; &#x1F33A;"></a>&#x603B;&#x7ED3; &#x1F33A;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2018/08/23/The-Linux-Command-Line-读书笔记（三）/';
+          this.page.identifier = '2018/08/23/The-Linux-Command-Line-读书笔记（三）/';
+          this.page.title = 'The Linux Command Line 读书笔记（三）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
