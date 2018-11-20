@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="好久都没有更新博客了，之前经历了疯狂的一段加班时间，收获了下面一句话，对我来说很珍贵的经验。📒 再短也要记得思考，再忙也要记得时不时停下来，不慌不忙一步步走稳~📚   在 url 上增加参数下面这段是一段给 url 增加参数的代码片段：1234567891011121314/** * 在 url 上添加参数 * @param arr  Array or Object * @param url">
+<meta name="keywords" content="笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记几个小知识点">
+<meta property="og:url" content="http://sevencai.github.io/2018/11/20/记几个小知识点/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="好久都没有更新博客了，之前经历了疯狂的一段加班时间，收获了下面一句话，对我来说很珍贵的经验。📒 再短也要记得思考，再忙也要记得时不时停下来，不慌不忙一步步走稳~📚   在 url 上增加参数下面这段是一段给 url 增加参数的代码片段：1234567891011121314/** * 在 url 上添加参数 * @param arr  Array or Object * @param url">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2018/11/20/记几个小知识点/chromebreakpoint.png">
+<meta property="og:updated_time" content="2018-11-20T13:21:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记几个小知识点">
+<meta name="twitter:description" content="好久都没有更新博客了，之前经历了疯狂的一段加班时间，收获了下面一句话，对我来说很珍贵的经验。📒 再短也要记得思考，再忙也要记得时不时停下来，不慌不忙一步步走稳~📚   在 url 上增加参数下面这段是一段给 url 增加参数的代码片段：1234567891011121314/** * 在 url 上添加参数 * @param arr  Array or Object * @param url">
+<meta name="twitter:image" content="http://sevencai.github.io/2018/11/20/记几个小知识点/chromebreakpoint.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2018/11/20/记几个小知识点/"/>
+
+
+
+
+
+  <title>记几个小知识点 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2018/11/20/记几个小知识点/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">记几个小知识点</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-20T21:14:33+08:00">
+                2018-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/20/记几个小知识点/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/11/20/记几个小知识点/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>好久都没有更新博客了，之前经历了疯狂的一段加班时间，收获了下面一句话，对我来说很珍贵的经验。📒</p>
+<p><strong>再短也要记得思考，再忙也要记得时不时停下来，不慌不忙一步步走稳</strong>~📚</p>
+</blockquote>
+<hr>
+<h2 id="在-url-上增加参数"><a href="#在-url-上增加参数" class="headerlink" title="在 url 上增加参数"></a>在 url 上增加参数</h2><p>下面这段是一段给 url 增加参数的代码片段：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在 url 上添加参数</span></span><br><span class="line"><span class="comment"> * @param arr  Array or Object</span></span><br><span class="line"><span class="comment"> * @param url</span></span><br><span class="line"><span class="comment"> * @return &#123;string|*&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">addParam</span>(<span class="params">arr, url</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> names = <span class="built_in">Object</span>.keys(arr)</span><br><span class="line">  <span class="keyword">var</span> postfix = serializeParams(arr)</span><br><span class="line"></span><br><span class="line">  url = delParam(names, url)</span><br><span class="line">  url += <span class="regexp">/(\?|&amp;)$/</span>.test(url) ? <span class="string">""</span> + postfix : <span class="regexp">/\?/</span>.test(url) ? <span class="string">"&amp;"</span> + postfix : <span class="string">"?"</span> + postfix</span><br><span class="line">  <span class="keyword">return</span> url</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>除去写法问题，逻辑上能看出有什么问题吗❌？</p>
+<p>它只支持不带 hash 的增加参数，对于带 hash 的url, 它基本不能使用。因为这个方法已经被其他人使用，为了最小的改动性，可以在上面再封装一次。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">addHashParam</span>(<span class="params">arr, url</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> [prefix, suffix] = url.split(<span class="string">"#"</span>)</span><br><span class="line">  <span class="keyword">let</span> addedUrl = addParam(arr, prefix)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (suffix) &#123;</span><br><span class="line">    <span class="keyword">return</span> [addedUrl, <span class="string">"#"</span>, suffix].join(<span class="string">""</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> addedUrl</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单的 split 一下，再对 hash 之前的进行 addParam, 最后再拼接回去即可。</p>
+<hr>
+<h2 id="chrome-breakpoints"><a href="#chrome-breakpoints" class="headerlink" title="chrome breakpoints"></a>chrome breakpoints</h2><p>今天又把 chrome 的 <a href="https://developers.google.com/web/tools/chrome-devtools/javascript/breakpoints?hl=zh-cn" target="_blank" rel="noopener">breakpoints 的文档</a>瞟了一遍。希望自己能把下面这个图记清楚：</p>
+<p><img src="chromebreakpoint.png" alt="Overview of when to use each breakpoint type"></p>
+<p>平时还是得刻意有意的去使用不同的类型断点形式，这样才不会如果突然事件很紧发现问题时，手忙脚乱。</p>
+<p>比如上面这些断点类型中， <code>Line-of-code</code>，<code>Conditional line-of-code</code>，<code>Exception</code> 用的比较多，其他几个如 <code>DOM</code>, <code>Xhr</code>, <code>Function</code> 用的比较📒少。</p>
+<hr>
+<h2 id="关于网络的小知识"><a href="#关于网络的小知识" class="headerlink" title="关于网络的小知识"></a>关于网络的小知识</h2><p>最近公司的网络部分打通了，对于 mac pro 而言，以前非常不好真机调试，现在非常方便了我们。去了解了下这里面的工作。</p>
+<blockquote>
+<p>同一网段：要判断两个IP地址是不是在同一个网段，就将它们的IP地址分别与<strong>子网掩码</strong>做<strong>与运算</strong>，得到的结果一网络号，如果网络号相同，就在同一子网，否则，不在同一子网。</p>
+<p>一般情况下，如果两个设备的 IP 地址前三位都是一样的话，就算是位于同一网段。</p>
+</blockquote>
+<p>抓包或者真机调试需要电脑和手机在同一网段下。 现在由于网络打通，都在同一局域网内，直接手机上配置代理，连接电脑相应的端口即可。一般我们为了抓包，电脑上会装 fiddler or charles or whistle, 我这里使用 whistle 开启了一个新端口，手机就连这个端口即可抓包。</p>
+<p>原先由于我们的手机和电脑不是同一个网络，所以才需要软AP如 小米 WIFI 这种东西去使手机和电脑在同一个网络里，进行抓包。</p>
+<p>这里出来了一个新词，叫做 <strong>软AP</strong>。</p>
+<p>软AP指的是：<strong>“软AP”的无线产品在市场上颇为常见，软AP就是Soft-AP，它的硬件部分就是一块标准的无线网卡，但其通过驱动程序使其提供与AP一样的信号转接、路由等功能</strong>。与传统AP相比，它的成本很低，功能上也能凑合。</p>
+<p>简单的理解话<strong>AP 就是 AccessPoint ,是无限访问热点的简称，无限路由器可以称为 AP, 软AP 则是用软件和无线王卡结合模拟出来的</strong>。</p>
+<p>是否需要这个软AP跟我们的网络有关系。若电脑和手机处于一个网段，就不需要软AP创建WIFI网络。若不在一个网络，就需要用到软AP软件。比如你的电脑是连的自家的WIFI,你的手机是4G网络。或者你的电脑是有限网络，手机是无线网络，那么很有可能就不在一个网段上。</p>
+<blockquote>
+<p>在同一个局域网内是可以相互连接到对方的广播的，也可以冒认接收端来截取数据。或者混乱arp数据包，进行全部抓取。那么如何将mac和iPhone连接到同一个局域网呢？方法一，将两个设备都连接一个wifi路由器；方法二，将mac连接以太网，然后在 系统偏好设置——共享 中设置共享以太网来源的连接，然后用wifi端口共享给电脑（手机）。然后再将手机去连接电脑发散出的wifi。</p>
+</blockquote>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>要对未来有信心，要对自己做的事情写的代码抱有信念，要跟随自己的心。（不是对别人的鸡汤，是对自己的鼓励，加油）🌹</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记/" rel="tag"># 笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/31/记几个小问题/" rel="next" title="记几个小问题">
+                <i class="fa fa-chevron-left"></i> 记几个小问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">113</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#在-url-上增加参数"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x5728;-url-&#x4E0A;&#x589E;&#x52A0;&#x53C2;&#x6570;" class="headerlink" title="&#x5728; url &#x4E0A;&#x589E;&#x52A0;&#x53C2;&#x6570;"></a>&#x5728; url &#x4E0A;&#x589E;&#x52A0;&#x53C2;&#x6570;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chrome-breakpoints"><span class="nav-number">2.</span> <span class="nav-text"><a href="#chrome-breakpoints" class="headerlink" title="chrome breakpoints"></a>chrome breakpoints</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于网络的小知识"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x5173;&#x4E8E;&#x7F51;&#x7EDC;&#x7684;&#x5C0F;&#x77E5;&#x8BC6;" class="headerlink" title="&#x5173;&#x4E8E;&#x7F51;&#x7EDC;&#x7684;&#x5C0F;&#x77E5;&#x8BC6;"></a>&#x5173;&#x4E8E;&#x7F51;&#x7EDC;&#x7684;&#x5C0F;&#x77E5;&#x8BC6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2018/11/20/记几个小知识点/';
+          this.page.identifier = '2018/11/20/记几个小知识点/';
+          this.page.title = '记几个小知识点';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
