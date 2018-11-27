@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近看了些文章，遇到了写问题，花了点时间总结如下。  localhost 和 127.0.0.1一般情况下，我们的电脑可能有三块网卡。分别是🌹：  一块叫 loopback 的虚拟网卡 一块叫 ethernet 的有限网卡 一块叫 wlan 的无限网卡  我们电脑的本机 IP ，可以理解为时真实网卡的 IP, 有限和无限分别有一个。是网络出口IP。 现在主要是了解下这个 虚拟的网卡 loopba">
+<meta name="keywords" content="Javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="总结几个最近遇到的问题">
+<meta property="og:url" content="http://sevencai.github.io/2018/11/27/总结几个最近遇到的问题/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="最近看了些文章，遇到了写问题，花了点时间总结如下。  localhost 和 127.0.0.1一般情况下，我们的电脑可能有三块网卡。分别是🌹：  一块叫 loopback 的虚拟网卡 一块叫 ethernet 的有限网卡 一块叫 wlan 的无限网卡  我们电脑的本机 IP ，可以理解为时真实网卡的 IP, 有限和无限分别有一个。是网络出口IP。 现在主要是了解下这个 虚拟的网卡 loopba">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-27T13:19:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="总结几个最近遇到的问题">
+<meta name="twitter:description" content="最近看了些文章，遇到了写问题，花了点时间总结如下。  localhost 和 127.0.0.1一般情况下，我们的电脑可能有三块网卡。分别是🌹：  一块叫 loopback 的虚拟网卡 一块叫 ethernet 的有限网卡 一块叫 wlan 的无限网卡  我们电脑的本机 IP ，可以理解为时真实网卡的 IP, 有限和无限分别有一个。是网络出口IP。 现在主要是了解下这个 虚拟的网卡 loopba">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2018/11/27/总结几个最近遇到的问题/"/>
+
+
+
+
+
+  <title>总结几个最近遇到的问题 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2018/11/27/总结几个最近遇到的问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">总结几个最近遇到的问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-27T21:08:19+08:00">
+                2018-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/27/总结几个最近遇到的问题/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/11/27/总结几个最近遇到的问题/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近看了些文章，遇到了写问题，花了点时间总结如下。</p>
+<hr>
+<h2 id="localhost-和-127-0-0-1"><a href="#localhost-和-127-0-0-1" class="headerlink" title="localhost 和 127.0.0.1"></a>localhost 和 127.0.0.1</h2><p>一般情况下，我们的电脑可能有<strong>三块网卡</strong>。分别是🌹：</p>
+<ol>
+<li>一块叫 loopback 的虚拟网卡</li>
+<li>一块叫 ethernet 的有限网卡</li>
+<li>一块叫 wlan 的无限网卡</li>
+</ol>
+<p>我们电脑的本机 IP ，可以理解为时真实网卡的 IP, 有限和无限分别有一个。是网络出口IP。</p>
+<p>现在主要是了解下这个 虚拟的网卡 loopback 它是什么，以及它和 127.0.0.1 的关系。</p>
+<p>127.0.0.1 到 127.255.255.255整个都是环回地址(loopback)，用来测试本机的TCP/IP协议栈，发往这段A类地址<strong>数据包不会出网卡，网络设备不会对其做路由</strong>, 也就是只在本地做回环访问，故只能本机访问。</p>
+<p><strong>所以环回地址是主机用于向自身发送通信的一个特殊地址，是一个特殊的目的地址。因此如果一台主机上的两项服务如果使用的是环回地址而非分配的主机地址，就可以绕开 TCP/IP 协议栈的下层，不用再通过链路层，物理层，以太网等传出去。</strong></p>
+<p><strong>而localhost 是一个 域名，一般指向 127.0.0.1， 实际上它也可以指向任何一个ip, 可以去系统文件中修改</strong>。</p>
+<p>之所以去了解这个，其实是因为最近踩了下面个坑，顺带也去了解了下这个。</p>
+<hr>
+<h2 id="whistle-转发-header-host-被更改问题"><a href="#whistle-转发-header-host-被更改问题" class="headerlink" title="whistle 转发 header host 被更改问题"></a>whistle 转发 header host 被更改问题</h2><p>❎同事B为了在页面内 include 一个 php cgi 返回的 token, 希望能够在 apache 里面配置代理转发，当看到了这个include的 cgi 后，即转发到对应的 机器上。</p>
+<p>她发现 php 的接口已经成功转发到测试机器上，但是返回的内容不正常，在帮她调试接口后，发现后台接口验证了 Valid Host, 而她的 host 还是本机的 localhost。</p>
+<p>她相关的whistle 配置为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pay.qq.com  localhost/wechat_h5/dist/h5/store/views/</span><br></pre></td></tr></table></figure></p>
+<p>可以通过 pay.qq.com/index.shtml 直接访问到对应的本地页面。但是为什么 header 里面的 host 竟然不是 pay.qq.com 而是 localhost 呢？❌</p>
+<p>这里是由于 whistle 导致的。</p>
+<p>whistle 对于上面这种配置，<strong>会认为是一个 rule</strong>, 直接整个链接类似被 302 跳转了，导致了 header 里的 host 也被修改为了 localhost, 所以不能通过接口校验。</p>
+<p>需要改成如下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pay.qq.com/wechat_h5/dist/h5/store/views/ localhost</span><br></pre></td></tr></table></figure></p>
+<p>这种情况，<strong>whistle 会认为这是一个 host 代理， header 里面的内容不会受影响</strong>。</p>
+<p>两种类似相似的写法，还是有不一样的效果，如果不是这种后台会验证 valid host 的情况，两种都可以用。</p>
+<hr>
+<h2 id="es6-promise-不支持-finally"><a href="#es6-promise-不支持-finally" class="headerlink" title="es6-promise 不支持 finally?"></a>es6-promise 不支持 finally?</h2><p><code>es6-promise</code> 是一个比较好的 <code>promise polyfill</code> 库 ，但是遗憾的是目前它还不支持 finally，如果用 <code>es6-promise</code> ，又想用 <code>finally</code> ，怎么办呢？可以简单的用 <code>then</code> 来代替 <code>finally</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">printPersonFullName() &#123;</span><br><span class="line">    <span class="keyword">return</span> fetch(<span class="string">'./data/person.json'</span>)</span><br><span class="line">           .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="keyword">return</span> response.json();</span><br><span class="line">           &#125;)</span><br><span class="line">           .then(<span class="function"><span class="params">person</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;person.firstName&#125;</span> <span class="subst">$&#123;person.lastName&#125;</span>`</span>);</span><br><span class="line">           &#125;)</span><br><span class="line">           .catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="built_in">console</span>.log(<span class="string">'error'</span>)</span><br><span class="line">           &#125;)</span><br><span class="line">           .then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="built_in">console</span>.log(<span class="string">'finally'</span>);</span><br><span class="line">           &#125;)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这样最后一个 then 方法一定会进入，及时之前 catch 到了 error。可以简单的来替代 finally。</p>
+<hr>
+<h2 id="神奇的translate3d"><a href="#神奇的translate3d" class="headerlink" title="神奇的translate3d"></a>神奇的translate3d</h2><p><code>ios safari</code> 下，如果你经常用 <code>position: fixed</code>， 可能会遇到一些奇奇怪怪的问题，比如页面卡住，页面白屏等问题。</p>
+<p>这时候你可以试试神奇的 translate3d, 它会触发 GPU 的重新加速。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.Element-header</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translate3d</span>(0,0,0);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.Element-header--fixed</span> &#123;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">position</span>: fixed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不太了解 CSS 的我，靠这个解决了很多问题。<a href="https://stanko.github.io/ios-safari-scroll-position-fixed/" target="_blank" rel="noopener">相关参考文章</a>。</p>
+<p>建议是<code>safari</code>中能不用<code>fixed</code>就不用 <code>fixed</code>。</p>
+<hr>
+<h2 id="Promise-Anti-patterns"><a href="#Promise-Anti-patterns" class="headerlink" title="Promise Anti-patterns"></a>Promise Anti-patterns</h2><p>最近看了一篇文章，讲的不错，大概讲的就是说常见的一些错误的 Promise 用法。在这里记录下，供自己经常翻看。原文章地址在<a href="http://taoofcode.net/promise-anti-patterns/" target="_blank" rel="noopener">此。</a></p>
+<h3 id="Nested-Promises"><a href="#Nested-Promises" class="headerlink" title="Nested Promises"></a>Nested Promises</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">loadSomething().then(<span class="function"><span class="keyword">function</span>(<span class="params">something</span>) </span>&#123;</span><br><span class="line">  loadAnotherthing().then(<span class="function"><span class="keyword">function</span>(<span class="params">another</span>) </span>&#123;</span><br><span class="line">    DoSomethingOnThem(something, another);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>To fix:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">q.all([loadSomething(), loadAnotherThing()])</span><br><span class="line">    .spread(<span class="function"><span class="keyword">function</span>(<span class="params">something, another</span>) </span>&#123;</span><br><span class="line">        DoSomethingOnThem(something, another);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Broken-Chain"><a href="#The-Broken-Chain" class="headerlink" title="The Broken Chain"></a>The Broken Chain</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">anAsyncCall</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> promise = doSomethingAsync();</span><br><span class="line">    promise.then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        somethingComplicated();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>To Fixed:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">anAsyncCall</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> promise = doSomethingAsync();</span><br><span class="line">    <span class="keyword">return</span> promise.then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        somethingComplicated()</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Collection-Kerfuffle"><a href="#The-Collection-Kerfuffle" class="headerlink" title="The Collection Kerfuffle"></a>The Collection Kerfuffle</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">workMyCollection</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> resultArr = [];</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_recursive</span>(<span class="params">idx</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (idx &gt;= resultArr.length) <span class="keyword">return</span> resultArr;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> doSomethingAsync(arr[idx]).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">            resultArr.push(res);</span><br><span class="line">            <span class="keyword">return</span> _recursive(idx + <span class="number">1</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> _recursive(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>To fix, use map &amp; reduce:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">workMyCollection</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q.all(arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> doSomethingAsync(item);</span><br><span class="line">    &#125;));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// or you want them in series</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">workMyCollection</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> arr.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">promise, item</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> promise.then(<span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> doSomethingAsyncWithResult(item, result);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;, q());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Ghost-Promise"><a href="#The-Ghost-Promise" class="headerlink" title="The Ghost Promise"></a>The Ghost Promise</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> promise;</span><br><span class="line"><span class="keyword">if</span> (asyncCallNeeded)</span><br><span class="line">    promise = doSomethingAsync();</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    promise = Q.resolve(<span class="number">42</span>);</span><br><span class="line"></span><br><span class="line">promise.then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    doSomethingCool();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>To fix:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用 Q 包一层</span></span><br><span class="line">Q(asyncCallNeeded ? doSomethingAsync() : <span class="number">42</span>)</span><br><span class="line">    .then(</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">            doSomethingGood();</span><br><span class="line">        &#125;)</span><br><span class="line">    .catch(</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">            handleTheError();</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Overly-Keen-Error-Handler"><a href="#The-Overly-Keen-Error-Handler" class="headerlink" title="The Overly Keen Error Handler"></a>The Overly Keen Error Handler</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">somethingAsync.then(</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> somethingElseAsync();</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">        handleMyError(err);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>To fix :<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 避免上面fufilled内的error不被 catch 到</span></span><br><span class="line">somethingAsync</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> somethingElseAsync();</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">        handleMyError(err);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Forgotten-Promise"><a href="#The-Forgotten-Promise" class="headerlink" title="The Forgotten Promise"></a>The Forgotten Promise</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> deferred = Q.defer();</span><br><span class="line">doSomethingAsync().then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">    res = manipulateMeInSomeWay(res);</span><br><span class="line">    deferred.resolve(res);</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    deferred.reject(err);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> deferred.promise;</span><br></pre></td></tr></table></figure>
+<p>To fix:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 避免上述无意义的创建 promise</span></span><br><span class="line"><span class="keyword">return</span> doSomethingAsync().then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> manipulateMeInSomeWay(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>看了一些文章，其实多看看这些总结类的文章，然后自己把自己工作中遇到的问题总结出来是个很好的事情，梳理了自己的脑袋瓜哈哈。 今天好累啊，可能是生病的原因，早点回家了。9点20。给老妈打个☎️，回去再看看书，遛遛狗🐩，完美😊~</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/20/记几个小知识点/" rel="next" title="记几个小知识点">
+                <i class="fa fa-chevron-left"></i> 记几个小知识点
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">114</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#localhost-和-127-0-0-1"><span class="nav-number">1.</span> <span class="nav-text"><a href="#localhost-&#x548C;-127-0-0-1" class="headerlink" title="localhost &#x548C; 127.0.0.1"></a>localhost &#x548C; 127.0.0.1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#whistle-转发-header-host-被更改问题"><span class="nav-number">2.</span> <span class="nav-text"><a href="#whistle-&#x8F6C;&#x53D1;-header-host-&#x88AB;&#x66F4;&#x6539;&#x95EE;&#x9898;" class="headerlink" title="whistle &#x8F6C;&#x53D1; header host &#x88AB;&#x66F4;&#x6539;&#x95EE;&#x9898;"></a>whistle &#x8F6C;&#x53D1; header host &#x88AB;&#x66F4;&#x6539;&#x95EE;&#x9898;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#es6-promise-不支持-finally"><span class="nav-number">3.</span> <span class="nav-text"><a href="#es6-promise-&#x4E0D;&#x652F;&#x6301;-finally" class="headerlink" title="es6-promise &#x4E0D;&#x652F;&#x6301; finally?"></a>es6-promise &#x4E0D;&#x652F;&#x6301; finally?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#神奇的translate3d"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x795E;&#x5947;&#x7684;translate3d" class="headerlink" title="&#x795E;&#x5947;&#x7684;translate3d"></a>&#x795E;&#x5947;&#x7684;translate3d</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise-Anti-patterns"><span class="nav-number">5.</span> <span class="nav-text"><a href="#Promise-Anti-patterns" class="headerlink" title="Promise Anti-patterns"></a>Promise Anti-patterns</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nested-Promises"><span class="nav-number">5.1.</span> <span class="nav-text"><a href="#Nested-Promises" class="headerlink" title="Nested Promises"></a>Nested Promises</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Broken-Chain"><span class="nav-number">5.2.</span> <span class="nav-text"><a href="#The-Broken-Chain" class="headerlink" title="The Broken Chain"></a>The Broken Chain</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Collection-Kerfuffle"><span class="nav-number">5.3.</span> <span class="nav-text"><a href="#The-Collection-Kerfuffle" class="headerlink" title="The Collection Kerfuffle"></a>The Collection Kerfuffle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Ghost-Promise"><span class="nav-number">5.4.</span> <span class="nav-text"><a href="#The-Ghost-Promise" class="headerlink" title="The Ghost Promise"></a>The Ghost Promise</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Overly-Keen-Error-Handler"><span class="nav-number">5.5.</span> <span class="nav-text"><a href="#The-Overly-Keen-Error-Handler" class="headerlink" title="The Overly Keen Error Handler"></a>The Overly Keen Error Handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Forgotten-Promise"><span class="nav-number">5.6.</span> <span class="nav-text"><a href="#The-Forgotten-Promise" class="headerlink" title="The Forgotten Promise"></a>The Forgotten Promise</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2018/11/27/总结几个最近遇到的问题/';
+          this.page.identifier = '2018/11/27/总结几个最近遇到的问题/';
+          this.page.title = '总结几个最近遇到的问题';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-11-20T13:21:50.000Z</updated>
+  <updated>2018-11-27T13:19:43.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,77 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>总结几个最近遇到的问题</title>
+    <link href="http://sevencai.github.io/2018/11/27/%E6%80%BB%E7%BB%93%E5%87%A0%E4%B8%AA%E6%9C%80%E8%BF%91%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+    <id>http://sevencai.github.io/2018/11/27/总结几个最近遇到的问题/</id>
+    <published>2018-11-27T13:08:19.000Z</published>
+    <updated>2018-11-27T13:19:43.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近看了些文章，遇到了写问题，花了点时间总结如下。</p>
+<hr>
+<h2 id="localhost-和-127-0-0-1"><a href="#localhost-和-127-0-0-1" class="headerlink" title="localhost 和 127.0.0.1"></a>localhost 和 127.0.0.1</h2><p>一般情况下，我们的电脑可能有<strong>三块网卡</strong>。分别是🌹：</p>
+<ol>
+<li>一块叫 loopback 的虚拟网卡</li>
+<li>一块叫 ethernet 的有限网卡</li>
+<li>一块叫 wlan 的无限网卡</li>
+</ol>
+<p>我们电脑的本机 IP ，可以理解为时真实网卡的 IP, 有限和无限分别有一个。是网络出口IP。</p>
+<p>现在主要是了解下这个 虚拟的网卡 loopback 它是什么，以及它和 127.0.0.1 的关系。</p>
+<p>127.0.0.1 到 127.255.255.255整个都是环回地址(loopback)，用来测试本机的TCP/IP协议栈，发往这段A类地址<strong>数据包不会出网卡，网络设备不会对其做路由</strong>, 也就是只在本地做回环访问，故只能本机访问。</p>
+<p><strong>所以环回地址是主机用于向自身发送通信的一个特殊地址，是一个特殊的目的地址。因此如果一台主机上的两项服务如果使用的是环回地址而非分配的主机地址，就可以绕开 TCP/IP 协议栈的下层，不用再通过链路层，物理层，以太网等传出去。</strong></p>
+<p><strong>而localhost 是一个 域名，一般指向 127.0.0.1， 实际上它也可以指向任何一个ip, 可以去系统文件中修改</strong>。</p>
+<p>之所以去了解这个，其实是因为最近踩了下面个坑，顺带也去了解了下这个。</p>
+<hr>
+<h2 id="whistle-转发-header-host-被更改问题"><a href="#whistle-转发-header-host-被更改问题" class="headerlink" title="whistle 转发 header host 被更改问题"></a>whistle 转发 header host 被更改问题</h2><p>❎同事B为了在页面内 include 一个 php cgi 返回的 token, 希望能够在 apache 里面配置代理转发，当看到了这个include的 cgi 后，即转发到对应的 机器上。</p>
+<p>她发现 php 的接口已经成功转发到测试机器上，但是返回的内容不正常，在帮她调试接口后，发现后台接口验证了 Valid Host, 而她的 host 还是本机的 localhost。</p>
+<p>她相关的whistle 配置为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pay.qq.com  localhost/wechat_h5/dist/h5/store/views/</span><br></pre></td></tr></table></figure></p>
+<p>可以通过 pay.qq.com/index.shtml 直接访问到对应的本地页面。但是为什么 header 里面的 host 竟然不是 pay.qq.com 而是 localhost 呢？❌</p>
+<p>这里是由于 whistle 导致的。</p>
+<p>whistle 对于上面这种配置，<strong>会认为是一个 rule</strong>, 直接整个链接类似被 302 跳转了，导致了 header 里的 host 也被修改为了 localhost, 所以不能通过接口校验。</p>
+<p>需要改成如下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pay.qq.com/wechat_h5/dist/h5/store/views/ localhost</span><br></pre></td></tr></table></figure></p>
+<p>这种情况，<strong>whistle 会认为这是一个 host 代理， header 里面的内容不会受影响</strong>。</p>
+<p>两种类似相似的写法，还是有不一样的效果，如果不是这种后台会验证 valid host 的情况，两种都可以用。</p>
+<hr>
+<h2 id="es6-promise-不支持-finally"><a href="#es6-promise-不支持-finally" class="headerlink" title="es6-promise 不支持 finally?"></a>es6-promise 不支持 finally?</h2><p><code>es6-promise</code> 是一个比较好的 <code>promise polyfill</code> 库 ，但是遗憾的是目前它还不支持 finally，如果用 <code>es6-promise</code> ，又想用 <code>finally</code> ，怎么办呢？可以简单的用 <code>then</code> 来代替 <code>finally</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">printPersonFullName() &#123;</span><br><span class="line">    <span class="keyword">return</span> fetch(<span class="string">'./data/person.json'</span>)</span><br><span class="line">           .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="keyword">return</span> response.json();</span><br><span class="line">           &#125;)</span><br><span class="line">           .then(<span class="function"><span class="params">person</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;person.firstName&#125;</span> <span class="subst">$&#123;person.lastName&#125;</span>`</span>);</span><br><span class="line">           &#125;)</span><br><span class="line">           .catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="built_in">console</span>.log(<span class="string">'error'</span>)</span><br><span class="line">           &#125;)</span><br><span class="line">           .then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">              <span class="built_in">console</span>.log(<span class="string">'finally'</span>);</span><br><span class="line">           &#125;)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这样最后一个 then 方法一定会进入，及时之前 catch 到了 error。可以简单的来替代 finally。</p>
+<hr>
+<h2 id="神奇的translate3d"><a href="#神奇的translate3d" class="headerlink" title="神奇的translate3d"></a>神奇的translate3d</h2><p><code>ios safari</code> 下，如果你经常用 <code>position: fixed</code>， 可能会遇到一些奇奇怪怪的问题，比如页面卡住，页面白屏等问题。</p>
+<p>这时候你可以试试神奇的 translate3d, 它会触发 GPU 的重新加速。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.Element-header</span> &#123;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translate3d</span>(0,0,0);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.Element-header--fixed</span> &#123;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">position</span>: fixed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不太了解 CSS 的我，靠这个解决了很多问题。<a href="https://stanko.github.io/ios-safari-scroll-position-fixed/" target="_blank" rel="noopener">相关参考文章</a>。</p>
+<p>建议是<code>safari</code>中能不用<code>fixed</code>就不用 <code>fixed</code>。</p>
+<hr>
+<h2 id="Promise-Anti-patterns"><a href="#Promise-Anti-patterns" class="headerlink" title="Promise Anti-patterns"></a>Promise Anti-patterns</h2><p>最近看了一篇文章，讲的不错，大概讲的就是说常见的一些错误的 Promise 用法。在这里记录下，供自己经常翻看。原文章地址在<a href="http://taoofcode.net/promise-anti-patterns/" target="_blank" rel="noopener">此。</a></p>
+<h3 id="Nested-Promises"><a href="#Nested-Promises" class="headerlink" title="Nested Promises"></a>Nested Promises</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">loadSomething().then(<span class="function"><span class="keyword">function</span>(<span class="params">something</span>) </span>&#123;</span><br><span class="line">  loadAnotherthing().then(<span class="function"><span class="keyword">function</span>(<span class="params">another</span>) </span>&#123;</span><br><span class="line">    DoSomethingOnThem(something, another);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>To fix:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">q.all([loadSomething(), loadAnotherThing()])</span><br><span class="line">    .spread(<span class="function"><span class="keyword">function</span>(<span class="params">something, another</span>) </span>&#123;</span><br><span class="line">        DoSomethingOnThem(something, another);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Broken-Chain"><a href="#The-Broken-Chain" class="headerlink" title="The Broken Chain"></a>The Broken Chain</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">anAsyncCall</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> promise = doSomethingAsync();</span><br><span class="line">    promise.then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        somethingComplicated();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>To Fixed:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">anAsyncCall</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> promise = doSomethingAsync();</span><br><span class="line">    <span class="keyword">return</span> promise.then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        somethingComplicated()</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Collection-Kerfuffle"><a href="#The-Collection-Kerfuffle" class="headerlink" title="The Collection Kerfuffle"></a>The Collection Kerfuffle</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">workMyCollection</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> resultArr = [];</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_recursive</span>(<span class="params">idx</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (idx &gt;= resultArr.length) <span class="keyword">return</span> resultArr;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> doSomethingAsync(arr[idx]).then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">            resultArr.push(res);</span><br><span class="line">            <span class="keyword">return</span> _recursive(idx + <span class="number">1</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> _recursive(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>To fix, use map &amp; reduce:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">workMyCollection</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> q.all(arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> doSomethingAsync(item);</span><br><span class="line">    &#125;));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// or you want them in series</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">workMyCollection</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> arr.reduce(<span class="function"><span class="keyword">function</span>(<span class="params">promise, item</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> promise.then(<span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> doSomethingAsyncWithResult(item, result);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;, q());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Ghost-Promise"><a href="#The-Ghost-Promise" class="headerlink" title="The Ghost Promise"></a>The Ghost Promise</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> promise;</span><br><span class="line"><span class="keyword">if</span> (asyncCallNeeded)</span><br><span class="line">    promise = doSomethingAsync();</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    promise = Q.resolve(<span class="number">42</span>);</span><br><span class="line"></span><br><span class="line">promise.then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    doSomethingCool();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>To fix:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用 Q 包一层</span></span><br><span class="line">Q(asyncCallNeeded ? doSomethingAsync() : <span class="number">42</span>)</span><br><span class="line">    .then(</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">            doSomethingGood();</span><br><span class="line">        &#125;)</span><br><span class="line">    .catch(</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">            handleTheError();</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Overly-Keen-Error-Handler"><a href="#The-Overly-Keen-Error-Handler" class="headerlink" title="The Overly Keen Error Handler"></a>The Overly Keen Error Handler</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">somethingAsync.then(</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> somethingElseAsync();</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">        handleMyError(err);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>To fix :<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 避免上面fufilled内的error不被 catch 到</span></span><br><span class="line">somethingAsync</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> somethingElseAsync();</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">        handleMyError(err);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Forgotten-Promise"><a href="#The-Forgotten-Promise" class="headerlink" title="The Forgotten Promise"></a>The Forgotten Promise</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> deferred = Q.defer();</span><br><span class="line">doSomethingAsync().then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">    res = manipulateMeInSomeWay(res);</span><br><span class="line">    deferred.resolve(res);</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    deferred.reject(err);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> deferred.promise;</span><br></pre></td></tr></table></figure>
+<p>To fix:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 避免上述无意义的创建 promise</span></span><br><span class="line"><span class="keyword">return</span> doSomethingAsync().then(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> manipulateMeInSomeWay(res);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>看了一些文章，其实多看看这些总结类的文章，然后自己把自己工作中遇到的问题总结出来是个很好的事情，梳理了自己的脑袋瓜哈哈。 今天好累啊，可能是生病的原因，早点回家了。9点20。给老妈打个☎️，回去再看看书，遛遛狗🐩，完美😊~</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近看了些文章，遇到了写问题，花了点时间总结如下。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;localhost-和-127-0-0-1&quot;&gt;&lt;a href=&quot;#localhost-和-127-0-0-1&quot; class=&quot;headerlink&quot; title=&quot;localhost 和 
+    
+    </summary>
+    
+    
+      <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
+    
+  </entry>
   
   <entry>
     <title>记几个小知识点</title>
@@ -1245,146 +1316,6 @@
     
     
       <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>GBK, GB2312, UTF-8, Unicode,encodeURI, escape的区别和联系</title>
-    <link href="http://sevencai.github.io/2018/02/27/GBK-GB2312-UTF-8-Unicode-encodeURI-escape%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB/"/>
-    <id>http://sevencai.github.io/2018/02/27/GBK-GB2312-UTF-8-Unicode-encodeURI-escape的区别和联系/</id>
-    <published>2018-02-27T04:00:04.000Z</published>
-    <updated>2018-02-28T03:09:30.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>本篇目的主要是搞清楚UTF-8, GBK,  Unicode, ASCII码，Unicode, escape, encodeURIComponent, encodeURI 编码等等的区别和联系。</p>
-</blockquote>
-<hr>
-<h1 id="文章起源"><a href="#文章起源" class="headerlink" title="文章起源"></a>文章起源</h1><p>事情起源是，今天在做小程序的时候，发现我请求业务接口时，业务接口返回的是gbk编码。</p>
-<p>然后这个在小程序中不支持，会返回内容如：<code>fail response data convert to UTF8 fail</code>, 在  pc 端及 android 端表现正常，但是在 ios 下会返回此错误码。</p>
-<p>于是很不好意思的找到了业务方的同事，看能不能把返回的内容变成标准的 utf8 无 bom编码格式。话说，我遇到的这个同事真的好 nice, 以前跨部门的合作没有1-2天下不来，这个同事效率比较高，每次有问题找到他，都能够很快的反馈给我（感恩）。然后他就跟我说了下面这样一句话：</p>
-<blockquote>
-<p>你请求参数用gbk编码  我返回给你utf8你看如何？</p>
-</blockquote>
-<p>大概是都统一用 utf8 对于他改动比较大，于是他提出我请求的时候用 gbk 编码。于是我把这段话错误理解为了：</p>
-<blockquote>
-<p>你请求的时候，用 gbk 编码请求，我返回给你 utf8。</p>
-</blockquote>
-<p>也就是说我会在请求 header 里加入 <code>charset=gbk</code>, 他返回给我 utf8 编码内容就好。</p>
-<p>但实际上同事这句话的意思是：</p>
-<blockquote>
-<p>把调用他接口的<strong>请求参数</strong>用gbk编码，而不是在请求头里加 header。我掉了参数两个字。</p>
-</blockquote>
-<p>因为我们组内的前端统一用的都是 utf8, 编码都是用 encodeURI, encodeURIComponent,  以前也没有用过把参数做 gbk 编码的这种方式，导致了我认为是在请求头里请求用 gbk。 并且对 encodeURI 等等的不深入了解，导致了我浪费了同事的时间。 encodeURI, encodeURIComponent 都是针对 utf-8 的编码， 不能够指定编码方式。 gbk 编码在 github 上有这种成熟的 npm。</p>
-<p>大概的思路是,如果是 ASCII 码，直接 encode， 判断不是 ASCII 码后，再进行 GBK 的比对编码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">export const encodeUrlGbk = (str) =\&gt; &#123;</span><br><span class="line">    return str &amp;&amp; str.replace(/./g,function (a) &#123;</span><br><span class="line">         var code = a.charCodeAt(0);</span><br><span class="line">         if (_isAscii(code)) &#123;</span><br><span class="line">            return encodeURIComponent(a);</span><br><span class="line">         &#125; else &#123;</span><br><span class="line">            var key = code.toString(16);</span><br><span class="line">         if (key.length !== 4) &#123;</span><br><span class="line">            key = (&apos;000&apos; \+ key).match(/....$/)\[0\];</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         return _charHash.U2Ghash\[key\] || a;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>虽然问题解决了，但是发现了自己对这块是不是根本没有弄清楚，今天仔细的查了资料，从新学习和认识下，想把这些内容都了解并且比较清楚。</p>
-<hr>
-<h1 id="escape-encodeURIComponent-encodeURI-的区别和联系"><a href="#escape-encodeURIComponent-encodeURI-的区别和联系" class="headerlink" title="escape, encodeURIComponent, encodeURI 的区别和联系"></a>escape, encodeURIComponent, encodeURI 的区别和联系</h1><p>如果你想直接看结论，可以跳过下部分引用内容。</p>
-<blockquote>
-<p>escape() 函数可对字符串进行编码，这样就可以在所有的计算机上读取该字符串。</p>
-</blockquote>
-<p>该方法不会对 ASCII 字母和数字进行编码，也不会对下面这些 ASCII 标点符号进行编码： * @ - _ + . / 。其他所有的字符都会被转义序列替换。他的解码为 unescape。</p>
-<p><strong>ECMAScript v3 反对使用该方法</strong>，应用使用 decodeURI() 和 decodeURIComponent() 替代它。</p>
-<blockquote>
-<p>encodeURI() 函数可把字符串作为 URI 进行编码。</p>
-</blockquote>
-<p>该方法不会对 ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ‘ ( ) 。</p>
-<p>该方法的目的是对 URI 进行完整的编码，因此对以下在 URI 中具有特殊含义的 ASCII 标点符号，encodeURI() 函数是不会进行转义的：;/?:@&amp;=+$,#</p>
-<p><strong>如果 URI 组件中含有分隔符，比如 ? 和 #，则应当使用 encodeURIComponent() 方法分别对各组件进行编码。</strong></p>
-<blockquote>
-<p>encodeURIComponent() 函数可把字符串作为 URI 组件进行编码。</p>
-</blockquote>
-<p>该方法不会对 ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ‘ ( ) 。（这点与 encodeURI 相同）</p>
-<p>其他字符（比如 ：;/?:@&amp;=+$,# 这些用于分隔 URI 组件的标点符号），都是由一个或多个十六进制的转义序列替换的。 （这点与 encodeURIComponent 不同）</p>
-<p>关于这三个函数总结下如下：</p>
-<p><strong>如果是跟url编码有关系的，先忘掉 escape 这个函数，他跟 url 编码毫无关系，它只是能够达到类似于 URL Encode 这类似的效果，但是它对于非 ASCII 字符使用了一种非标准的实现，比如某些汉字会被编码成 %uxxxx 这种形式， 在小程序中，url使用 escape, 会报错： fail request:fail _invalid url 这类似的消息。并且 W3C 把这个函数废弃了，能不使用尽量不要去使用 </strong></p>
-<p><strong>对于 url 的编码，就使用 encodeURI 及 encodeURIComponent, 他们都是为了 url 编码而设计，不同的地方在于 encodeURI 用于对完整的 url 进行编码，于是URL中的功能字符，比如&amp;, ?, /, =等等这些并不会被转义， 而 encodeURIComponent 被设计用来对某段 query（某个值） 编码。所以正确用法是 encodeURIComponent 经常用于对每个 key value 进行分别编码。</strong></p>
-<hr>
-<h1 id="延伸阅读-escape-encodeURI的编码方式-百分号编码"><a href="#延伸阅读-escape-encodeURI的编码方式-百分号编码" class="headerlink" title="延伸阅读-escape, encodeURI的编码方式-百分号编码"></a>延伸阅读-escape, encodeURI的编码方式-百分号编码</h1><blockquote>
-<p><strong>百分号编码</strong>（英语：Percent-encoding）, 也称作URL编码（英语：URL encoding）, 是特定上下文的统一资源定位符 (URL)的编码机制. 实际上也适用于统一资源标志符（URI）的编码。也用于为”application/x-www-form-urlencoded” MIME准备数据, 因为它用于通过HTTP的请求操作(request)提交HTML表单数据。</p>
-</blockquote>
-<p>对于 escape 以及 encodeURI 都是属于 <code>percent-encoding</code>。差不多都是把 URI 非法字符转化为合法字符， 转化以后有 <code>%</code>, 所以我猜才叫 percent-encoding 吧，哈哈。</p>
-<p>首先 escape 和 encodeURI 在处理 0xff 以内的内容时，都是相同的。也就是说是 %xx,  这里的 xx 是字符的 16进制 unicode (此时的 unicode === utf8值， 所以 escape 的值也等于 encodeURI 的值)。</p>
-<p><strong>但 escape 在处理 0xff 之外的时候， 直接使用字符的 unicode , 并且在前面再加上一个 <code>%u</code>（不标准） , 而 encodeURI 是先对 unicode 进行 utf-8 编码，再在每个 utf-8 编码前加上 %（标准）。</strong></p>
-<p>比如中文的【我】字， 他的 unicode 为 0x6211,  对他进行 utf8 编码变成了 0xe6, 0x88, 0x91, 因此 escape 得到的值为 <code>\u6211</code>, 但是encodeURI 的结果是 <code>%E6%88%91</code>。</p>
-<p>对 escape, encodeURI 这些其实以前是了解的， 但是这次是真正的总结清楚了，挺开心。上面是不是提到了很多比如 utf8, gbk, unicode 之类的词。 下面对这些名词也做一些简单的归类和总结。</p>
-<hr>
-<h1 id="UTF-8-Unicode-ASCII码的区别和联系"><a href="#UTF-8-Unicode-ASCII码的区别和联系" class="headerlink" title="UTF-8, Unicode, ASCII码的区别和联系"></a>UTF-8, Unicode, ASCII码的区别和联系</h1><blockquote>
-<p>ASCII（American Standard Code for Information Interchange，美国信息交换标准代码）是基于<a href="https://baike.baidu.com/item/%E6%8B%89%E4%B8%81%E5%AD%97%E6%AF%8D" target="_blank" rel="noopener">拉丁字母</a>的一套电脑编码系统，主要用于显示现代<a href="https://baike.baidu.com/item/%E8%8B%B1%E8%AF%AD/109997" target="_blank" rel="noopener">英语</a>和其他<a href="https://baike.baidu.com/item/%E8%A5%BF%E6%AC%A7" target="_blank" rel="noopener">西欧</a>语言。它是现今最通用的单<a href="https://baike.baidu.com/item/%E5%AD%97%E8%8A%82" target="_blank" rel="noopener">字节</a><a href="https://baike.baidu.com/item/%E7%BC%96%E7%A0%81" target="_blank" rel="noopener">编码</a>系统，并等同于<a href="https://baike.baidu.com/item/%E5%9B%BD%E9%99%85" target="_blank" rel="noopener">国际</a>标准ISO/IEC 646。</p>
-</blockquote>
-<p> 注意 ASCII 码是 <code>American Standard Code for Information Interchange</code>的简称， 后面的两个II 并不是罗马数字2哦。</p>
-<p>我们知道计算机里面存储所有信息都是通过一个二进制值。每一个二进制位（bit）都有两种状态 0或者1， 规定了8个二进制位为一个字节（byte），可以表示256种状态，包括了 <code>00000000</code> 到 <code>11111111</code> 。</p>
-<p>美国🇺🇸人们自然想到了可以他们自己规定一套字符编码，把26英文字母，及一些特殊符号和控制字符统一编码。他们一共规定了 128个字符，比如说 A 是 65（01000001）。128位只需要占用7位，最高位统一为0。</p>
-<blockquote>
-<p>比如遇到0x10 就是换行， 遇到 Ox1b 就打印反白字。这类0x20以下的字节称为控制字节。空格，标点符号，数字，大小写字母用连续的字节状态表示，一直到127号。</p>
-</blockquote>
-<p>所以 ASCII码就是0-127这套编码方案所形成的编码，这套编码方案叫做ANSI。</p>
-<p>下面给出两种判断字符是不是 ASCII 码的方案：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">isASCII (unicode) &#123;</span><br><span class="line">    return ((unicode === 0x20AC) || (unicode &lt;= 0x007F &amp;&amp; unicode &gt;= 0x0000));</span><br><span class="line">&#125;</span><br><span class="line">// 另外一种用正则判断</span><br><span class="line">isASCII(str) &#123;</span><br><span class="line">    return /^\[\\x00-\\x7F\]*$/.test(str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>但是问题来了，英语用128个编码就足够了，但是其他语言用这些字符是远远不够的，于是延伸出了256编码，也就是最高位也被使用上(<strong>这称为扩展字符集</strong>)。但是不同的国家有不同的字母，同样的编码可能也代表着不同的内容。比如 150，可能法国是一个，俄语又是一个。他们0-127都是相同，但是128-256不一定相同了，这就看不同的国家自己的制定方式了。</p>
-<p>但是再想想中国🇨🇳就更可怕了，一共有10几万的文字。显然256种符号是没有办法完全表达的。于是又出现了多字节的形式。比如两个字节，做多表示 256*256 种。大概又6w多符号。最常见的中文编码就是这种2个字节的编码方式，如 GB2312。</p>
-<p>下面就介绍下 GB2312, GBK等的区别和联系。</p>
-<hr>
-<h1 id="GB2312-GBK-GB18030的区别和联系"><a href="#GB2312-GBK-GB18030的区别和联系" class="headerlink" title="GB2312,GBK,GB18030的区别和联系"></a>GB2312,GBK,GB18030的区别和联系</h1><p>中国用到计算机比较晚，那个时候 256个符号已经没有可以用来表达中文文字的了。并且中文10w+个，只能够另辟蹊径了。于是中国人把127号之后的字符都去掉了，并且进行了规定。</p>
-<blockquote>
-<p>每个汉字及符号以两个字节表示。第一个为高字节，第二个为低字节。一个小于127的字符的意义与原来相同，但两个大于127的字符连在一起时，就表示一个汉字，前面的一个字节（高字节）从0xA1用到 0xF7，后面一个字节（低字节）从0xA1到0xFE。</p>
-</blockquote>
-<p>具体这个字符范围的得来，涉及区位等知识，这些我不打算认识，不做介绍。</p>
-<p>这种方案称之为GB2312, 他是对ASCII码的中文扩展。这样就 6000+汉字可以得到表示。</p>
-<blockquote>
-<p>GB 2312标准共收录6763个汉字，其中一级汉字3755个，二级汉字3008个；同时收录了包括拉丁字母、希腊字母、日文平假名及片假名字母、俄语西里尔字母在内的682个字符。 GB 2312的出现，基本满足了汉字的计算机处理需要，它所收录的汉字已经覆盖中国大陆99.75%的使用频率。但对于人名、古汉语等方面出现的罕用字和繁体字，GB 2312不能处理，因此后来GBK及GB 18030汉字字符集相继出现以解决这些问题。–wiki</p>
-</blockquote>
-<p>后来GB2312这种方案还是不够用，于是就不再要求低字节一定是127之后的内码， 只要是第一个字节大于127，就表示这是汉字的开始，不用管低字节是否是扩展字符集的内容。这种GB2312被扩展之后的内容称之为 GBK， GBK 包括了GB2312的所有内容，并且新增加了20000个汉字。</p>
-<p>后来少数民族也需要用电脑，于是又增加了少数名族的内容，GBK 被扩展为了 GB18030。</p>
-<p><strong>也就是说 GB18030 &gt; GBK &gt; GB2312。 这一系列的中文编码，称为 DBCS(Double Byte Character Set 双字节字符集)。</strong></p>
-<blockquote>
-<p>在DBCS系列标准里，最大的特点是两字节长的汉字字符和一字节长的英文字符并存于同一套编码方案里，因此他们写的程序为了支持中文处理，必须要注意字串里的每一个字节的值，如果这个值是大于127的，那么就认为一个双字节字符集里的字符出现了。–wiki</p>
-</blockquote>
-<p>于是就出现了后来编程时候的默念： <strong>一个中文字符占两个字节，1个英文字符占用1个字节</strong>。</p>
-<p>注意这个时候 GBK, GB2312 等，只是中文对于ASCII码的扩展，和 UTF8,Unicode 这些并无联系。下面再来看看 Unicode 及 UTF-8。</p>
-<hr>
-<h1 id="Unicode-及-UTF-8"><a href="#Unicode-及-UTF-8" class="headerlink" title="Unicode 及 UTF-8"></a>Unicode 及 UTF-8</h1><blockquote>
-<p>结论： UTF-8 是 Unicode 的实现方式之一。</p>
-</blockquote>
-<p>前面我们说过，世界上存在着很多编码方式，每个国家可能会去规定和制作自己的编码方式。不同的二进制因而有可能会被解释成不同的内容。 因此如果你不知道一个文件的编码，然后随意用编辑器打开了就会出现我们经常出现的乱码现象。</p>
-<p>聪明的人们当然意识到了这一点，所以如果有一种编码方式能够把世界所有的符号都纳入其中，那该多好？ 再也不会有乱码现象了。</p>
-<p>于是 Unicode 出现了（union code ？） , <strong>一定要注意 Unicode 并不是一个编码方式，不是一个算法，而是一个集合，集合了所有的符号，它只是规定了所有符号的二进制代码，并没有一个算法来说怎么存储这个内容。比如<code>U+0041</code>表示大写字母A。</strong>  （其实我在想，它能把所有符号录入进去，已经是很大的工作量了。）</p>
-<blockquote>
-<p>这里就有两个严重的问题，第一个问题是，如何才能区别 Unicode 和 ASCII ？计算机怎么知道三个字节表示一个符号，而不是分别表示三个符号呢？第二个问题是，我们已经知道，英文字母只用一个字节表示就够了，如果 Unicode 统一规定，每个符号用三个或四个字节表示，那么每个英文字母前都必然有二到三个字节是0，这对于存储来说是极大的浪费，文本文件的大小会因此大出二三倍，这是无法接受的。    —- 引用自<a href="http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html" target="_blank" rel="noopener">阮一峰的文章</a></p>
-</blockquote>
-<p>后来的人们也进行了很多尝试， 发明了 unicode 的多种存储方式（不同的二进制编码方式或者称之为一种算法）。<strong>直到 UTF-8 这种编码方式的出现， Unicode 才得以推广。 所以前面才说 UTF-8 是一种是Unicode的实现方式。</strong></p>
-<blockquote>
-<p>UTF-8（8-bit Unicode Transformation Format）是一种针对Unicode的<strong>可变长度字符编码</strong>，也是一种前缀码。它可以用来表示Unicode标准中的任何字符，且其编码中的第一个字节仍与ASCII兼容，这使得原来处理ASCII字符的软件无须或只须做少部分修改，即可继续使用。因此，它逐渐成为电子邮件、网页及其他存储或发送文字的应用中，优先采用的编码。</p>
-</blockquote>
-<p><strong>关键字是可变长度字符编码，也就是说对于不同类型的符号，它占用的字节长度不一样。这样可以节省很多空间。并且比较灵活。一般情况下，它使用1-4个字节来表示。</strong>比如：</p>
-<blockquote>
-<p>128个US-ASCII字符只需一个字节编码（Unicode范围由U+0000至U+007F）。</p>
-<p>带有附加符号的拉丁文、希腊文、西里尔字母、亚美尼亚语、希伯来文、阿拉伯文、叙利亚文及它拿字母则需要两个字节编码（Unicode范围由U+0080至U+07FF）。</p>
-<p>其他基本多文种平面（BMP）中的字符（这包含了大部分常用字，如大部分的汉字）使用三个字节编码（Unicode范围由U+0800至U+FFFF）。</p>
-<p>其他极少使用的Unicode 辅助平面的字符使用四至六字节编码（Unicode范围由U+10000至U+1FFFFF使用四字节，Unicode范围由U+200000至U+3FFFFFF使用五字节，Unicode范围由U+4000000至U+7FFFFFFF使用六字节）。 –wiki</p>
-</blockquote>
-<p><strong>utf-8的具体编码实现，我引用了阮一峰老师的文章的部分内容，他总是能把复杂的东西讲的很简单。</strong> 地址为：<a href="http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html" target="_blank" rel="noopener">ascii_unicode_and_utf</a></p>
-<p>(<strong>以下内容为引用内容</strong>)</p>
-<p>UTF-8 的编码规则很简单，只有二条：</p>
-<p>1）对于单字节的符号，字节的第一位设为<code>0</code>，后面7位为这个符号的 Unicode 码。因此对于英语字母，UTF-8 编码和 ASCII 码是相同的。</p>
-<p>2）对于<code>n</code>字节的符号（<code>n &gt; 1</code>），第一个字节的前<code>n</code>位都设为<code>1</code>，第<code>n + 1</code>位设为<code>0</code>，后面字节的前两位一律设为<code>10</code>。剩下的没有提及的二进制位，全部为这个符号的 Unicode 码。</p>
-<p>下表总结了编码规则，字母<code>x</code>表示可用编码的位。</p>
-<blockquote>
-<p>Unicode符号范围     |        UTF-8编码方式<br>(十六进制)        |              （二进制）<br>———————-+———————————————<br>0000 0000-0000 007F | 0xxxxxxx<br>0000 0080-0000 07FF | 110xxxxx 10xxxxxx<br>0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx<br>0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</p>
-</blockquote>
-<p>跟据上表，解读 UTF-8 编码非常简单。如果一个字节的第一位是<code>0</code>，则这个字节单独就是一个字符；如果第一位是<code>1</code>，则连续有多少个<code>1</code>，就表示当前字符占用多少个字节。</p>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>好开心，大概的把这些东西都有了一些了解。不再只是停留在认识阶段，而是了解阶段了。算是对这两天的一个交代了。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;本篇目的主要是搞清楚UTF-8, GBK,  Unicode, ASCII码，Unicode, escape, encodeURIComponent, encodeURI 编码等等的区别和联系。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h1
-    
-    </summary>
-    
     
   </entry>
   
