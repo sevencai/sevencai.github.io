@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-12-04T03:48:20.000Z</updated>
+  <updated>2018-12-04T04:04:16.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://sevencai.github.io/2018/12/03/async-await-%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88%E4%BA%8B%E6%83%85/"/>
     <id>http://sevencai.github.io/2018/12/03/async-await-做了什么事情/</id>
     <published>2018-12-03T13:10:02.000Z</published>
-    <updated>2018-12-04T03:48:20.000Z</updated>
+    <updated>2018-12-04T04:04:16.000Z</updated>
     
-    <content type="html"><![CDATA[<p>组里的一个有趣又很严谨的同事，今天在纠结一个不看起来是问题的问题，其实这种感觉就像你经常这么用或者这么想的一个东西，某一天某个时刻，你突然不知道为什么了，就像我偶尔回去纠结为什么某个汉字是这样写：</p>
+    <content type="html"><![CDATA[<p>组里的一个有趣又很严谨的同事，今天在纠结一个不看起来是问题的问题，其实这种感觉就像你经常这么用或者这么想的一个东西，某一天某个时刻，你突然不知道为什么了，就像我偶尔会去纠结为什么某个汉字是这样写：</p>
 <p><img src="testasyncawait.png" alt="问题"></p>
 <p>他认为最后应该 res === b,而不是 res === a, 我认为很明显应该 res === a, 因为大家平时一直都是这么用的, 但是跟他讲理由的时候，竟然语塞了。</p>
 <hr>
@@ -67,7 +67,7 @@
 <p>最后写成了：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> a();</span><br><span class="line"><span class="keyword">await</span> b();</span><br><span class="line"><span class="keyword">await</span> c();</span><br><span class="line"><span class="keyword">await</span> d();</span><br></pre></td></tr></table></figure></p>
 <p>这种原本 d 只需要等待 c 的，结果变成要等待 a,b,c。 时间慢了很多。性能不好。稍改一下。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> aPromise = a()</span><br><span class="line"><span class="keyword">const</span> cPromise = c()</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> aPromise()</span><br><span class="line">b()</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> cPromise()</span><br><span class="line">d()</span><br></pre></td></tr></table></figure>
-<p>这样会稍微好点了，但是还是有问题， d由原来的需要等待 c, 变成了需要等待 a,c</p>
+<p>这样会稍微好点了，但是还是有问题， d由原来的需要等待 c, 变成了需要等待 a,c(如果a的返回时间要大于c)</p>
 <p>所以可以改成下面这两种方式：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span>() &#123;</span><br><span class="line">    <span class="keyword">await</span> a()</span><br><span class="line"></span><br><span class="line">    b()</span><br><span class="line">&#125;)()</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span>() &#123;</span><br><span class="line">    <span class="keyword">await</span> c()</span><br><span class="line"></span><br><span class="line">    d()</span><br><span class="line">&#125;)()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者改为</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.all([a(), c()])</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Promise</span>.all([b(), d()])</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure></p>
 <p>总之用 async, await 的时候得多想想。</p>
 <hr>
@@ -76,7 +76,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;组里的一个有趣又很严谨的同事，今天在纠结一个不看起来是问题的问题，其实这种感觉就像你经常这么用或者这么想的一个东西，某一天某个时刻，你突然不知道为什么了，就像我偶尔回去纠结为什么某个汉字是这样写：&lt;/p&gt;
+      &lt;p&gt;组里的一个有趣又很严谨的同事，今天在纠结一个不看起来是问题的问题，其实这种感觉就像你经常这么用或者这么想的一个东西，某一天某个时刻，你突然不知道为什么了，就像我偶尔会去纠结为什么某个汉字是这样写：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;testasyncawait.png&quot; a
     
     </summary>
