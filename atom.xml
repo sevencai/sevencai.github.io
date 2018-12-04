@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-11-27T13:19:43.000Z</updated>
+  <updated>2018-12-04T03:48:20.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,75 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>async await 做了什么事情</title>
+    <link href="http://sevencai.github.io/2018/12/03/async-await-%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88%E4%BA%8B%E6%83%85/"/>
+    <id>http://sevencai.github.io/2018/12/03/async-await-做了什么事情/</id>
+    <published>2018-12-03T13:10:02.000Z</published>
+    <updated>2018-12-04T03:48:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>组里的一个有趣又很严谨的同事，今天在纠结一个不看起来是问题的问题，其实这种感觉就像你经常这么用或者这么想的一个东西，某一天某个时刻，你突然不知道为什么了，就像我偶尔回去纠结为什么某个汉字是这样写：</p>
+<p><img src="testasyncawait.png" alt="问题"></p>
+<p>他认为最后应该 res === b,而不是 res === a, 我认为很明显应该 res === a, 因为大家平时一直都是这么用的, 但是跟他讲理由的时候，竟然语塞了。</p>
+<hr>
+<h2 id="关于-async-🚶"><a href="#关于-async-🚶" class="headerlink" title="关于 async 🚶"></a>关于 async 🚶</h2><p>于是我去找了一段 MDN 上的解释：</p>
+<blockquote>
+<p>当调用一个 async 函数时，<strong>会返回一个 Promise 对象</strong>。当这个 async 函数返回一个值时，<strong>Promise 的 resolve 方法会负责传递这个值</strong>；当 async 函数抛出异常时，Promise 的 reject 方法也会传递这个异常值。</p>
+</blockquote>
+<p>上面这句话我用两个粗体标明了两句话，第一句话意思明显，意为：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>调用 test() 得到的是一个 Promise, 也就是无论函数内返回（return）的是什么（常量 or 字符串 or Promise or 其它）， async 总会用 <code>Promise.resolve</code> 包一层，如若 async 里面有异常， 会 <code>throw Error</code>。</strong></p>
+<p><strong>如果 test 内什么都不返回，也会得到 <code>Promise.resolve(undefined)</code>, 总之 async 总返回一个 Promise 对象。</strong></p>
+<p>再看后面一句解释： Promise 的 resolve 方法会负责传递这个值；</p>
+<p>哇，是不是突然间觉得我同事疑惑的是对的了。其实不要受这句话的影响。它说的传递，其实就是return过去的时候是传递的。总结下： 我们就理解为：async 返回了一个包含改值的 Promise。</p>
+<p>分析下面这段代码的执行：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test()</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> res === a)</span><br><span class="line">    <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>那么为什么 <code>test().then(a =&gt; { a === {} })</code> 又是对的了呢？ 不是说返回了一个 Promise 吗？ 怎么又是一个对象值了？(注意这里是值引用，所以可以直接这么比较)</p>
+<p><strong>这是因为 <code>Promise.then</code> 里面会在重新接收这个值的时候，得到的不再是一个 Promise 对象，而是一个被解析过了的值</strong>。 也就是说下面这段代码的含义：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.then(<span class="function"><span class="params">r</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 返回一个 Promise ，内容为 statusCode 404</span></span><br><span class="line">    <span class="keyword">return</span> getServerStatusCode(r);</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// res 为一个对象，不是一个 Promise, 因为已经被解析过了</span></span><br><span class="line">    <span class="built_in">console</span>.log(res.statusCode);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这个时候，你 then 里面的值，就跟你用 await 得到的一样了。</p>
+<hr>
+<h2 id="关于-await-👂"><a href="#关于-await-👂" class="headerlink" title="关于 await 👂"></a>关于 await 👂</h2><p>await 等待的是什么呢？</p>
+<blockquote>
+<p>await  操作符用于等待一个Promise 对象。它只能在异步函数 <code>async function</code> 中使用。</p>
+</blockquote>
+<p>上面是 MDN 里的说明，我觉得不太对， await 不一定是等待一个 Promise 对象，它要等待的是<strong>一个 Promise 对象或者任何要等待的值。</strong>。</p>
+<p>如果它等待的不是一个 Promise 对象，如 await 3 , 那么表达式的运算结果就是它等待的东西。</p>
+<p>如果它等待的是一个 Promise 对象， 如 <code>await Promise.resolve(3)</code>, 那么 await 会阻塞后面的代码，等待 Promise 对象 <code>resolve or reject</code>。</p>
+<p>看下下面这种情况：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="built_in">Promise</span>.reject(&#123;&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">abc</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> a &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> obj = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        obj = <span class="keyword">await</span> abc()</span><br><span class="line">    &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"err"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"main"</span>, obj === a) <span class="comment">// false</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"test"</span>, obj === &#123;&#125;) <span class="comment">// false</span></span><br><span class="line">    <span class="built_in">console</span>.log(obj) <span class="comment">// null</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(obj) === <span class="built_in">JSON</span>.stringify(a))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+<p>很明显， obj 是等于 null 的，因为 await 等待的是一个 reject 的结果。导致了异常被抛出来了。所以赋值等工作都没有进行。</p>
+<blockquote>
+<p>await 表达式会暂停当前 <code>async function</code> 的执行，等待 Promise 处理完成。若 Promise 正常处理(fulfilled)，其回调的resolve函数参数作为 await 表达式的值，继续执行 <code>async function</code>。</p>
+<p>若 Promise 处理异常(rejected)，await 表达式会把 Promise 的<strong>异常原因抛出</strong>。</p>
+<p>另外，如果 await 操作符后的表达式的值不是一个 Promise，则返回该值本身。</p>
+</blockquote>
+<p>MDN 的解释跟我们理解的相同。也就是说 <strong>await 如果得到的是一个 reject 的结果，会直接 throw 一个 Error 出来。这也是为什么为了避免报错，我们需要对 <code>async await</code> 进行 <code>try catch</code> 的原因</strong>。</p>
+<hr>
+<h2 id="使用-async-await-要注意的地方"><a href="#使用-async-await-要注意的地方" class="headerlink" title="使用 async await 要注意的地方"></a>使用 async await 要注意的地方</h2><p>async await 设计本身是为了让我们防止地狱回调的，但是是不能够滥用。比如下面这个很经典的例子：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> pizza = <span class="keyword">await</span> selectPizza()</span><br><span class="line">  <span class="keyword">const</span> drink = <span class="keyword">await</span> selectDrink()</span><br><span class="line"></span><br><span class="line">  order(pizza, drink); <span class="comment">// async call</span></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>上面的 <code>getPizzaInfo</code> 和 <code>getDrinkInfo</code> 实际并没有任何依赖关系，这么写还增加了等待的时间。所以在用 async await 的时候，一定要充分理解他们的关系。可以优化如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> pizzaPromise = selectPizza();</span><br><span class="line">  <span class="keyword">const</span> drinkPromise = selectDrink();</span><br><span class="line">  <span class="keyword">const</span> pizza = <span class="keyword">await</span> pizzaPromise;</span><br><span class="line">  <span class="keyword">const</span> drink = <span class="keyword">await</span> drinkPromise;</span><br><span class="line">  order(pizza, drink); <span class="comment">// async call</span></span><br><span class="line">&#125;)();</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">  <span class="built_in">Promise</span>.all([selectPizza(), selectDrink()]).then(order); <span class="comment">// async call</span></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>再举个例子：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  b();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">c(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  d();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>最后写成了：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> a();</span><br><span class="line"><span class="keyword">await</span> b();</span><br><span class="line"><span class="keyword">await</span> c();</span><br><span class="line"><span class="keyword">await</span> d();</span><br></pre></td></tr></table></figure></p>
+<p>这种原本 d 只需要等待 c 的，结果变成要等待 a,b,c。 时间慢了很多。性能不好。稍改一下。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> aPromise = a()</span><br><span class="line"><span class="keyword">const</span> cPromise = c()</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> aPromise()</span><br><span class="line">b()</span><br><span class="line"></span><br><span class="line"><span class="keyword">await</span> cPromise()</span><br><span class="line">d()</span><br></pre></td></tr></table></figure>
+<p>这样会稍微好点了，但是还是有问题， d由原来的需要等待 c, 变成了需要等待 a,c</p>
+<p>所以可以改成下面这两种方式：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span>() &#123;</span><br><span class="line">    <span class="keyword">await</span> a()</span><br><span class="line"></span><br><span class="line">    b()</span><br><span class="line">&#125;)()</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span>() &#123;</span><br><span class="line">    <span class="keyword">await</span> c()</span><br><span class="line"></span><br><span class="line">    d()</span><br><span class="line">&#125;)()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者改为</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.all([a(), c()])</span><br><span class="line">    .then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Promise</span>.all([b(), d()])</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>总之用 async, await 的时候得多想想。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>有好奇心和探索知识的欲望是好事，当别人问你的问题的时候，如果你不能把别人解释清楚的时候，那么可能他的问题同样就是你的问题~</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;组里的一个有趣又很严谨的同事，今天在纠结一个不看起来是问题的问题，其实这种感觉就像你经常这么用或者这么想的一个东西，某一天某个时刻，你突然不知道为什么了，就像我偶尔回去纠结为什么某个汉字是这样写：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;testasyncawait.png&quot; a
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>总结几个最近遇到的问题</title>
@@ -1261,61 +1330,6 @@
     
     
       <category term="小程序" scheme="http://sevencai.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>函数立即表达式整理</title>
-    <link href="http://sevencai.github.io/2018/02/27/%E5%87%BD%E6%95%B0%E7%AB%8B%E5%8D%B3%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%95%B4%E7%90%86/"/>
-    <id>http://sevencai.github.io/2018/02/27/函数立即表达式整理/</id>
-    <published>2018-02-27T14:09:32.000Z</published>
-    <updated>2018-02-28T03:22:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>本文主要介绍的是 Javascript 的<strong>立即执行函数</strong>的比较与总结, 列举了现在大部分的立即执行函数的写法，并且分析了错误的原因和正确的原因。</p>
-</blockquote>
-<hr>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>来看几种写法，你能分辨出来，哪个是正确的，哪个是错误的吗？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">// 写法1</span><br><span class="line">function a() &#123;</span><br><span class="line">	console.log(&quot;a&quot;)</span><br><span class="line">&#125;();</span><br><span class="line"></span><br><span class="line">// 写法2</span><br><span class="line">(function b() &#123;</span><br><span class="line">	console.log(&quot;b&quot;)</span><br><span class="line">&#125;());</span><br><span class="line"></span><br><span class="line">// 写法3</span><br><span class="line">（function c() &#123;</span><br><span class="line">	console.log(&quot;c&quot;)</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line">// 写法4</span><br><span class="line">var d = function d() &#123;</span><br><span class="line">	console.log(&quot;d&quot;)</span><br><span class="line">&#125;</span><br><span class="line">(d)()</span><br><span class="line"></span><br><span class="line">// 写法5</span><br><span class="line">var e = function e() &#123;</span><br><span class="line">	console.log(&quot;e&quot;)</span><br><span class="line">&#125;;</span><br><span class="line">(e)()</span><br><span class="line"></span><br><span class="line">// 写法6</span><br><span class="line">!function f() &#123;</span><br><span class="line">	console.log(&quot;f&quot;)</span><br><span class="line">&#125;();</span><br><span class="line"></span><br><span class="line">// 写法7</span><br><span class="line">+function g() &#123;</span><br><span class="line">	console.log(&quot;g&quot;)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 写法8</span><br><span class="line">var h = function () &#123;</span><br><span class="line">	console.log(&quot;h&quot;)</span><br><span class="line">&#125;();</span><br><span class="line"></span><br><span class="line">// 写法9</span><br><span class="line">(a === 1) &amp;&amp; function () &#123; /* ... */ &#125; ();</span><br><span class="line"></span><br><span class="line">// 写法 10</span><br><span class="line">1, function () &#123; /* ... */ &#125;();</span><br><span class="line"></span><br><span class="line">// 写法 11</span><br><span class="line">function （）&#123;</span><br><span class="line">	console.log(&quot;a&quot;)</span><br><span class="line">&#125;();</span><br><span class="line"></span><br><span class="line">// 写法 12</span><br><span class="line">function j() &#123;</span><br><span class="line">	console.log(&quot;j&quot;)</span><br><span class="line">&#125;(1)</span><br></pre></td></tr></table></figure></p>
-<p>上面的写法中，有几种是错误❌的，你找出来了吗？</p>
-<hr>
-<h1 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h1><p>首先基本知识是，声明  javascript 的函数有两种方式，分别是语句（函数声明）的形式和表达式的形式，其中语句的形式是有变量提升的说法的，而表达式不会：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 函数声明</span><br><span class="line">function f() &#123;&#125;</span><br><span class="line"></span><br><span class="line">// 表达式</span><br><span class="line">var f = function f() &#123;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>对于 Javscript 引擎而言， 如果 <code>function</code> 关键字出现在行首，会被解析成函数声明的形式。函数声明必须包括 ： 关键词 function, 函数名，形参，函数体。</strong></p>
-<p>第一种（写法1）❌，因为直接开头出现 function 关键字， 有函数名，浏览器会认为这是函数声明，下面是函数的定义，但是它又是以圆括号结尾，所以就报错了。</p>
-<p>实际上写法1等同于：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function a() &#123;</span><br><span class="line">	// ...</span><br><span class="line">&#125;</span><br><span class="line">()</span><br></pre></td></tr></table></figure></p>
-<p>这个空的<code>()</code>里面没有操作符，所以报了相应的错。<br>报错的内容是<code>Uncaught SyntaxError: Unexpected token )</code>。</p>
-<p>而第11种（写法11），浏览器也认为是函数声明的形式，<strong>但是却没有找到函数名</strong>，所以也是错误❌的。报错是：<code>VM143:1 Uncaught SyntaxError: Unexpected token (</code> 。所以说这两种类似，但是报错的原因并不相同。</p>
-<p>对于写法12， 实际上等同于<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function j() &#123;</span><br><span class="line">	console.log(&quot;j&quot;)</span><br><span class="line">&#125;</span><br><span class="line">(1)</span><br></pre></td></tr></table></figure></p>
-<p><strong>所以实际上，它不会报错，因为<code>()</code>有操作符，但是 j 函数也不会被执行， 最后返回的是 1， 因为只有 (1) 执行了。</strong></p>
-<p>那么，为什么2，3写法是正确✅的呢？<strong>因为当浏览器解析碰到了<code>()</code>时，<code>()</code>里面不能包含函数声明，所以浏览器会把这个解析成函数表达式。当它是函数表达式的时候，自然就立即执行了。并且也不会报错。</strong></p>
-<p>因此下面两种都是正确的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(function()&#123; /* ... */ &#125;());</span><br><span class="line">(function()&#123; /* ... */ &#125;)();</span><br></pre></td></tr></table></figure></p>
-<p>所以如果我们要让它可以被浏览器识别，那么就让浏览器知道它是一个表达式吧。 因此6，7，9，10他们都是正确的。9,10这两种写法，前面一个是表达式，浏览器自然也认为后面一个也是表达式。</p>
-<p>这种称为<strong>“立即调用的函数表达式”（Immediately-Invoked Function Expression），简称 IIFE。</strong> 然而实际中，<strong>我们通常会叫立即执行函数。</strong></p>
-<p>但是注意立即调用的函数表达式后面一定要是有分号，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">!function () &#123; /* ... */ &#125;();</span><br><span class="line">~function () &#123; /* ... */ &#125;();</span><br><span class="line">-function () &#123; /* ... */ &#125;();</span><br><span class="line">+function () &#123; /* ... */ &#125;();</span><br></pre></td></tr></table></figure></p>
-<p>如果没有分号，浏览器又会错误的识别了。认为第二行是第一行的参数。所以写法4正确，写法5错误❌， 这个一定要注意了。</p>
-<hr>
-<h1 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h1><p>立即执行函数的作用，最常见的是配合闭包的使用，来保存函数局部状态。因为立即执行函数也能够传参数。所以有了最经典的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">for(var i = 0; i &lt; 5; i++) &#123;</span><br><span class="line">  (function (i) &#123;</span><br><span class="line">     setTimeout(() =&gt; &#123;</span><br><span class="line">		console.log(&quot;i&quot;,i)</span><br><span class="line">	 &#125;,0)</span><br><span class="line">  &#125;)(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这样可以分别打印出 i 从 1-5， 但是如果你像下面这样写，就会打印出5个5了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for(var i = 0; i &lt; 5; i++) &#123;</span><br><span class="line">  setTimeout(() =&gt; &#123;</span><br><span class="line">     console.log(&quot;i&quot;,i)</span><br><span class="line">  &#125;,0)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>更为经典的一个例子如下, 你想要对每个 a 元素都绑定一个不同的事件，这里 log 出 i 的值。但是却得不到你想要的结果，因为在我们执行点击事件的时候， i 已经被执行完，为5了。所以对于 a0, a1,a2,a3都没有被绑定相应的事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var elems = document.getElementsByTagName( &apos;a&apos; );</span><br><span class="line"></span><br><span class="line">for ( var i = 0; i &lt; elems.length; i++ ) &#123;</span><br><span class="line">  elems[i].addEventListener( &apos;click&apos;, function(e)&#123;</span><br><span class="line">    console.log( &apos;i,&apos; + i );</span><br><span class="line">  &#125;, &apos;false&apos; );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>我们用立即执行函数和闭包来改写下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var elems = document.getElementsByTagName( &apos;a&apos; );</span><br><span class="line"></span><br><span class="line">for (var i = 0; i &lt; eles.length; i++) &#123;</span><br><span class="line">  (function (i) &#123;</span><br><span class="line">    elems[i].addEventListener( &apos;click&apos;, function(e)&#123;</span><br><span class="line">      console.log( &apos;i,&apos; + i );</span><br><span class="line">    &#125;, &apos;false&apos; );</span><br><span class="line">  &#125;)(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这样就 ok 了。注意 i 一定要在外部括号和里面的括号都传递进去，否则 i 不会被锁住。</p>
-<p>立即执行函数当然还有别的好处，经常见的就是<strong>减少全局变量的定义</strong>，比如 jquery 的定义：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(function( $ ) &#123;</span><br><span class="line">  $.fn.myPlugin = function() &#123;</span><br><span class="line">	var a = 1;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)( jQuery );</span><br></pre></td></tr></table></figure></p>
-<p>这样减少了全局变量，每个插件自己用自己的变量，以防止冲突。性能也会好些。</p>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>主要是以前其实这些知识点都是知道的，但是没有系统的总结或者思考过，这次算是有个稍微整体一点的认识。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;本文主要介绍的是 Javascript 的&lt;strong&gt;立即执行函数&lt;/strong&gt;的比较与总结, 列举了现在大部分的立即执行函数的写法，并且分析了错误的原因和正确的原因。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;问题&quot;&gt;
-    
-    </summary>
-    
-    
-      <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
     
   </entry>
   
