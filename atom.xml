@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-12-04T04:04:16.000Z</updated>
+  <updated>2018-12-05T07:16:21.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,82 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>import or require?</title>
+    <link href="http://sevencai.github.io/2018/12/05/import-or-require/"/>
+    <id>http://sevencai.github.io/2018/12/05/import-or-require/</id>
+    <published>2018-12-05T13:25:18.000Z</published>
+    <updated>2018-12-05T07:16:21.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>之所以会去写这个，是因为自己最近遇到了 import 的一个问题。</p>
+<p>找问题的过称中，发现自己虽然一直在用 import，但对 require/import 的区别并没有了解的很全面。</p>
+<p>具体的点就在 <code>Imports are hoisted</code>。趁此机会大概的重新总结下。</p>
+<hr>
+<h2 id="历史追溯"><a href="#历史追溯" class="headerlink" title="历史追溯"></a>历史追溯</h2><blockquote>
+<p>了解历史，不一定是使用历史，却可以对整体的知识有个大致的认识。我自己没有经历过 <code>SeaJS/RequireJS</code> 时代，所以对它里面具体的原理实现和用法不是特别熟悉。只是看到组里以前同事的旧代码，才发现那几年确实可能很火。</p>
+</blockquote>
+<p>关于 CommonJS, RequireJS, SeaJS , 我大致的画了如下一个图来描述：</p>
+<p><img src="understandstandard.png" alt="关系图"></p>
+<p>总结为下面几点：</p>
+<ol>
+<li><code>CommonJS</code> 因 <code>Nodejs</code> 而生，是 <strong><code>Nodejs 的规范</code></strong>，一直沿用至今。</li>
+<li>由于浏览器端也需要模块化的原因，由 <code>CommonJS</code> 衍生出来了 AMD 和 CMD 规范。</li>
+<li>基于 AMD/CMD 规范，出现了两个基于此规范的库。分别是 <code>RequireJS</code>, <code>SeaJS</code>。</li>
+<li><code>RequireJS</code> 是 AMD 的规范。特点是：<strong>提前加载</strong>。</li>
+<li><code>SeaJS</code> 是 CMD 的规范。特点是：按需加载。<strong>用到时才加载</strong>。</li>
+<li>现在新的标准 <code>ES6 import/export</code> 出现，但是很多浏览器还未实现，所以最终还是需要用 <strong>babel 转换成 CommonJS</strong>。</li>
+<li><code>import/export</code> 是大势所趋。</li>
+</ol>
+<p>具体的想看 AMD/CMD 的区别，可以参考 16 年我总结的文件。<a href="https://sevencai.github.io/2016/02/18/AMD%E5%92%8CCMD%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E8%81%94%E7%B3%BB/">AMD和CMD的区别和联系</a>。</p>
+<hr>
+<h2 id="import-require-区别-Commonjs-pk-ES6"><a href="#import-require-区别-Commonjs-pk-ES6" class="headerlink" title="import / require 区别 (Commonjs pk ES6)"></a>import / require 区别 (Commonjs pk ES6)</h2><p><img src="requireimport.png" alt="require pk import"></p>
+<h3 id="写法不同"><a href="#写法不同" class="headerlink" title="写法不同"></a>写法不同</h3><p>CommonJS 的模块化，require/exports 基本上只有下面这几种写法。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"></span><br><span class="line">exports.fs = fs</span><br><span class="line"><span class="built_in">module</span>.exports = fs</span><br><span class="line"></span><br><span class="line">fs.readFileSync(path)</span><br></pre></td></tr></table></figure></p>
+<p>import 的写法多种多样，比如<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> cookie <span class="keyword">from</span> <span class="string">'./cookie'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; getCookie, setCookie &#125; <span class="keyword">from</span> <span class="string">'./cookie'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> cookie, &#123; getCookie &#125; <span class="keyword">from</span> <span class="string">'./cookie'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面两者相同</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="keyword">default</span> <span class="keyword">as</span> cookie &#125; <span class="keyword">from</span> <span class="string">'./cookie'</span></span><br><span class="line"><span class="keyword">import</span> cookie <span class="keyword">from</span> <span class="string">'./cookie'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> cookie</span><br><span class="line"><span class="keyword">export</span> cookie</span><br><span class="line"><span class="keyword">export</span> &#123; getCookie, setCookie &#125;</span><br></pre></td></tr></table></figure></p>
+<p>等等写法。 import 比较灵活，并且支持部分模块的导入。不像 require 全部导入。</p>
+<h3 id="加载顺序不同-Imports-are-hoisted"><a href="#加载顺序不同-Imports-are-hoisted" class="headerlink" title="加载顺序不同 - Imports are hoisted"></a>加载顺序不同 - Imports are hoisted</h3><p>ES6 模块是编译时加载，使得静态分析成为可能。</p>
+<p>import 会提前加载，类似于 JS 里的概念 变量提升。也就可以理解为 import 总被先移到上面去执行。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'in config'</span>)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123; <span class="attr">port</span>: <span class="number">80</span> &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'begin load'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> config <span class="keyword">from</span> <span class="string">'./config'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'load finished'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>执行 main.js 将返回：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">in</span> config</span><br><span class="line">begin load</span><br><span class="line">load finished</span><br></pre></td></tr></table></figure></p>
+<p>也就是说这么写不会报错：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">renderData()</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; renderData &#125; <span class="keyword">from</span> <span class="string">'../util'</span></span><br></pre></td></tr></table></figure></p>
+<p>但是这么写会报错：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 报错</span><br><span class="line">if (x === true) &#123;</span><br><span class="line">  import MyModual from &apos;./myModual&apos;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">import x+var from &apos;./&apos; + filename</span><br></pre></td></tr></table></figure></p>
+<p>import 是在编译时，if 这些语句都会被忽略，会被提到最上面。因此会报语法错误，而不是执行的错误。所以import export 最好就放在最顶层。不要在函数或者条件语句中。</p>
+<p>require 是非静态编译类型。是 CommonsJS 这种，运行时加载,所以可以动态去拼接模块。</p>
+<p>对于Require来说运行结果就是：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'in config'</span>)</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;<span class="attr">port</span>: <span class="number">80</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'begin load'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> config = <span class="built_in">require</span>(<span class="string">'./config.mjs'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'load finished'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>得到的结果，跟我们的预期相同。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">begin load</span><br><span class="line">in config</span><br><span class="line">load finished</span><br></pre></td></tr></table></figure></p>
+<h3 id="Imports-只可读-Imports-are-read-only-views-on-exports"><a href="#Imports-只可读-Imports-are-read-only-views-on-exports" class="headerlink" title="Imports 只可读 - Imports are read-only views on exports"></a>Imports 只可读 - Imports are read-only views on exports</h3><p>这点可以阅读这个文档：<a href="http://exploringjs.com/es6/ch_modules.html#sec_imports-as-views-on-exports" target="_blank" rel="noopener">讲的很清楚</a>。看个例子：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// counter.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">let</span> counter = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">incCounter</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  counter++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; counter, incCounter &#125; <span class="keyword">from</span> <span class="string">'./counter'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// The imported value `counter` is live</span></span><br><span class="line"><span class="built_in">console</span>.log(counter); <span class="comment">// 3</span></span><br><span class="line">incCounter();</span><br><span class="line"><span class="built_in">console</span>.log(counter); <span class="comment">// 4</span></span><br></pre></td></tr></table></figure></p>
+<p>上面这种是ok的，但是下面这种是不合法的：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; counter, incCounter &#125; <span class="keyword">from</span> <span class="string">'./counter'</span>;</span><br><span class="line"></span><br><span class="line">counter++ <span class="comment">// TypeError</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>Note that while you can’t change the values of imports, you can change the objects that they are referring to. For example:</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lib.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">let</span> obj = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; obj &#125; <span class="keyword">from</span> <span class="string">'./lib'</span>;</span><br><span class="line"></span><br><span class="line">obj.prop = <span class="number">123</span>; <span class="comment">// OK</span></span><br><span class="line">obj = &#123;&#125;; <span class="comment">// TypeError</span></span><br></pre></td></tr></table></figure>
+<p>这点我们可以理解为，变量的地址是不能改变的，重新赋值时，变量的地址变了，这个不允许，但是你如果改变对象的里面属性的值，地址是不变的。</p>
+<p>这个就像你声明一个 const obj, 也可以更改 Obj.value 一样。</p>
+<p>Require 不同，你可以修改里面的内容。</p>
+<p>推荐文章： <a href="http://es6.ruanyifeng.com/#docs/module" target="_blank" rel="noopener">ruanyifeng-es6-module</a></p>
+<h3 id="值引用-or-值拷贝"><a href="#值引用-or-值拷贝" class="headerlink" title="值引用 or 值拷贝"></a>值引用 or 值拷贝</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// counter.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">let</span> count = <span class="number">0</span></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'increase count to'</span>, ++count, <span class="string">'in counter.js after 500ms'</span>)</span><br><span class="line">&#125;, <span class="number">500</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">import</span> &#123;count&#125; <span class="keyword">from</span> <span class="string">'./counter.mjs'</span></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'read count after 1000ms in es6 is'</span>, count)</span><br><span class="line">&#125;, <span class="number">1000</span>)</span><br></pre></td></tr></table></figure>
+<p>得到的结果是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">increase count to 1 in counter.js after 500ms</span><br><span class="line">read count after 1000ms in es6 is 1</span><br></pre></td></tr></table></figure></p>
+<p>另外一段代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// counter.js</span></span><br><span class="line">exports.count = <span class="number">0</span></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'increase count to'</span>, ++exports.count, <span class="string">'in counter.js after 500ms'</span>)</span><br><span class="line">&#125;, <span class="number">500</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">const</span> &#123;count&#125; = <span class="built_in">require</span>(<span class="string">'./counter'</span>)</span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'read count after 1000ms in commonjs is'</span>, count)</span><br><span class="line">&#125;, <span class="number">1000</span>)</span><br></pre></td></tr></table></figure></p>
+<p>得到的结果是：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">increase count to <span class="number">1</span> <span class="keyword">in</span> counter.js after <span class="number">500</span>ms</span><br><span class="line">read count after <span class="number">1000</span>ms <span class="keyword">in</span> commonjs is <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<p>大概的意思其实就是：<strong>CommonJS模块是运行输出(加载)一个值(或对象)的拷贝，而ES6模块则是编译时输出(加载)一个值的引用(或者叫做连接).</strong></p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本地测试 import 时可以使用 <strong><code>--experimental-modules</code> 实验模块标志来启用加载 <code>ECMAScript Modules</code> 的特性</strong>。</p>
+<p>作为ES模块加载的文件名，须以.mjs后缀结尾</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">node --experimental-modules app.mjs</span><br><span class="line"></span><br><span class="line">// 此种方法，在输出的时候会提示：</span><br><span class="line">(node:6527) ExperimentalWarning: The ESM module loader is experimental.</span><br></pre></td></tr></table></figure>
+<p>线上环境还是用 babel 去转 ~</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;之所以会去写这个，是因为自己最近遇到了 import 的一个问题。&lt;/p&gt;
+&lt;p&gt;找问题的过称中，发现自己虽然一直在用 import，但对 require/import 的区别并没有了解的很全面。&lt;/p&gt;
+&lt;p&gt;具体的点就在 &lt;code&gt;Imports are hoiste
+    
+    </summary>
+    
+    
+      <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
+    
+  </entry>
   
   <entry>
     <title>async await 做了什么事情</title>
@@ -1285,51 +1361,6 @@
     
     
       <category term="知识点" scheme="http://sevencai.github.io/tags/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>小程序使用 component 组件重构</title>
-    <link href="http://sevencai.github.io/2018/03/05/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BD%BF%E7%94%A8-component-%E7%BB%84%E4%BB%B6%E9%87%8D%E6%9E%84/"/>
-    <id>http://sevencai.github.io/2018/03/05/小程序使用-component-组件重构/</id>
-    <published>2018-03-05T13:40:58.000Z</published>
-    <updated>2018-03-05T13:48:41.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>世界上没有一蹴而就的事情，任何事情，都有起源，发展和未来。如果你跟他就关，那就适应它，而不要抱怨它的变化，或者抱怨他为什么不一开始就这么做。</p>
-</blockquote>
-<hr>
-<h1 id="小记"><a href="#小记" class="headerlink" title="小记"></a>小记</h1><p>小程序后来出了 component, 看了看自己的代码，还是最初的 template + class,心里好难受。 于是花了2天时间重构了。这段时间没有产品排期，也就是说我是拿别的项目的时间去重构的。时间略紧张，不过还是一点点的完成了。</p>
-<p>component 相当于一个完整的组件，你可以对这个组件定义不同的内容。有自己的事件和 data, 这个倒是跟 vue 很像。</p>
-<p>但是注意 component 中的 css 除了继承属性（h1,em）等以外，其他的样子必须都写入 component 中。如果你不想做这件事，就把 app.wxss 引入到 component 中吧。（虽然我也很不情愿）</p>
-<hr>
-<h1 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h1><p>用 <code>Component({})</code>声明。内部可以有自己的 data, methods, behaviors,还有类似于 vue 的 attach, ready 等函数。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> rechargeItem <span class="keyword">from</span> <span class="string">'behaviors/jump-to-order'</span></span><br><span class="line"></span><br><span class="line">Component(&#123;</span><br><span class="line">  behaviors: [rechargeItem],</span><br><span class="line"></span><br><span class="line">  properties: &#123;</span><br><span class="line">     recommendList: &#123;</span><br><span class="line">      type: <span class="built_in">Array</span>,</span><br><span class="line">      value: []</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  methods: &#123;</span><br><span class="line">     bindClickEvent() &#123;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>behaviors 可以理解为 mixins, 多个组件都可能用到同样的内容，就把它抽离为 behaviors 吧。 比如上面，调到订单页可以从很多 component 过来，比如 推荐，搜索。那么就抽离成一个 behavior, 用到的时候引入进来即可。</p>
-<p>注意任何一个 component 都需要声明它是一个 component, 我猜测是要语义更好吧，免得跟 page 搞混了(但是 component 和 page 声明就不一样，其实没必要单独再在 json 中声明下？)。component 不需要再在 app.json 里面声明，因为它不是一个 page。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;component&quot;: true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>然后需要引入这个组件的地方，这样引入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;usingComponents&quot;: &#123;</span><br><span class="line">    &quot;recommend&quot;: &quot;../page_component/recommend/recommend&quot;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>使用的时候，直接引入即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;recommend recommendList=&quot;&#123;&#123;recommendList&#125;&#125;&quot;&gt;&lt;/recommend&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这里的 recommendList 类似于 vue 的 props, 可以用于从父组件（page）传递内容到子组件。</p>
-<p>然后就再原先的 properties 中接受即可。也可以用 <code>this.data</code>访问到。</p>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实是不想写这个文章的的，因为文章本身没有啥太大的意义，这些好好学习官网都可以知道的。但是不写的话总觉得自己这两天没干啥。但实际上，我觉得我自己做的事情有意义，因为代码更好了呀。而且可读性也更强了，是 component 的，template的，page的，api modules 的，都清清楚楚了。开心。</p>
-<p>估计随后的一段时间都不会再碰小程序了，下次讲讲学习到的 vue 源码的内容吧。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;世界上没有一蹴而就的事情，任何事情，都有起源，发展和未来。如果你跟他就关，那就适应它，而不要抱怨它的变化，或者抱怨他为什么不一开始就这么做。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;小记&quot;&gt;&lt;a href=&quot;#小记&quot; clas
-    
-    </summary>
-    
-    
-      <category term="小程序" scheme="http://sevencai.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
     
   </entry>
   
