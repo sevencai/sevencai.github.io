@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="工具/配置," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文主要记录两点  如何在webpack中编译一个文件夹中的文件并且按照【原目录】输出。  总结在webpack 中使用 treeshaking 的条件。    webpack 编译文件目录并原样输出场景是需要编译一个文件夹下的所有js文件，并且把这些js文件都按照【原来的目录结构】输出。 首先编译一个文件夹的所有js文件，比较好做。我们可以使用glob来获取目录下的所有js文件。123456">
+<meta name="keywords" content="工具&#x2F;配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack 编译目录原样输出及webpack4 treeshaking小结">
+<meta property="og:url" content="http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="本文主要记录两点  如何在webpack中编译一个文件夹中的文件并且按照【原目录】输出。  总结在webpack 中使用 treeshaking 的条件。    webpack 编译文件目录并原样输出场景是需要编译一个文件夹下的所有js文件，并且把这些js文件都按照【原来的目录结构】输出。 首先编译一个文件夹的所有js文件，比较好做。我们可以使用glob来获取目录下的所有js文件。123456">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/treeshaking.png">
+<meta property="og:updated_time" content="2019-02-22T12:23:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack 编译目录原样输出及webpack4 treeshaking小结">
+<meta name="twitter:description" content="本文主要记录两点  如何在webpack中编译一个文件夹中的文件并且按照【原目录】输出。  总结在webpack 中使用 treeshaking 的条件。    webpack 编译文件目录并原样输出场景是需要编译一个文件夹下的所有js文件，并且把这些js文件都按照【原来的目录结构】输出。 首先编译一个文件夹的所有js文件，比较好做。我们可以使用glob来获取目录下的所有js文件。123456">
+<meta name="twitter:image" content="http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/treeshaking.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/"/>
+
+
+
+
+
+  <title>webpack 编译目录原样输出及webpack4 treeshaking小结 | Seven's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">webpack 编译目录原样输出及webpack4 treeshaking小结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-22T20:16:03+08:00">
+                2019-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<blockquote>
+<p>本文主要记录两点</p>
+<ol>
+<li><p>如何在webpack中编译一个文件夹中的文件并且按照【原目录】输出。</p>
+</li>
+<li><p>总结在webpack 中使用 treeshaking 的条件。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="webpack-编译文件目录并原样输出"><a href="#webpack-编译文件目录并原样输出" class="headerlink" title="webpack 编译文件目录并原样输出"></a>webpack 编译文件目录并原样输出</h2><p><strong>场景是需要编译一个文件夹下的所有js文件，并且把这些js文件都按照【原来的目录结构】输出。</strong></p>
+<p>首先编译一个文件夹的所有js文件，比较好做。我们可以使用<code>glob</code>来获取目录下的所有js文件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Webpack babel transform config  </span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;  </span><br><span class="line">  entry: glob.sync(<span class="string">"./src/**/*.js"</span>),  </span><br><span class="line">  </span><br><span class="line">  mode: <span class="string">"production"</span>,  </span><br><span class="line">  </span><br><span class="line">  output: &#123;  </span><br><span class="line">	filename: <span class="string">'[name].js'</span>,  </span><br><span class="line">	path: path.resolve(__dirname, <span class="string">'./'</span>)  </span><br><span class="line">  &#125;,  </span><br><span class="line">  <span class="comment">// .....  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是如果我们像如上这么写，会直接输出一个 main.js 文件。也就是所有被编译的文件都会在同样的一个文件中输出。这不是我想要的，我想要的是【每个文件单独编译，并原样目录输出】。</p>
+<p>查找了下 <code>webpack</code> 没有相关的配置, 如果我们要输出<code>module/a/index.js</code>在 <code>dist/module/a/</code>目录下。我们再写 entry 时就可以这么写:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">entry: &#123;</span><br><span class="line">    <span class="string">'module/a/index'</span>: <span class="string">'module/a/index.js'</span>,</span><br><span class="line">    <span class="string">'module/b/index'</span>: <span class="string">'module/b/index.js'</span>,</span><br><span class="line">&#125;,</span><br><span class="line">output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].js'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以为了动态去输出到相应的目录，我们只需要去找到对应的entry即可。比如我们想要原样输出编译后的 src 目录下的文件, 先用 正则匹配到 对应的路径。然后再映射到entry上即可。主要是实现：<br><code>./src/lib/a.js =&gt; ./lib/a.js</code>的map。简单点的demo可能如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> glob = <span class="built_in">require</span>(<span class="string">'glob'</span>)  </span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)  </span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)  </span><br><span class="line"><span class="keyword">const</span> CleanWebpackPlugin = <span class="built_in">require</span>(<span class="string">'clean-webpack-plugin'</span>)  </span><br><span class="line"></span><br><span class="line"><span class="comment">// Get all file entries  </span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getEntries</span>(<span class="params"></span>) </span>&#123;  </span><br><span class="line">  <span class="keyword">let</span> map = &#123;&#125;  </span><br><span class="line">  <span class="keyword">const</span> entryFiles = glob.sync(<span class="string">"./src/**/*.js"</span>)  </span><br><span class="line">  </span><br><span class="line">  entryFiles.forEach(<span class="function"><span class="params">filepath</span> =&gt;</span> &#123;  </span><br><span class="line">    <span class="keyword">let</span> fileDir = <span class="regexp">/.\/src\/(.*?)\.js/</span>.exec(filepath)  </span><br><span class="line">  </span><br><span class="line">    map[fileDir[<span class="number">1</span>]] = filepath  </span><br><span class="line">  &#125;)  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> map  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">// Webpack babel transform config  </span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;  </span><br><span class="line">  entry: getEntries(),  </span><br><span class="line">  </span><br><span class="line">  mode: <span class="string">"production"</span>,  </span><br><span class="line">  </span><br><span class="line">  output: &#123;  </span><br><span class="line">    filename: <span class="string">'[name].js'</span>,  </span><br><span class="line">  path: path.resolve(__dirname, <span class="string">'./'</span>)  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  <span class="built_in">module</span>: &#123;  </span><br><span class="line">    rules: [  </span><br><span class="line">      &#123;  </span><br><span class="line">        test: <span class="regexp">/\.js/</span>,  </span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,  </span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span>  </span><br><span class="line">      &#125;  </span><br><span class="line">    ]  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  plugins: [  </span><br><span class="line">    <span class="keyword">new</span> CleanWebpackPlugin([<span class="string">'lib'</span>]),  </span><br><span class="line">    <span class="keyword">new</span> webpack.DefinePlugin(&#123; <span class="string">"process.env.NODE_ENV"</span>: <span class="built_in">JSON</span>.stringify(<span class="string">"production"</span>) &#125;)  </span><br><span class="line">  ]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="webpack-的-treeshake-条件"><a href="#webpack-的-treeshake-条件" class="headerlink" title="webpack 的 treeshake 条件"></a>webpack 的 treeshake 条件</h2><p>webpack 的 treeshake 一般我们经常会用到。最近有浏览了类似的文章，总结下（下面是使用webpack4的相关配置）：</p>
+<p><img src="treeshaking.png" alt="文档截图"></p>
+<p>也就是说必须得</p>
+<p>使用 treeshake 减少文件体积的4个条件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-   使用 ES2015 模块语法（即  `import`  和  `export`）。</span><br><span class="line">-   在项目  `package.json`  文件中，添加一个 &quot;sideEffects&quot; 属性。</span><br><span class="line">-   不能把 ES6 模块用 babel 先转换成 CommonJs, 在`@babel/preset-env`中，这是个默认行为，需要设置 `module: false`禁用掉。先编译成 CommonJs 后webpack就无法分析依赖了。</span><br><span class="line">-   webpack4中设置 mode: production，自动开启压缩, 如果是非webpack4,则需要引入一个能够删除未引用代码(dead code)的压缩工具(minifier)（例如  `UglifyJSPlugin`）。</span><br></pre></td></tr></table></figure>
+<p>设置 module 为 false 的原因引用如下：</p>
+<blockquote>
+<h3 id="modules"><a href="#modules" class="headerlink" title="modules"></a><code>modules</code></h3><p><code>&quot;amd&quot; | &quot;umd&quot; | &quot;systemjs&quot; | &quot;commonjs&quot; | &quot;cjs&quot; | &quot;auto&quot; | false</code>, defaults to  <code>&quot;auto&quot;</code>.<br>Enable transformation of ES6 module syntax to another module type.<br>Setting this to  <code>false</code>  will not transform modules.</p>
+</blockquote>
+<p>错误示范：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">exports.a = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;    </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'a'</span>)    </span><br><span class="line">&#125;    </span><br><span class="line">  </span><br><span class="line">exports.b = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;    </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'b'</span>)    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> api <span class="keyword">from</span> <span class="string">'./a.js'</span>  </span><br><span class="line"></span><br><span class="line"><span class="comment">// 错误，需要用 import ,export ES6语法 才能 treeshake</span></span><br><span class="line">api.a()</span><br></pre></td></tr></table></figure></p>
+<p>正确示范：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;  </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'a'</span>)  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">b</span>(<span class="params"></span>) </span>&#123;  </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'b'</span>)  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;a&#125; <span class="keyword">from</span> <span class="string">'./a.js'</span>  </span><br><span class="line">a()</span><br></pre></td></tr></table></figure></p>
+<p>简单点的示例demo:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js  </span></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)  </span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)  </span><br><span class="line"><span class="keyword">const</span> UglifyJSPlugin = <span class="built_in">require</span>(<span class="string">'uglifyjs-webpack-plugin'</span>)  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="built_in">module</span>.exports = &#123;  </span><br><span class="line">  entry: <span class="string">'./test.mjs'</span>,  </span><br><span class="line">  </span><br><span class="line">  mode: <span class="string">"production"</span>,  </span><br><span class="line">  </span><br><span class="line">  output: &#123;  </span><br><span class="line">    filename: <span class="string">'index.js'</span>,  </span><br><span class="line">	path: path.resolve(__dirname, <span class="string">'./dist'</span>)  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  <span class="built_in">module</span>: &#123;  </span><br><span class="line">    rules: [  </span><br><span class="line">      &#123;  </span><br><span class="line">        test: <span class="regexp">/\.js/</span>,  </span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,  </span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span>  </span><br><span class="line">      &#125;  </span><br><span class="line">    ]  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 当 mode 为 development 时，需要开启下面的代码。</span></span><br><span class="line">  <span class="comment">// 当 mode 为 production 时，不需要</span></span><br><span class="line">  optimization: &#123;  </span><br><span class="line">    minimizer: [  </span><br><span class="line">      <span class="keyword">new</span> UglifyJSPlugin(&#123;  </span><br><span class="line">        uglifyOptions: &#123;  </span><br><span class="line">          compress: &#123;  </span><br><span class="line">            warnings: <span class="literal">true</span>  </span><br><span class="line">          &#125;,  </span><br><span class="line">          output: &#123;  </span><br><span class="line">            comments: <span class="literal">false</span>  </span><br><span class="line">          &#125;,  </span><br><span class="line">          sourceMap: <span class="literal">true</span>  </span><br><span class="line">        &#125;  </span><br><span class="line">      &#125;)  </span><br><span class="line">    ]  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  plugins: [  </span><br><span class="line">    <span class="keyword">new</span> webpack.LoaderOptionsPlugin(&#123;  </span><br><span class="line">      minimize: <span class="literal">true</span>,  </span><br><span class="line">      debug: <span class="literal">false</span>  </span><br><span class="line">  &#125;),  </span><br><span class="line">    <span class="keyword">new</span> webpack.DefinePlugin(&#123; <span class="string">"process.env.NODE_ENV"</span>: <span class="built_in">JSON</span>.stringify(<span class="string">"production"</span>) &#125;)  </span><br><span class="line">  ]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="sideEffects怎么理解？"><a href="#sideEffects怎么理解？" class="headerlink" title="sideEffects怎么理解？"></a>sideEffects怎么理解？</h2><p>sideEffects 这个估计再花一个文章也讲不完。大概的表达下是：</p>
+<p>很多时候在转换代码后，我们的代码会由于被编译而产生副作用，比如你对一个函数使用了 location.href 或者 window 上加了东西，即使你没有真的使用这个模块，这个模块也会被打包进到dist里去。</p>
+<p>所以如果你真的想去除那些完全没有被引用到的，即使有副作用的包：<strong>就应该把这些 包/模块 被标记为 <code>sideEffects: false</code> 了，那么不管它是否真的有副作用，只要它没有被引用到，整个 模块/包 都会被完整的移除。</strong></p>
+<p>举个我看到的很好的例子，例子原本出于文章<a href="https://juejin.im/post/5b4ff9ece51d45190c18bb65" target="_blank" rel="noopener"># Webpack 中的 sideEffects 到底该怎么用？</a>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import DevTools from &apos;mobx-react-devtools&apos;;</span><br><span class="line"></span><br><span class="line">class MyApp extends React.Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        ...</span><br><span class="line">        &#123; process.env.NODE_ENV === &apos;production&apos; ? null : &lt;DevTools /&gt; &#125;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果你不在webpack4中设置 <code>sideEffects: false</code>， 那么即使 <code>NODE_ENV=production</code>, <code>mobx-react-devtools</code>也会被引入。</p>
+<p>所以<strong>如果我们能确定或者想让这个包不对包以外的对象造成影响，那么我们就完全的可以放心设置这个参数了</strong>。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最近主要是想对组里的一些包做优化，做优化的过程中解决了一些问题，也带来了一些新的疑惑。疑惑还没解决，所以还不能总结成文章。虽然不是纠结上面的东西，但也算是纠结了好几天了。(ಥ _ ಥ)</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工具-配置/" rel="tag"># 工具/配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/31/2018年度总结/" rel="next" title="2018年度总结">
+                <i class="fa fa-chevron-left"></i> 2018年度总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录和分享生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">118</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack-编译文件目录并原样输出"><span class="nav-number">1.</span> <span class="nav-text"><a href="#webpack-&#x7F16;&#x8BD1;&#x6587;&#x4EF6;&#x76EE;&#x5F55;&#x5E76;&#x539F;&#x6837;&#x8F93;&#x51FA;" class="headerlink" title="webpack &#x7F16;&#x8BD1;&#x6587;&#x4EF6;&#x76EE;&#x5F55;&#x5E76;&#x539F;&#x6837;&#x8F93;&#x51FA;"></a>webpack &#x7F16;&#x8BD1;&#x6587;&#x4EF6;&#x76EE;&#x5F55;&#x5E76;&#x539F;&#x6837;&#x8F93;&#x51FA;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack-的-treeshake-条件"><span class="nav-number">2.</span> <span class="nav-text"><a href="#webpack-&#x7684;-treeshake-&#x6761;&#x4EF6;" class="headerlink" title="webpack &#x7684; treeshake &#x6761;&#x4EF6;"></a>webpack &#x7684; treeshake &#x6761;&#x4EF6;</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#modules"><span class="nav-number">2.1.</span> <span class="nav-text"><a href="#modules" class="headerlink" title="modules"></a><code>modules</code></span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sideEffects怎么理解？"><span class="nav-number">3.</span> <span class="nav-text"><a href="#sideEffects&#x600E;&#x4E48;&#x7406;&#x89E3;&#xFF1F;" class="headerlink" title="sideEffects&#x600E;&#x4E48;&#x7406;&#x89E3;&#xFF1F;"></a>sideEffects&#x600E;&#x4E48;&#x7406;&#x89E3;&#xFF1F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/';
+          this.page.identifier = '2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/';
+          this.page.title = 'webpack 编译目录原样输出及webpack4 treeshaking小结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

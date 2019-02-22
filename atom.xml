@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2018-12-31T03:04:36.000Z</updated>
+  <updated>2019-02-22T12:23:36.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,72 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>webpack 编译目录原样输出及webpack4 treeshaking小结</title>
+    <link href="http://sevencai.github.io/2019/02/22/webpack-%E7%BC%96%E8%AF%91%E7%9B%AE%E5%BD%95%E5%8E%9F%E6%A0%B7%E8%BE%93%E5%87%BA%E5%8F%8Awebpack4-treeshaking%E5%B0%8F%E7%BB%93/"/>
+    <id>http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/</id>
+    <published>2019-02-22T12:16:03.000Z</published>
+    <updated>2019-02-22T12:23:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<hr>
+<blockquote>
+<p>本文主要记录两点</p>
+<ol>
+<li><p>如何在webpack中编译一个文件夹中的文件并且按照【原目录】输出。</p>
+</li>
+<li><p>总结在webpack 中使用 treeshaking 的条件。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="webpack-编译文件目录并原样输出"><a href="#webpack-编译文件目录并原样输出" class="headerlink" title="webpack 编译文件目录并原样输出"></a>webpack 编译文件目录并原样输出</h2><p><strong>场景是需要编译一个文件夹下的所有js文件，并且把这些js文件都按照【原来的目录结构】输出。</strong></p>
+<p>首先编译一个文件夹的所有js文件，比较好做。我们可以使用<code>glob</code>来获取目录下的所有js文件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Webpack babel transform config  </span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;  </span><br><span class="line">  entry: glob.sync(<span class="string">"./src/**/*.js"</span>),  </span><br><span class="line">  </span><br><span class="line">  mode: <span class="string">"production"</span>,  </span><br><span class="line">  </span><br><span class="line">  output: &#123;  </span><br><span class="line">	filename: <span class="string">'[name].js'</span>,  </span><br><span class="line">	path: path.resolve(__dirname, <span class="string">'./'</span>)  </span><br><span class="line">  &#125;,  </span><br><span class="line">  <span class="comment">// .....  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是如果我们像如上这么写，会直接输出一个 main.js 文件。也就是所有被编译的文件都会在同样的一个文件中输出。这不是我想要的，我想要的是【每个文件单独编译，并原样目录输出】。</p>
+<p>查找了下 <code>webpack</code> 没有相关的配置, 如果我们要输出<code>module/a/index.js</code>在 <code>dist/module/a/</code>目录下。我们再写 entry 时就可以这么写:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">entry: &#123;</span><br><span class="line">    <span class="string">'module/a/index'</span>: <span class="string">'module/a/index.js'</span>,</span><br><span class="line">    <span class="string">'module/b/index'</span>: <span class="string">'module/b/index.js'</span>,</span><br><span class="line">&#125;,</span><br><span class="line">output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">    filename: <span class="string">'[name].js'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以为了动态去输出到相应的目录，我们只需要去找到对应的entry即可。比如我们想要原样输出编译后的 src 目录下的文件, 先用 正则匹配到 对应的路径。然后再映射到entry上即可。主要是实现：<br><code>./src/lib/a.js =&gt; ./lib/a.js</code>的map。简单点的demo可能如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> glob = <span class="built_in">require</span>(<span class="string">'glob'</span>)  </span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)  </span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)  </span><br><span class="line"><span class="keyword">const</span> CleanWebpackPlugin = <span class="built_in">require</span>(<span class="string">'clean-webpack-plugin'</span>)  </span><br><span class="line"></span><br><span class="line"><span class="comment">// Get all file entries  </span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getEntries</span>(<span class="params"></span>) </span>&#123;  </span><br><span class="line">  <span class="keyword">let</span> map = &#123;&#125;  </span><br><span class="line">  <span class="keyword">const</span> entryFiles = glob.sync(<span class="string">"./src/**/*.js"</span>)  </span><br><span class="line">  </span><br><span class="line">  entryFiles.forEach(<span class="function"><span class="params">filepath</span> =&gt;</span> &#123;  </span><br><span class="line">    <span class="keyword">let</span> fileDir = <span class="regexp">/.\/src\/(.*?)\.js/</span>.exec(filepath)  </span><br><span class="line">  </span><br><span class="line">    map[fileDir[<span class="number">1</span>]] = filepath  </span><br><span class="line">  &#125;)  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> map  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">// Webpack babel transform config  </span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;  </span><br><span class="line">  entry: getEntries(),  </span><br><span class="line">  </span><br><span class="line">  mode: <span class="string">"production"</span>,  </span><br><span class="line">  </span><br><span class="line">  output: &#123;  </span><br><span class="line">    filename: <span class="string">'[name].js'</span>,  </span><br><span class="line">  path: path.resolve(__dirname, <span class="string">'./'</span>)  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  <span class="built_in">module</span>: &#123;  </span><br><span class="line">    rules: [  </span><br><span class="line">      &#123;  </span><br><span class="line">        test: <span class="regexp">/\.js/</span>,  </span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,  </span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span>  </span><br><span class="line">      &#125;  </span><br><span class="line">    ]  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  plugins: [  </span><br><span class="line">    <span class="keyword">new</span> CleanWebpackPlugin([<span class="string">'lib'</span>]),  </span><br><span class="line">    <span class="keyword">new</span> webpack.DefinePlugin(&#123; <span class="string">"process.env.NODE_ENV"</span>: <span class="built_in">JSON</span>.stringify(<span class="string">"production"</span>) &#125;)  </span><br><span class="line">  ]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="webpack-的-treeshake-条件"><a href="#webpack-的-treeshake-条件" class="headerlink" title="webpack 的 treeshake 条件"></a>webpack 的 treeshake 条件</h2><p>webpack 的 treeshake 一般我们经常会用到。最近有浏览了类似的文章，总结下（下面是使用webpack4的相关配置）：</p>
+<p><img src="treeshaking.png" alt="文档截图"></p>
+<p>也就是说必须得</p>
+<p>使用 treeshake 减少文件体积的4个条件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-   使用 ES2015 模块语法（即  `import`  和  `export`）。</span><br><span class="line">-   在项目  `package.json`  文件中，添加一个 &quot;sideEffects&quot; 属性。</span><br><span class="line">-   不能把 ES6 模块用 babel 先转换成 CommonJs, 在`@babel/preset-env`中，这是个默认行为，需要设置 `module: false`禁用掉。先编译成 CommonJs 后webpack就无法分析依赖了。</span><br><span class="line">-   webpack4中设置 mode: production，自动开启压缩, 如果是非webpack4,则需要引入一个能够删除未引用代码(dead code)的压缩工具(minifier)（例如  `UglifyJSPlugin`）。</span><br></pre></td></tr></table></figure>
+<p>设置 module 为 false 的原因引用如下：</p>
+<blockquote>
+<h3 id="modules"><a href="#modules" class="headerlink" title="modules"></a><code>modules</code></h3><p><code>&quot;amd&quot; | &quot;umd&quot; | &quot;systemjs&quot; | &quot;commonjs&quot; | &quot;cjs&quot; | &quot;auto&quot; | false</code>, defaults to  <code>&quot;auto&quot;</code>.<br>Enable transformation of ES6 module syntax to another module type.<br>Setting this to  <code>false</code>  will not transform modules.</p>
+</blockquote>
+<p>错误示范：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">exports.a = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;    </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'a'</span>)    </span><br><span class="line">&#125;    </span><br><span class="line">  </span><br><span class="line">exports.b = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;    </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'b'</span>)    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> api <span class="keyword">from</span> <span class="string">'./a.js'</span>  </span><br><span class="line"></span><br><span class="line"><span class="comment">// 错误，需要用 import ,export ES6语法 才能 treeshake</span></span><br><span class="line">api.a()</span><br></pre></td></tr></table></figure></p>
+<p>正确示范：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;  </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'a'</span>)  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">b</span>(<span class="params"></span>) </span>&#123;  </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'b'</span>)  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;a&#125; <span class="keyword">from</span> <span class="string">'./a.js'</span>  </span><br><span class="line">a()</span><br></pre></td></tr></table></figure></p>
+<p>简单点的示例demo:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js  </span></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)  </span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>)  </span><br><span class="line"><span class="keyword">const</span> UglifyJSPlugin = <span class="built_in">require</span>(<span class="string">'uglifyjs-webpack-plugin'</span>)  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="built_in">module</span>.exports = &#123;  </span><br><span class="line">  entry: <span class="string">'./test.mjs'</span>,  </span><br><span class="line">  </span><br><span class="line">  mode: <span class="string">"production"</span>,  </span><br><span class="line">  </span><br><span class="line">  output: &#123;  </span><br><span class="line">    filename: <span class="string">'index.js'</span>,  </span><br><span class="line">	path: path.resolve(__dirname, <span class="string">'./dist'</span>)  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  <span class="built_in">module</span>: &#123;  </span><br><span class="line">    rules: [  </span><br><span class="line">      &#123;  </span><br><span class="line">        test: <span class="regexp">/\.js/</span>,  </span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,  </span><br><span class="line">        exclude: <span class="regexp">/node_modules/</span>  </span><br><span class="line">      &#125;  </span><br><span class="line">    ]  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 当 mode 为 development 时，需要开启下面的代码。</span></span><br><span class="line">  <span class="comment">// 当 mode 为 production 时，不需要</span></span><br><span class="line">  optimization: &#123;  </span><br><span class="line">    minimizer: [  </span><br><span class="line">      <span class="keyword">new</span> UglifyJSPlugin(&#123;  </span><br><span class="line">        uglifyOptions: &#123;  </span><br><span class="line">          compress: &#123;  </span><br><span class="line">            warnings: <span class="literal">true</span>  </span><br><span class="line">          &#125;,  </span><br><span class="line">          output: &#123;  </span><br><span class="line">            comments: <span class="literal">false</span>  </span><br><span class="line">          &#125;,  </span><br><span class="line">          sourceMap: <span class="literal">true</span>  </span><br><span class="line">        &#125;  </span><br><span class="line">      &#125;)  </span><br><span class="line">    ]  </span><br><span class="line">  &#125;,  </span><br><span class="line">  </span><br><span class="line">  plugins: [  </span><br><span class="line">    <span class="keyword">new</span> webpack.LoaderOptionsPlugin(&#123;  </span><br><span class="line">      minimize: <span class="literal">true</span>,  </span><br><span class="line">      debug: <span class="literal">false</span>  </span><br><span class="line">  &#125;),  </span><br><span class="line">    <span class="keyword">new</span> webpack.DefinePlugin(&#123; <span class="string">"process.env.NODE_ENV"</span>: <span class="built_in">JSON</span>.stringify(<span class="string">"production"</span>) &#125;)  </span><br><span class="line">  ]  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="sideEffects怎么理解？"><a href="#sideEffects怎么理解？" class="headerlink" title="sideEffects怎么理解？"></a>sideEffects怎么理解？</h2><p>sideEffects 这个估计再花一个文章也讲不完。大概的表达下是：</p>
+<p>很多时候在转换代码后，我们的代码会由于被编译而产生副作用，比如你对一个函数使用了 location.href 或者 window 上加了东西，即使你没有真的使用这个模块，这个模块也会被打包进到dist里去。</p>
+<p>所以如果你真的想去除那些完全没有被引用到的，即使有副作用的包：<strong>就应该把这些 包/模块 被标记为 <code>sideEffects: false</code> 了，那么不管它是否真的有副作用，只要它没有被引用到，整个 模块/包 都会被完整的移除。</strong></p>
+<p>举个我看到的很好的例子，例子原本出于文章<a href="https://juejin.im/post/5b4ff9ece51d45190c18bb65" target="_blank" rel="noopener"># Webpack 中的 sideEffects 到底该怎么用？</a>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import DevTools from &apos;mobx-react-devtools&apos;;</span><br><span class="line"></span><br><span class="line">class MyApp extends React.Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        ...</span><br><span class="line">        &#123; process.env.NODE_ENV === &apos;production&apos; ? null : &lt;DevTools /&gt; &#125;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果你不在webpack4中设置 <code>sideEffects: false</code>， 那么即使 <code>NODE_ENV=production</code>, <code>mobx-react-devtools</code>也会被引入。</p>
+<p>所以<strong>如果我们能确定或者想让这个包不对包以外的对象造成影响，那么我们就完全的可以放心设置这个参数了</strong>。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最近主要是想对组里的一些包做优化，做优化的过程中解决了一些问题，也带来了一些新的疑惑。疑惑还没解决，所以还不能总结成文章。虽然不是纠结上面的东西，但也算是纠结了好几天了。(ಥ _ ಥ)</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本文主要记录两点&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;如何在webpack中编译一个文件夹中的文件并且按照【原目录】输出。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;总结在webpack 中使用 treeshaking 的条件。&lt;/p&gt;
+&lt;/li&gt;
+
+    
+    </summary>
+    
+    
+      <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>2018年度总结</title>
@@ -1281,105 +1347,6 @@
     
     
       <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>进阶我的Vim</title>
-    <link href="http://sevencai.github.io/2018/03/15/%E8%BF%9B%E9%98%B6%E6%88%91%E7%9A%84Vim/"/>
-    <id>http://sevencai.github.io/2018/03/15/进阶我的Vim/</id>
-    <published>2018-03-15T13:02:14.000Z</published>
-    <updated>2018-03-15T13:17:03.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>这两天做了一个很繁琐的需求，简单的来说，就是把一个产品配置的复杂的excel表，转入为json, 然后再用 javascript 脚本拼接为对应 php 页面可执行代码。繁琐的是配置多且杂，并且产品的归类excel 转换为的 json 并不可用。于是我还需要在他们的excel表里，进行更改。其实这个工作应该做一个配置台，让产品去维护。 以后就不用开发手动维护这个配置表。</p>
-</blockquote>
-<p>总之是提前做完了，虽然做的过程中, 不是怀着非常愉快的心情做的。晚上剩了点多的时间，把 vim 稍微进阶了一点。以前的基本命令都已经熟练使用了。现在总结下用的不是很熟的几个地方。</p>
-<hr>
-<h1 id="几个还没有用熟练的指令"><a href="#几个还没有用熟练的指令" class="headerlink" title="几个还没有用熟练的指令"></a>几个还没有用熟练的指令</h1><p><code>cw</code> 替换从光标所在位置后到一个单词结尾的字符, 不同于<code>a,i,o</code>哦。</p>
-<p><code>0,$,^,g_</code> 的区别和联系。<code>0,$</code>是到行头和行尾，<code>^,g_</code>到非blank字符位置。</p>
-<p><code>ctrl+r</code> 和 <code>u</code>, 因为 WebStorm 里这些都还可以用以前的 <code>ctrl+z</code> 之类的执行。所以这两个命令有点被我忽略了。其实应该改过来。</p>
-<p><code>w</code> 到下一个单词的开头。<code>e</code>  到下一个单词的结尾。如果你认为单词是由blank字符分隔符，那么你需要使用大写的E和W。</p>
-<hr>
-<h1 id="查找超能力"><a href="#查找超能力" class="headerlink" title="查找超能力"></a>查找超能力</h1><ol>
-<li><code>fa</code>  到下一个为a的字符处，你也可以fs到下一个为s的字符。</li>
-<li><code>t,</code>  到逗号前的第一个字符。逗号可以变成其它字符。</li>
-<li><code>3fa</code>  在当前行查找第三个出现的a。</li>
-<li><code>F和T</code> 和 <code>f和t</code> 一样，只不过是相反方向。</li>
-<li><code>/pattern</code>  搜索 <code>pattern</code>  的字符串, 如果又多个，按n到下一个。</li>
-<li><code>t,</code> 到逗号前的第一个字符。逗号可以变成其它字符。</li>
-<li><code>dt.</code> 删除当前字符到<code>.</code>为止的所有内容。</li>
-</ol>
-<p>注意补充下<code>normal</code>模式下按<code>/</code>即可进入查找模式， n为下一个，N为上一个。如果是 <code>/singer\c</code>代表查找singer,并且大小写不敏感。因为默认情况下，它是大小写敏感的。相应的，<code>\C</code>代表大小写敏感。</p>
-<p>你还可以在此模式下加入正则表达式，比如<code>/inger$</code> ，这时以<code>inger</code>结尾的都会被查出来。</p>
-<p>在<code>normal</code>模式下的查找，还可以使用直接按<code>*</code>,来查找当前光标所在的单词。这时候的查找的单词前后都是空白字符或者标点符号。例如当前为<code>foo</code>， 可以匹配<code>foo bar</code>中的<code>foo</code>，但不可匹配<code>foobar</code>中的<code>foo</code>。<strong>经常用于查找函数</strong>。如果想要包含关系，使用<code>g*</code>即可。</p>
-<hr>
-<h1 id="替换能力"><a href="#替换能力" class="headerlink" title="替换能力"></a>替换能力</h1><p>刚刚提到了查找的能力，<code>normal</code>下使用<code>/</code>即可进入查找模式。替换模式则是使用<code>:s</code>。具体情况如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</span><br></pre></td></tr></table></figure></p>
-<p><code>:%s/singer/author/g</code>会在全局范围(<code>%</code>)查找<code>singer</code>并替换为<code>author</code>，所有出现都会被替换（<code>g</code>）。如果使用<code>:s/singer/author</code>则只会在当前行替换一个。</p>
-<p>这里的<strong>作用范围</strong>可以总结如下：</p>
-<blockquote>
-<ol>
-<li>%全文查找， 如 :%s/singer/author/g</li>
-<li>不填写默认当前行，如:s/singer/author/g</li>
-<li>:5,12s/singer/author/g, 第5-12行</li>
-<li>:.,+2s/singer/author/g， 当前行和接下来的2行。 注意<code>.</code>是当前行， <code>,</code>是分隔符</li>
-<li>:’&lt;,’&gt;s/singer/author/g把选区内的内容替换。注意下：在Visual模式下选择区域后输入<code>:</code>，Vim即可自动补全为 <code>:&#39;&lt;,&#39;&gt;</code>。WebStorm也会做同样的事情。</li>
-</ol>
-</blockquote>
-<p>这里的<strong>替换标识</strong>可以总结如下代表：</p>
-<blockquote>
-<ol>
-<li><code>%s/singer/author</code>, 空标识表示：只替换从光标位置开始，目标的第一次出现</li>
-<li><code>%s/singer/author/g</code>, global 表示全局</li>
-<li><code>i</code>表示大小写不敏感查找，<code>I</code>表示大小写敏感</li>
-<li><code>:%s/singer/author/gc</code> c表示全局查找后替换需要被确认。它可能会弹出一句：Replace with author ?  (y/n/…)之类的东西。</li>
-</ol>
-</blockquote>
-<hr>
-<h1 id="区域选则-lt-action-gt-a-lt-object-gt-以及-lt-action-gt-i-lt-object-gt"><a href="#区域选则-lt-action-gt-a-lt-object-gt-以及-lt-action-gt-i-lt-object-gt" class="headerlink" title="区域选则 &lt;action&gt;a&lt;object&gt;以及 &lt;action&gt;i&lt;object&gt;"></a>区域选则 <code>&lt;action&gt;a&lt;object&gt;</code>以及 <code>&lt;action&gt;i&lt;object&gt;</code></h1><p>其实这个我已经很熟了，今天看到了别人的总结（注：下面的这段为引用内容，引用地址为：<a href="https://coolshell.cn/articles/5426.html" target="_blank" rel="noopener">coolshell</a>）。</p>
-<blockquote>
-<p>action可以是任何的命令，如 <code>d</code>  (删除),  <code>y</code>  (拷贝),  <code>v</code>  (可以视模式选择)。</p>
-<p>object 可能是： <code>w</code>  一个单词， <code>W</code>  一个以空格为分隔的单词， <code>s</code>  一个句字， <code>p</code>  一个段落。也可以是一个特别的字符：<code>&quot;、</code> <code>&#39;、</code> <code>)、</code> <code>}、</code> <code>]。</code></p>
-</blockquote>
-<p>a和i的区别也很好分。i不包括，a包括了。看下面这个例子。</p>
-<p>假设你有一个字符串 <code>(map (+) (&quot;foo&quot;))</code>.而光标键在第一个 <code>o</code> 的位置。</p>
-<blockquote>
-<ul>
-<li><code>vi&quot;</code>  → 会选择 <code>foo</code>.</li>
-<li><code>va&quot;</code>  → 会选择 <code>&quot;foo&quot;</code>.</li>
-<li><code>vi)</code>  → 会选择 <code>&quot;foo&quot;</code>.</li>
-<li><code>va)</code>  → 会选择<code>(&quot;foo&quot;)</code>.</li>
-<li><code>v2i)</code>  → 会选择 <code>map (+) (&quot;foo&quot;)</code></li>
-<li><code>v2a)</code>  → 会选择 <code>(map (+) (&quot;foo&quot;))</code></li>
-</ul>
-</blockquote>
-<hr>
-<h1 id="VIM-的Visual模式"><a href="#VIM-的Visual模式" class="headerlink" title="VIM 的Visual模式"></a>VIM 的Visual模式</h1><p>vim 分为3中 visual 模式，分别是：</p>
-<h2 id="Visual-默认模式："><a href="#Visual-默认模式：" class="headerlink" title="Visual 默认模式："></a>Visual 默认模式：</h2><p><code>normal</code> 下 ，按 v 进入 <code>visual</code> 默认模式。这个模式下可以 hjkl 进行各种上下移动。选中文本后，可以进行 y,d,p,^,$等操作。</p>
-<h2 id="Visual-Line-模式"><a href="#Visual-Line-模式" class="headerlink" title="Visual Line 模式"></a>Visual Line 模式</h2><p><code>normal</code>下，按 V 进入 <code>visual line</code>模式。 使用 j/k键可以选中一行或者多行。进行正行操作。</p>
-<h2 id="Visual-Block-模式"><a href="#Visual-Block-模式" class="headerlink" title="Visual Block 模式"></a>Visual Block 模式</h2><p>按住 <code>ctrl + v</code>, 进入 <code>visual block</code>模式。此模式下，选中想要选中的内容（可以结合$^）。选中后，输入<code>I,i,A,a,C,c</code>等操作，输入想要输入的内容。再按下<code>Esc</code>键，即可全部行都有填入的内容。类似于 sublime。</p>
-<p>注意 I，A，C 的区别，就跟他们原来的意思一样，比如I,A是插入，只是插入的地方可能不同。C是替换。</p>
-<p>比如<code>Ctrl+v jj$</code>到每一行行末，再I，填入<code>;</code>，就可以几行一起填分好了。</p>
-<p><strong>Visual Block 模式下，还可以做下面这些事情</strong>：</p>
-<ul>
-<li>可以结合<code>&lt;&gt;</code>进行移动。</li>
-<li>使用<code>J</code>把选中的行连接起来变成 一行。</li>
-<li>使用<code>=</code>自动给缩进。</li>
-</ul>
-<p>这些功能都很好用。</p>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这里面的东西，有些大多我都用过，也知道。但是每次去用的时候有时候还要再去查下命令。怪不好的。总结下，以后忘记了就在博客里翻翻吧。开心。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;这两天做了一个很繁琐的需求，简单的来说，就是把一个产品配置的复杂的excel表，转入为json, 然后再用 javascript 脚本拼接为对应 php 页面可执行代码。繁琐的是配置多且杂，并且产品的归类excel 转换为的 json 并不可用。于
-    
-    </summary>
-    
-    
-      <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
     
   </entry>
   
