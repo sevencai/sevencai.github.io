@@ -90,7 +90,7 @@
 <meta property="og:description" content="本文主要记录两点  如何在webpack中编译一个文件夹中的文件并且按照【原目录】输出。  总结在webpack 中使用 treeshaking 的条件。     webpack 编译文件目录并原样输出场景是需要编译一个文件夹下的所有js文件，并且把这些js文件都按照【原来的目录结构】输出。 首先编译一个文件夹的所有js文件，比较好做。我们可以使用glob来获取目录下的所有js文件。123456">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/treeshaking.png">
-<meta property="og:updated_time" content="2019-02-22T12:27:23.000Z">
+<meta property="og:updated_time" content="2019-02-22T12:29:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="webpack 编译目录原样输出及webpack4 treeshaking小结">
 <meta name="twitter:description" content="本文主要记录两点  如何在webpack中编译一个文件夹中的文件并且按照【原目录】输出。  总结在webpack 中使用 treeshaking 的条件。     webpack 编译文件目录并原样输出场景是需要编译一个文件夹下的所有js文件，并且把这些js文件都按照【原来的目录结构】输出。 首先编译一个文件夹的所有js文件，比较好做。我们可以使用glob来获取目录下的所有js文件。123456">
@@ -381,6 +381,8 @@
 <p>举个我看到的很好的例子，例子原本出于文章<a href="https://juejin.im/post/5b4ff9ece51d45190c18bb65" target="_blank" rel="noopener"># Webpack 中的 sideEffects 到底该怎么用？</a>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import DevTools from &apos;mobx-react-devtools&apos;;</span><br><span class="line"></span><br><span class="line">class MyApp extends React.Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        ...</span><br><span class="line">        &#123; process.env.NODE_ENV === &apos;production&apos; ? null : &lt;DevTools /&gt; &#125;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>如果你不在webpack4中设置 <code>sideEffects: false</code>， 那么即使 <code>NODE_ENV=production</code>, <code>mobx-react-devtools</code>也会被引入。</p>
 <p>所以<strong>如果我们能确定或者想让这个包不对包以外的对象造成影响，那么我们就完全的可以放心设置这个参数了</strong>。</p>
+<p>关于 副作用，推荐一篇文章<a href="https://zhuanlan.zhihu.com/p/32831172" target="_blank" rel="noopener">你的Tree-Shaking并没什么卵用
+</a>, 也方便自己后续查阅。</p>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最近主要是想对组里的一些包做优化，做优化的过程中解决了一些问题，也带来了一些新的疑惑。疑惑还没解决，所以还不能总结成文章。虽然不是纠结上面的东西，但也算是纠结了好几天了。(ಥ _ ಥ)</p>
 

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-02-22T12:27:23.000Z</updated>
+  <updated>2019-02-22T12:29:46.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://sevencai.github.io/2019/02/22/webpack-%E7%BC%96%E8%AF%91%E7%9B%AE%E5%BD%95%E5%8E%9F%E6%A0%B7%E8%BE%93%E5%87%BA%E5%8F%8Awebpack4-treeshaking%E5%B0%8F%E7%BB%93/"/>
     <id>http://sevencai.github.io/2019/02/22/webpack-编译目录原样输出及webpack4-treeshaking小结/</id>
     <published>2019-02-22T12:16:03.000Z</published>
-    <updated>2019-02-22T12:27:23.000Z</updated>
+    <updated>2019-02-22T12:29:46.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>本文主要记录两点</p>
@@ -58,6 +58,8 @@
 <p>举个我看到的很好的例子，例子原本出于文章<a href="https://juejin.im/post/5b4ff9ece51d45190c18bb65" target="_blank" rel="noopener"># Webpack 中的 sideEffects 到底该怎么用？</a>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import DevTools from &apos;mobx-react-devtools&apos;;</span><br><span class="line"></span><br><span class="line">class MyApp extends React.Component &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        ...</span><br><span class="line">        &#123; process.env.NODE_ENV === &apos;production&apos; ? null : &lt;DevTools /&gt; &#125;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>如果你不在webpack4中设置 <code>sideEffects: false</code>， 那么即使 <code>NODE_ENV=production</code>, <code>mobx-react-devtools</code>也会被引入。</p>
 <p>所以<strong>如果我们能确定或者想让这个包不对包以外的对象造成影响，那么我们就完全的可以放心设置这个参数了</strong>。</p>
+<p>关于 副作用，推荐一篇文章<a href="https://zhuanlan.zhihu.com/p/32831172" target="_blank" rel="noopener">你的Tree-Shaking并没什么卵用
+</a>, 也方便自己后续查阅。</p>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最近主要是想对组里的一些包做优化，做优化的过程中解决了一些问题，也带来了一些新的疑惑。疑惑还没解决，所以还不能总结成文章。虽然不是纠结上面的东西，但也算是纠结了好几天了。(ಥ _ ಥ)</p>
 ]]></content>
