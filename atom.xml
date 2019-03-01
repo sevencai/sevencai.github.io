@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-02-22T12:29:46.000Z</updated>
+  <updated>2019-03-01T03:43:11.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,46 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>解决 IOS 微信某些版本下键盘收起页面为下移导致点击事件失效问题</title>
+    <link href="http://sevencai.github.io/2019/03/01/%E8%A7%A3%E5%86%B3-IOS-%E5%BE%AE%E4%BF%A1%E6%9F%90%E4%BA%9B%E7%89%88%E6%9C%AC%E4%B8%8B%E9%94%AE%E7%9B%98%E6%94%B6%E8%B5%B7%E9%A1%B5%E9%9D%A2%E4%B8%BA%E4%B8%8B%E7%A7%BB%E5%AF%BC%E8%87%B4%E7%82%B9%E5%87%BB%E4%BA%8B%E4%BB%B6%E5%A4%B1%E6%95%88%E9%97%AE%E9%A2%98/"/>
+    <id>http://sevencai.github.io/2019/03/01/解决-IOS-微信某些版本下键盘收起页面为下移导致点击事件失效问题/</id>
+    <published>2019-03-01T03:30:36.000Z</published>
+    <updated>2019-03-01T03:43:11.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>某天发现了一个奇怪的现象。</p>
+<p>一般我们会在点击支付的时候，弹出一个模态框，让用户选择支付渠道。</p>
+<p>突然发现某个IOS微信手机上，当点击输入金额后，用户点击支付，弹窗出现后，<strong>无法点击中弹窗上的渠道。但是却能在非弹窗所在的空白地方，选中有反馈。这种感觉就像dom显示的地方和dom真实的地方分离了一样诡异。</strong>如下图所示。</p>
+<p><img src="example.png" alt="示例图-（微信钱包-&gt;QB-&gt;官方渠道安全又放心）"><br>我们知道 IOS 有个很好的优化，就是当用户手动输入输入框时，IOS会自己把输入框弹上来，来确保输入框一定在可视框内，Android 没有这个优化，以前我们还经常对安卓做这种优化。</p>
+<p>后来发现确实是这个优化导致了<strong>【弹窗虽然恢复正常了，但是body还是在键盘弹上去的位置】</strong>， 是由于 IOS 下的渲染问题导致的，当键盘弹下来的时候，弹窗下的body没有触发重绘。</p>
+<p>所以问题变成了简单的，怎么让键盘下去的时候，body能够重绘。</p>
+<p>我们首先想到的是，<strong>键盘收起的时候，resize 事件应该会触发</strong>，试着在 resize 中做处理，结果发现，IOS下竟然不会触发 resize, 也就是 IOS 下，<strong>当键盘收起的时候，并不会改变视窗的大小，所以也就不会触发 resize 事件</strong>。这也是为什么如果你的 body 本来是 100% 高度的，被键盘弹上去后，可能变成 120%， 你的body竟然可以滚动了。而且下面没有内容，还是白色的空白区域。<strong>安卓上键盘收起时视窗大小会改变，所以会触发 resize 事件，因此不会有这个问题</strong>。</p>
+<p><code>resize</code> 走不通，那怎么让它触发重绘呢？想到 <code>IOS</code> 下，当键盘收起的时候，<code>input</code>不会被 <code>focus</code> 了（可以看到光标消失了），也就是说很有可能触发 <code>blur</code> 事件。经过证实，确实是触发了 blur。所以确定去触发重绘的时机就是 <code>blur</code> 时。</p>
+<p>现在的问题就是重绘要怎么写呢？ 以前在 IOS 上遇到了很多渲染的坑，经验告诉我，只要让页面【动一下】就可以了。比如让页面 <code>scrollTop = 0</code>, 或者再 <code>focus</code> 一下，或者 <code>click touch</code>一下之类的。</p>
+<p>这里为了让页面不会由于 <code>scrollTop = 0</code> 突然往上一下，就可以设置 <code>scrollTop = scrollTop</code> 也可以。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;input @blur=fixbug/&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// fixbug</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.userAgent.iOS) &#123;</span><br><span class="line">   <span class="built_in">document</span>.body &amp;&amp; (<span class="built_in">document</span>.body.scrollTop = <span class="built_in">document</span>.body.scrollTop)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种只能在单一的input上做处理不太好。如果要在所有 input 上都生效可以监听在<code>document</code>上。这时候，只需要判断下是不是 <code>input</code> 或者 <code>textarea</code> 元素就可以了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自行实现是否是 iOS 的判断，一般把 ipad,ipod, iphone 跟 navigagor.userAgent indexOf 一下就行</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.userAgent.iOS) &#123;</span><br><span class="line">  <span class="built_in">document</span>.addEventListener(<span class="string">'blur'</span>, e =&gt; &#123;</span><br><span class="line">    [<span class="string">'input'</span>, <span class="string">'textarea'</span>].indexOf(e.target.localName) ！== <span class="number">-1</span> &amp;&amp; (<span class="built_in">document</span>.body.scrollTop = <span class="built_in">document</span>.body.scrollTop)</span><br><span class="line">  &#125;, <span class="literal">true</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在写这篇文章的时候，发现也有人碰到了类似的问题，他们是用的 <code>scrollIntoView</code>，我觉得也挺好的。但是不久之前，有同事在 IOS 11 上某个版本的时候，用 <code>scrollIntoView</code>会遇到页面卡住滑不动的情况，并且只在IOS11上的某个小版本出现，担心它还会有同样的问题，所以我们最终还是使用了 <code>document.body.scrollTop</code> 来解决。</p>
+<p>他们的代码如下，我也想记录下来日后参考，都大同小异：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;(/iphone|ipod|ipad/i.test(navigator.appVersion)) &amp;&amp; document.addEventListener(&apos;blur&apos;, (e) =&gt; &#123; &apos;input&apos;, &apos;textarea&apos;].includes(e.target.localName) &amp;&amp; document.body.scrollIntoView(false) &#125;, true)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>有的时候想想做前端真的是件不容易的事情，尤其是要跟浏览器打交道的时候，突然某天你可能发现之前跑的好好的版本，怎么突然间出问题了，你会先怀疑自己，再去找问题，再去复现问题，再去想怎么 hack。关键是有的时候你知道了怎么hack,有可能还是不知道是谁的bug,为什么会这样。太多外界因素（应用，系统）影响你的判断，并且你可能比较难去干预或者去告诉他你这里有bug。🌹</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;某天发现了一个奇怪的现象。&lt;/p&gt;
+&lt;p&gt;一般我们会在点击支付的时候，弹出一个模态框，让用户选择支付渠道。&lt;/p&gt;
+&lt;p&gt;突然发现某个IOS微信手机上，当点击输入金额后，用户点击支付，弹窗出现后，&lt;strong&gt;无法点击中弹窗上的渠道。但是却能在非弹窗所在的空白地方，选中有
+    
+    </summary>
+    
+    
+      <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
+    
+  </entry>
   
   <entry>
     <title>webpack 编译目录原样输出及webpack4 treeshaking小结</title>
@@ -1299,50 +1339,6 @@
     
       &lt;blockquote&gt;
 &lt;p&gt;最近在的一个项目中，本来不长的列表页变得很长很长。并且每个&lt;code&gt;li&lt;/code&gt;都会有一个图片。这就迫使我必须要想办法优化这个长列表了。以前总以为是不是对于长列表而言性能的瓶颈更多在与 dom 和js, 但是实际上图片仍然也占很大一部分。为
-    
-    </summary>
-    
-    
-      <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>isObjEmpty/once function/template rendering/cdn的实现和解释</title>
-    <link href="http://sevencai.github.io/2018/03/21/isObjEmpty-once-function-template-rendering-cdn%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%92%8C%E8%A7%A3%E9%87%8A/"/>
-    <id>http://sevencai.github.io/2018/03/21/isObjEmpty-once-function-template-rendering-cdn的实现和解释/</id>
-    <published>2018-03-21T03:03:57.000Z</published>
-    <updated>2018-03-21T03:18:23.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>总结了几种判断 Object 是否为空的方法<br>总结 once function (只执行一次函数代码)<br>实现两种简单的字符串模板替换方法<br>重新归纳总结了下CDN和DNS的名词解释</p>
-</blockquote>
-<hr>
-<h1 id="once-function-让函数只执行一次"><a href="#once-function-让函数只执行一次" class="headerlink" title="once function 让函数只执行一次"></a>once function 让函数只执行一次</h1><p>这里利用了闭包很好的保存了内层函数的返回值内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 定义</span><br><span class="line">const once = (fn, context) =&gt; &#123;</span><br><span class="line"> var result</span><br><span class="line"></span><br><span class="line"> return function () &#123;</span><br><span class="line">  if (fn) &#123;</span><br><span class="line">   result = fn.apply(context || this, arguments)</span><br><span class="line">   fn = null</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return result</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 使用</span><br><span class="line">let logOnce = once(function () &#123;</span><br><span class="line"> return Array.prototype.slice.call(arguments)[0]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">logOnce(4,5)  // get 4</span><br><span class="line">logOnce(6,7)  // get 4</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h1 id="实现简单的模板字符串替换"><a href="#实现简单的模板字符串替换" class="headerlink" title="实现简单的模板字符串替换"></a>实现简单的模板字符串替换</h1><p>经常会有下面的需求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let template = `我叫&#123;&#123;name&#125;&#125;, 我的性别是&#123;&#123;sex&#125;&#125;`</span><br><span class="line">let person = &#123;</span><br><span class="line"> name: &apos;Seven&apos;,</span><br><span class="line"> sex: &apos;female&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(&apos;我叫Seven, 我的性别是female&apos;)</span><br></pre></td></tr></table></figure></p>
-<p>下面是一种简单的实现，把模板和对象，结合为目标字符串，方法1如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const parseTemplateByRegFunc = (obj, template) =&gt; &#123;</span><br><span class="line"> return template.replace(/\&#123;\&#123;(.*?)\&#125;\&#125;/g, (match, key) =&gt; obj[key.trim()])</span><br><span class="line">&#125;</span><br><span class="line">parseTemplateByRegFunc(&#123;name: &apos;seven&apos;&#125;, &apos;我叫&#123;&#123; name&#125;&#125;&apos;) // 我叫seven</span><br></pre></td></tr></table></figure></p>
-<p>方法2比较容易想到，实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const parseTemplateByObjectKeys = (obj, template) =&gt; &#123;</span><br><span class="line"> Object.keys(obj).forEach(key =&gt; &#123;</span><br><span class="line">  template = template.replace(new RegExp(`&#123;&#123;\\s*$&#123;key&#125;\\s*&#125;&#125;`, &apos;g&apos;), obj[key])</span><br><span class="line"> &#125;)</span><br><span class="line"></span><br><span class="line"> return template</span><br><span class="line">&#125;</span><br><span class="line">parseTemplateByObjectKeys(&#123;name: &apos;seven&apos;&#125;, &apos;我叫&#123;&#123; name&#125;&#125;&apos;) // 我叫seven</span><br></pre></td></tr></table></figure></p>
-<p>简单的把 obj 里面每个key 都替换一次。方法1用到的是replace的特性。</p>
-<hr>
-<h1 id="关于-CDN"><a href="#关于-CDN" class="headerlink" title="关于 CDN"></a>关于 CDN</h1><p>DNS 是域名解析系统，它作为将域名和IP地址相互映射的一个分布式数据库，能够使人更方便地访问互联网。其中有一项技术是会找到一个合适的IP给用户。这种根据每台机器的负载量，该机器离用户地理位置的距离等等，返回合适的IP的技术称之为 DNS 重定向。CDN就是利用的DNS重定向技术。</p>
-<blockquote>
-<p>CDN的全称是Content Delivery Network，即内容分发网络。其基本思路是尽可能避开互联网上有可能影响数据传输速度和稳定性的瓶颈和环节，使内容传输的更快、更稳定。通过在网络各处放置节点服务器所构成的在现有的互联网基础之上的一层智能虚拟网络，<strong>CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度</strong>。</p>
-</blockquote>
-<p>上面的内容以前是知道的，这里重新归纳了下。</p>
-<hr>
-<h1 id="isObjEmpty-的实现（判断对象是否为空）"><a href="#isObjEmpty-的实现（判断对象是否为空）" class="headerlink" title="isObjEmpty 的实现（判断对象是否为空）"></a>isObjEmpty 的实现（判断对象是否为空）</h1><p>使用 for … in，如果进入了循坏，代表对象不为空：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for (let key in obj) &#123;</span><br><span class="line"> if (obj.hasOwnProperty(key)) &#123;</span><br><span class="line">  return false</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line">return true</span><br></pre></td></tr></table></figure></p>
-<p>使用 Object keys， 得到空数组，则代表对象为空：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return Object.keys(obj).length === 0</span><br></pre></td></tr></table></figure></p>
-<p>使用 JSON.stringify 和 空对象对比：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return JSON.stringify(obj) === JSON.stringify(&#123;&#125;)</span><br></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;总结了几种判断 Object 是否为空的方法&lt;br&gt;总结 once function (只执行一次函数代码)&lt;br&gt;实现两种简单的字符串模板替换方法&lt;br&gt;重新归纳总结了下CDN和DNS的名词解释&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h
     
     </summary>
     
