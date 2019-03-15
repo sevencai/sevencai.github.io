@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-03-15T10:46:53.000Z</updated>
+  <updated>2019-03-15T11:45:57.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,44 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于微信免密支付的几个概念</title>
+    <link href="http://sevencai.github.io/2019/03/15/%E5%85%B3%E4%BA%8E%E5%BE%AE%E4%BF%A1%E5%85%8D%E5%AF%86%E6%94%AF%E4%BB%98%E7%9A%84%E5%87%A0%E4%B8%AA%E6%A6%82%E5%BF%B5/"/>
+    <id>http://sevencai.github.io/2019/03/15/关于微信免密支付的几个概念/</id>
+    <published>2019-03-15T11:38:31.000Z</published>
+    <updated>2019-03-15T11:45:57.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>纯签约<br>支付中签约<br>支付后签约<br>签约后支付（连续包月）<br>自动续费</p>
+</blockquote>
+<p>微信一共<strong>只</strong>提供两种签约方式： <strong>纯签约和支付中签约</strong>，<a href="https://pay.weixin.qq.com/wiki/doc/api/pap.php?chapter=17_2" target="_blank" rel="noopener">文档在这里</a>。 <strong>后面的几种方式都不是微信的概念，而是大家包装出来的概念</strong>。</p>
+<hr>
+<h2 id="纯签约"><a href="#纯签约" class="headerlink" title="纯签约"></a>纯签约</h2><p>纯签约可以理解为委托扣款，用户一旦同意，以后商家就可以免用户密码进行扣款。<strong>这个过称中不会发生扣款行为，仅仅是签约，签订协议而已</strong>。</p>
+<p><img src="chunqianyue.png" alt="纯签约"></p>
+<hr>
+<h2 id="支付中签约"><a href="#支付中签约" class="headerlink" title="支付中签约"></a>支付中签约</h2><p>支付中签约是微信提供的另外一种签约，商家在下订单时，带上签约的参数，就会在下订单的订单页出现一个按钮，用户勾选是否签约。这种用户需要主动勾选同意，转换率底。<strong>这种情况，用户一旦勾上了同意，就会即扣款，也会签约</strong>。</p>
+<p><img src="zhifuzhongqianyue.png" alt="支付中签约"></p>
+<hr>
+<h2 id="支付后签约"><a href="#支付后签约" class="headerlink" title="支付后签约"></a>支付后签约</h2><p>支付后签约：是用户先进行一笔支付，支付后再拉起签约页面。<strong>这种情况转换率更低，用户需要输入两次密码，第一次是付款的密码，第二次是签约的密码</strong>。体验不好。</p>
+<hr>
+<h2 id="签约后支付"><a href="#签约后支付" class="headerlink" title="签约后支付"></a>签约后支付</h2><p>签约后支付：先拉起签约页面，用户输入密码，然后签约后，由商家进行扣款一笔付费。<strong>这种情况，用户只需要输入密码一次，并且一定是先签约转换率高，并且用户也会支付一笔，大家把包装成连续包月的概念</strong>。</p>
+<p>这种连续包月就是需要商家在用户签约完成后，立刻<strong>为用户下一笔单</strong>，然后由于用户已经签约，所以不需要再输密码。这时候用户就又签约又支付。比较完美。商家需要开发后续再下单的流程。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;纯签约&lt;br&gt;支付中签约&lt;br&gt;支付后签约&lt;br&gt;签约后支付（连续包月）&lt;br&gt;自动续费&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;微信一共&lt;strong&gt;只&lt;/strong&gt;提供两种签约方式： &lt;strong&gt;纯签约和支付中签约&lt;/strong&gt;
+    
+    </summary>
+    
+    
+      <category term="概念" scheme="http://sevencai.github.io/tags/%E6%A6%82%E5%BF%B5/"/>
+    
+  </entry>
   
   <entry>
     <title>证书、对称加密、非对称加密</title>
@@ -1362,63 +1400,6 @@
     
     
       <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>解决webpack编译后导致-webkit-box被强制去除了的问题</title>
-    <link href="http://sevencai.github.io/2018/05/11/%E8%A7%A3%E5%86%B3webpack%E7%BC%96%E8%AF%91%E5%90%8E%E5%AF%BC%E8%87%B4-webkit-box%E8%A2%AB%E5%BC%BA%E5%88%B6%E5%8E%BB%E9%99%A4%E4%BA%86%E7%9A%84%E9%97%AE%E9%A2%98/"/>
-    <id>http://sevencai.github.io/2018/05/11/解决webpack编译后导致-webkit-box被强制去除了的问题/</id>
-    <published>2018-05-11T12:12:36.000Z</published>
-    <updated>2018-05-11T12:29:35.000Z</updated>
-    
-    <content type="html"><![CDATA[<hr>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>今天遇到了一个问题，发现重构同事的 dist css 在我这里有兼容性问题。我只引用了他的源文件，未经过任何更改。排处了由于 Dom 结构不同的原因之外，唯一的不一样的地方，就是我引入他的文件后，在本地还进行了webpack 编译。那么问题只能出在了这里了。</p>
-<p>经过对比两份文件发现，对比如下<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 重构同事的css</span><br><span class="line"><span class="selector-class">.detail-title</span>&#123;</span><br><span class="line">	<span class="attribute">-ms-flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">-webkit-box-flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">box-flex</span>:<span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line">// 我编译后的文件</span><br><span class="line"><span class="selector-class">.detail-title</span>&#123;</span><br><span class="line">	<span class="attribute">-ms-flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">flex</span>:<span class="number">1</span>;</span><br><span class="line">	<span class="attribute">box-flex</span>:<span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>咦， <code>-webkit-box-flex</code> 竟然被自动去除了。难道说在某种 webpack 插件下， <code>-webkit-box</code> 会自动被去除吗？</p>
-<p>在网上搜了下，发现确实是有这种情况。有些插件的机制判断这个内容是不需要的，强行被去除了。可以看这个 <a href="https://github.com/webpack/webpack/issues/2543" target="_blank" rel="noopener">issue</a>。</p>
-<p>即使你是使用了 postCss, autoprefix 去添加了前缀，但是你用了去除的插件也会被去除。</p>
-<hr>
-<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>首先看下是什么插件导致了你的代码被强制的去除了。</p>
-<p>大概的原因可能有以下几种：</p>
-<p><strong>最开始可能是由于 <code>UglifyJsPlugin</code> 中默认把 <code>minimize = true</code> 开启了， 而这个字段在<code>css-loader</code>和<code>postcss-loader</code>中设置成 <code>true</code> 会开启优化模式，所以会对代码进行优化压缩。<br>但 <code>css-loader</code> 中又会使用 <code>cssnano</code> 进行压缩， 而 <code>cssnano</code>中又会进行无关前缀的清理。</strong></p>
-<p>为什么插件竟然会影响到loader ? 可以关注下这个 <a href="https://github.com/ShowJoy-com/showjoy-blog/issues/31" target="_blank" rel="noopener">issue</a>。</p>
-<p>这个插件(UglifyJsPlugin) 在 webpack2.x 貌似已经修复了。 <code>css-loader</code>及<code>autoprefixer</code>也已经做了相应的优化处理。如果你没有升级，你可以设置下面的方式试试：</p>
-<ol>
-<li><p>css-loader 传递参数：<code>?minimize&amp;-autoprefixer</code></p>
-</li>
-<li><p>向 <code>autoprefixer</code> 传递参数</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">postcss: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> [autoprefixer, cssnano(&#123; <span class="attr">safe</span>: <span class="literal">true</span> &#125;)];</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>如果还有问题，再检查下，代码里有没有用到其他的去除优化工具。</p>
-<p>我这边出的问题就是在这里。用了<code>OptimizeCSSPlugin</code>,  它默认把前缀给去掉了。所以这里我直接把这个 plugin 删除了。之所以我这里可以直接删除，是因为重构同事给到的就是去除压缩好了的。没有必要再去压缩去除一次。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Compress extracted CSS. We are using this plugin so that possible</span><br><span class="line">// duplicated CSS from different components can be deduped.</span><br><span class="line"></span><br><span class="line">new OptimizeCSSPlugin(&#123;</span><br><span class="line">  cssProcessorOptions: config.build.productionSourceMap</span><br><span class="line">    ? &#123; safe: true, map: &#123; inline: false &#125; &#125;</span><br><span class="line">    : &#123; safe: true &#125;</span><br><span class="line">&#125;),</span><br></pre></td></tr></table></figure>
-<p>再来看下为什么用了<code>OptimizeCSSPlugin</code>去除了prefix呢？看了下源码，也是又引入了<code>cssnano</code>：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.options.cssProcessor === <span class="literal">undefined</span>) &#123;</span><br><span class="line">  <span class="keyword">this</span>.options.cssProcessor = <span class="built_in">require</span>(<span class="string">'cssnano'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h1 id="引申问题-ssi-找不到定义的变量"><a href="#引申问题-ssi-找不到定义的变量" class="headerlink" title="引申问题 - ssi 找不到定义的变量"></a>引申问题 - ssi 找不到定义的变量</h1><p><strong>由这个打包的问题，想到了前几天的另一个 webpack 的问题， index.shtml 文件中引入的 ssi, 如果变量用 ${variable} 读取，而不是$variable 读取，webpack 编译时就会报错。</strong>但实际上，这两种语法都是可以被 server 端解析的。探究了下会被报错的原因：</p>
-<p>webpack 的 HtmlWebpackPlugin 在编译模板的时候，用的是 lodash 的 template 方式, 也就是 <code>${variable}</code> 的形式。</p>
-<p>所以你用了 ${variable} 的形式的话，他就会去编译这个变量，但是呢，这个 variable 你是从 ssi 上读的，又没有定义，它找不到，所以就会报错了。</p>
-<p>所以就老老实实的，如果你用的 htmlWebpackPlugin 就用 <code>$varialbe</code> 的形式吧。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// correct</span><br><span class="line">&lt;!--#include virtual=&quot;xxx.cgi?refresh_token=$wxRefreshToken&amp;appid=$wxAppid&quot; --&gt;&apos;;</span><br><span class="line"></span><br><span class="line">// wrong: wxAppid is not defined</span><br><span class="line">&lt;!--#include virtual=&quot;xxx.cgi?refresh_token=$wxRefreshToken&amp;appid=$&#123;wxAppid&#125;&quot; --&gt;&apos;;</span><br></pre></td></tr></table></figure>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="相关参考"><a href="#相关参考" class="headerlink" title="相关参考"></a>相关参考</h2><ol>
-<li><a href="https://github.com/webpack/webpack/issues/283" target="_blank" rel="noopener">issue1: # Why does the UglifyJsPlugin affect other loaders?</a></li>
-<li><a href="https://github.com/ShowJoy-com/showjoy-blog/issues/31" target="_blank" rel="noopener">issue2: # 「前端」从UglifyJSPlugin强制开启css压缩探究webpack插件运行机制</a></li>
-<li><a href="https://github.com/webpack/webpack/issues/2543" target="_blank" rel="noopener">issue3: # Using plugin “webpack.optimize.UglifyJsPlugin” led to remove the style “display: -webkit-flex;</a></li>
-</ol>
-<p>觉得略坑。还是花了大概一下午看这个问题，呜呜呜(ಥ _ ಥ)!</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;hr&gt;
-&lt;h1 id=&quot;问题&quot;&gt;&lt;a href=&quot;#问题&quot; class=&quot;headerlink&quot; title=&quot;问题&quot;&gt;&lt;/a&gt;问题&lt;/h1&gt;&lt;p&gt;今天遇到了一个问题，发现重构同事的 dist css 在我这里有兼容性问题。我只引用了他的源文件，未经过任何更改。排处了由于 Do
-    
-    </summary>
-    
-    
-      <category term="工具" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7/"/>
     
   </entry>
   
