@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="http," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本篇文章主要是针对我对证书，堆成加密，非对称加密，CA等内容的粗浅理解的记录。下图为我理解的大致流程。方便后续查阅。 几个基本概念  密码: 对文本进行编码，使偷窥者无法识别的算法。 密钥: 改变密码行为的数字化参数。 对称密钥加密系统: 编 / 解码使用相同密钥的算法。 不对称密钥加密系统: 编 / 解码使用不同密钥的算法。 公开密钥加密系统: 一种能够使数百万计算机便捷地发送机密报文的系统。">
+<meta name="keywords" content="http">
+<meta property="og:type" content="article">
+<meta property="og:title" content="证书、对称加密、非对称加密">
+<meta property="og:url" content="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="本篇文章主要是针对我对证书，堆成加密，非对称加密，CA等内容的粗浅理解的记录。下图为我理解的大致流程。方便后续查阅。 几个基本概念  密码: 对文本进行编码，使偷窥者无法识别的算法。 密钥: 改变密码行为的数字化参数。 对称密钥加密系统: 编 / 解码使用相同密钥的算法。 不对称密钥加密系统: 编 / 解码使用不同密钥的算法。 公开密钥加密系统: 一种能够使数百万计算机便捷地发送机密报文的系统。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/process.png">
+<meta property="og:image" content="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/certs.png">
+<meta property="og:image" content="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/sign.png">
+<meta property="og:image" content="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/lack.png">
+<meta property="og:image" content="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/ssltsl.png">
+<meta property="og:updated_time" content="2019-03-15T08:49:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="证书、对称加密、非对称加密">
+<meta name="twitter:description" content="本篇文章主要是针对我对证书，堆成加密，非对称加密，CA等内容的粗浅理解的记录。下图为我理解的大致流程。方便后续查阅。 几个基本概念  密码: 对文本进行编码，使偷窥者无法识别的算法。 密钥: 改变密码行为的数字化参数。 对称密钥加密系统: 编 / 解码使用相同密钥的算法。 不对称密钥加密系统: 编 / 解码使用不同密钥的算法。 公开密钥加密系统: 一种能够使数百万计算机便捷地发送机密报文的系统。">
+<meta name="twitter:image" content="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/process.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/"/>
+
+
+
+
+
+  <title>证书、对称加密、非对称加密 | Seven's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?157d49c9f81aaca6e7af073620a0a709";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">证书、对称加密、非对称加密</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-14T17:16:48+08:00">
+                2019-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/14/证书、对称加密、非对称加密/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/03/14/证书、对称加密、非对称加密/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇文章主要是针对我对证书，堆成加密，非对称加密，CA等内容的粗浅理解的记录。下图为我理解的大致流程。方便后续查阅。</p>
+<p>几个基本概念</p>
+<ol>
+<li>密码: 对文本进行编码，使偷窥者无法识别的算法。</li>
+<li>密钥: 改变密码行为的数字化参数。</li>
+<li>对称密钥加密系统: 编 / 解码使用相同密钥的算法。</li>
+<li>不对称密钥加密系统: 编 / 解码使用不同密钥的算法。</li>
+<li>公开密钥加密系统: 一种能够使数百万计算机便捷地发送机密报文的系统。</li>
+<li>数字签名: 用来验证报文未被伪造或篡改的校验和。</li>
+<li>数字证书: 由一个可信的组织验证和签发的识别信息。</li>
+</ol>
+<p>一个整体的交互图</p>
+<p><img src="process.png" alt="流程图"></p>
+<hr>
+<h2 id="CA及CA证书"><a href="#CA及CA证书" class="headerlink" title="CA及CA证书"></a>CA及CA证书</h2><p>CA 就是认证机构,<code>Certificate Authority</code>。</p>
+<p>CA 证书： 因特网的<code>ID卡</code>, 通常被称为 certs。</p>
+<p>其中包含了由某个<strong>受信任的组织担保的用户或者公司的相关信息</strong>。</p>
+<p><strong>任何人都可以创建一个数字证书，但并不是所有人都能够获得受人尊敬的签发权，从而为证书信息担保，并用其私有密钥签发证书。</strong></p>
+<p>就像<code>身份证</code>是权威机构颁发的，能证明你的身份，一般大家都很信任。但是你的<code>名片卡</code>是你自己弄的，或者公司发的，大家可能就看看，但是不一定相信就是真的。</p>
+<p>所以你信用贷时，用身份证大家认可，但是你用名片卡肯定不可以，即使你名片卡上写的职位是经理。</p>
+<p><img src="certs.png" alt="典型的证书结构"></p>
+<hr>
+<h2 id="证书的组成"><a href="#证书的组成" class="headerlink" title="证书的组成"></a>证书的组成</h2><ol>
+<li>“对象的名称（人、服务器、组织等）；</li>
+<li>过期时间；</li>
+<li>证书发布者（由谁为证书担保）；</li>
+<li>来自证书发布者的<strong>数字签名</strong>；</li>
+<li><strong>对象的公开密钥</strong>。</li>
+</ol>
+<h2 id="服务器证书"><a href="#服务器证书" class="headerlink" title="服务器证书"></a>服务器证书</h2><ol>
+<li>Web 站点的名称和主机名；</li>
+<li>Web 站点的<strong>公开密钥</strong>；</li>
+<li>签名颁发机构的名称；</li>
+<li>来自签名<strong>颁发机构的签名</strong>。</li>
+</ol>
+<p>所以<strong>当浏览器收到证书后会进行检查，如果这个CA（认证机构）是个很权威的公共前面机构，浏览器就可以已经知道它的（CA的）公开密钥了。因为正版的浏览器会预先安装很多签名颁发机构的证书。注意浏览器这时候知道的公开密钥是CA认证机构的公开密钥，而不是服务器端的公开密钥，服务器端的公开密钥是通过CA的公开密钥解密得到的。</strong></p>
+<p>上面这里一定要理解清楚，再看下面的流程会清楚很多。</p>
+<p>证书=公钥+申请者与颁发者信息+签名。</p>
+<p>证书会颁发给服务器，浏览器请求时，服务器会给浏览器证书，浏览器通过签名和时间等，用CA的公钥判断证书是否有效。</p>
+<hr>
+<h2 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h2><p>上面提到了证书里面会包含CA的签名。这个签名的意义和作用是什么呢？</p>
+<blockquote>
+<p>“数字签名是附加在<strong>报文上</strong>的特殊加密校验码。”<br>用于描述是谁编写的报文，同时证明报文未被篡改过。这种技术被称为数字签名（digital signing）</p>
+</blockquote>
+<p>比如上面CA证书的签名，目的是证明CA证书是合法的，是CA颁发的。并且证书没有被篡改。</p>
+<p>签名就像人的签字一样。但是比人的签字更好的是可以通过程序判断是不是真的是你签的字。下面举例看看上面的CA的签名是怎么生成的。</p>
+<ol>
+<li>CA将变长报文提取为定长的摘要</li>
+<li>CA对摘要应用了一个签名函数，参数为CA的私钥</li>
+<li>计算出签名后CA将其附加在报文的尾部，并且将报文和签名一起发送给服务器</li>
+<li>然后客户端请求服务器时，拿到了证书。然后用CA的公钥进行签名函数的反函数</li>
+<li>得到了明文摘要。拿到摘要后再与真实发过来的文本摘要做对比</li>
+<li>若不一致，则签名不通过，若一致，则信任此证书及证书里面的服务器的<code>public key</code></li>
+</ol>
+<p><img src="sign.png" alt="签名的机制"></p>
+<hr>
+<h2 id="怎么生成证书"><a href="#怎么生成证书" class="headerlink" title="怎么生成证书"></a>怎么生成证书</h2><ol>
+<li>服务器把 <code>public key</code> 及一些其他附加信息给到CA</li>
+<li>CA 用自己的 <code>private key</code> 加密这些数据，加密完的数据称为数字证书。</li>
+<li>然后服务器返回证书给浏览器时，返回的是用 CA 的 <code>private key</code> 加密后的内容。浏览器收到后，会通过已知的 CA 的 <code>public key</code> 进行解密，来获得到 B 的 <code>public key</code>。</li>
+<li>这个得到的 <code>public key</code> 是受信任的公钥key。</li>
+</ol>
+<p><strong>所以可以知道生成证书的这个过称其实也是非对称加密</strong> </p>
+<p><strong>注意生成证书和签名的整个过程，CA都是不需要客户端或者服务端的私钥的，私钥要确保只能自己使用。CA使用的私钥也仅仅是自己的私钥，用于签名。</strong></p>
+<hr>
+<h2 id="认证流程"><a href="#认证流程" class="headerlink" title="认证流程"></a>认证流程</h2><p>把上面那些概念理解清楚后，后面这个流程就很清晰了。</p>
+<ol>
+<li>服务器申请向 CA 申请证书</li>
+<li>浏览器首次向服务器发起请求， 服务器返回证书给浏览器</li>
+<li>浏览器拿到证书，通过签名及时间等，判断是否有效，是否可信任</li>
+<li>若证书有效</li>
+<li>客户端生成随机数，然后用证书中的公钥进行加密，加密后发送给服务器，服务器用私钥进行解密，得到随机数。（这个过程是非对称加密）</li>
+<li>之后服务器和浏览器就用这个随机数做为钥匙，对数据进行加密解密。</li>
+</ol>
+<p><strong>所以知道拿到证书后，使用随机数后的过称，应该是对称加密</strong>。</p>
+<p>下面解释为什么会有证书和签名这些东西。证书和签名都是为了保证互联网传输信息安全。</p>
+<hr>
+<h2 id="对称加密与非对称加密"><a href="#对称加密与非对称加密" class="headerlink" title="对称加密与非对称加密"></a>对称加密与非对称加密</h2><p>对称密钥加密技术的缺点之一就是发送者和接收者在互相对话之前，<strong>一定要有一个共享的保密密钥</strong>。</p>
+<p>使用同一个密钥，带来的问题就是：</p>
+<ol>
+<li>密钥从网络传输是不安全的。</li>
+<li>若网络中有N个节点，那么每个节点都要跟其他节点建立联系，则会有N^2个节点。</li>
+</ol>
+<p>为了解决上面两个问题，出现了非对称加密（“公开密钥加密技术”）。</p>
+<p>节点A向节点B传送数据，节点A用节点B的公钥加密，B收到后用自己的私钥解密。</p>
+<p><strong>非对称加密可以理解成，一个节点有两个东西：一把锁，一个钥匙。锁可以给任何人，钥匙节点自己留用。所有的人都可以带着锁过来，但是只有自己能看别人发给自己的东西。</strong></p>
+<p>所以非对称加密虽然较安全也会带来问题：</p>
+<ol>
+<li>数据被篡改，密钥被拦截。</li>
+<li>耗时多，加密与解密速度慢。</li>
+</ol>
+<p>假设A发送的数据被C拦截了，C用B的公钥和自己的数据加密后伪装成A发送给B了。</p>
+<p>B也并不知道自己接受到的数据不是A的了，而是C的。</p>
+<p>因此出现了数字签名和数字证书。</p>
+<p>数字签名保证了B收到的信息内容没有被篡改(A用hash得到A的摘要，再用自己的私钥进行加密，得到签名，B收到后用A的公钥解密，得到摘要和收到的内容比对)</p>
+<p>但是这并不能保证内容一定没有被C拦截。</p>
+<p><img src="lack.png" alt="第三方拦截"></p>
+<p>因为坏坏的C可以把B保存的A的公钥替换成自己的公钥。然后冒用A给B发送信息。C拦截A的信息，然后自己发送信息给B，用B的公钥加密，然后B用自己的私钥解密。（如上图）</p>
+<p>所以出现了证书。证书的目的就是保证了数据不被篡改，并且保证B处A的公钥就是A的公钥。</p>
+<blockquote>
+<p>典型的对称加密算法： AES,DES,Trible DES<br>典型的非对称加密算法： RSA</p>
+</blockquote>
+<hr>
+<h2 id="https和TSL-amp-SSL的关系"><a href="#https和TSL-amp-SSL的关系" class="headerlink" title="https和TSL&amp;SSL的关系"></a>https和TSL&amp;SSL的关系</h2><p>https是基于 TSL 及 SSL 实现的。TSL 和 SSL 主要依赖下面这几种算法</p>
+<ol>
+<li>散列函数 Hash: 基于散列函数验证信息的完整性</li>
+<li>对称加密: 对称加密算法采用协商的密钥对数据加密</li>
+<li>非对称加密: 非对称加密实现身份认证和密钥协商</li>
+</ol>
+<p>也就是说：<strong>TSL 其实对称加密和非对称加密都用到了。先用非对称加密获得对应的密钥。再用改密钥进行对称加密传输。</strong>这在我们上面的认证过程中有体现。</p>
+<p>之所以后面获得密钥后，就用对称加密，主要是解决时间非对称加密太消耗时间和性能的问题。</p>
+<p><img src="ssltsl.png" alt="流程图"></p>
+<p>标注：上面的图片来源于<a href="https://juejin.im/post/5b88a93df265da43231f1451" target="_blank" rel="noopener">TLS 详解</a>一文。更多的 SSL 握手等细节，我不关注。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实我本来是遇到了一个<code>https</code>的问题, 然后去了解了 tsl 和 ssl， 然后又去了解了非对称加密和对称加密。然后又去了解了证书和CA。</p>
+<p>其实我是遇到问题的时候，发现这些东西都知道，但是并没有系统，没法很好的关联到一起，因此得去总结了。</p>
+<p>这几天晚上工作搞完了，都花了一个小时去总结这个。还好是屡清楚，有收货了，以后忘记再看这篇文章回忆应该很快。</p>
+<p>上文有部分概念性文案 - 摘录来自: [美]David Gourley Brian Totty Marjorie Sayer Sailu Reddy Aushu Aggarwal. “HTTP权威指南 (图灵程序设计丛书)”。 iBooks.    </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/http/" rel="tag"># http</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/06/简单分析babel和webpack编译后的文件/" rel="next" title="简单分析babel和webpack编译后的文件">
+                <i class="fa fa-chevron-left"></i> 简单分析babel和webpack编译后的文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">121</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CA及CA证书"><span class="nav-number">1.</span> <span class="nav-text"><a href="#CA&#x53CA;CA&#x8BC1;&#x4E66;" class="headerlink" title="CA&#x53CA;CA&#x8BC1;&#x4E66;"></a>CA&#x53CA;CA&#x8BC1;&#x4E66;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书的组成"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x8BC1;&#x4E66;&#x7684;&#x7EC4;&#x6210;" class="headerlink" title="&#x8BC1;&#x4E66;&#x7684;&#x7EC4;&#x6210;"></a>&#x8BC1;&#x4E66;&#x7684;&#x7EC4;&#x6210;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器证书"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x670D;&#x52A1;&#x5668;&#x8BC1;&#x4E66;" class="headerlink" title="&#x670D;&#x52A1;&#x5668;&#x8BC1;&#x4E66;"></a>&#x670D;&#x52A1;&#x5668;&#x8BC1;&#x4E66;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数字签名"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x6570;&#x5B57;&#x7B7E;&#x540D;" class="headerlink" title="&#x6570;&#x5B57;&#x7B7E;&#x540D;"></a>&#x6570;&#x5B57;&#x7B7E;&#x540D;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么生成证书"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x600E;&#x4E48;&#x751F;&#x6210;&#x8BC1;&#x4E66;" class="headerlink" title="&#x600E;&#x4E48;&#x751F;&#x6210;&#x8BC1;&#x4E66;"></a>&#x600E;&#x4E48;&#x751F;&#x6210;&#x8BC1;&#x4E66;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#认证流程"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x8BA4;&#x8BC1;&#x6D41;&#x7A0B;" class="headerlink" title="&#x8BA4;&#x8BC1;&#x6D41;&#x7A0B;"></a>&#x8BA4;&#x8BC1;&#x6D41;&#x7A0B;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对称加密与非对称加密"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;&#x4E0E;&#x975E;&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;" class="headerlink" title="&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;&#x4E0E;&#x975E;&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;"></a>&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;&#x4E0E;&#x975E;&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https和TSL-amp-SSL的关系"><span class="nav-number">8.</span> <span class="nav-text"><a href="#https&#x548C;TSL-amp-SSL&#x7684;&#x5173;&#x7CFB;" class="headerlink" title="https&#x548C;TSL&amp;SSL&#x7684;&#x5173;&#x7CFB;"></a>https&#x548C;TSL&amp;SSL&#x7684;&#x5173;&#x7CFB;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/';
+          this.page.identifier = '2019/03/14/证书、对称加密、非对称加密/';
+          this.page.title = '证书、对称加密、非对称加密';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

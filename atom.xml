@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-03-06T09:06:24.000Z</updated>
+  <updated>2019-03-15T08:49:05.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,148 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>证书、对称加密、非对称加密</title>
+    <link href="http://sevencai.github.io/2019/03/14/%E8%AF%81%E4%B9%A6%E3%80%81%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E3%80%81%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/"/>
+    <id>http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/</id>
+    <published>2019-03-14T09:16:48.000Z</published>
+    <updated>2019-03-15T08:49:05.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本篇文章主要是针对我对证书，堆成加密，非对称加密，CA等内容的粗浅理解的记录。下图为我理解的大致流程。方便后续查阅。</p>
+<p>几个基本概念</p>
+<ol>
+<li>密码: 对文本进行编码，使偷窥者无法识别的算法。</li>
+<li>密钥: 改变密码行为的数字化参数。</li>
+<li>对称密钥加密系统: 编 / 解码使用相同密钥的算法。</li>
+<li>不对称密钥加密系统: 编 / 解码使用不同密钥的算法。</li>
+<li>公开密钥加密系统: 一种能够使数百万计算机便捷地发送机密报文的系统。</li>
+<li>数字签名: 用来验证报文未被伪造或篡改的校验和。</li>
+<li>数字证书: 由一个可信的组织验证和签发的识别信息。</li>
+</ol>
+<p>一个整体的交互图</p>
+<p><img src="process.png" alt="流程图"></p>
+<hr>
+<h2 id="CA及CA证书"><a href="#CA及CA证书" class="headerlink" title="CA及CA证书"></a>CA及CA证书</h2><p>CA 就是认证机构,<code>Certificate Authority</code>。</p>
+<p>CA 证书： 因特网的<code>ID卡</code>, 通常被称为 certs。</p>
+<p>其中包含了由某个<strong>受信任的组织担保的用户或者公司的相关信息</strong>。</p>
+<p><strong>任何人都可以创建一个数字证书，但并不是所有人都能够获得受人尊敬的签发权，从而为证书信息担保，并用其私有密钥签发证书。</strong></p>
+<p>就像<code>身份证</code>是权威机构颁发的，能证明你的身份，一般大家都很信任。但是你的<code>名片卡</code>是你自己弄的，或者公司发的，大家可能就看看，但是不一定相信就是真的。</p>
+<p>所以你信用贷时，用身份证大家认可，但是你用名片卡肯定不可以，即使你名片卡上写的职位是经理。</p>
+<p><img src="certs.png" alt="典型的证书结构"></p>
+<hr>
+<h2 id="证书的组成"><a href="#证书的组成" class="headerlink" title="证书的组成"></a>证书的组成</h2><ol>
+<li>“对象的名称（人、服务器、组织等）；</li>
+<li>过期时间；</li>
+<li>证书发布者（由谁为证书担保）；</li>
+<li>来自证书发布者的<strong>数字签名</strong>；</li>
+<li><strong>对象的公开密钥</strong>。</li>
+</ol>
+<h2 id="服务器证书"><a href="#服务器证书" class="headerlink" title="服务器证书"></a>服务器证书</h2><ol>
+<li>Web 站点的名称和主机名；</li>
+<li>Web 站点的<strong>公开密钥</strong>；</li>
+<li>签名颁发机构的名称；</li>
+<li>来自签名<strong>颁发机构的签名</strong>。</li>
+</ol>
+<p>所以<strong>当浏览器收到证书后会进行检查，如果这个CA（认证机构）是个很权威的公共前面机构，浏览器就可以已经知道它的（CA的）公开密钥了。因为正版的浏览器会预先安装很多签名颁发机构的证书。注意浏览器这时候知道的公开密钥是CA认证机构的公开密钥，而不是服务器端的公开密钥，服务器端的公开密钥是通过CA的公开密钥解密得到的。</strong></p>
+<p>上面这里一定要理解清楚，再看下面的流程会清楚很多。</p>
+<p>证书=公钥+申请者与颁发者信息+签名。</p>
+<p>证书会颁发给服务器，浏览器请求时，服务器会给浏览器证书，浏览器通过签名和时间等，用CA的公钥判断证书是否有效。</p>
+<hr>
+<h2 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h2><p>上面提到了证书里面会包含CA的签名。这个签名的意义和作用是什么呢？</p>
+<blockquote>
+<p>“数字签名是附加在<strong>报文上</strong>的特殊加密校验码。”<br>用于描述是谁编写的报文，同时证明报文未被篡改过。这种技术被称为数字签名（digital signing）</p>
+</blockquote>
+<p>比如上面CA证书的签名，目的是证明CA证书是合法的，是CA颁发的。并且证书没有被篡改。</p>
+<p>签名就像人的签字一样。但是比人的签字更好的是可以通过程序判断是不是真的是你签的字。下面举例看看上面的CA的签名是怎么生成的。</p>
+<ol>
+<li>CA将变长报文提取为定长的摘要</li>
+<li>CA对摘要应用了一个签名函数，参数为CA的私钥</li>
+<li>计算出签名后CA将其附加在报文的尾部，并且将报文和签名一起发送给服务器</li>
+<li>然后客户端请求服务器时，拿到了证书。然后用CA的公钥进行签名函数的反函数</li>
+<li>得到了明文摘要。拿到摘要后再与真实发过来的文本摘要做对比</li>
+<li>若不一致，则签名不通过，若一致，则信任此证书及证书里面的服务器的<code>public key</code></li>
+</ol>
+<p><img src="sign.png" alt="签名的机制"></p>
+<hr>
+<h2 id="怎么生成证书"><a href="#怎么生成证书" class="headerlink" title="怎么生成证书"></a>怎么生成证书</h2><ol>
+<li>服务器把 <code>public key</code> 及一些其他附加信息给到CA</li>
+<li>CA 用自己的 <code>private key</code> 加密这些数据，加密完的数据称为数字证书。</li>
+<li>然后服务器返回证书给浏览器时，返回的是用 CA 的 <code>private key</code> 加密后的内容。浏览器收到后，会通过已知的 CA 的 <code>public key</code> 进行解密，来获得到 B 的 <code>public key</code>。</li>
+<li>这个得到的 <code>public key</code> 是受信任的公钥key。</li>
+</ol>
+<p><strong>所以可以知道生成证书的这个过称其实也是非对称加密</strong> </p>
+<p><strong>注意生成证书和签名的整个过程，CA都是不需要客户端或者服务端的私钥的，私钥要确保只能自己使用。CA使用的私钥也仅仅是自己的私钥，用于签名。</strong></p>
+<hr>
+<h2 id="认证流程"><a href="#认证流程" class="headerlink" title="认证流程"></a>认证流程</h2><p>把上面那些概念理解清楚后，后面这个流程就很清晰了。</p>
+<ol>
+<li>服务器申请向 CA 申请证书</li>
+<li>浏览器首次向服务器发起请求， 服务器返回证书给浏览器</li>
+<li>浏览器拿到证书，通过签名及时间等，判断是否有效，是否可信任</li>
+<li>若证书有效</li>
+<li>客户端生成随机数，然后用证书中的公钥进行加密，加密后发送给服务器，服务器用私钥进行解密，得到随机数。（这个过程是非对称加密）</li>
+<li>之后服务器和浏览器就用这个随机数做为钥匙，对数据进行加密解密。</li>
+</ol>
+<p><strong>所以知道拿到证书后，使用随机数后的过称，应该是对称加密</strong>。</p>
+<p>下面解释为什么会有证书和签名这些东西。证书和签名都是为了保证互联网传输信息安全。</p>
+<hr>
+<h2 id="对称加密与非对称加密"><a href="#对称加密与非对称加密" class="headerlink" title="对称加密与非对称加密"></a>对称加密与非对称加密</h2><p>对称密钥加密技术的缺点之一就是发送者和接收者在互相对话之前，<strong>一定要有一个共享的保密密钥</strong>。</p>
+<p>使用同一个密钥，带来的问题就是：</p>
+<ol>
+<li>密钥从网络传输是不安全的。</li>
+<li>若网络中有N个节点，那么每个节点都要跟其他节点建立联系，则会有N^2个节点。</li>
+</ol>
+<p>为了解决上面两个问题，出现了非对称加密（“公开密钥加密技术”）。</p>
+<p>节点A向节点B传送数据，节点A用节点B的公钥加密，B收到后用自己的私钥解密。</p>
+<p><strong>非对称加密可以理解成，一个节点有两个东西：一把锁，一个钥匙。锁可以给任何人，钥匙节点自己留用。所有的人都可以带着锁过来，但是只有自己能看别人发给自己的东西。</strong></p>
+<p>所以非对称加密虽然较安全也会带来问题：</p>
+<ol>
+<li>数据被篡改，密钥被拦截。</li>
+<li>耗时多，加密与解密速度慢。</li>
+</ol>
+<p>假设A发送的数据被C拦截了，C用B的公钥和自己的数据加密后伪装成A发送给B了。</p>
+<p>B也并不知道自己接受到的数据不是A的了，而是C的。</p>
+<p>因此出现了数字签名和数字证书。</p>
+<p>数字签名保证了B收到的信息内容没有被篡改(A用hash得到A的摘要，再用自己的私钥进行加密，得到签名，B收到后用A的公钥解密，得到摘要和收到的内容比对)</p>
+<p>但是这并不能保证内容一定没有被C拦截。</p>
+<p><img src="lack.png" alt="第三方拦截"></p>
+<p>因为坏坏的C可以把B保存的A的公钥替换成自己的公钥。然后冒用A给B发送信息。C拦截A的信息，然后自己发送信息给B，用B的公钥加密，然后B用自己的私钥解密。（如上图）</p>
+<p>所以出现了证书。证书的目的就是保证了数据不被篡改，并且保证B处A的公钥就是A的公钥。</p>
+<blockquote>
+<p>典型的对称加密算法： AES,DES,Trible DES<br>典型的非对称加密算法： RSA</p>
+</blockquote>
+<hr>
+<h2 id="https和TSL-amp-SSL的关系"><a href="#https和TSL-amp-SSL的关系" class="headerlink" title="https和TSL&amp;SSL的关系"></a>https和TSL&amp;SSL的关系</h2><p>https是基于 TSL 及 SSL 实现的。TSL 和 SSL 主要依赖下面这几种算法</p>
+<ol>
+<li>散列函数 Hash: 基于散列函数验证信息的完整性</li>
+<li>对称加密: 对称加密算法采用协商的密钥对数据加密</li>
+<li>非对称加密: 非对称加密实现身份认证和密钥协商</li>
+</ol>
+<p>也就是说：<strong>TSL 其实对称加密和非对称加密都用到了。先用非对称加密获得对应的密钥。再用改密钥进行对称加密传输。</strong>这在我们上面的认证过程中有体现。</p>
+<p>之所以后面获得密钥后，就用对称加密，主要是解决时间非对称加密太消耗时间和性能的问题。</p>
+<p><img src="ssltsl.png" alt="流程图"></p>
+<p>标注：上面的图片来源于<a href="https://juejin.im/post/5b88a93df265da43231f1451" target="_blank" rel="noopener">TLS 详解</a>一文。更多的 SSL 握手等细节，我不关注。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实我本来是遇到了一个<code>https</code>的问题, 然后去了解了 tsl 和 ssl， 然后又去了解了非对称加密和对称加密。然后又去了解了证书和CA。</p>
+<p>其实我是遇到问题的时候，发现这些东西都知道，但是并没有系统，没法很好的关联到一起，因此得去总结了。</p>
+<p>这几天晚上工作搞完了，都花了一个小时去总结这个。还好是屡清楚，有收货了，以后忘记再看这篇文章回忆应该很快。</p>
+<p>上文有部分概念性文案 - 摘录来自: [美]David Gourley Brian Totty Marjorie Sayer Sailu Reddy Aushu Aggarwal. “HTTP权威指南 (图灵程序设计丛书)”。 iBooks.    </p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本篇文章主要是针对我对证书，堆成加密，非对称加密，CA等内容的粗浅理解的记录。下图为我理解的大致流程。方便后续查阅。&lt;/p&gt;
+&lt;p&gt;几个基本概念&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;密码: 对文本进行编码，使偷窥者无法识别的算法。&lt;/li&gt;
+&lt;li&gt;密钥: 改变密码行为的数字化参数。
+    
+    </summary>
+    
+    
+      <category term="http" scheme="http://sevencai.github.io/tags/http/"/>
+    
+  </entry>
   
   <entry>
     <title>简单分析babel和webpack编译后的文件</title>
@@ -1277,80 +1419,6 @@
     
     
       <category term="工具" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>小程序支持分包加载和无需用户授权获得头像</title>
-    <link href="http://sevencai.github.io/2018/04/23/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%94%AF%E6%8C%81%E5%88%86%E5%8C%85%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%97%A0%E9%9C%80%E7%94%A8%E6%88%B7%E6%8E%88%E6%9D%83%E8%8E%B7%E5%BE%97%E5%A4%B4%E5%83%8F/"/>
-    <id>http://sevencai.github.io/2018/04/23/小程序支持分包加载和无需用户授权获得头像/</id>
-    <published>2018-04-23T06:56:06.000Z</published>
-    <updated>2018-04-23T07:06:23.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>结论：增加了分包加载特性，速度快了很多。修改了用户授权逻辑，使用 open-data 能力改为了完全不用用户授权即可获得昵称头像群名称等。</p>
-</blockquote>
-<hr>
-<h1 id="改版效果"><a href="#改版效果" class="headerlink" title="改版效果"></a>改版效果</h1><p>星期六的时候把手边的小程序改为了分包加载。产品是没有提这个需求的，但是心想下次做小程序的需求估计要很久以后了，就星期六加了下班。效果还是很好的。</p>
-<blockquote>
-<p>首屏加载时间由： 7.95s 减少到了 5.00s<br>平均 cpu 占比右：19.19% 减少到了 4.77%</p>
-</blockquote>
-<p>我并不知道很清楚这个平均 cpu 占比是怎么被算出来的。如果这个数据的变化能够微信团队能够解释的更详细些就好了。</p>
-<p>在分包的加载过程中，比如首页是一个 packageA， 到列表页是一个 packageB, 这个过程在第一次访问列表页的时候，会再去下载代码。微信在这个过程中帮助了开发者显示了提示： 类似于页面加载中。 这个还是很友好的。</p>
-<p>但是使用分包加载给开发者带来的成本也很大，基本上目录都被更改了。结构也被更改了。其实我是觉得如果能够不更改目录，只在 json 里面配置好打包的方案是最好的。其实仔细想想不更改目录也是行的吧？</p>
-<blockquote>
-<p>小程序经历过几次的“改版”，最开始的 pages, 后来的 component, 先在的 subPackage, 虽然一直再变得更好，但是对于一开始就开发小程序的开发者来说，或者至少对我来说，是不那么友好的。以后等这里逐渐更加成熟了，应该会好的。</p>
-</blockquote>
-<hr>
-<h1 id="怎么开发分包加载"><a href="#怎么开发分包加载" class="headerlink" title="怎么开发分包加载?"></a>怎么开发分包加载?</h1><p>首先开始把目录结构定好，配置在 app.json 里，这个配置实际就是小程序会怎么分包加载。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"pages"</span>: [</span><br><span class="line">    <span class="string">"pages/index/index"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"window"</span>: &#123;</span><br><span class="line">    <span class="string">"backgroundTextStyle"</span>: <span class="string">"light"</span>,</span><br><span class="line">    <span class="string">"navigationBarBackgroundColor"</span>: <span class="string">"#3b8cff"</span>,</span><br><span class="line">    <span class="string">"backgroundColor"</span>: <span class="string">"#3b8cff"</span>,</span><br><span class="line">    <span class="string">"navigationBarTitleText"</span>: <span class="string">"腾讯充值"</span>,</span><br><span class="line">    <span class="string">"navigationBarTextStyle"</span>: <span class="string">"light"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"subPackages"</span>: [</span><br><span class="line">	&#123;</span><br><span class="line">      <span class="string">"root"</span>: <span class="string">"result"</span>,</span><br><span class="line">	  <span class="string">"pages"</span>: [</span><br><span class="line">        <span class="string">"pages/result/result"</span></span><br><span class="line">	  ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"root"</span>: <span class="string">"userCenter"</span>,</span><br><span class="line">	  <span class="string">"pages"</span>: [</span><br><span class="line">        <span class="string">"pages/user_center/user_center"</span></span><br><span class="line">	  ]</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如上面的目录结构，除了个人中心以及结果页以外的内容都是会在第一次下载了。 待页面跳转到 result 结果页，相关代码才会被下载并加载。</p>
-<p>注意由于页面的目录发生了变化，以前如果是通过相对路径引用如 util 里的文件，那么路径都是要更改的。建议这里都使用 <code>/images/a.png</code> or <code>/utils/a.js</code>这种绝对路径比较好。</p>
-<hr>
-<h1 id="怎么获得昵称还不需要用户授权？"><a href="#怎么获得昵称还不需要用户授权？" class="headerlink" title="怎么获得昵称还不需要用户授权？"></a>怎么获得昵称还不需要用户授权？</h1><p>前天微信发布了新的文章，地址<a href="https://mp.weixin.qq.com/s/FTVGVXHSWPlYN1oQTzj-mA" target="_blank" rel="noopener">戳这里</a>,里面讲到了：</p>
-<blockquote>
-<p> 用户在没有任何操作的情况直接弹出授权的登录方式将逐渐不再支持，受影响的有 wx.getUserInfo 接口，以及 wx.authorize 接口传入 scope=”scope.userInfo” 的情况。</p>
-</blockquote>
-<p>它推荐了两种做法：</p>
-<blockquote>
-<p>1、按钮组件的登录方式，用户主动点击按钮可以拉起用户授权弹框，获取用户头像、昵称等信息；<br>2、在不获取用户信息的情况下，可展示用户头像昵称。</p>
-</blockquote>
-<p>第一种用于你真的是需要获得到昵称和图标，做一些其他的工作，比如存储的工作。这种情况，开发者是可以得到昵称和图标的值的。但是它也需要用户去触发，比如你点击个人中心的时候，是一个 btn, 这个 button, 会调用 getUserInfo 这种操作。</p>
-<p><code>&lt;button open-type=&quot;getUserInfo&quot; bindgetuserinfo=&quot;userInfoHandler&quot;&gt;微信登录&lt;/button&gt;</code></p>
-<p>注意既然还是调用了授权，那么一定还是会弹框提示用户是否允许授权，如果用户拒绝了也是得不到的。</p>
-<p>第二种，如果你只是需要用户的昵称和头像展示在页面里，而不是真正的需要获得这些数据存储在某个地方或者向后台接口传递这些值。那么就告别<code>wx.authorize</code>和<code>wx.getUserInfo</code>吧。</p>
-<p>我仔细想了下我们的充值页面，存储的都是 openid，没有需要去真正的用到 nickName 和 avatar 这些。只是为了再页面展示而已，所以：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;open-data type=&quot;groupName&quot; open-gid=&quot;xxxxxx&quot;&gt;&lt;/open-data&gt;</span><br><span class="line">&lt;open-data type=&quot;userAvatarUrl&quot;&gt;&lt;/open-data&gt;</span><br><span class="line">&lt;open-data type=&quot;userGender&quot; lang=&quot;zh_CN&quot;&gt;&lt;/open-data&gt;</span><br></pre></td></tr></table></figure>
-<p>利用 open-data 既可以完美的解决啦。 也可以给它加入 class, 跟正常的 view 是类似的。</p>
-<p>这样就完美啦，以后再也不需要用户授权啦。嘿嘿嘿。（产品开心，我也开心）</p>
-<p>对了这里注意，open-data 只能在真机上试出来，我的目前版本的开发者工具是展示不出来的。如果你开发者工具上出不来，就试试真机。可能是版本原因。</p>
-<hr>
-<h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><blockquote>
-<p>微信 6.6 客户端，1.7.3 及以上基础库开始支持，请更新至最新客户端版本，开发者工具请使用 1.01.1712150 及以上版本</p>
-</blockquote>
-<p>注意这里的分包加载必须在1.7.3及以上开始支持。为了能够在 1.7.3 以下至少页面正常。你可以兼容。或者再微信公众平台后面来设置，最低版本为 1.7.3,这种情况下：</p>
-<blockquote>
-<p>若用户使用的基础库版本低于设置的最低版本要求，则无法正常使用小程序，并提示更新微信版本。</p>
-</blockquote>
-<p>open-data 是在 1.4.4 以上，好像，所以如果你设置了分包加载的，那么这个肯定也没问题啦。</p>
-<hr>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>主要是代码目录结构改变了，导致比如以前代码里的 <code>navigateTo({url: &#39;../../result/result&#39;})</code>路径都需要改变，这些话费了时间重构。但是看到结果上是快了这么多的就好。</p>
-<p>还有就是为什么 page 里不能用 behavior? 只有 component 里面能用？ 这个我感觉不太合理。vue 里面 每个 page 也是一个 component 来着。</p>
-<p>其实插件的功能我也想试试，但是现在还没有想到可以使用的场景。也许是以后可以像交易记录这种做成小程序，别的外部业务就可加了吧？</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;结论：增加了分包加载特性，速度快了很多。修改了用户授权逻辑，使用 open-data 能力改为了完全不用用户授权即可获得昵称头像群名称等。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;改版效果&quot;&gt;&lt;a href=&quot;#改版效果&quot; c
-    
-    </summary>
-    
-    
-      <category term="小程序" scheme="http://sevencai.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
     
   </entry>
   
