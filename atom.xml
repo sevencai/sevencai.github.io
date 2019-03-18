@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-03-15T11:45:57.000Z</updated>
+  <updated>2019-03-18T03:21:02.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://sevencai.github.io/2019/03/15/%E5%85%B3%E4%BA%8E%E5%BE%AE%E4%BF%A1%E5%85%8D%E5%AF%86%E6%94%AF%E4%BB%98%E7%9A%84%E5%87%A0%E4%B8%AA%E6%A6%82%E5%BF%B5/"/>
     <id>http://sevencai.github.io/2019/03/15/关于微信免密支付的几个概念/</id>
     <published>2019-03-15T11:38:31.000Z</published>
-    <updated>2019-03-15T11:45:57.000Z</updated>
+    <updated>2019-03-18T03:21:02.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>纯签约<br>支付中签约<br>支付后签约<br>签约后支付（连续包月）<br>自动续费</p>
@@ -35,8 +35,10 @@
 <hr>
 <h2 id="支付后签约"><a href="#支付后签约" class="headerlink" title="支付后签约"></a>支付后签约</h2><p>支付后签约：是用户先进行一笔支付，支付后再拉起签约页面。<strong>这种情况转换率更低，用户需要输入两次密码，第一次是付款的密码，第二次是签约的密码</strong>。体验不好。</p>
 <hr>
-<h2 id="签约后支付"><a href="#签约后支付" class="headerlink" title="签约后支付"></a>签约后支付</h2><p>签约后支付：先拉起签约页面，用户输入密码，然后签约后，由商家进行扣款一笔付费。<strong>这种情况，用户只需要输入密码一次，并且一定是先签约转换率高，并且用户也会支付一笔，大家把包装成连续包月的概念</strong>。</p>
+<h2 id="签约后支付"><a href="#签约后支付" class="headerlink" title="签约后支付"></a>签约后支付</h2><p>签约后支付：先拉起签约页面，用户输入密码，然后签约后，由商家进行扣款一笔付费。<strong>这种情况，用户只需要输入密码一次，并且一定是先签约转换率高，并且用户也会支付一笔，大家把它包装成【连续包月】的概念</strong>。</p>
 <p>这种连续包月就是需要商家在用户签约完成后，立刻<strong>为用户下一笔单</strong>，然后由于用户已经签约，所以不需要再输密码。这时候用户就又签约又支付。比较完美。商家需要开发后续再下单的流程。</p>
+<hr>
+<h2 id="自动续费"><a href="#自动续费" class="headerlink" title="自动续费"></a>自动续费</h2><p>自动续费就是一种很宽泛的说法了，就是到期了，商家帮助用户进行自动的扣款并且延长服务的说法。自动续费的渠道有很多，比如支付宝，QB, 微信支付等渠道。而连续包月可以说是其中的一种，可以理解为是微信的自动续费。自动续费概念比较广泛，连续包月是其中的一种实现。</p>
 ]]></content>
     
     <summary type="html">

@@ -91,7 +91,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://sevencai.github.io/2019/03/15/关于微信免密支付的几个概念/chunqianyue.png">
 <meta property="og:image" content="http://sevencai.github.io/2019/03/15/关于微信免密支付的几个概念/zhifuzhongqianyue.png">
-<meta property="og:updated_time" content="2019-03-15T11:45:57.000Z">
+<meta property="og:updated_time" content="2019-03-18T03:21:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于微信免密支付的几个概念">
 <meta name="twitter:description" content="纯签约支付中签约支付后签约签约后支付（连续包月）自动续费  微信一共只提供两种签约方式： 纯签约和支付中签约，文档在这里。 后面的几种方式都不是微信的概念，而是大家包装出来的概念。  纯签约纯签约可以理解为委托扣款，用户一旦同意，以后商家就可以免用户密码进行扣款。这个过称中不会发生扣款行为，仅仅是签约，签订协议而已。   支付中签约支付中签约是微信提供的另外一种签约，商家在下订单时，带上签约的参">
@@ -369,8 +369,10 @@
 <hr>
 <h2 id="支付后签约"><a href="#支付后签约" class="headerlink" title="支付后签约"></a>支付后签约</h2><p>支付后签约：是用户先进行一笔支付，支付后再拉起签约页面。<strong>这种情况转换率更低，用户需要输入两次密码，第一次是付款的密码，第二次是签约的密码</strong>。体验不好。</p>
 <hr>
-<h2 id="签约后支付"><a href="#签约后支付" class="headerlink" title="签约后支付"></a>签约后支付</h2><p>签约后支付：先拉起签约页面，用户输入密码，然后签约后，由商家进行扣款一笔付费。<strong>这种情况，用户只需要输入密码一次，并且一定是先签约转换率高，并且用户也会支付一笔，大家把包装成连续包月的概念</strong>。</p>
+<h2 id="签约后支付"><a href="#签约后支付" class="headerlink" title="签约后支付"></a>签约后支付</h2><p>签约后支付：先拉起签约页面，用户输入密码，然后签约后，由商家进行扣款一笔付费。<strong>这种情况，用户只需要输入密码一次，并且一定是先签约转换率高，并且用户也会支付一笔，大家把它包装成【连续包月】的概念</strong>。</p>
 <p>这种连续包月就是需要商家在用户签约完成后，立刻<strong>为用户下一笔单</strong>，然后由于用户已经签约，所以不需要再输密码。这时候用户就又签约又支付。比较完美。商家需要开发后续再下单的流程。</p>
+<hr>
+<h2 id="自动续费"><a href="#自动续费" class="headerlink" title="自动续费"></a>自动续费</h2><p>自动续费就是一种很宽泛的说法了，就是到期了，商家帮助用户进行自动的扣款并且延长服务的说法。自动续费的渠道有很多，比如支付宝，QB, 微信支付等渠道。而连续包月可以说是其中的一种，可以理解为是微信的自动续费。自动续费概念比较广泛，连续包月是其中的一种实现。</p>
 
       
     </div>
@@ -560,7 +562,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#纯签约"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x7EAF;&#x7B7E;&#x7EA6;" class="headerlink" title="&#x7EAF;&#x7B7E;&#x7EA6;"></a>&#x7EAF;&#x7B7E;&#x7EA6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支付中签约"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x652F;&#x4ED8;&#x4E2D;&#x7B7E;&#x7EA6;" class="headerlink" title="&#x652F;&#x4ED8;&#x4E2D;&#x7B7E;&#x7EA6;"></a>&#x652F;&#x4ED8;&#x4E2D;&#x7B7E;&#x7EA6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支付后签约"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x652F;&#x4ED8;&#x540E;&#x7B7E;&#x7EA6;" class="headerlink" title="&#x652F;&#x4ED8;&#x540E;&#x7B7E;&#x7EA6;"></a>&#x652F;&#x4ED8;&#x540E;&#x7B7E;&#x7EA6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#签约后支付"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x7B7E;&#x7EA6;&#x540E;&#x652F;&#x4ED8;" class="headerlink" title="&#x7B7E;&#x7EA6;&#x540E;&#x652F;&#x4ED8;"></a>&#x7B7E;&#x7EA6;&#x540E;&#x652F;&#x4ED8;</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#纯签约"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x7EAF;&#x7B7E;&#x7EA6;" class="headerlink" title="&#x7EAF;&#x7B7E;&#x7EA6;"></a>&#x7EAF;&#x7B7E;&#x7EA6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支付中签约"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x652F;&#x4ED8;&#x4E2D;&#x7B7E;&#x7EA6;" class="headerlink" title="&#x652F;&#x4ED8;&#x4E2D;&#x7B7E;&#x7EA6;"></a>&#x652F;&#x4ED8;&#x4E2D;&#x7B7E;&#x7EA6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支付后签约"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x652F;&#x4ED8;&#x540E;&#x7B7E;&#x7EA6;" class="headerlink" title="&#x652F;&#x4ED8;&#x540E;&#x7B7E;&#x7EA6;"></a>&#x652F;&#x4ED8;&#x540E;&#x7B7E;&#x7EA6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#签约后支付"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x7B7E;&#x7EA6;&#x540E;&#x652F;&#x4ED8;" class="headerlink" title="&#x7B7E;&#x7EA6;&#x540E;&#x652F;&#x4ED8;"></a>&#x7B7E;&#x7EA6;&#x540E;&#x652F;&#x4ED8;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动续费"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x81EA;&#x52A8;&#x7EED;&#x8D39;" class="headerlink" title="&#x81EA;&#x52A8;&#x7EED;&#x8D39;"></a>&#x81EA;&#x52A8;&#x7EED;&#x8D39;</span></a></li></ol></div>
             
 
           </div>
