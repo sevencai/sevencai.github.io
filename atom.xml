@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-03-18T03:21:02.000Z</updated>
+  <updated>2019-04-15T06:44:24.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,91 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>webpack4读书笔记(二)</title>
+    <link href="http://sevencai.github.io/2019/04/23/webpack4%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E4%BA%8C/"/>
+    <id>http://sevencai.github.io/2019/04/23/webpack4读书笔记-二/</id>
+    <published>2019-04-23T04:57:36.000Z</published>
+    <updated>2019-04-15T06:44:24.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>上篇文章整理了几个点，这篇文章接着记录下我觉得有总结意义的点。</p>
+<hr>
+<h2 id="loader-和-pugin的区别"><a href="#loader-和-pugin的区别" class="headerlink" title="loader 和 pugin的区别"></a>loader 和 pugin的区别</h2><p>loader上篇总结了：webpack只知道处理 js 类的文件，对于很多其他类型的模块如图片，字体等他不知道怎么处理，这时候就可以设置相关的loader，告诉它怎么处理这些模块。</p>
+<p><strong>plugin跟loader不同，我理解plugin是可以在webpack分析执行的某些节点或者生命周期时，做的某些操作。</strong></p>
+<p>如 <code>webpackHtmlPlugin</code>,在打包最后处理，生成html文件。 <code>cleanWebpackPlugin</code>，在webpack打包的最开始，把dist目录清空。</p>
+<p><code>plugin</code>有点像<code>react.vue</code>里的如<code>mounted, beforeRouteEnter</code>等节点，在某个时刻做某些事情。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">plugins: [</span><br><span class="line">  <span class="keyword">new</span> cleanWebpackPlugin(),</span><br><span class="line">  <span class="keyword">new</span> htmlWebpackPlugin(&#123;</span><br><span class="line">    template: <span class="string">"src/index.html"</span></span><br><span class="line">  &#125;)</span><br><span class="line"> ]</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="理解sourceMap和webpack4中sourcemap的使用"><a href="#理解sourceMap和webpack4中sourcemap的使用" class="headerlink" title="理解sourceMap和webpack4中sourcemap的使用"></a>理解sourceMap和webpack4中sourcemap的使用</h2><p>sourcemap 是一个映射关系，映射了打包后的某个代码位置对应于打包前的代码位置，方便开发者定位问题。</p>
+<p>webpack4中设置 <code>sourcemap</code> 可以使用 <code>devtool</code> 的值，或者使用<code>SourceMapDevToolPlugin</code>和<code>EvalSourceMapDevToolPlugin</code>，两个不可同时使用。</p>
+<p>webpack4, <code>development</code>模式默认的devtool模式是 eval, 若<code>mode=production</code>并且不设置 devtool 则没有 sourcemap。</p>
+<p>所有的 sourcemap 可以设置的值，有如下：</p>
+<p><img src="devtool3.png" alt="sourcemap devtool"></p>
+<p>我觉得可以不用去分别去记忆有哪些类型的sourcemap,所有的sourcemap都是几种关键字组合而成，每种可能代表一个含义，理解其中的关键字，然后再去翻看文档需要哪种即可。</p>
+<p>下面看下这几种关键字,理解后再来看上述的就可以理解了。</p>
+<hr>
+<h2 id="1、-eval"><a href="#1、-eval" class="headerlink" title="1、 eval"></a>1、 eval</h2><p><strong>使用eval包裹模块代码</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">eval</span>(<span class="string">"// import Test from './Test'\n// import './1.png'\n// import './1.css'\n// new Test()\n\nconsele.log('log data')\n\n\n//# sourceURL=webpack:///./src/index.js?"</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="2、-source-map"><a href="#2、-source-map" class="headerlink" title="2、 source-map"></a>2、 source-map</h2><p><strong>产生 .map 文件</strong>，sourcemap 不会和 js 代码耦合在一起。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">main.bundle.js</span><br><span class="line">main.bundle.js.map</span><br></pre></td></tr></table></figure></p>
+<h2 id="3、-cheap"><a href="#3、-cheap" class="headerlink" title="3、 cheap"></a>3、 cheap</h2><p><strong>不包含列信息</strong>，正常情况下我们只用知道是哪一行就可以了。如果加上哪一列相当于解析更费时间。</p>
+<p>如：eval, 此时光标是值在出错的行及列。<br><img src="notcheap.png" alt="eval"></p>
+<p>而：<code>cheap-eval-source-map</code>,此时光标只在最前面。<br><img src="ch.png" alt="cheap"></p>
+<h2 id="4、inline"><a href="#4、inline" class="headerlink" title="4、inline"></a>4、inline</h2><p>将 .map 文件作为 DataURI嵌入，这种情况将不单独生成 .map 文件，而是跟bundle文件在一个文件里。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vd2VicGFjay9ib290c3RyYXAiLCJ3ZWJwYWNrOi8vLy4vc3JjL2luZGV4LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQTtBQUNBOztBQUVBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTs7QUFFQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTs7O0FBR0E7QUFDQTs7QUFFQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBLGtEQUEwQyxnQ0FBZ0M7QUFDMUU7QUFDQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQSxnRUFBd0Qsa0JBQWtCO0FBQzFFO0FBQ0EseURBQWlELGNBQWM7QUFDL0Q7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBLGlEQUF5QyxpQ0FBaUM7QUFDMUUsd0hBQWdILG1CQUFtQixFQUFFO0FBQ3JJO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0EsbUNBQTJCLDBCQUEwQixFQUFFO0FBQ3ZELHlDQUFpQyxlQUFlO0FBQ2hEO0FBQ0E7QUFDQTs7QUFFQTtBQUNBLDhEQUFzRCwrREFBK0Q7O0FBRXJIO0FBQ0E7OztBQUdBO0FBQ0E7Ozs7Ozs7Ozs7OztBQ2xGQTtBQUNBO0FBQ0E7QUFDQTs7QUFFQSIsImZpbGUiOiJtYWluLmJ1bmRsZS5qcyIsInNvdXJjZXNDb250ZW50IjpbIiBcdC8vIFRoZSBtb2R1bGUgY2FjaGVcbiBcdHZhciBpbnN0YWxsZWRNb2R1bGVzID0ge307XG5cbiBcdC8vIFRoZSByZXF1aXJlIGZ1bmN0aW9uXG4gXHRmdW5jdGlvbiBfX3dlYnBhY2tfcmVxdWlyZV9fKG1vZHVsZUlkKSB7XG5cbiBcdFx0Ly8gQ2hlY2sgaWYgbW9kdWxlIGlzIGluIGNhY2hlXG4gXHRcdGlmKGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdKSB7XG4gXHRcdFx0cmV0dXJuIGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdLmV4cG9ydHM7XG4gXHRcdH1cbiBcdFx0Ly8gQ3JlYXRlIGEgbmV3IG1vZHVsZSAoYW5kIHB1dCBpdCBpbnRvIHRoZSBjYWNoZSlcbiBcdFx0dmFyIG1vZHVsZSA9IGluc3RhbGxlZE1vZHVsZXNbbW9kdWxlSWRdID0ge1xuIFx0XHRcdGk6IG1vZHVsZUlkLFxuIFx0XHRcdGw6IGZhbHNlLFxuIFx0XHRcdGV4cG9ydHM6IHt9XG4gXHRcdH07XG5cbiBcdFx0Ly8gRXhlY3V0ZSB0aGUgbW9kdWxlIGZ1bmN0aW9uXG4gXHRcdG1vZHVsZXNbbW9kdWxlSWRdLmNhbGwobW9kdWxlLmV4cG9ydHMsIG1vZHVsZSwgbW9kdWxlLmV4cG9ydHMsIF9fd2VicGFja19yZXF1aXJlX18pO1xuXG4gXHRcdC8vIEZsYWcgdGhlIG1vZHVsZSBhcyBsb2FkZWRcbiBcdFx0bW9kdWxlLmwgPSB0cnVlO1xuXG4gXHRcdC8vIFJldHVybiB0aGUgZXhwb3J0cyBvZiB0aGUgbW9kdWxlXG4gXHRcdHJldHVybiBtb2R1bGUuZXhwb3J0cztcbiBcdH1cblxuXG4gXHQvLyBleHBvc2UgdGhlIG1vZHVsZXMgb2JqZWN0IChfX3dlYnBhY2tfbW9kdWxlc19fKVxuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5tID0gbW9kdWxlcztcblxuIFx0Ly8gZXhwb3NlIHRoZSBtb2R1bGUgY2FjaGVcbiBcdF9fd2VicGFja19yZXF1aXJlX18uYyA9IGluc3RhbGxlZE1vZHVsZXM7XG5cbiBcdC8vIGRlZmluZSBnZXR0ZXIgZnVuY3Rpb24gZm9yIGhhcm1vbnkgZXhwb3J0c1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5kID0gZnVuY3Rpb24oZXhwb3J0cywgbmFtZSwgZ2V0dGVyKSB7XG4gXHRcdGlmKCFfX3dlYnBhY2tfcmVxdWlyZV9fLm8oZXhwb3J0cywgbmFtZSkpIHtcbiBcdFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgbmFtZSwgeyBlbnVtZXJhYmxlOiB0cnVlLCBnZXQ6IGdldHRlciB9KTtcbiBcdFx0fVxuIFx0fTtcblxuIFx0Ly8gZGVmaW5lIF9fZXNNb2R1bGUgb24gZXhwb3J0c1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5yID0gZnVuY3Rpb24oZXhwb3J0cykge1xuIFx0XHRpZih0eXBlb2YgU3ltYm9sICE9PSAndW5kZWZpbmVkJyAmJiBTeW1ib2wudG9TdHJpbmdUYWcpIHtcbiBcdFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgU3ltYm9sLnRvU3RyaW5nVGFnLCB7IHZhbHVlOiAnTW9kdWxlJyB9KTtcbiBcdFx0fVxuIFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkoZXhwb3J0cywgJ19fZXNNb2R1bGUnLCB7IHZhbHVlOiB0cnVlIH0pO1xuIFx0fTtcblxuIFx0Ly8gY3JlYXRlIGEgZmFrZSBuYW1lc3BhY2Ugb2JqZWN0XG4gXHQvLyBtb2RlICYgMTogdmFsdWUgaXMgYSBtb2R1bGUgaWQsIHJlcXVpcmUgaXRcbiBcdC8vIG1vZGUgJiAyOiBtZXJnZSBhbGwgcHJvcGVydGllcyBvZiB2YWx1ZSBpbnRvIHRoZSBuc1xuIFx0Ly8gbW9kZSAmIDQ6IHJldHVybiB2YWx1ZSB3aGVuIGFscmVhZHkgbnMgb2JqZWN0XG4gXHQvLyBtb2RlICYgOHwxOiBiZWhhdmUgbGlrZSByZXF1aXJlXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLnQgPSBmdW5jdGlvbih2YWx1ZSwgbW9kZSkge1xuIFx0XHRpZihtb2RlICYgMSkgdmFsdWUgPSBfX3dlYnBhY2tfcmVxdWlyZV9fKHZhbHVlKTtcbiBcdFx0aWYobW9kZSAmIDgpIHJldHVybiB2YWx1ZTtcbiBcdFx0aWYoKG1vZGUgJiA0KSAmJiB0eXBlb2YgdmFsdWUgPT09ICdvYmplY3QnICYmIHZhbHVlICYmIHZhbHVlLl9fZXNNb2R1bGUpIHJldHVybiB2YWx1ZTtcbiBcdFx0dmFyIG5zID0gT2JqZWN0LmNyZWF0ZShudWxsKTtcbiBcdFx0X193ZWJwYWNrX3JlcXVpcmVfXy5yKG5zKTtcbiBcdFx0T2JqZWN0LmRlZmluZVByb3BlcnR5KG5zLCAnZGVmYXVsdCcsIHsgZW51bWVyYWJsZTogdHJ1ZSwgdmFsdWU6IHZhbHVlIH0pO1xuIFx0XHRpZihtb2RlICYgMiAmJiB0eXBlb2YgdmFsdWUgIT0gJ3N0cmluZycpIGZvcih2YXIga2V5IGluIHZhbHVlKSBfX3dlYnBhY2tfcmVxdWlyZV9fLmQobnMsIGtleSwgZnVuY3Rpb24oa2V5KSB7IHJldHVybiB2YWx1ZVtrZXldOyB9LmJpbmQobnVsbCwga2V5KSk7XG4gXHRcdHJldHVybiBucztcbiBcdH07XG5cbiBcdC8vIGdldERlZmF1bHRFeHBvcnQgZnVuY3Rpb24gZm9yIGNvbXBhdGliaWxpdHkgd2l0aCBub24taGFybW9ueSBtb2R1bGVzXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLm4gPSBmdW5jdGlvbihtb2R1bGUpIHtcbiBcdFx0dmFyIGdldHRlciA9IG1vZHVsZSAmJiBtb2R1bGUuX19lc01vZHVsZSA/XG4gXHRcdFx0ZnVuY3Rpb24gZ2V0RGVmYXVsdCgpIHsgcmV0dXJuIG1vZHVsZVsnZGVmYXVsdCddOyB9IDpcbiBcdFx0XHRmdW5jdGlvbiBnZXRNb2R1bGVFeHBvcnRzKCkgeyByZXR1cm4gbW9kdWxlOyB9O1xuIFx0XHRfX3dlYnBhY2tfcmVxdWlyZV9fLmQoZ2V0dGVyLCAnYScsIGdldHRlcik7XG4gXHRcdHJldHVybiBnZXR0ZXI7XG4gXHR9O1xuXG4gXHQvLyBPYmplY3QucHJvdG90eXBlLmhhc093blByb3BlcnR5LmNhbGxcbiBcdF9fd2VicGFja19yZXF1aXJlX18ubyA9IGZ1bmN0aW9uKG9iamVjdCwgcHJvcGVydHkpIHsgcmV0dXJuIE9iamVjdC5wcm90b3R5cGUuaGFzT3duUHJvcGVydHkuY2FsbChvYmplY3QsIHByb3BlcnR5KTsgfTtcblxuIFx0Ly8gX193ZWJwYWNrX3B1YmxpY19wYXRoX19cbiBcdF9fd2VicGFja19yZXF1aXJlX18ucCA9IFwiXCI7XG5cblxuIFx0Ly8gTG9hZCBlbnRyeSBtb2R1bGUgYW5kIHJldHVybiBleHBvcnRzXG4gXHRyZXR1cm4gX193ZWJwYWNrX3JlcXVpcmVfXyhfX3dlYnBhY2tfcmVxdWlyZV9fLnMgPSBcIi4vc3JjL2luZGV4LmpzXCIpO1xuIiwiLy8gaW1wb3J0IFRlc3QgZnJvbSAnLi9UZXN0J1xuLy8gaW1wb3J0ICcuLzEucG5nJ1xuLy8gaW1wb3J0ICcuLzEuY3NzJ1xuLy8gbmV3IFRlc3QoKVxuXG5jb25zZWxlLmxvZygnbG9nIGRhdGEnKVxuIl0sInNvdXJjZVJvb3QiOiIifQ=</span></span><br></pre></td></tr></table></figure>
+<h2 id="5、module"><a href="#5、module" class="headerlink" title="5、module"></a>5、module</h2><p>除了提示业务代码本身的map外，其他模块如loader，也会被映射有相应的sourcemap。</p>
+<p>其实看官方文档会更加清楚，它会讲为什么有些类型是不适合生产或者开发环境，或者能够告诉你什么是 <code>origin code</code> 或者 <code>transformed code</code>。</p>
+<p>sourcemap的更加细节的原理，可以参考<a href="http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html" target="_blank" rel="noopener">JavaScript Source Map 详解-阮一峰</a></p>
+<hr>
+<h2 id="webpack-dev-server-HMR"><a href="#webpack-dev-server-HMR" class="headerlink" title="webpack-dev-server HMR"></a>webpack-dev-server HMR</h2><p>webpack4中开启 </p>
+<ol>
+<li>开启 <code>devsever hot: true, hotOnly: true</code></li>
+<li>使用 <code>new webpack.HotModuleReplacementPlugin()</code></li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  contentBase: <span class="string">'./dist'</span>, <span class="comment">// 服务器根目录</span></span><br><span class="line">  hot: <span class="literal">true</span>,  <span class="comment">// 开启热更新</span></span><br><span class="line">  open: <span class="literal">true</span>,  <span class="comment">// 自动打开浏览器</span></span><br><span class="line">  hotOnly: <span class="literal">true</span> <span class="comment">// 人更新失败，也不要跟新浏览器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样还不够能实现js的热更新，如果要形成js的热更新，你还要告诉在代码里告诉webpack,我这个模块如果被修改了，要执行什么操作，如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">module</span>.hot) &#123;</span><br><span class="line">  <span class="built_in">module</span>.hot.accept(<span class="string">'./print.js'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Accepting the updated printMe module!'</span>);</span><br><span class="line">    printMe();</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这告诉了我们如果print.js改变了，则会打印一句话。若果每个地方都这么干，我们写代码会很累，所以可以：</p>
+<ol>
+<li><strong>借助<code>Vue Loader</code>、<code>React Hot Loader</code></strong>， 此 loader 支持 vue 组件的 HMR，提供开箱即用体验，不用自己再去写<code>module.hot</code></li>
+<li><strong>借助于<code>style-loader</code>，使用模块热替换来加载 CSS</strong> ,此 loader 在幕后使用了 <code>module.hot.accept</code>，在 CSS 依赖模块更新之后，会将其 patch(修补) 到 <code>&lt;style&gt;</code> 标签中。</li>
+</ol>
+<hr>
+<h2 id="webpack-babel"><a href="#webpack-babel" class="headerlink" title="webpack babel"></a>webpack babel</h2><p>下面大概记录下整体的流程，以及几个模块之间的联系、区别及注意事项：</p>
+<ol>
+<li>安装<code>babel-loader</code>,<code>babel-core</code></li>
+<li><code>babel-core</code>是babel的核心库,<code>babel-loader</code>是babel与webpack关系的桥梁</li>
+<li>在<code>module rule</code>里设置，若是js文件结尾，用<code>babel-loader</code>处理</li>
+<li>注意<code>babel-loader</code>只是与webpack打通，不进行es6转换</li>
+<li>所以需要安装<code>babel-preset-env</code>,他负责转换新的es6的语法（syntax）,但是不会去转换map或者promise,weakmap, find这种<strong>对象和函数</strong>。只转换语法如箭头函数或者const这种语法</li>
+<li>所以需要<code>babel-polyfill</code>,为当前环境提供垫片，转换为新的api,</li>
+<li>如果直接引用，所有的都会被打包，所以需要添加<code>useBuiltIns</code>,实现方法转换的按需加载，减少文件提示，根据业务代码里使用情况来打包，体积会减少很多。</li>
+<li>但是<code>babel-polyfill</code>是在window上的，会污染全局变量,如果是打包类库或者第三方库就不合适了。</li>
+<li>所以需要<code>@babel/plugin-transform-runtime</code>这个插件，这样可以不用污染全局变量。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果是自己的业务代码</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"@babel/polyfill"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        exclude: <span class="string">'node_modules'</span>,</span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          presets: [</span><br><span class="line">            [</span><br><span class="line">              <span class="string">'@babel/preset-env'</span>,</span><br><span class="line">              &#123;</span><br><span class="line">                targets: &#123;</span><br><span class="line">                  chrome: <span class="string">"64"</span></span><br><span class="line">                &#125;,</span><br><span class="line">                useBuiltIns: <span class="string">'usage'</span></span><br><span class="line">              &#125;</span><br><span class="line">            ]</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// **如果是第三方类库**</span></span><br><span class="line"><span class="comment">// npm install --save-dev @babel/plugin-transform-runtime</span></span><br><span class="line"><span class="comment">// npm install --save @babel/runtime</span></span><br><span class="line"><span class="comment">// npm install --save @babel/runtime-corejs2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        exclude: <span class="string">'node_modules'</span>,</span><br><span class="line">        loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">        options: &#123;</span><br><span class="line">          <span class="string">"plugins"</span>: [</span><br><span class="line">            [</span><br><span class="line">              <span class="string">"@babel/plugin-transform-runtime"</span>,</span><br><span class="line">              &#123;</span><br><span class="line">                <span class="string">"absoluteRuntime"</span>: <span class="literal">false</span>,</span><br><span class="line">                <span class="string">"corejs"</span>: <span class="number">2</span>,</span><br><span class="line">                <span class="string">"helpers"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"regenerator"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"useESModules"</span>: <span class="literal">false</span></span><br><span class="line">              &#125;</span><br><span class="line">            ]</span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>备注下，<code>babel-preset-env</code>不会转换的有：</p>
+<ol>
+<li>全局对象，如 <code>Promise</code>, <code>map</code>, <code>WeakMap</code>等</li>
+<li>全局函数，如 <code>Array.from</code>, <code>Object,assign</code>等</li>
+<li>示例方法，如 <code>Array.prototype.includes</code>等</li>
+</ol>
+<p>注意<code>presets</code>的执行顺序也是从下往上，从右往左的顺序。如果是第三方类库:</p>
+<p>事实上这些配置都可以放在<code>.babelrc</code>文件中。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;上篇文章整理了几个点，这篇文章接着记录下我觉得有总结意义的点。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;loader-和-pugin的区别&quot;&gt;&lt;a href=&quot;#loader-和-pugin的区别&quot; class=&quot;headerlink&quot; title=&quot;loader 和 pugin
+    
+    </summary>
+    
+    
+      <category term="工具/配置" scheme="http://sevencai.github.io/tags/%E5%B7%A5%E5%85%B7-%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>关于微信免密支付的几个概念</title>
@@ -464,10 +549,10 @@
   
   <entry>
     <title>webpack4读书笔试(一)</title>
-    <link href="http://sevencai.github.io/2018/12/20/webpack4%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AF%95/"/>
-    <id>http://sevencai.github.io/2018/12/20/webpack4读书笔试/</id>
-    <published>2018-12-20T12:38:39.000Z</published>
-    <updated>2019-04-12T03:20:33.000Z</updated>
+    <link href="http://sevencai.github.io/2018/12/22/webpack4%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AF%95/"/>
+    <id>http://sevencai.github.io/2018/12/22/webpack4读书笔试/</id>
+    <published>2018-12-22T12:38:39.000Z</published>
+    <updated>2019-04-15T06:44:18.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>今日鸡汤： 优秀的工程师 = 主人翁意识 + 追求卓越的精神</p>
@@ -497,6 +582,8 @@
 <p><img src="hash.png" alt="相关filename配置"></p>
 <p>为什么 <code>[name].js</code>生成的对应是 <code>main.js</code>呢？因为<code>entry: &#39;xxx&#39; = entry: {main: &#39;xxx&#39;}</code>, 省略了名称为 <code>main</code> 的写法。</p>
 <p>output还有很多options,可以参照官方文档来看。<a href="https://webpack.js.org/configuration/output/" target="_blank" rel="noopener">output</a></p>
+<p>注意一般情况我们不会把 output 里的 filename 直接设置为 bundle.js,这样如果又多个entry,最后都被命名为 bundle.js，webpack就会报错了。一般情况下，我们就设置为<code>[name].bundle.js</code>就挺好的。</p>
+<p>output 里面还有我们经常用到的 <code>publicPath</code>, 用于设置静态资源的地址，比如我们可以设置它为cdn的域名路径。<code>//cdn.com/h5</code>,最后html文件中生成的路径可能就是<code>&lt;script type=&quot;text/javascript&quot; src=&quot;//cdn.com/h5/main.bundle.js&quot;&gt;&lt;/script&gt;</code>这种我们需要的路径。</p>
 <hr>
 <h2 id="webpack4-mode"><a href="#webpack4-mode" class="headerlink" title="webpack4 mode"></a>webpack4 mode</h2><p><code>mode: development/production</code> 主要区别在是否压缩。如果配置中不写，默认是 <code>production</code>,并且会有 warning。</p>
 <p>webpack打包后控制台信息：<br>hash  本次打包的唯一一个hash值<br>Version  webpack的版本<br>Time  打包耗时<br>Asset  打包后的文件名<br>Size  打包后的文件大小<br>Chunks  打包后文件对应的id<br>Chunk Names  每一个打包后文件对应的打包文件名字</p>
@@ -1385,80 +1472,6 @@
     
     
       <category term="小程序" scheme="http://sevencai.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>晚来的日本之行</title>
-    <link href="http://sevencai.github.io/2018/06/02/%E6%99%9A%E6%9D%A5%E7%9A%84%E6%97%A5%E6%9C%AC%E4%B9%8B%E8%A1%8C/"/>
-    <id>http://sevencai.github.io/2018/06/02/晚来的日本之行/</id>
-    <published>2018-06-02T06:48:05.000Z</published>
-    <updated>2018-06-02T08:18:17.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>其实啊，旅行的意义，不一定要是路上的风景，更是你路上的同行人。 2018年5月23 到 27 我在日本。</p>
-</blockquote>
-<h2 id="TOP-10"><a href="#TOP-10" class="headerlink" title="TOP 10"></a>TOP 10</h2><ol>
-<li>干净整洁的日本街道</li>
-<li>暖心负责的领队小哥哥  💖</li>
-<li>有趣有爱的同伴  🚚</li>
-<li>梅田的购物中心  ❄️</li>
-<li>250 的牛肉自助餐</li>
-<li>大阪大学的王者荣耀</li>
-<li>帅气的日本小哥哥</li>
-<li>老龄化的日本  💳</li>
-<li>好（第四声）吃可爱的小鹿</li>
-<li>最爱的许加二和涛哥  🍒</li>
-</ol>
-<hr>
-<h2 id="最爱的图片"><a href="#最爱的图片" class="headerlink" title="最爱的图片"></a>最爱的图片</h2><p><img src="jp4.jpg" alt="奈良的小鹿"><br>或许是太久没有机会跟动物接触了。看到她们简直不能自拔，好想一直喂她们东西吃。上网查了下，她们的点头要吃的，实际在动物界并不是表示友好的行为，越爱鞠躬的小鹿，其实攻击性就越强。但是啊，她一点头，你就不舍得不给她吃东西。</p>
-<p><img src="jp1.jpg" alt="干净漂亮的房子"></p>
-<p>上面这张图片，是第一天酒店起来后，我跟室友去外边逛的时候拍的。小河特别干净，房子颜色特别美。</p>
-<p><img src="jp2.jpg" alt="雨中的小房子"></p>
-<p>这张图片是第一天赶到酒店的时候，天下起了小雨，外边有像大熊家一样的房子🏡。觉得特别的舒服。</p>
-<p><img src="jp6.jpg" alt="药妆店门口的小狗"><br>小狗过得不开心吗？为什么眼里会有悲伤和难过。</p>
-<p><img src="jp5.jpg" alt="可爱的小朋友"><br>猜猜我想拍的小朋友是？</p>
-<p><img src="jp3.jpg" alt="酒店的外景"><br>白色的船，蓝蓝的海，高高的树，白色的桌子和椅子，绿色的山。（原谅我的语文水平，只能描述成这种水平了）</p>
-<p><img src="jp7.jpg" alt="nuonuonuoyasuolong"><br>吃相扑餐的时候，不好吃。也没有吃饱😞。但是看在送了我 索隆 的份上，5星好评。</p>
-<p><img src="jp10.jpg" alt="小狗"><br>其实，印象最深的不仅仅这个小狗，还有他的主人。主人大概60岁，我看狗狗的时候，他冲我笑了下，然后说了一串我听不懂的日语。可能是在说，没关系，你可以摸摸它，他不咬人。</p>
-<hr>
-<h2 id="最值得的事情"><a href="#最值得的事情" class="headerlink" title="最值得的事情"></a>最值得的事情</h2><p>最值得的事情，当然就是见到徐佳2啦。看着她那个乱的跟猪圈一样的宿舍，我觉得是时候要给她爸爸打报告了，怎么越长大越乱了呢？ 以前我们宿舍4个，她还算排倒数第2的，现在肯定是倒数第1了。</p>
-<p>见得时间太少了，已经尽我最大的能力去挤时间。以后要是还去日本，我一定自由行，然后每天都跟她睡。白天一起逛吃逛吃，就像我们一起大学的时候那样。</p>
-<p>一个人在外，那种无助的时候，肯定很多。赶紧回国，带你吃小龙虾。💗</p>
-<p>在我去日本的时候，涛哥他们部门的团，也正好在日本了，所以很不容易的，我们在日本也见到了，他们为了顺应我的时间，时间很紧张。我们的缘分，肯定还要持续很久，很久🌲。</p>
-<hr>
-<h2 id="路痴的我"><a href="#路痴的我" class="headerlink" title="路痴的我"></a>路痴的我</h2><p>如果是不赶的路程，我肯定是一个人慢慢悠悠的找地方玩了。就算迷路了也不要紧，反正总能找到回家的路。但是跟团不一样，一定要保证大家不会因为我耽误时间。所以整个路程我就是根本摸不清东南西北。还好有徐佳2，小智和yunhui。</p>
-<p>认路这件事，有时候真的感觉无能为力。☹️</p>
-<hr>
-<h2 id="购物"><a href="#购物" class="headerlink" title="购物"></a>购物</h2><p>给妈妈他们买了两双鞋子，还给嫂子买了很多护肤品，还给同事带了很多护肤品。给爸爸买了个表，哥哥啥都没给买。哈哈，他肯定怀疑我不是亲妹妹。不过，我给他即将出生的小宝宝，买了衣服。给自己还买了很多面膜。<br>通过买东西这件事情，告诉了我一定要努力工作，然后赚很多钱。</p>
-<p>第一天晚上，吃了很好吃的冰淇淋🍨。超级开心。还喝了很便宜很好喝的酸奶，日本的便利店🏪是个好地方。</p>
-<hr>
-<h2 id="路上的人儿"><a href="#路上的人儿" class="headerlink" title="路上的人儿"></a>路上的人儿</h2><p>我这次的室友不是跟我一个部门的。当我提出，能不能徐佳2跟我一起住一晚上的时候，她马上就答应了。真的好谢谢。已经是两个孩子的妈妈了，然而一点都看不出来。👍</p>
-<p>我的领队，是跟我一个部门的，但是以前从来没有见过，可能是没有工作上的交集，我们通常称呼他为小智。小智非常的靠谱，也是个超级暖心的小哥哥，每次都帮大家把事情安排的很好。不知道他自己有没有玩好。每次找不到地方了，就跟他打电话。他还每次都帮我提行李。觉得好温暖。笔芯。💖</p>
-<p>yunhui, 是跟我一个部门的，以前没有见过，但是有问过他问题。他非常的爱笑，感觉一笑起来，让别人也会开心。yunhui 绝对是个旅行的好伙伴，有足够的好奇心，也有足够的耐力。攻略也做的很棒，关键是也认路。📚</p>
-<p>我师父，jiaqian, 飞哥，赵宣，咸鱼, amy， tina就不说了，以前都很熟了,因为他们在，让我觉得这次旅行，一点都不陌生，也不拘谨。</p>
-<p>村长，第一次跟他说了话，感觉好开心，还记得他那次诸葛亮把我们整个组虐的超级难受。总算是认识真人了。</p>
-<p>日本的小姐姐都说话很小声，很有礼貌。日本的学生都穿制服，感觉很好。很帅气。😊</p>
-<p>日本老奶奶跟我说谢谢的时候，我好想回她不用谢。但是憋了半天，满脸通红，还是一个字都没挤出来。</p>
-<p>第一天晚上的酒店的小姐姐，想把伞还给她，一路上，想了半天怎么还给她，结果到了那里，一个字都没有说出来。☹️</p>
-<p>我们的导游，朴岛很温和，已经加了他微信，加了后，整个朋友圈，都是代购的消息了，哈哈。朴导萌萌哒。✈️</p>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很开心的一次旅行，虽然信用卡💳都没知觉了。一生会有很多旅行，但是这次肯定是独一无二的。你遇到的风景，你遇到的人，你拍的照片，你脑海里那个爷爷的微笑，你对某些人的感情，又或者是旅行中不那么顺利开心的地方，都是旅行的宝贵所在。</p>
-<p>我有的时候想，人生那么不可预测，也许明天你就没有机会去体验很多事情。所以你今天做的事情，会不会是最后一天你想做的事情。不要后悔。也不要遗憾。因为上帝给你留下的路，都是有他的道理。开心的，不开心的，它都是你生活中，或者说命运中的一部分。</p>
-<p>我相信 connecting the dots。 ❤️ 🚚 📚 以后有机会跟家人一起去。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;其实啊，旅行的意义，不一定要是路上的风景，更是你路上的同行人。 2018年5月23 到 27 我在日本。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;TOP-10&quot;&gt;&lt;a href=&quot;#TOP-10&quot; class=&quot;headerlink&quot; 
-    
-    </summary>
-    
-    
-      <category term="生活日志" scheme="http://sevencai.github.io/tags/%E7%94%9F%E6%B4%BB%E6%97%A5%E5%BF%97/"/>
     
   </entry>
   
