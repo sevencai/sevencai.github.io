@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="js对称加密算法最近有用到 js 的对称加密的算法来解决一些简单的数据库字段加密问题。简单的 demo 如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445const crypto = require(&apos;crypto&apos;)class Aes &amp;#123;  // 此处4个参数可以改成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5月笔记">
+<meta property="og:url" content="http://sevencai.github.io/2019/05/27/5月笔记/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="js对称加密算法最近有用到 js 的对称加密的算法来解决一些简单的数据库字段加密问题。简单的 demo 如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445const crypto = require(&apos;crypto&apos;)class Aes &amp;#123;  // 此处4个参数可以改成">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2019/05/27/5月笔记/transaction.png">
+<meta property="og:updated_time" content="2019-05-27T13:26:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="5月笔记">
+<meta name="twitter:description" content="js对称加密算法最近有用到 js 的对称加密的算法来解决一些简单的数据库字段加密问题。简单的 demo 如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445const crypto = require(&apos;crypto&apos;)class Aes &amp;#123;  // 此处4个参数可以改成">
+<meta name="twitter:image" content="http://sevencai.github.io/2019/05/27/5月笔记/transaction.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2019/05/27/5月笔记/"/>
+
+
+
+
+
+  <title>5月笔记 | Seven's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?157d49c9f81aaca6e7af073620a0a709";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2019/05/27/5月笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">5月笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-27T19:56:22+08:00">
+                2019-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/27/5月笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/05/27/5月笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="js对称加密算法"><a href="#js对称加密算法" class="headerlink" title="js对称加密算法"></a>js对称加密算法</h2><p>最近有用到 js 的对称加密的算法来解决一些简单的数据库字段加密问题。简单的 demo 如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">'crypto'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Aes</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 此处4个参数可以改成由外部传入</span></span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">this</span>.key = <span class="string">'xxxxxx'</span></span><br><span class="line">    <span class="keyword">this</span>.algorithm = <span class="string">'aes256'</span></span><br><span class="line">    <span class="keyword">this</span>.inputEncoding = <span class="string">'utf8'</span></span><br><span class="line">    <span class="keyword">this</span>.outputEncoding = <span class="string">'hex'</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * encrypt 加密</span></span><br><span class="line"><span class="comment">   * @param data</span></span><br><span class="line"><span class="comment">   * @returns &#123;string&#125;</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  encrypt(data) &#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; algorithm, inputEncoding, outputEncoding, key &#125; = <span class="keyword">this</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> cipher = crypto.createCipher(algorithm, key)</span><br><span class="line">    <span class="keyword">let</span> ciphered = cipher.update(data, inputEncoding, outputEncoding)</span><br><span class="line"></span><br><span class="line">    ciphered += cipher.final(outputEncoding)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ciphered</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * descrpt 解密</span></span><br><span class="line"><span class="comment">   * @param ciphered</span></span><br><span class="line"><span class="comment">   * @returns &#123;string&#125;</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  descrpt(ciphered) &#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; algorithm, inputEncoding, outputEncoding, key &#125; = <span class="keyword">this</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> decipher = crypto.createDecipher(algorithm, key)</span><br><span class="line">    <span class="keyword">let</span> deciphered = decipher.update(ciphered, outputEncoding, inputEncoding)</span><br><span class="line"></span><br><span class="line">    deciphered += decipher.final(inputEncoding)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> deciphered</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = Aes</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="使用-xlsx-转换文件"><a href="#使用-xlsx-转换文件" class="headerlink" title="使用 xlsx 转换文件"></a>使用 xlsx 转换文件</h2><p>以下记录下最近使用的xlsx库，使用的目的是解决下面两个问题：</p>
+<ol>
+<li>将 excel 转换为 CSV（如 /home/seven/201212 -&gt; /home/seven/201212_txt）, 并写入原目录，因为后台不好处理 excel 文件。</li>
+<li>用户点击下载按钮，则将数据库中的数据，转换为 excel 并下载到前端。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">const</span> XLSX = <span class="built_in">require</span>(<span class="string">'xlsx'</span>)</span><br><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">'crypto'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ExcelUtil</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * excel 表格转换成 txt 文件</span></span><br><span class="line"><span class="comment">   * 注意这里使用 sheet_to_csv 而不是 sheet_to_txt</span></span><br><span class="line"><span class="comment">   * 因为 sheet_to_txt 是转成了 utf16, 在头行会有 bom</span></span><br><span class="line"><span class="comment">   * @param filepath</span></span><br><span class="line"><span class="comment">   * @returns &#123;*&#125;</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  transformToCSV(filepath) &#123;</span><br><span class="line">    <span class="comment">// 先判断用户上传的文件是否存在</span></span><br><span class="line">    <span class="keyword">if</span>(!fs.existsSync(filepath)) &#123;</span><br><span class="line">      <span class="comment">// 处理错误</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回 workbook</span></span><br><span class="line">    <span class="keyword">const</span> wb = XLSX.readFile(filepath)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回 worksheet</span></span><br><span class="line">    <span class="keyword">const</span> ws = wb.Sheets[wb.SheetNames[<span class="number">0</span>]]</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 转换 worksheet 到 csv 文件</span></span><br><span class="line">    <span class="keyword">let</span> data = XLSX.utils.sheet_to_csv(ws)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获得文件名，区别与用户上传的 excel 文件，这里增加 _txt</span></span><br><span class="line">    <span class="keyword">let</span> filename = <span class="string">`<span class="subst">$&#123;filepath&#125;</span>_txt`</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 写入文件,若写入失败，则不能够同步后台发布任务</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      fs.writeFileSync(filename, data)</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">      <span class="comment">// 处理错误如返回错误的错误码之类的</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 写入成功，返回前端</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      ret: <span class="number">0</span>,</span><br><span class="line">      filename: path.basename(filename)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 将数据转换为 Excel 表格</span></span><br><span class="line"><span class="comment">   * @param sheetData 表数据</span></span><br><span class="line"><span class="comment">   * @param sheetHeader 表头</span></span><br><span class="line"><span class="comment">   * @param filename 文件名称</span></span><br><span class="line"><span class="comment">   * @param sheetName 表名称</span></span><br><span class="line"><span class="comment">   * @param wscols 列样式</span></span><br><span class="line"><span class="comment">   * @returns &#123;any&#125;</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  transformToExcel(sheetData, sheetHeader, filename, sheetName, wscols) &#123;</span><br><span class="line">    <span class="comment">// 添加表头</span></span><br><span class="line">    sheetData.unshift(sheetHeader)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> wb = XLSX.utils.book_new()</span><br><span class="line">    <span class="keyword">let</span> ws = XLSX.utils.json_to_sheet(sheetData, &#123;</span><br><span class="line">      header: <span class="built_in">Object</span>.keys(sheetHeader),</span><br><span class="line">      skipHeader: <span class="literal">true</span></span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置列样式</span></span><br><span class="line">    <span class="keyword">if</span> (wscols) &#123;</span><br><span class="line">      ws[<span class="string">'!cols'</span>] = wscols</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    XLSX.utils.book_append_sheet(wb, ws, sheetName)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> XLSX.write(wb, &#123;</span><br><span class="line">      bookType: filename.split(<span class="string">'.'</span>).pop(),</span><br><span class="line">      bookSST: <span class="literal">false</span>,</span><br><span class="line">      type: <span class="string">'buffer'</span></span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 删除某一行</span></span><br><span class="line"><span class="comment">   * @param ws</span></span><br><span class="line"><span class="comment">   * @param row_index</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  deleteRow(ws, row_index) &#123;</span><br><span class="line">    <span class="keyword">const</span> ec = <span class="function">(<span class="params">r, c</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> XLSX.utils.encode_cell(&#123;<span class="attr">r</span>: r, <span class="attr">c</span>: c&#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> range = XLSX.utils.decode_range(ws[<span class="string">"!ref"</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> R = row_index; R &lt; range.e.r; ++R) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> C = range.s.c; C &lt;= range.e.c; ++C) &#123;</span><br><span class="line">        ws[ec(R, C)] = ws[ec(R + <span class="number">1</span>, C)]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    range.e.r--</span><br><span class="line"></span><br><span class="line">    ws[<span class="string">'!ref'</span>] = XLSX.utils.encode_range(range.s, range.e)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = ExcelUtil</span><br></pre></td></tr></table></figure>
+<p><code>transformToExcel</code>调用方式：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> sheetName = <span class="string">'表名'</span></span><br><span class="line"><span class="keyword">let</span> filename = <span class="string">`<span class="subst">$&#123;+<span class="keyword">new</span> <span class="built_in">Date</span>()&#125;</span>.xlsx`</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> sheetHeader = &#123;</span><br><span class="line">  ID: <span class="string">'ID'</span>,</span><br><span class="line">  Name: <span class="string">'姓名'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里用来填充数据</span></span><br><span class="line"><span class="keyword">let</span> sheetData = <span class="keyword">await</span> ctx.models.DBUser.findAll(&#123;</span><br><span class="line">  where : &#123;</span><br><span class="line">   xxx : xxx</span><br><span class="line">  &#125;,</span><br><span class="line">  raw: <span class="literal">true</span>,</span><br><span class="line">  attributes: [<span class="string">'ID'</span>, <span class="string">'Name'</span>]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> excelUtil = <span class="keyword">new</span> ExcelUtil()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置表宽度</span></span><br><span class="line"><span class="keyword">let</span> wscols = [</span><br><span class="line">  &#123;<span class="attr">wch</span>: <span class="number">28</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">wch</span>: <span class="number">20</span>&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> data = excelUtil.transformToExcel(sheetData, sheetHeader, filename, sheetName, wscols)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置 header 头信息 ，getAttachHeader 省略</span></span><br><span class="line">ctx.set(&#123;</span><br><span class="line">  <span class="string">'Content-disposition'</span>: getAttachHeader(ctx, filename),</span><br><span class="line">  <span class="string">'Content-type'</span>: <span class="string">'application/octet-stream'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回给前端相应的内容</span></span><br><span class="line">ctx.body = data</span><br></pre></td></tr></table></figure></p>
+<p>注意要结合前端代码来一起下载。如下，这样用户点击下载的时候，就完成了从数据库到 excel 的过称。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> iframe = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>)</span><br><span class="line"></span><br><span class="line">iframe.style.display = <span class="string">'none'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 传入Nodejs层的接口</span></span><br><span class="line">iframe.src = url</span><br><span class="line"></span><br><span class="line">iframe.onload = iframe.onerror = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line"><span class="built_in">document</span>.body.removeChild(iframe)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.body.appendChild(iframe)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="获得文件-MD5"><a href="#获得文件-MD5" class="headerlink" title="获得文件 MD5"></a>获得文件 MD5</h2><p>目的是防止文件被篡改，主要是使用 crypto 库。传入文件的 buffer。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 获得文件的 MD5, 防止文件被篡改</span></span><br><span class="line"><span class="comment">* @param filename</span></span><br><span class="line"><span class="comment">* @returns &#123;string&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">const</span> genMd5 = <span class="function"><span class="params">filename</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> buffer</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      buffer = fs.readFileSync(filename)</span><br><span class="line">    &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">''</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> fsHash = crypto.createHash(<span class="string">'md5'</span>)</span><br><span class="line">    </span><br><span class="line">    fsHash.update(buffer)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> fsHash.digest(<span class="string">'hex'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="sequelize-的-transaction"><a href="#sequelize-的-transaction" class="headerlink" title="sequelize 的 transaction"></a>sequelize 的 transaction</h2><p><img src="transaction.png" alt="transaction"></p>
+<p>sequelize 的事务主要有上面两种方式，一个是自行回滚的写法，另一个是手动声明回滚的写法。我用的是自行回滚的方法。<a href="http://docs.sequelizejs.com/manual/transactions.html" target="_blank" rel="noopener">文档</a></p>
+<p>自行回滚的方法，需要在开始向<code>sequelize.transaction</code>传入一个 callback。这种时候，不需要再去进行<code>t.commit()</code> or <code>t.rollback()</code>了。当到 catch 内时，会自行回滚。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> sequelize.transaction(<span class="function"><span class="params">t</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// chain all your queries here. make sure you return them.</span></span><br><span class="line">  <span class="keyword">return</span> User.create(&#123;</span><br><span class="line">    firstName: <span class="string">'Abraham'</span>,</span><br><span class="line">    lastName: <span class="string">'Lincoln'</span></span><br><span class="line">  &#125;, &#123;<span class="attr">transaction</span>: t&#125;).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> user.setShooter(&#123;</span><br><span class="line">      firstName: <span class="string">'John'</span>,</span><br><span class="line">      lastName: <span class="string">'Boothe'</span></span><br><span class="line">    &#125;, &#123;<span class="attr">transaction</span>: t&#125;);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">&#125;).then(<span class="function"><span class="params">result</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// Transaction has been committed</span></span><br><span class="line">  <span class="comment">// result is whatever the result of the promise chain returned to the transaction callback</span></span><br><span class="line">&#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// Transaction has been rolled back</span></span><br><span class="line">  <span class="comment">// err is whatever rejected the promise chain returned to the transaction callback</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>如果你是用的 <code>async await</code> ：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="keyword">await</span> sequelize.transaction(<span class="keyword">async</span> transaction =&gt; &#123;</span><br><span class="line">    <span class="comment">// step 1</span></span><br><span class="line">    <span class="keyword">await</span> Model.destroy(&#123;<span class="attr">where</span>: &#123;id&#125;, transaction&#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// step 2</span></span><br><span class="line">    <span class="keyword">await</span> Model.create(&#123;&#125;, &#123;transaction&#125;);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">  <span class="comment">// 若上面执行过程中出现错误，则会到 catch 中，并且会自动回滚</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果不想使用自动回滚的这种方法，则不向<code>sequelize.transaction()</code>不传入一个 callback。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> sequelize.transaction().then(<span class="function"><span class="params">t</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> User.create(&#123;</span><br><span class="line">    firstName: <span class="string">'Bart'</span>,</span><br><span class="line">    lastName: <span class="string">'Simpson'</span></span><br><span class="line">  &#125;, &#123;<span class="attr">transaction</span>: t&#125;).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> user.addSibling(&#123;</span><br><span class="line">      firstName: <span class="string">'Lisa'</span>,</span><br><span class="line">      lastName: <span class="string">'Simpson'</span></span><br><span class="line">    &#125;, &#123;<span class="attr">transaction</span>: t&#125;);</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> t.commit();</span><br><span class="line">  &#125;).catch(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> t.rollback();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>如果使用 <code>async await</code> 则：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> transaction;    </span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="comment">// get transaction</span></span><br><span class="line">  transaction = <span class="keyword">await</span> sequelize.transaction();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// step 1</span></span><br><span class="line">  <span class="keyword">await</span> Model.destroy(&#123;<span class="attr">where</span>: &#123;id&#125;, transaction&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// step 2</span></span><br><span class="line">  <span class="keyword">await</span> Model.create(&#123;&#125;, &#123;transaction&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// commit</span></span><br><span class="line">  <span class="keyword">await</span> transaction.commit();</span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">  <span class="comment">// Rollback transaction if any errors were encountered</span></span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">await</span> transaction.rollback();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>很好用~</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>5月就做了一个项目，主要是业务逻辑太复杂了，对数据库里的一个字段都要校验几百行代码。</p>
+<p>5月去台湾团建，体验一般般，但也算是走出去看看了。</p>
+<p>转眼间19年都快过去一半了。加油⛽️!</p>
+<p>剩下的几天把项目分支再都验证下，写测试用例，优化下代码，然后再总结下几个问题。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/15/关于微信免密支付的几个概念/" rel="next" title="关于微信免密支付的几个概念">
+                <i class="fa fa-chevron-left"></i> 关于微信免密支付的几个概念
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">125</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#js对称加密算法"><span class="nav-number">1.</span> <span class="nav-text"><a href="#js&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;&#x7B97;&#x6CD5;" class="headerlink" title="js&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;&#x7B97;&#x6CD5;"></a>js&#x5BF9;&#x79F0;&#x52A0;&#x5BC6;&#x7B97;&#x6CD5;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-xlsx-转换文件"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x4F7F;&#x7528;-xlsx-&#x8F6C;&#x6362;&#x6587;&#x4EF6;" class="headerlink" title="&#x4F7F;&#x7528; xlsx &#x8F6C;&#x6362;&#x6587;&#x4EF6;"></a>&#x4F7F;&#x7528; xlsx &#x8F6C;&#x6362;&#x6587;&#x4EF6;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获得文件-MD5"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x83B7;&#x5F97;&#x6587;&#x4EF6;-MD5" class="headerlink" title="&#x83B7;&#x5F97;&#x6587;&#x4EF6; MD5"></a>&#x83B7;&#x5F97;&#x6587;&#x4EF6; MD5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sequelize-的-transaction"><span class="nav-number">4.</span> <span class="nav-text"><a href="#sequelize-&#x7684;-transaction" class="headerlink" title="sequelize &#x7684; transaction"></a>sequelize &#x7684; transaction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2019/05/27/5月笔记/';
+          this.page.identifier = '2019/05/27/5月笔记/';
+          this.page.title = '5月笔记';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
