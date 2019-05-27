@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-05-27T13:26:59.000Z</updated>
+  <updated>2019-05-27T13:37:56.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -20,9 +20,17 @@
     <link href="http://sevencai.github.io/2019/05/27/5%E6%9C%88%E7%AC%94%E8%AE%B0/"/>
     <id>http://sevencai.github.io/2019/05/27/5月笔记/</id>
     <published>2019-05-27T11:56:22.000Z</published>
-    <updated>2019-05-27T13:26:59.000Z</updated>
+    <updated>2019-05-27T13:37:56.000Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="js对称加密算法"><a href="#js对称加密算法" class="headerlink" title="js对称加密算法"></a>js对称加密算法</h2><p>最近有用到 js 的对称加密的算法来解决一些简单的数据库字段加密问题。简单的 demo 如下：</p>
+    <content type="html"><![CDATA[<p>下面是最近写的几段代码的不完整 demo, 因为有些函数记不住，这里记录下来，方便后续查阅。</p>
+<blockquote>
+<p>你今年30岁 那么如果你利用业务时间学英语 那么5年也就是你35岁时 你可能就可以成为一个说英文很流利的人🌹</p>
+<p>永远不要被时间限制住自己 尽你自己最大的努力 努力做成你最想做的那件事 成为你最想成为的那种人 过着你最想过的那种生活 💳</p>
+<p>也许我们始终都只是一个小人物 但这并不妨碍我们选择用什么样的方式活下去 这个世界永远比你想的要更精彩 📚🌲</p>
+</blockquote>
+<p>之所以写上面这段鸡汤，完全是为了避免字数太少，导致主页摘要不出现代码行号的情况。请忽略~</p>
+<hr>
+<h2 id="js对称加密算法"><a href="#js对称加密算法" class="headerlink" title="js对称加密算法"></a>js对称加密算法</h2><p>最近有用到 js 的对称加密的算法来解决一些简单的数据库字段加密问题。简单的 demo 如下：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> crypto = <span class="built_in">require</span>(<span class="string">'crypto'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Aes</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 此处4个参数可以改成由外部传入</span></span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="keyword">this</span>.key = <span class="string">'xxxxxx'</span></span><br><span class="line">    <span class="keyword">this</span>.algorithm = <span class="string">'aes256'</span></span><br><span class="line">    <span class="keyword">this</span>.inputEncoding = <span class="string">'utf8'</span></span><br><span class="line">    <span class="keyword">this</span>.outputEncoding = <span class="string">'hex'</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * encrypt 加密</span></span><br><span class="line"><span class="comment">   * @param data</span></span><br><span class="line"><span class="comment">   * @returns &#123;string&#125;</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  encrypt(data) &#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; algorithm, inputEncoding, outputEncoding, key &#125; = <span class="keyword">this</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> cipher = crypto.createCipher(algorithm, key)</span><br><span class="line">    <span class="keyword">let</span> ciphered = cipher.update(data, inputEncoding, outputEncoding)</span><br><span class="line"></span><br><span class="line">    ciphered += cipher.final(outputEncoding)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ciphered</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * descrpt 解密</span></span><br><span class="line"><span class="comment">   * @param ciphered</span></span><br><span class="line"><span class="comment">   * @returns &#123;string&#125;</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  descrpt(ciphered) &#123;</span><br><span class="line">    <span class="keyword">let</span> &#123; algorithm, inputEncoding, outputEncoding, key &#125; = <span class="keyword">this</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> decipher = crypto.createDecipher(algorithm, key)</span><br><span class="line">    <span class="keyword">let</span> deciphered = decipher.update(ciphered, outputEncoding, inputEncoding)</span><br><span class="line"></span><br><span class="line">    deciphered += decipher.final(inputEncoding)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> deciphered</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = Aes</span><br></pre></td></tr></table></figure>
 <hr>
 <h2 id="使用-xlsx-转换文件"><a href="#使用-xlsx-转换文件" class="headerlink" title="使用 xlsx 转换文件"></a>使用 xlsx 转换文件</h2><p>以下记录下最近使用的xlsx库，使用的目的是解决下面两个问题：</p>
@@ -54,7 +62,10 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;js对称加密算法&quot;&gt;&lt;a href=&quot;#js对称加密算法&quot; class=&quot;headerlink&quot; title=&quot;js对称加密算法&quot;&gt;&lt;/a&gt;js对称加密算法&lt;/h2&gt;&lt;p&gt;最近有用到 js 的对称加密的算法来解决一些简单的数据库字段加密问题。简单的 demo 如下
+      &lt;p&gt;下面是最近写的几段代码的不完整 demo, 因为有些函数记不住，这里记录下来，方便后续查阅。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;你今年30岁 那么如果你利用业务时间学英语 那么5年也就是你35岁时 你可能就可以成为一个说英文很流利的人🌹&lt;/p&gt;
+&lt;p&gt;永远不要被时间
     
     </summary>
     
