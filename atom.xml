@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-05-27T13:37:56.000Z</updated>
+  <updated>2019-05-28T12:06:25.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -20,10 +20,9 @@
     <link href="http://sevencai.github.io/2019/05/27/5%E6%9C%88%E7%AC%94%E8%AE%B0/"/>
     <id>http://sevencai.github.io/2019/05/27/5月笔记/</id>
     <published>2019-05-27T11:56:22.000Z</published>
-    <updated>2019-05-27T13:37:56.000Z</updated>
+    <updated>2019-05-28T12:06:25.000Z</updated>
     
-    <content type="html"><![CDATA[<p>下面是最近写的几段代码的不完整 demo, 因为有些函数记不住，这里记录下来，方便后续查阅。</p>
-<blockquote>
+    <content type="html"><![CDATA[<blockquote>
 <p>你今年30岁 那么如果你利用业务时间学英语 那么5年也就是你35岁时 你可能就可以成为一个说英文很流利的人🌹</p>
 <p>永远不要被时间限制住自己 尽你自己最大的努力 努力做成你最想做的那件事 成为你最想成为的那种人 过着你最想过的那种生活 💳</p>
 <p>也许我们始终都只是一个小人物 但这并不妨碍我们选择用什么样的方式活下去 这个世界永远比你想的要更精彩 📚🌲</p>
@@ -62,10 +61,9 @@
     
     <summary type="html">
     
-      &lt;p&gt;下面是最近写的几段代码的不完整 demo, 因为有些函数记不住，这里记录下来，方便后续查阅。&lt;/p&gt;
-&lt;blockquote&gt;
+      &lt;blockquote&gt;
 &lt;p&gt;你今年30岁 那么如果你利用业务时间学英语 那么5年也就是你35岁时 你可能就可以成为一个说英文很流利的人🌹&lt;/p&gt;
-&lt;p&gt;永远不要被时间
+&lt;p&gt;永远不要被时间限制住自己 尽你自己最大的努力 努力做成你最想做的那件事 成为你最想成为的那种人 过着你最想过的那种生活 �
     
     </summary>
     
@@ -117,7 +115,7 @@
     <link href="http://sevencai.github.io/2019/03/14/%E8%AF%81%E4%B9%A6%E3%80%81%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E3%80%81%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/"/>
     <id>http://sevencai.github.io/2019/03/14/证书、对称加密、非对称加密/</id>
     <published>2019-03-14T09:16:48.000Z</published>
-    <updated>2019-03-15T10:46:53.000Z</updated>
+    <updated>2019-05-28T02:39:17.000Z</updated>
     
     <content type="html"><![CDATA[<p>本篇文章主要是针对我对证书，对称加密，非对称加密，CA等内容的粗浅理解的记录。下图为我理解的大致流程。方便后续查阅。</p>
 <p>几个基本概念</p>
@@ -234,8 +232,6 @@
 <p>标注：上面的图片来源于<a href="https://juejin.im/post/5b88a93df265da43231f1451" target="_blank" rel="noopener">TLS 详解</a>一文。更多的 SSL 握手等细节，我不关注。</p>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实我本来是遇到了一个<code>https</code>的问题, 然后去了解了 tsl 和 ssl， 然后又去了解了非对称加密和对称加密。然后又去了解了证书和CA。</p>
-<p>其实我是遇到问题的时候，发现这些东西都知道，但是并没有系统，没法很好的关联到一起，因此得去总结了。</p>
-<p>这几天晚上工作搞完了，都花了一个小时去总结这个。还好是屡清楚，有收货了，以后忘记再看这篇文章回忆应该很快。</p>
 <p>上文有部分概念性文案 - 摘录来自: [美]David Gourley Brian Totty Marjorie Sayer Sailu Reddy Aushu Aggarwal. “HTTP权威指南 (图灵程序设计丛书)”。 iBooks.    </p>
 ]]></content>
     
