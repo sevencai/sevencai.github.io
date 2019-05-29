@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="工具/配置," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本篇文章主要记录 webpack 的代码分离的几种方式，由此再去理解通过代码分离可以做哪些前端优化：如懒加载和预先加载。之后再介绍了几个易混淆的概念。📚  webpack 代码分离🌲webpack 代码分离可以有以下这几种方式： 1. 入口起点(entry points)这种是在入口文件内配置多个 entry,自然可以生成多个文件。123456789101112module.exports =">
+<meta name="keywords" content="工具&#x2F;配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack4读书笔记(三)">
+<meta property="og:url" content="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="本篇文章主要记录 webpack 的代码分离的几种方式，由此再去理解通过代码分离可以做哪些前端优化：如懒加载和预先加载。之后再介绍了几个易混淆的概念。📚  webpack 代码分离🌲webpack 代码分离可以有以下这几种方式： 1. 入口起点(entry points)这种是在入口文件内配置多个 entry,自然可以生成多个文件。123456789101112module.exports =">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/prefetch.png">
+<meta property="og:image" content="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/header.png">
+<meta property="og:image" content="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/prefechlink.png">
+<meta property="og:image" content="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/diff.png">
+<meta property="og:image" content="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/chunk.png">
+<meta property="og:updated_time" content="2019-05-29T09:09:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack4读书笔记(三)">
+<meta name="twitter:description" content="本篇文章主要记录 webpack 的代码分离的几种方式，由此再去理解通过代码分离可以做哪些前端优化：如懒加载和预先加载。之后再介绍了几个易混淆的概念。📚  webpack 代码分离🌲webpack 代码分离可以有以下这几种方式： 1. 入口起点(entry points)这种是在入口文件内配置多个 entry,自然可以生成多个文件。123456789101112module.exports =">
+<meta name="twitter:image" content="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/prefetch.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/"/>
+
+
+
+
+
+  <title>webpack4读书笔记(三) | Seven's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?157d49c9f81aaca6e7af073620a0a709";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">webpack4读书笔记(三)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-26T12:57:36+08:00">
+                2019-05-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/26/webpack4读书笔记-三/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/05/26/webpack4读书笔记-三/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇文章主要记录 webpack 的代码分离的几种方式，由此再去理解通过<strong>代码分离</strong>可以做哪些前端优化：如懒加载和预先加载。之后再介绍了几个易混淆的概念。📚</p>
+<hr>
+<h1 id="webpack-代码分离🌲"><a href="#webpack-代码分离🌲" class="headerlink" title="webpack 代码分离🌲"></a>webpack 代码分离🌲</h1><p>webpack 代码分离可以有以下这几种方式：</p>
+<h2 id="1-入口起点-entry-points"><a href="#1-入口起点-entry-points" class="headerlink" title="1. 入口起点(entry points)"></a>1. 入口起点(entry points)</h2><p>这种是在入口文件内配置多个 entry,自然可以生成多个文件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: <span class="string">'development'</span>,</span><br><span class="line">  entry: &#123;</span><br><span class="line">    index: <span class="string">'./src/index.js'</span>,</span><br><span class="line">    <span class="comment">// 设置的其他入口</span></span><br><span class="line">    another: <span class="string">'./src/another-module.js'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: <span class="string">'[name].bundle.js'</span>,</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-使用-SplitChunksPlugin-插件"><a href="#2-使用-SplitChunksPlugin-插件" class="headerlink" title="2. 使用 SplitChunksPlugin 插件"></a>2. 使用 <code>SplitChunksPlugin 插件</code></h2><p>它可以将公共的依赖模块提取到已有的 entry chunk 中，或者提取到一个新生成的 chunk<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  optimization: &#123;</span><br><span class="line">    <span class="comment">// splitChunks: &#123;</span></span><br><span class="line">       <span class="comment">// 表明对同步代码和异步代码都做代码分割</span></span><br><span class="line">       <span class="comment">//chunks: 'all'</span></span><br><span class="line">    <span class="comment">// &#125;,</span></span><br><span class="line">    splitChunks: &#123;</span><br><span class="line">      chunks: <span class="string">'async'</span>,</span><br><span class="line">      minSize: <span class="number">30000</span>,</span><br><span class="line">      maxSize: <span class="number">0</span>,</span><br><span class="line">      minChunks: <span class="number">1</span>,</span><br><span class="line">      maxAsyncRequests: <span class="number">5</span>,</span><br><span class="line">      maxInitialRequests: <span class="number">3</span>,</span><br><span class="line">      automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">      name: <span class="literal">true</span>,</span><br><span class="line">      cacheGroups: &#123;</span><br><span class="line">        vendors: &#123;</span><br><span class="line">          test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">          priority: <span class="number">-10</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">default</span>: &#123;</span><br><span class="line">          minChunks: <span class="number">2</span>,</span><br><span class="line">          priority: <span class="number">-20</span>,</span><br><span class="line">          reuseExistingChunk: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-使用动态导入方法"><a href="#3-使用动态导入方法" class="headerlink" title="3. 使用动态导入方法"></a>3. 使用动态导入方法</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getComponent</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: 'loadash'*/</span> <span class="string">'lodash'</span>)</span><br><span class="line">  .then(<span class="function">(<span class="params">&#123;defalut: _&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> dom = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">    </span><br><span class="line">    dom.innerText = _.join([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], <span class="string">'+'</span>)</span><br><span class="line">    <span class="keyword">return</span> dom</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者用 async await</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">getComponent</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; <span class="attr">default</span>: _ &#125; = <span class="keyword">await</span> <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: 'lodash'*/</span> <span class="string">'lodash'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> dom = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">  </span><br><span class="line">  dom.innerText = _.join([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], <span class="string">'+'</span>)</span><br><span class="line">  <span class="keyword">return</span> dom</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 然后再进行调用</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">renderComponent</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  getComponent().then(<span class="function"><span class="params">ele</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">document</span>.body.apendChild(ele)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这样，就只有在调用 renderComponent 时，才会去加载lodash这个模块，并且lodash模块会单独被拆分出来</span></span><br><span class="line">renderComponent()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>import() 调用会在内部用到 promises。如果在旧版本浏览器中使用 import()，记得使用一个 polyfill 库（例如 es6-promise 或 promise-polyfill），来 shim Promise。</p>
+</blockquote>
+<p><strong>其实这里的<code>动态导入(dynamic imports)</code>既是代码分割的一种方法，也是一种懒加载的方法。</strong>在下面仔细讲。</p>
+<h2 id="4-预取-预加载模块-prefetch-preload-module"><a href="#4-预取-预加载模块-prefetch-preload-module" class="headerlink" title="4. 预取/预加载模块(prefetch/preload module)"></a>4. 预取/预加载模块(prefetch/preload module)</h2><p>这个也是可以进行代码分离的一种方法，它可以使用类似下面这种语法，生成 link tag  并追加到页面头部，指示着浏览器在闲置时间预取 <code>login-modal-chunk.js</code> 文件。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &lt;link rel="prefetch" href="login-modal-chunk.js"&gt;</span></span><br><span class="line"><span class="keyword">import</span>(<span class="comment">/* webpackPrefetch: true */</span> <span class="string">'LoginModal'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这样就会生成了一个<code>login-modal-chunk.js</code>的js文件，也就是分离了代码。这种方法正好和懒加载相反。下面会再进行解释。</p>
+<hr>
+<h1 id="lazy-loading🌶"><a href="#lazy-loading🌶" class="headerlink" title="lazy loading🌶"></a>lazy loading🌶</h1><p>上面提到了动态加载是代码分割的方法，这也顺便实现了懒加载的方法。下面总结下实际工程中，一般我们怎么使用它进行代码优化。</p>
+<blockquote>
+<p>懒加载或者按需加载，是一种很好的优化网页或应用的方式。这种方式实际上是先把你的代码在一些逻辑断点处分离开，然后在一些代码块中完成某些操作后，立即引用或即将引用另外一些新的代码块。这样加快了应用的初始加载速度，减轻了它的总体体积，因为某些代码块可能永远不会被加载。</p>
+</blockquote>
+<p>注意<strong>懒加载并不是 webpack 的概念，而是 es6 的概念， webpack只是识别了<code>/* webpackChunkName: &#39;lodash&#39;*/</code>这种语法</strong>。❌这里很容易误以为。</p>
+<p>在 es6 语法里有一种<code>import()</code>的<a href="https://github.com/tc39/proposal-dynamic-import" target="_blank" rel="noopener">提案</a>，这个函数解决了 import 命令本身不能动态加载模块的劣势，而在这前，我们使用 require 是很好做到这一点的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> file = env === <span class="string">'production'</span> ? <span class="string">`prod_<span class="subst">$&#123;filename&#125;</span>`</span> : <span class="string">`sandbox_<span class="subst">$&#123;filename&#125;</span>`</span></span><br><span class="line"><span class="keyword">const</span> myModual = <span class="built_in">require</span>(file)</span><br></pre></td></tr></table></figure>
+<p>import 命令会被 JavaScript 引擎<strong>静态分析，先于模块内的其他语句执行</strong>。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Wrong: import 会被提到最上面，file将不被识别</span></span><br><span class="line"><span class="keyword">const</span> file = env === <span class="string">'production'</span> ? <span class="string">`prod_<span class="subst">$&#123;filename&#125;</span>`</span> : <span class="string">`sandbox_<span class="subst">$&#123;filename&#125;</span>`</span></span><br><span class="line"><span class="keyword">import</span> myModule <span class="keyword">from</span> file</span><br><span class="line"></span><br><span class="line"><span class="comment">// Wrong: import 是静态执行，所以不能使用表达式和变量，这些只有在运行时才能得到结果的语法结构。</span></span><br><span class="line"><span class="keyword">if</span> (env === <span class="string">'production'</span>) &#123;</span><br><span class="line">  <span class="keyword">import</span> myModule <span class="keyword">from</span> <span class="string">'prodFile'</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">import</span> myModule <span class="keyword">from</span> <span class="string">'sandboxFile'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因此出现了 <code>import()</code>函数, <code>import()</code>函数的特性，可以实现：</p>
+<ol>
+<li>按需加载。也就是懒加载。</li>
+<li>条件加载，解决了 import 命令不能使用条件的问题。</li>
+<li>动态的模块路径，路径可以使用变量。解决了 import 命令静态编译不能使用动态路径的问题。</li>
+</ol>
+<p>注意叫法的区别:一个是<code>import命令</code>，一个是<code>import函数</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// import()加载模块成功以后，这个模块会作为一个对象，当作then方法的参数。</span></span><br><span class="line"><span class="keyword">import</span>(<span class="built_in">module</span>).then().catch()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以使用对象解构赋值的语法，获取输出接口</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getComponent</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: 'loadash'*/</span> <span class="string">'lodash'</span>)</span><br><span class="line">  .then(<span class="function">(<span class="params">&#123;defalut: _&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> dom = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">    </span><br><span class="line">    dom.innerText = _.join([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], <span class="string">'+'</span>)</span><br><span class="line">    <span class="keyword">return</span> dom</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 点击时才去开始执行加载模块</span></span><br><span class="line"><span class="keyword">const</span> main = <span class="built_in">document</span>.querySelector(<span class="string">"main"</span>);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> link <span class="keyword">of</span> <span class="built_in">document</span>.querySelectorAll(<span class="string">"nav &gt; a"</span>)) &#123;</span><br><span class="line">    link.addEventListener(<span class="string">"click"</span>, e =&gt; &#123;</span><br><span class="line">      e.preventDefault();</span><br><span class="line"></span><br><span class="line">      <span class="keyword">import</span>(<span class="string">`./section-modules/<span class="subst">$&#123;link.dataset.entryModule&#125;</span>.js`</span>)</span><br><span class="line">        .then(<span class="function"><span class="params">module</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="built_in">module</span>.loadPageInto(main);</span><br><span class="line">        &#125;)</span><br><span class="line">        .catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">          main.textContent = err.message;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>之所以这里解构时是：<code>{default: _}</code>，是因为从 webpack v4 开始，在 import CommonJS 模块时，不会再将导入模块解析为 module.exports 的值，而是为 CommonJS 模块创建一个 artificial namespace object(人工命名空间对象)，我记得我之前遇到过这个问题，但是忘记哪个文章里专门写了，这里贴一篇很好的文章：<a href="https://medium.com/webpack/webpack-4-import-and-commonjs-d619d626b655" target="_blank" rel="noopener">webpack-4-import-and-commonjs</a></p>
+<p>但是更为常见的一种懒加载的方法，是在 vue 中，<strong>结合 vue-router 实现的路由懒加载。这种方法能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件</strong>。</p>
+<p>使用方式：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Foo = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./Foo.vue'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> VueRouter(&#123;</span><br><span class="line">  routes: [</span><br><span class="line">    &#123; <span class="attr">path</span>: <span class="string">'/foo'</span>, <span class="attr">component</span>: Foo &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>然后这个时候，还可以结合 webpack 的语法，进行代码分割，把把某个路由下的所有组件都打包在同个异步块 (chunk) 中如:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Foo = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: "foo" */</span> <span class="string">'./Foo.vue'</span>)</span><br><span class="line"><span class="keyword">const</span> Foo1 = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: "foo" */</span> <span class="string">'./Foo1.vue'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Bar = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: "bar" */</span> <span class="string">'./Bar.vue'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这样 Foo 和 Foo1 将会在一个 chunk 内， bar 又会在一个 chunk 内。</p>
+<p>这里注意下：<strong>dist 内生成的每一个 js 文件就是一个 chunk,而 minChunks 就表明了什么情况下进行代码分割，若 minChunks = 2, 则意味着生成的 chunk js 文件里，有多少个用到了这个模块，如果有的话才进行代码分割。</strong></p>
+<hr>
+<h1 id="预取-预加载模块-prefetch-preload-module-🏡"><a href="#预取-预加载模块-prefetch-preload-module-🏡" class="headerlink" title="预取/预加载模块(prefetch/preload module)🏡"></a>预取/预加载模块(prefetch/preload module)🏡</h1><p>使用上面的 Lazy loading 会存在一个问题，就是它只能在执行某个动作的时候，才会去加载。比如用户点击了登录框，这个时候开始下载js并开始解析执行。</p>
+<p>实际上这样对用户来说还是有等待的一个过程的。但是利用 <code>prefetch/preload module</code> 可以解决这个问题。空闲时去提前加载了代码。用户点击时已有缓存，直接去解析执行代码即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 2.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> ele = <span class="built_in">document</span>.createElement(<span class="string">'div'</span>)</span><br><span class="line">  ele.innerText = <span class="string">'hello seven'</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">document</span>.body.appendChild(ele)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'click'</span>, () =&gt; &#123;</span><br><span class="line">  <span class="keyword">import</span>(<span class="comment">/* webpackPrefetch: true */</span> <span class="string">'./2.js'</span>)</span><br><span class="line">      .then(<span class="function">(<span class="params">&#123;<span class="keyword">default</span>: func&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">        func()</span><br><span class="line">      &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这样就会发现，在首页的请求内，也会有 2.js 的请求，并且它的时间是在 index.js 之后。<br><img src="prefetch.png" alt="prefetch"><br>然后点开这笔请求的详情后，会看到相关的预先加载的信息头<code>purpose: prefetch</code>。<br><img src="header.png" alt="header"><br>最后查看dom结构，你会发现多了这样一个link文件。<br><img src="prefechlink.png" alt="prefech link"><br>preload和prefetch有许多区别。webpackPreload 会在浏览器闲置下载文件，webpackPreload 会在父 chunk 加载时并行下载文件。对于 preload 我还没有过实践。<br><img src="diff.png" alt="diff.png"></p>
+<hr>
+<h1 id="几个易混淆的概念❌"><a href="#几个易混淆的概念❌" class="headerlink" title="几个易混淆的概念❌"></a>几个易混淆的概念❌</h1><h2 id="filename-与-chunkFilename"><a href="#filename-与-chunkFilename" class="headerlink" title="filename 与 chunkFilename"></a>filename 与 chunkFilename</h2><p>filename 是指在 entry 中声明的文件，打包输出后的文件的名称。<br>chunkFilename 是指未在 entry 中声明，但是却由于代码分离的原因被打包出来的文件的名称。</p>
+<p>可以看到 filename 对应于上面代码分离中的第一点<br>而 chunkFilename 对应于代码分离中的2，3，4点</p>
+<p>比如在刚刚的懒加载或者预先加载中，我们进行了代码分离。分离后得到如下结果：<br><img src="chunk.png" alt="chunk"></p>
+<p>而我们的 output 配置如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">entry: <span class="string">'./src/index'</span></span><br><span class="line"></span><br><span class="line">output: &#123;</span><br><span class="line">  path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">  filename: <span class="string">"[name].min.js"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因此可以看到 <code>main.min.js</code> 就是 <code>filename</code>, 而<code>0.min.js</code>就是 <code>chunkFilename</code></p>
+<p>我们可以显试的指明 chunkFilename ,那么生成的文件名称就叫<code>0.chunk.js</code>。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'./dist'</span>),</span><br><span class="line">    filename: <span class="string">"[name].min.js"</span>,</span><br><span class="line">    chunkFilename: <span class="string">"[name].chunk.js"</span></span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure></p>
+<p>当然很明显 <code>chunkFilename</code> 指定为 <code>[name].chunk.js</code> 并不好，因为生成的是<code>0.chunk.js</code>这种无含义文件名。</p>
+<p>这个时候我们就可以结合刚刚的<code>webpackChunkName</code>这种 <code>magic comments</code> 来进行打包。</p>
+<hr>
+<h2 id="webpackChunkName，webpackPreload，webpackPreload"><a href="#webpackChunkName，webpackPreload，webpackPreload" class="headerlink" title="webpackChunkName，webpackPreload，webpackPreload"></a>webpackChunkName，webpackPreload，webpackPreload</h2><p>这三个都是魔法注释（magic comments）,上面已介绍清楚。这里只总结下语法和用途。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 为预加载的文件取别名</span></span><br><span class="line"><span class="keyword">import</span>(<span class="comment">/* webpackChunkName: 'loadash'*/</span> <span class="string">'lodash'</span>)</span><br><span class="line"><span class="comment">// 在浏览器闲置下载文件</span></span><br><span class="line"><span class="keyword">import</span>(<span class="comment">/* webpackPrefetch: true */</span> <span class="string">'./2.js'</span>)</span><br><span class="line"><span class="comment">// 在父 chunk 加载时并行下载文件</span></span><br><span class="line"><span class="keyword">import</span>(<span class="comment">/* webpackPreload: true */</span> <span class="string">'./2.js'</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="hash-chunkhash-contenthash"><a href="#hash-chunkhash-contenthash" class="headerlink" title="hash chunkhash contenthash"></a>hash chunkhash contenthash</h2><p><strong>hash是跟整个项目的构建相关，只要项目里有文件更改，整个项目构建的hash值都会更改，并且全部文件都共用相同的hash值</strong>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">entry:&#123;</span><br><span class="line">    main: <span class="string">'./index.js'</span>,</span><br><span class="line">    vender:[<span class="string">'jquery'</span>,<span class="string">'lodash'</span>]</span><br><span class="line">&#125;</span><br><span class="line">output:&#123;</span><br><span class="line">    path:path.join(__dirname, <span class="string">'/dist/js'</span>),</span><br><span class="line">    filename: <span class="string">'[name].[hash].js'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此，若 <code>index.js</code> 文件变化时， <code>vendor</code> 最后生成 <code>output</code> 的文件名也会发生变化，都相同。这样无法利用缓存，因为hash与项目相关，只要项目变了，hash就会变。</p>
+<p><strong>chunkhash和hash不一样，它根据不同的入口文件(Entry)进行依赖文件解析、构建对应的chunk，生成对应的哈希值。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">entry:&#123;</span><br><span class="line">    main: <span class="string">'./index.js'</span>,</span><br><span class="line">    vender:[<span class="string">'jquery'</span>,<span class="string">'lodash'</span>]</span><br><span class="line">&#125;</span><br><span class="line">output:&#123;</span><br><span class="line">    path:path.join(__dirname, <span class="string">'/dist/js'</span>),</span><br><span class="line">    filename: <span class="string">'[name].[chunkhash].js'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>我们在生产环境里把一些公共库和程序入口文件区分开，单独打包构建，再采用<code>chunkhash</code>的方式生成哈希值，那么只要我们不改动vendor的代码，就可以保证其哈希值不会受影响。这样可以比较有效的利用缓存。</strong></p>
+<p>而只使用 chunkhash 也会有问题，若一个index.js文件中引入了一个css文件，那么它将会打包到和index.js一起，那么如果只是css变化了，他们又公用一个chunk, 那么index.js虽然没有变化，但是文件名也会发生变化。</p>
+<p>为了解决这个问题，我们使用extract-text-webpack-plugin这个插件，然后结合contenthash,即可保证css变化时，js不发生变化。</p>
+<blockquote>
+<p>它会将所有的入口 chunk(entry chunks)中引用的 *.css，移动到独立分离的 CSS 文件。因此，你的样式将不再内嵌到 JS bundle 中，而是会放到一个单独的 CSS 文件（即 styles.css）当中。 如果你的样式文件大小较大，这会做更快提前加载，因为 CSS bundle 会跟 JS bundle 并行加载。</p>
+</blockquote>
+<p><strong>contenthash 将根据资源内容创建出唯一 hash，也就是说文件内容不变，hash 就不变。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> ExtractTextPlugin = <span class="built_in">require</span>(<span class="string">"extract-text-webpack-plugin"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: ExtractTextPlugin.extract(&#123;</span><br><span class="line">          fallback: <span class="string">"style-loader"</span>,</span><br><span class="line">          use: <span class="string">"css-loader"</span></span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> ExtractTextPlugin(<span class="string">'[name].[contenthash].css'</span>),</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>contenthash</code>一般我只在 <code>ExtractTextPlugin</code> 使用，在 <code>filename</code>和<code>chunkfilename</code>中，我们不会设置为这个值，而是使用<code>chunkhash</code>。</p>
+<p>因此可以理解为：hash 计算与整个项目的构建相关；chunkhash 计算与同一 chunk 内容相关；contenthash 计算与文件内容本身相关。<br>这么想来，设计者取名也是非常准确和用心了。</p>
+<hr>
+<h1 id="总结🌺"><a href="#总结🌺" class="headerlink" title="总结🌺"></a>总结🌺</h1><p>这里上面提到的一些概念，有大概70%我在实践中使用的比较频繁，其他的如 prefetch 和 preload,我基本没有使用到过。希望后续自己有意识去使用，并观察是否真的有效果。📚</p>
+<p>prefech 的兼容性会比 preload 好些。他们之间还有许多区别，我先不去做了解了。</p>
+<p>最主要的目的还是希望自己对某个知识点是系统化的，而不是只知道其中的一点。细节可以不去了解，但是基本的这些思想希望能记住，然后再某些需要的时候，再去使用。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工具-配置/" rel="tag"># 工具/配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/15/关于微信免密支付的几个概念/" rel="next" title="关于微信免密支付的几个概念">
+                <i class="fa fa-chevron-left"></i> 关于微信免密支付的几个概念
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/27/5月笔记/" rel="prev" title="5月笔记">
+                5月笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">126</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#webpack-代码分离🌲"><span class="nav-number">1.</span> <span class="nav-text"><a href="#webpack-&#x4EE3;&#x7801;&#x5206;&#x79BB;&#x1F332;" class="headerlink" title="webpack &#x4EE3;&#x7801;&#x5206;&#x79BB;&#x1F332;"></a>webpack &#x4EE3;&#x7801;&#x5206;&#x79BB;&#x1F332;</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-入口起点-entry-points"><span class="nav-number">1.1.</span> <span class="nav-text"><a href="#1-&#x5165;&#x53E3;&#x8D77;&#x70B9;-entry-points" class="headerlink" title="1. &#x5165;&#x53E3;&#x8D77;&#x70B9;(entry points)"></a>1. &#x5165;&#x53E3;&#x8D77;&#x70B9;(entry points)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-使用-SplitChunksPlugin-插件"><span class="nav-number">1.2.</span> <span class="nav-text"><a href="#2-&#x4F7F;&#x7528;-SplitChunksPlugin-&#x63D2;&#x4EF6;" class="headerlink" title="2. &#x4F7F;&#x7528; SplitChunksPlugin &#x63D2;&#x4EF6;"></a>2. &#x4F7F;&#x7528; <code>SplitChunksPlugin &#x63D2;&#x4EF6;</code></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-使用动态导入方法"><span class="nav-number">1.3.</span> <span class="nav-text"><a href="#3-&#x4F7F;&#x7528;&#x52A8;&#x6001;&#x5BFC;&#x5165;&#x65B9;&#x6CD5;" class="headerlink" title="3. &#x4F7F;&#x7528;&#x52A8;&#x6001;&#x5BFC;&#x5165;&#x65B9;&#x6CD5;"></a>3. &#x4F7F;&#x7528;&#x52A8;&#x6001;&#x5BFC;&#x5165;&#x65B9;&#x6CD5;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-预取-预加载模块-prefetch-preload-module"><span class="nav-number">1.4.</span> <span class="nav-text"><a href="#4-&#x9884;&#x53D6;-&#x9884;&#x52A0;&#x8F7D;&#x6A21;&#x5757;-prefetch-preload-module" class="headerlink" title="4. &#x9884;&#x53D6;/&#x9884;&#x52A0;&#x8F7D;&#x6A21;&#x5757;(prefetch/preload module)"></a>4. &#x9884;&#x53D6;/&#x9884;&#x52A0;&#x8F7D;&#x6A21;&#x5757;(prefetch/preload module)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lazy-loading🌶"><span class="nav-number">2.</span> <span class="nav-text"><a href="#lazy-loading&#x1F336;" class="headerlink" title="lazy loading&#x1F336;"></a>lazy loading&#x1F336;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#预取-预加载模块-prefetch-preload-module-🏡"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x9884;&#x53D6;-&#x9884;&#x52A0;&#x8F7D;&#x6A21;&#x5757;-prefetch-preload-module-&#x1F3E1;" class="headerlink" title="&#x9884;&#x53D6;/&#x9884;&#x52A0;&#x8F7D;&#x6A21;&#x5757;(prefetch/preload module)&#x1F3E1;"></a>&#x9884;&#x53D6;/&#x9884;&#x52A0;&#x8F7D;&#x6A21;&#x5757;(prefetch/preload module)&#x1F3E1;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#几个易混淆的概念❌"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x51E0;&#x4E2A;&#x6613;&#x6DF7;&#x6DC6;&#x7684;&#x6982;&#x5FF5;&#x274C;" class="headerlink" title="&#x51E0;&#x4E2A;&#x6613;&#x6DF7;&#x6DC6;&#x7684;&#x6982;&#x5FF5;&#x274C;"></a>&#x51E0;&#x4E2A;&#x6613;&#x6DF7;&#x6DC6;&#x7684;&#x6982;&#x5FF5;&#x274C;</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#filename-与-chunkFilename"><span class="nav-number">4.1.</span> <span class="nav-text"><a href="#filename-&#x4E0E;-chunkFilename" class="headerlink" title="filename &#x4E0E; chunkFilename"></a>filename &#x4E0E; chunkFilename</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpackChunkName，webpackPreload，webpackPreload"><span class="nav-number">4.2.</span> <span class="nav-text"><a href="#webpackChunkName&#xFF0C;webpackPreload&#xFF0C;webpackPreload" class="headerlink" title="webpackChunkName&#xFF0C;webpackPreload&#xFF0C;webpackPreload"></a>webpackChunkName&#xFF0C;webpackPreload&#xFF0C;webpackPreload</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hash-chunkhash-contenthash"><span class="nav-number">4.3.</span> <span class="nav-text"><a href="#hash-chunkhash-contenthash" class="headerlink" title="hash chunkhash contenthash"></a>hash chunkhash contenthash</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结🌺"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;&#x1F33A;" class="headerlink" title="&#x603B;&#x7ED3;&#x1F33A;"></a>&#x603B;&#x7ED3;&#x1F33A;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2019/05/26/webpack4读书笔记-三/';
+          this.page.identifier = '2019/05/26/webpack4读书笔记-三/';
+          this.page.title = 'webpack4读书笔记(三)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
