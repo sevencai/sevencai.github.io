@@ -81,20 +81,20 @@
 
 
 
-<meta name="description" content="自从小程序出来后，你肯定有这样的想法。小程序内部分页面好想复用以前的H5，重复的去开发浪费了大量的时间和精力。 但是内嵌在小程序中的H5不支持拉起微信支付。也就是说小程序内，小程序嵌入的H5内只能调用小程序支付。  于是呢，我就想到了这么一个办法。有些山寨，并且不官方（官方当然是希望你直接在小程序内完成一切，下单到支付），但是却可以解决问题。O(∩_∩)O~~☁️❤️  解决方案我们可以用小程序">
+<meta name="description" content="笔者更新于2019年7月30号：以下文章内容已不适用，微信已校验完全下单wxappid和支付wxappid必须是同一个wxappid, 所以以下文章仅供参考，已经不是替代方案了，看来之前确实是漏洞。  自从小程序出来后，你肯定有这样的想法。小程序内部分页面好想复用以前的H5，重复的去开发浪费了大量的时间和精力。 但是内嵌在小程序中的H5不支持拉起微信支付。也就是说小程序内，小程序嵌入的H5内只能调">
 <meta name="keywords" content="小程序">
 <meta property="og:type" content="article">
 <meta property="og:title" content="小程序内嵌复用H5并拉起微信支付解决（替代）方案">
 <meta property="og:url" content="http://sevencai.github.io/2018/06/13/小程序内嵌复用H5并拉起微信支付解决（替代）方案/index.html">
 <meta property="og:site_name" content="Seven&#39;s Blog">
-<meta property="og:description" content="自从小程序出来后，你肯定有这样的想法。小程序内部分页面好想复用以前的H5，重复的去开发浪费了大量的时间和精力。 但是内嵌在小程序中的H5不支持拉起微信支付。也就是说小程序内，小程序嵌入的H5内只能调用小程序支付。  于是呢，我就想到了这么一个办法。有些山寨，并且不官方（官方当然是希望你直接在小程序内完成一切，下单到支付），但是却可以解决问题。O(∩_∩)O~~☁️❤️  解决方案我们可以用小程序">
+<meta property="og:description" content="笔者更新于2019年7月30号：以下文章内容已不适用，微信已校验完全下单wxappid和支付wxappid必须是同一个wxappid, 所以以下文章仅供参考，已经不是替代方案了，看来之前确实是漏洞。  自从小程序出来后，你肯定有这样的想法。小程序内部分页面好想复用以前的H5，重复的去开发浪费了大量的时间和精力。 但是内嵌在小程序中的H5不支持拉起微信支付。也就是说小程序内，小程序嵌入的H5内只能调">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://sevencai.github.io/2018/06/13/小程序内嵌复用H5并拉起微信支付解决（替代）方案/xiaochengxu1.png">
 <meta property="og:image" content="http://sevencai.github.io/2018/06/13/小程序内嵌复用H5并拉起微信支付解决（替代）方案/xiaochegnxu2.png">
-<meta property="og:updated_time" content="2018-06-13T13:45:39.000Z">
+<meta property="og:updated_time" content="2019-07-30T13:20:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="小程序内嵌复用H5并拉起微信支付解决（替代）方案">
-<meta name="twitter:description" content="自从小程序出来后，你肯定有这样的想法。小程序内部分页面好想复用以前的H5，重复的去开发浪费了大量的时间和精力。 但是内嵌在小程序中的H5不支持拉起微信支付。也就是说小程序内，小程序嵌入的H5内只能调用小程序支付。  于是呢，我就想到了这么一个办法。有些山寨，并且不官方（官方当然是希望你直接在小程序内完成一切，下单到支付），但是却可以解决问题。O(∩_∩)O~~☁️❤️  解决方案我们可以用小程序">
+<meta name="twitter:description" content="笔者更新于2019年7月30号：以下文章内容已不适用，微信已校验完全下单wxappid和支付wxappid必须是同一个wxappid, 所以以下文章仅供参考，已经不是替代方案了，看来之前确实是漏洞。  自从小程序出来后，你肯定有这样的想法。小程序内部分页面好想复用以前的H5，重复的去开发浪费了大量的时间和精力。 但是内嵌在小程序中的H5不支持拉起微信支付。也就是说小程序内，小程序嵌入的H5内只能调">
 <meta name="twitter:image" content="http://sevencai.github.io/2018/06/13/小程序内嵌复用H5并拉起微信支付解决（替代）方案/xiaochengxu1.png">
 
 
@@ -356,7 +356,8 @@
       
 
       
-        <blockquote>
+        <p><strong>笔者更新于2019年7月30号：以下文章内容已不适用，微信已校验完全下单wxappid和支付wxappid必须是同一个wxappid, 所以以下文章仅供参考，已经不是替代方案了，看来之前确实是漏洞。</strong></p>
+<blockquote>
 <p>自从小程序出来后，你肯定有这样的想法。小程序内部分页面好想复用以前的H5，重复的去开发浪费了大量的时间和精力。 但是内嵌在小程序中的H5不支持拉起微信支付。也就是说小程序内，小程序嵌入的H5内只能调用小程序支付。</p>
 </blockquote>
 <p>于是呢，我就想到了这么一个办法。有些山寨，并且不官方（官方当然是希望你直接在小程序内完成一切，下单到支付），但是却可以解决问题。O(∩_∩)O~~☁️❤️</p>
@@ -512,7 +513,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">126</span>
+                  <span class="site-state-item-count">127</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
