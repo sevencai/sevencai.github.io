@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2019-08-19T08:40:38.000Z</updated>
+  <updated>2019-09-10T13:02:00.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -14,6 +14,82 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>8月总结</title>
+    <link href="http://sevencai.github.io/2019/09/10/8%E6%9C%88%E6%80%BB%E7%BB%93/"/>
+    <id>http://sevencai.github.io/2019/09/10/8月总结/</id>
+    <published>2019-09-10T04:07:55.000Z</published>
+    <updated>2019-09-10T13:02:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>这里想总结下一些概念。</p>
+<hr>
+<h2 id="什么是RPC？"><a href="#什么是RPC？" class="headerlink" title="什么是RPC？"></a>什么是RPC？</h2><p><strong>RPC（</strong>Remote Procedure Call<strong>）</strong>是指远程过程调用，就是系统和系统之间的调用。</p>
+<p>如：支付宝和银行系统是两个不同的系统，如果支付宝要转钱到银行卡中，就涉及到两个系统的之间的调用。</p>
+<p><strong>RPC 主要用于解决两个问题</strong>：</p>
+<ol>
+<li>解决分布式系统中服务之间的调用问题</li>
+<li>解决远程调用时，能像本地调用一样方便，让调用者感知不到远程调用的逻辑</li>
+</ol>
+<p><strong>RPC 远程调用过称如下</strong>：</p>
+<ol>
+<li>A（client）与B（server）建立TCP连接</li>
+<li>A把方法名如 add 以及参数方法 (1,2) 序列化成字节流发送出去</li>
+<li>B接受到发送过来的字节流，然后反序列化得到目标方法名，方法参数，并执行相应的方法调用 (add(1,2)) 并把3返回</li>
+<li>A接受远程调用结构，输出3</li>
+</ol>
+<p><strong>RPC 与 REST 有什么区别</strong>？</p>
+<ol>
+<li>REST 基于HTTP协议， RPC有多种通信方式如HTTP, TCP/IP, 操作系统带的管道等</li>
+<li>RPC是面向过程，Restful是面向资源。REST 的协议可能是<code>Get /order?id=123</code>，RPC 的协议可能是<code>/queryOrder?id=123</code></li>
+<li>RPC 可以获得更好的性能，比如可能省去了 HTTP 报头等内容</li>
+</ol>
+<hr>
+<h2 id="几个性能指标"><a href="#几个性能指标" class="headerlink" title="几个性能指标"></a>几个性能指标</h2><ol>
+<li>吞吐量：每秒钟处理的请求和事务数</li>
+<li>延时：请求的处理延时</li>
+<li>成功率、稳定性</li>
+<li>系统资源、CPU、内存、磁盘、网络的负载情况</li>
+</ol>
+<hr>
+<h2 id="持续集成、持续部署、持续交付"><a href="#持续集成、持续部署、持续交付" class="headerlink" title="持续集成、持续部署、持续交付"></a>持续集成、持续部署、持续交付</h2><ol>
+<li>CI：持续集成（CONTINUOUS INTEGRATION）</li>
+<li>CD：持续部署（CONTINUOUS DEPLOYMENT）</li>
+<li>CD：持续交付（CONTINUOUS DELIVERY）</li>
+</ol>
+<hr>
+<h2 id="URL-和-URI-的关系"><a href="#URL-和-URI-的关系" class="headerlink" title="URL 和 URI 的关系"></a>URL 和 URI 的关系</h2><ol>
+<li>统一资源<strong>标志符</strong>URI就是在某一规则下能把一个资源独一无二地标识出来，像人的身份证一样。所以叫做标识符</li>
+<li>统一资源<strong>定位符</strong>URL就是通过某系一列的查找，能查到某个资源，比如 人类住址协议://深圳/南山区/南山文体中心/座位号FO4125</li>
+</ol>
+<p>所以URL这个字符串也同样标识出了唯一的一个人，起到了URI的作用。因此<strong>URL是URI的子集</strong>。</p>
+<p>因此<code>https://www.xxxx.com/question/id</code>这个叫做URL。</p>
+<hr>
+<h2 id="IaaS、PaaS、SaaS"><a href="#IaaS、PaaS、SaaS" class="headerlink" title="IaaS、PaaS、SaaS"></a>IaaS、PaaS、SaaS</h2><ol>
+<li>IaaS（Infrastructure as a Service）,基础架构服务</li>
+<li>PaaS（Platform-as-a-service），平台服务</li>
+<li>SaaS（Software-as-a-service），软件服务</li>
+</ol>
+<p>看了一些资料，<a href="https://www.zhihu.com/question/20387284" target="_blank" rel="noopener">知乎上有比较多的回答-John Wang</a>，这里记录下最好理解的答案：</p>
+<blockquote>
+<p>如果你是一个网站站长，想要建立一个网站。不采用云服务，你所需要的投入大概是：买服务器，安装服务器软件，编写网站程序。现在你追随潮流，采用流行的云计算。</p>
+<p>如果你采用IaaS服务，那么意味着你就不用自己买服务器了，随便在哪家购买虚拟机，但是还是需要自己装服务器软件</p>
+<p>如果你采用PaaS的服务，那么意味着你既不需要买服务器，也不需要自己装服务器软件，只需要自己开发网站程序如果你再进一步，购买某些在线论坛或者在线网店的服务,这意味着你也不用自己开发网站程序，只需要使用它们开发好的程序，而且他们会负责程序的升级、维护、增加服务器等，而你只需要专心运营即可，此即为SaaS。</p>
+</blockquote>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>主要是对一些比较模糊的概念，进行了下记录。希望自己能多了解写后台的知识，对别人在做的事情有认识，成为虽然可能不熟悉，但是可以很愉快沟通的人。📚🌲</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这里想总结下一些概念。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;什么是RPC？&quot;&gt;&lt;a href=&quot;#什么是RPC？&quot; class=&quot;headerlink&quot; title=&quot;什么是RPC？&quot;&gt;&lt;/a&gt;什么是RPC？&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;RPC（&lt;/strong&gt;Remot
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>concat引发的血案</title>
@@ -1421,104 +1497,6 @@
     
     
       <category term="读书笔记" scheme="http://sevencai.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>项目总结</title>
-    <link href="http://sevencai.github.io/2018/08/09/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/"/>
-    <id>http://sevencai.github.io/2018/08/09/项目总结/</id>
-    <published>2018-08-09T13:23:13.000Z</published>
-    <updated>2018-08-09T14:03:48.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>最近一个多月加了很多班，做了一个比较紧急的项目 Nodejs + Vue全家桶，感觉自己收获多多。今天已经发布了现网版本，趁热总结和梳理下。</p>
-</blockquote>
-<hr>
-<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><ol>
-<li><code>Nodejs koa2</code>,  <code>async await</code>用的很舒适。</li>
-<li><code>Vue 全家桶</code>,<code>vue webpack vuex</code>可快速开发。</li>
-<li>前后端分离，<code>Nodejs</code> 端纯做 <code>Api</code> 层。</li>
-<li><code>pm2</code> 进程管理工具。又熟悉了很多命令和踩了一些坑。</li>
-<li><code>log4js</code>日志打印工具。了解了部门的日志规范，用于查询问题。</li>
-<li>数据库用的 <code>sequelize</code>。</li>
-<li>登录用的 <code>koa-generic-session</code>。</li>
-<li>了解了 ToB 的一些概念及思想。</li>
-</ol>
-<p>以后就抛弃 PHP 这个世界上最好的语言吧。以下主要是自己对自己问题的一些梳理。并不涉及到任何的真实项目代码⌨️🏠。</p>
-<hr>
-<h2 id="获取用户的IP信息"><a href="#获取用户的IP信息" class="headerlink" title="获取用户的IP信息"></a>获取用户的IP信息</h2><p>在很多种情况下，我们Nodejs层需要把用户的 ip 传给后台的 cgi, cgi 会根据这个 ip 做一些策略，如风控，营销等等。这就涉及到 ip 怎么取的概念，你可能会接触到这几个 ip:</p>
-<ol>
-<li>ctx.request.ip</li>
-<li>ctx.headers[‘x-forwarded-for’]</li>
-<li>ctx.headers[‘x-real-ip’]</li>
-</ol>
-<p>先来普及下 <code>x-forwarded-for</code>及 <code>x-real-ip</code>。</p>
-<p><code>x-forwarded-for</code>的格式一般为：<code>X-Forwarded-For: client1, proxy1, proxy2</code>  如：<code>X-Forwarded-For: 1.1.1.1, 2.2.2.2, 3.3.3.3</code></p>
-<blockquote>
-<p>最左边（client1）是最原始客户端的IP地址, 代理服务器每成功收到一个请求，就把<strong>请求来源IP地址</strong>添加到右边。 在上面这个例子中，这个请求成功通过了三台代理服务器：proxy1, proxy2 及 proxy3。请求由client1发出，到达了proxy3（proxy3可能是请求的终点）。请求刚从client1中发出时，XFF是空的，请求被发往proxy1；通过proxy1的时候，client1被添加到XFF中，之后请求被发往proxy2;通过proxy2的时候，proxy1被添加到XFF中，之后请求被发往proxy3；通过proxy3时，proxy2被添加到XFF中，之后请求的的去向不明，如果proxy3不是请求终点，请求会被继续转发。<strong>鉴于伪造这一字段非常容易，应该谨慎使用X-Forwarded-For字段。正常情况下XFF中最后一个IP地址是最后一个代理服务器的IP地址, 这通常是一个比较可靠的信息来源。</strong> –维基百科</p>
-</blockquote>
-<p>而 <code>x-real-ip</code>没有相关标准，但是在反向代理和正向代理下，它的值可能不同。<strong>正向代理时，记录的是客户端的真实ip。 反向代理时，记录的是最后一级的代理ip。</strong></p>
-<p>所以：<code>x-real-ip</code> 及 <code>x-forwarded-for</code>这两个 ip 就是很普通的请求头，它们是可以被篡改的。比如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://www.my.com:8089 -H <span class="string">'X-Forwarded-For: 1.1.1.1'</span> -H <span class="string">'X-Real-IP: 2.2.2.2'</span></span><br></pre></td></tr></table></figure></p>
-<p>那么这两个值都容易被篡改，不可信，我们要拿到用户真实的 ip 怎么办呢？</p>
-<p>一般在建立  TCP 连接时，会产生真实的 IP, 叫做 <code>Remote Address</code>。因为是建立在 TCP 中，所以这个 ip 不能被篡改。一旦篡改，握手不成功，那么后面自然就没有了。所以如果我们要取真实的 ip,应该从这个字段里取。</p>
-<p>实际上应该取那个值，跟你 nginx 的配置有关系。比如一般配置 nginx 反向代理的时候可能这样配置：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line"></span><br><span class="line">// 若 XFF 有值，则 <span class="variable">$proxy_add_x_forwarded_for</span> = <span class="variable">$XFF</span>, <span class="variable">$remote_addr</span>  (<span class="variable">$XFF</span>与<span class="variable">$remote_addr</span>逗号分割，<span class="variable">$remote_addr</span>在其后)</span><br><span class="line">// 若 XFF 没有值，则 <span class="variable">$proxy_add_x_forwarded_for</span> = <span class="variable">$remote_addr</span></span><br></pre></td></tr></table></figure></p>
-<p>像这样赋值后，如果你是通过 nginx 反向代理来的，nginx 会把用户实际 ip （$remote_addr）赋值给 <code>X-Real-IP</code>,这时候它也是真实的用户IP了。而 XFF 也是有了用户的真实IP。</p>
-<p>通过这样的 nginx 配置。整个内容就无法被篡改和构造，我们就可以从 <code>X-Real-IP</code> 和 <code>XFF</code>的最后一截 获得用户真实的 IP 了。</p>
-<p>所以我最后是怎么传什么字段给后台的呢？<strong>我最后传的是 <code>x-forwarded-ip</code>， 拿到这一系列的 ip list 后，后台会去通过网段校验，判断出哪个是外网 ip, 然后把这个 ip 当成是用户真实的 ip。</strong> cgi 还是很严谨的。</p>
-<p>最开始谈到的 <code>ctx.request.ip</code> 是最后一次的 ip, 所以有可能是代理机器的 ip。</p>
-<p>遇到一篇好文章：<a href="https://imququ.com/post/x-forwarded-for-header-in-http.html" target="_blank" rel="noopener">x-forwarded-for-header-in-http</a></p>
-<p>一个实例，判断用户IP是否正常：<a href="https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=15_5" target="_blank" rel="noopener">微信H5支付需判断下单IP和支付IP是否一致</a></p>
-<hr>
-<h2 id="关于-PM2-的-cluster-模式"><a href="#关于-PM2-的-cluster-模式" class="headerlink" title="关于 PM2 的 cluster 模式"></a>关于 PM2 的 cluster 模式</h2><p>pm2 是很好的进程管理器，有自动重启等功能，并且还自带负载均衡。我这里就不讲具体的 cluster 模式和 pm2 了。就只讲下我遇到的坑。</p>
-<p>cluster 模式下，log4js 日志，无法正常打印。这个已经有相关的 issue,地址在<a href="https://github.com/log4js-node/log4js-node/issues/265" target="_blank" rel="noopener">这里</a>。大概的意思是 cluster 模式下，并没有 master 进程，而是只有多个 worker 子进程。而 log4js 只在 master 进程下，才会进行打印日志的操作。之所以这样是因为多个 worker 操作同一个日志文件（一般我们日志文件只有一套配置）可能会导致有错乱等问题。有解决问题的方法，都在那个 issue 里，但是我总觉得不太好。</p>
-<p>另一个问题是，在 cluster 模式下，利用 restart 命令无法完全重启进程，fork 模式下就不会，猜测是 cluster 模式有多个 worker, 重启是否需要 restart 指定是哪个子进程才可以？还发现，如果只有一个子进程，不指定也会不能重启。我明天会去验证下。</p>
-<p>遇到了一篇好文章： <a href="http://www.acuriousanimal.com/2017/08/20/using-pm2-to-manage-cluster.html" target="_blank" rel="noopener">using-pm2-to-manage-cluster</a></p>
-<hr>
-<h2 id="登录态验证"><a href="#登录态验证" class="headerlink" title="登录态验证"></a>登录态验证</h2><p>我们利用了<code>koa session</code>, <code>cookie session</code> 这种形式。开始的时候我把这里想复杂了，想要结合微信的登录态。但实际上纯 session cookie 这种反而更好。</p>
-<blockquote>
-<p>大概流程是：用户登录网站，调用微信登录，拉起授权，授权的地址调用 Nodejs 后台的一个自己封装的接口。在这个接口里获得用户的 openid ，校验用户的权限并且设置 <code>ctx.session.sessionId</code>，然后返回到前端，前端调用后台的接口，通过已经种下的 <code>sessionId</code> 即可判断出用户的权限，然后再返回给前端。前端再针对身份到对应的路由。</p>
-</blockquote>
-<p>那么你肯定会问，为什么不在直接设置 sessionId 的时候把用户信息返回了呢？这样也可以的，那么相当于你微信授权的回调地址要写一个前端的页面， 然后在这个页面中再来判断用户根据身份到哪个页面。这个前端页面你需要单独的也去维护。这样也是可以的。你也许会问，我不用单独再写个页面，用首页就好了。但是用首页会存在一个问题，就是最终由于授权，你的首页就带上了 code, 还要用 replaceState 什么的去掉，我觉得很不整洁。但是也是可以的。这两种方式本质上都可以。只不过第一种偷懒了，直接redirect到首页，首页再发一次请求。</p>
-<p>我用的登录中间件是： <code>koa-generic-session</code>。<code>app.use</code>下面这个中间件即可。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> sequelizeObj = connectDb.db[dbName]</span><br><span class="line"></span><br><span class="line">sessionConfig.options.store = <span class="keyword">new</span> SequelizeStore(sequelizeObj, &#123;</span><br><span class="line">  sync: <span class="literal">false</span>,</span><br><span class="line">  tableName: <span class="string">'t_session'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> session(sessionConfig.options)</span><br></pre></td></tr></table></figure></p>
-<p>存储并没有存在内存中，而是存在了数据库里，这里用的<code>koa-generic-session-sequelize</code>。<strong>不放在内存里的原因是有多台机器，存在内存中不能共享应该会有问题。</strong></p>
-<p>设置 session cookie 的时候，在前端 cookie 里，就会有对应的值，然后每次请求页面，都会把这个 cookie 带上，去数据库里找对应的 session 是否失效。如果没有失效，认为ok,那么就可以跳过验证的过称了。</p>
-<p>还可以加上 app.keys ，然后再对应的 options 里加上  signkeys。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app.keys = [<span class="string">'im a newer secret'</span>, <span class="string">'i like turtle'</span>];</span><br><span class="line">app.keys = <span class="keyword">new</span> KeyGrip([<span class="string">'im a newer secret'</span>, <span class="string">'i like turtle'</span>], <span class="string">'sha256'</span>);</span><br><span class="line"></span><br><span class="line">ctx.cookies.set(<span class="string">'name'</span>, <span class="string">'tobi'</span>, &#123; <span class="attr">signed</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
-<p>这样，你的 cookie 的值，就会被加密了。前端看到的 cookie 可能是一个加密过的串。然后你到服务器端 get cookie 的时候，它会自动帮你解密。得到对应的值去和数据库里的session进行比对。</p>
-<p>那如果前端的微信登录态过期了怎么办呢？比较简单，前端发现登录态失败，比如登录态失败的返回码是1111，那么1111时重新拉起微信登录即可。</p>
-<hr>
-<h2 id="日志管理"><a href="#日志管理" class="headerlink" title="日志管理"></a>日志管理</h2><p>日志管理对于一个大型的项目来说，尤其是涉及到支付的非常重要，他用于帮你查看用户做了什么事情，或者系统出了什么❌。非常的重要。</p>
-<p><strong>日志我这里用的 log4js, 分为了四种 category, 分别用来记录 db 操作，访问日志，开发者 debug 信息，cgi 信息日志，错误日志。这些需要放在不同的文件里，便于开发者找问题。</strong></p>
-<p>你可以设置不同的 categories, 每个 categories 里设置 level 和不同的 appenders。 每一个 appenders 都可以设置不同 filename 等等。</p>
-<p>那么这个 db 的操作日志，怎么打印呢？ sequelize 建立跟 db 链接时，可以传入 logging 这个 option, 在这个 logging 里设置 sequelize 的打印方法。如下面我就是把打印db的操作日志通过 log4js 打入了日志中：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.options.logging = <span class="function"><span class="params">msg</span> =&gt;</span> &#123;</span><br><span class="line">  dbLogger.debug(msg)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="koa2-的错误处理"><a href="#koa2-的错误处理" class="headerlink" title="koa2 的错误处理"></a>koa2 的错误处理</h2><p>这个错误处理的方法，网上到处都是的了：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误处理中间件</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> next()</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    ctx.response.status = err.statusCode || err.status || <span class="number">500</span></span><br><span class="line"></span><br><span class="line">    ctx.response.body = &#123;</span><br><span class="line">      message: <span class="string">'系统繁忙，请稍后再试!'</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ctx.app.emit(<span class="string">'error'</span>, err, ctx)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// app.js 中接收 error 事件，并且上报到错误日志中</span></span><br><span class="line">app.on(<span class="string">'error'</span>, (err, ctx) =&gt; &#123;</span><br><span class="line"> ctx.errorLogger(<span class="string">`name=<span class="subst">$&#123;err.name&#125;</span>&amp;msg=<span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(err.message)&#125;</span>&amp;stack=<span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(err.stack)&#125;</span>`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>这里注意如果你直接打印的是 err 对象，一般只有它的 msg 会被打印出来，如果你想要更多信息，一定要把 stack 打出来。这个我疏忽了，同事帮我提出来了，很棒很优秀。</p>
-<p>我去网上查了下，这个错误处理其实是 koa2 里的默认方式，只不过我们又自己去重写了，他本身的是这样的：</p>
-<p>可以看下这篇文档：<a href="https://github.com/koajs/koa/blob/master/docs/error-handling.md#default-error-handler" target="_blank" rel="noopener">error-handling.md#default-error-handler</a></p>
-<p>他里面推荐了一种写法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">app.use(<span class="keyword">async</span> (ctx, next) =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> next();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="comment">// will only respond with JSON</span></span><br><span class="line">    ctx.status = err.statusCode || err.status || <span class="number">500</span>;</span><br><span class="line">    ctx.body = &#123;</span><br><span class="line">      message: err.message</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
-<p><strong>我觉得这种写法并不是很好，因为如果你这个是数据库的某些地方出错了，可能会在 err.message 里暴露一些你机器 ip 及一些其他的信息，这个是不安全的。统一给用户一个回复，然后打到系统错误日志中，是比较好的做法。</strong></p>
-<p>这里途中看到了一篇文章： <a href="http://www.52cik.com/2018/05/27/koa-error.html" target="_blank" rel="noopener">大概讲的是koa错误处理的写法</a></p>
-<p>注意错误处理最好被当做最前面的一个中间件。</p>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>先写这么多，其实还有很多很小的细节。下次再整理整理，当然上面只是我自己的理解，可能也有我理解错了的。我会经常看它，然后看自己是否后面又新的认识来推翻现在的想法。这个项目是我跟着组里另外一个很多年经验的老司机一起做的，在他身上，我学习到了严谨的态度。有很多地方他都比我有经验，也给我指出了一些问题。所以说公司和老板给他那么多工资是应该的啊。优秀哈哈。👍📚</p>
-<p>🌲希望下次有机会试下 Vue SSR。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;最近一个多月加了很多班，做了一个比较紧急的项目 Nodejs + Vue全家桶，感觉自己收获多多。今天已经发布了现网版本，趁热总结和梳理下。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; 
-    
-    </summary>
-    
-    
-      <category term="Nodejs" scheme="http://sevencai.github.io/tags/Nodejs/"/>
     
   </entry>
   

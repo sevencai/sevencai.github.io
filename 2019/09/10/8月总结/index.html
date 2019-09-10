@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="这里想总结下一些概念。  什么是RPC？RPC（Remote Procedure Call）是指远程过程调用，就是系统和系统之间的调用。 如：支付宝和银行系统是两个不同的系统，如果支付宝要转钱到银行卡中，就涉及到两个系统的之间的调用。 RPC 主要用于解决两个问题：  解决分布式系统中服务之间的调用问题 解决远程调用时，能像本地调用一样方便，让调用者感知不到远程调用的逻辑  RPC 远程调用过称如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8月总结">
+<meta property="og:url" content="http://sevencai.github.io/2019/09/10/8月总结/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="这里想总结下一些概念。  什么是RPC？RPC（Remote Procedure Call）是指远程过程调用，就是系统和系统之间的调用。 如：支付宝和银行系统是两个不同的系统，如果支付宝要转钱到银行卡中，就涉及到两个系统的之间的调用。 RPC 主要用于解决两个问题：  解决分布式系统中服务之间的调用问题 解决远程调用时，能像本地调用一样方便，让调用者感知不到远程调用的逻辑  RPC 远程调用过称如">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-10T13:02:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="8月总结">
+<meta name="twitter:description" content="这里想总结下一些概念。  什么是RPC？RPC（Remote Procedure Call）是指远程过程调用，就是系统和系统之间的调用。 如：支付宝和银行系统是两个不同的系统，如果支付宝要转钱到银行卡中，就涉及到两个系统的之间的调用。 RPC 主要用于解决两个问题：  解决分布式系统中服务之间的调用问题 解决远程调用时，能像本地调用一样方便，让调用者感知不到远程调用的逻辑  RPC 远程调用过称如">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2019/09/10/8月总结/"/>
+
+
+
+
+
+  <title>8月总结 | Seven's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?157d49c9f81aaca6e7af073620a0a709";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2019/09/10/8月总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">8月总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-10T12:07:55+08:00">
+                2019-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/10/8月总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/10/8月总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这里想总结下一些概念。</p>
+<hr>
+<h2 id="什么是RPC？"><a href="#什么是RPC？" class="headerlink" title="什么是RPC？"></a>什么是RPC？</h2><p><strong>RPC（</strong>Remote Procedure Call<strong>）</strong>是指远程过程调用，就是系统和系统之间的调用。</p>
+<p>如：支付宝和银行系统是两个不同的系统，如果支付宝要转钱到银行卡中，就涉及到两个系统的之间的调用。</p>
+<p><strong>RPC 主要用于解决两个问题</strong>：</p>
+<ol>
+<li>解决分布式系统中服务之间的调用问题</li>
+<li>解决远程调用时，能像本地调用一样方便，让调用者感知不到远程调用的逻辑</li>
+</ol>
+<p><strong>RPC 远程调用过称如下</strong>：</p>
+<ol>
+<li>A（client）与B（server）建立TCP连接</li>
+<li>A把方法名如 add 以及参数方法 (1,2) 序列化成字节流发送出去</li>
+<li>B接受到发送过来的字节流，然后反序列化得到目标方法名，方法参数，并执行相应的方法调用 (add(1,2)) 并把3返回</li>
+<li>A接受远程调用结构，输出3</li>
+</ol>
+<p><strong>RPC 与 REST 有什么区别</strong>？</p>
+<ol>
+<li>REST 基于HTTP协议， RPC有多种通信方式如HTTP, TCP/IP, 操作系统带的管道等</li>
+<li>RPC是面向过程，Restful是面向资源。REST 的协议可能是<code>Get /order?id=123</code>，RPC 的协议可能是<code>/queryOrder?id=123</code></li>
+<li>RPC 可以获得更好的性能，比如可能省去了 HTTP 报头等内容</li>
+</ol>
+<hr>
+<h2 id="几个性能指标"><a href="#几个性能指标" class="headerlink" title="几个性能指标"></a>几个性能指标</h2><ol>
+<li>吞吐量：每秒钟处理的请求和事务数</li>
+<li>延时：请求的处理延时</li>
+<li>成功率、稳定性</li>
+<li>系统资源、CPU、内存、磁盘、网络的负载情况</li>
+</ol>
+<hr>
+<h2 id="持续集成、持续部署、持续交付"><a href="#持续集成、持续部署、持续交付" class="headerlink" title="持续集成、持续部署、持续交付"></a>持续集成、持续部署、持续交付</h2><ol>
+<li>CI：持续集成（CONTINUOUS INTEGRATION）</li>
+<li>CD：持续部署（CONTINUOUS DEPLOYMENT）</li>
+<li>CD：持续交付（CONTINUOUS DELIVERY）</li>
+</ol>
+<hr>
+<h2 id="URL-和-URI-的关系"><a href="#URL-和-URI-的关系" class="headerlink" title="URL 和 URI 的关系"></a>URL 和 URI 的关系</h2><ol>
+<li>统一资源<strong>标志符</strong>URI就是在某一规则下能把一个资源独一无二地标识出来，像人的身份证一样。所以叫做标识符</li>
+<li>统一资源<strong>定位符</strong>URL就是通过某系一列的查找，能查到某个资源，比如 人类住址协议://深圳/南山区/南山文体中心/座位号FO4125</li>
+</ol>
+<p>所以URL这个字符串也同样标识出了唯一的一个人，起到了URI的作用。因此<strong>URL是URI的子集</strong>。</p>
+<p>因此<code>https://www.xxxx.com/question/id</code>这个叫做URL。</p>
+<hr>
+<h2 id="IaaS、PaaS、SaaS"><a href="#IaaS、PaaS、SaaS" class="headerlink" title="IaaS、PaaS、SaaS"></a>IaaS、PaaS、SaaS</h2><ol>
+<li>IaaS（Infrastructure as a Service）,基础架构服务</li>
+<li>PaaS（Platform-as-a-service），平台服务</li>
+<li>SaaS（Software-as-a-service），软件服务</li>
+</ol>
+<p>看了一些资料，<a href="https://www.zhihu.com/question/20387284" target="_blank" rel="noopener">知乎上有比较多的回答-John Wang</a>，这里记录下最好理解的答案：</p>
+<blockquote>
+<p>如果你是一个网站站长，想要建立一个网站。不采用云服务，你所需要的投入大概是：买服务器，安装服务器软件，编写网站程序。现在你追随潮流，采用流行的云计算。</p>
+<p>如果你采用IaaS服务，那么意味着你就不用自己买服务器了，随便在哪家购买虚拟机，但是还是需要自己装服务器软件</p>
+<p>如果你采用PaaS的服务，那么意味着你既不需要买服务器，也不需要自己装服务器软件，只需要自己开发网站程序如果你再进一步，购买某些在线论坛或者在线网店的服务,这意味着你也不用自己开发网站程序，只需要使用它们开发好的程序，而且他们会负责程序的升级、维护、增加服务器等，而你只需要专心运营即可，此即为SaaS。</p>
+</blockquote>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>主要是对一些比较模糊的概念，进行了下记录。希望自己能多了解写后台的知识，对别人在做的事情有认识，成为虽然可能不熟悉，但是可以很愉快沟通的人。📚🌲</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/18/concat引发的血案/" rel="next" title="concat引发的血案">
+                <i class="fa fa-chevron-left"></i> concat引发的血案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">128</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是RPC？"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;"></a>&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#几个性能指标"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;" class="headerlink" title="&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;"></a>&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续集成、持续部署、持续交付"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;" class="headerlink" title="&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;"></a>&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URL-和-URI-的关系"><span class="nav-number">4.</span> <span class="nav-text"><a href="#URL-&#x548C;-URI-&#x7684;&#x5173;&#x7CFB;" class="headerlink" title="URL &#x548C; URI &#x7684;&#x5173;&#x7CFB;"></a>URL &#x548C; URI &#x7684;&#x5173;&#x7CFB;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IaaS、PaaS、SaaS"><span class="nav-number">5.</span> <span class="nav-text"><a href="#IaaS&#x3001;PaaS&#x3001;SaaS" class="headerlink" title="IaaS&#x3001;PaaS&#x3001;SaaS"></a>IaaS&#x3001;PaaS&#x3001;SaaS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2019/09/10/8月总结/';
+          this.page.identifier = '2019/09/10/8月总结/';
+          this.page.title = '8月总结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
