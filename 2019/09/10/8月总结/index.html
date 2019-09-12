@@ -88,7 +88,7 @@
 <meta property="og:site_name" content="Seven&#39;s Blog">
 <meta property="og:description" content="这里想总结下一些概念。  什么是RPC？RPC（Remote Procedure Call）是指远程过程调用，就是系统和系统之间的调用。 如：支付宝和银行系统是两个不同的系统，如果支付宝要转钱到银行卡中，就涉及到两个系统的之间的调用。 RPC 主要用于解决两个问题：  解决分布式系统中服务之间的调用问题 解决远程调用时，能像本地调用一样方便，让调用者感知不到远程调用的逻辑  RPC 远程调用过称如">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-10T13:02:00.000Z">
+<meta property="og:updated_time" content="2019-09-12T04:06:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="8月总结">
 <meta name="twitter:description" content="这里想总结下一些概念。  什么是RPC？RPC（Remote Procedure Call）是指远程过程调用，就是系统和系统之间的调用。 如：支付宝和银行系统是两个不同的系统，如果支付宝要转钱到银行卡中，就涉及到两个系统的之间的调用。 RPC 主要用于解决两个问题：  解决分布式系统中服务之间的调用问题 解决远程调用时，能像本地调用一样方便，让调用者感知不到远程调用的逻辑  RPC 远程调用过称如">
@@ -395,6 +395,33 @@
 <p>所以URL这个字符串也同样标识出了唯一的一个人，起到了URI的作用。因此<strong>URL是URI的子集</strong>。</p>
 <p>因此<code>https://www.xxxx.com/question/id</code>这个叫做URL。</p>
 <hr>
+<h2 id="几个内核技术名词"><a href="#几个内核技术名词" class="headerlink" title="几个内核技术名词"></a>几个内核技术名词</h2><blockquote>
+<p>浏览器内核分为两部分：渲染引擎<code>（render engin）</code>、js引擎<code>(js engin)</code><br>渲染引擎：负责对网页语法的解释<code>（HTML、XML）</code>，并渲染（显示）网页<br>js引擎：负责<code>javaScript</code>的解释、编译、执行</p>
+</blockquote>
+<p><strong>小程序的<code>Javascript</code>运行环境</strong>：</p>
+<ol>
+<li>在 <code>iOS</code> 上， 小程序的 <code>Javascript</code> 代码运行在 <code>JavascriptCore</code> 中</li>
+<li>在 <code>Android</code> 上，小程序的 <code>Javascript</code> 代码通过 <code>X5</code> 内核解析</li>
+<li>在 开发者工具上，小程序的 <code>Javascript</code> 代码运行在 <code>nwjs</code> 中</li>
+</ol>
+<p><strong>关于<code>JavascriptCore</code></strong>：<br><code>Webkit</code>由苹果开发-&gt;后苹果在其之上开发成为了<code>JavaScriptCore</code>。</p>
+<p><code>JavascriptCore</code> = <code>WebKit</code> 的 <code>JavaScript</code> 引擎用 <code>Objective-C</code> 封装，提供了简单，快速以及安全的方式接入世界上最流行的语言。</p>
+<p><strong>关于 X5 内核</strong>：<br><code>X5</code> 内核,是<code>Tencent</code>自己的浏览器解析内核。比如安卓微信上，就是用的X5内核，再比如QQ浏览器。</p>
+<p><strong>关于<code>NW.JS</code></strong>：<br>NW.js （原名 <code>node-webkit</code>）是一个基于 Chromium 和 node.js 的应用运行时，通过它可以用 HTML 和 JavaScript 编写<strong>原生应用程序</strong>。它还允许您从 DOM 调用 Node.js 的模块 ，实现了一个用所有 Web 技术来写原生应用程序的新的开发模式。</p>
+<p><strong>几个常用的浏览器内核</strong>：<br>Trident(IE)、Gecko(FireFox)、Webkit/JavascriptCore(Safari)、blink(Chrome)<br><code>Webkit</code>苹果开发-&gt;后被<code>chrome</code>复制并独立运作成<code>blink</code>,成为<code>chrome</code>的内核。</p>
+<hr>
+<h2 id="RBAC模型"><a href="#RBAC模型" class="headerlink" title="RBAC模型"></a>RBAC模型</h2><p>RBAC（Role-Based Access Control）即：基于角色的权限控制。通过角色关联用户，角色关联权限的方式间接赋予用户权限。</p>
+<p>看了<a href="https://juejin.im/entry/5d79b2b3f265da03bc12a5fa" target="_blank" rel="noopener">这篇文章</a>，才了解到之前工作项目里用的是 RBAC0 中的：用户和角色是多对一关系，即：一个用户只充当一种角色，一种角色可以有多个用户担当。</p>
+<p><strong>一个基本的用户权限系统，开始就要从下面两个方向去考虑</strong>：</p>
+<ol>
+<li>确认角色管理列表，可以快速创建一个角色，并且创建角色的同事可以为角色配置权限。</li>
+<li>确认用户管理列表，再用户管理列表中可以快速添加一个用户，并且为其关联好相关的角色。</li>
+</ol>
+<p>文章里，还有个用户组的概念，我觉得以后可以用到：</p>
+<blockquote>
+<p>当平台用户基数增大，角色类型增多时，如果直接给用户配角色，管理员的工作量就会很大。这时候我们可以引入一个概念“用户组”，就是将相同属性的用户归类到一起。</p>
+</blockquote>
+<hr>
 <h2 id="IaaS、PaaS、SaaS"><a href="#IaaS、PaaS、SaaS" class="headerlink" title="IaaS、PaaS、SaaS"></a>IaaS、PaaS、SaaS</h2><ol>
 <li>IaaS（Infrastructure as a Service）,基础架构服务</li>
 <li>PaaS（Platform-as-a-service），平台服务</li>
@@ -404,7 +431,8 @@
 <blockquote>
 <p>如果你是一个网站站长，想要建立一个网站。不采用云服务，你所需要的投入大概是：买服务器，安装服务器软件，编写网站程序。现在你追随潮流，采用流行的云计算。</p>
 <p>如果你采用IaaS服务，那么意味着你就不用自己买服务器了，随便在哪家购买虚拟机，但是还是需要自己装服务器软件</p>
-<p>如果你采用PaaS的服务，那么意味着你既不需要买服务器，也不需要自己装服务器软件，只需要自己开发网站程序如果你再进一步，购买某些在线论坛或者在线网店的服务,这意味着你也不用自己开发网站程序，只需要使用它们开发好的程序，而且他们会负责程序的升级、维护、增加服务器等，而你只需要专心运营即可，此即为SaaS。</p>
+<p>如果你采用PaaS的服务，那么意味着你既不需要买服务器，也不需要自己装服务器软件，只需要自己开发网站程序</p>
+<p>如果你再进一步，购买某些在线论坛或者在线网店的服务,这意味着你也不用自己开发网站程序，只需要使用它们开发好的程序，而且他们会负责程序的升级、维护、增加服务器等，而你只需要专心运营即可，此即为SaaS。</p>
 </blockquote>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>主要是对一些比较模糊的概念，进行了下记录。希望自己能多了解写后台的知识，对别人在做的事情有认识，成为虽然可能不熟悉，但是可以很愉快沟通的人。📚🌲</p>
@@ -591,7 +619,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是RPC？"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;"></a>&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#几个性能指标"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;" class="headerlink" title="&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;"></a>&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续集成、持续部署、持续交付"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;" class="headerlink" title="&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;"></a>&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URL-和-URI-的关系"><span class="nav-number">4.</span> <span class="nav-text"><a href="#URL-&#x548C;-URI-&#x7684;&#x5173;&#x7CFB;" class="headerlink" title="URL &#x548C; URI &#x7684;&#x5173;&#x7CFB;"></a>URL &#x548C; URI &#x7684;&#x5173;&#x7CFB;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IaaS、PaaS、SaaS"><span class="nav-number">5.</span> <span class="nav-text"><a href="#IaaS&#x3001;PaaS&#x3001;SaaS" class="headerlink" title="IaaS&#x3001;PaaS&#x3001;SaaS"></a>IaaS&#x3001;PaaS&#x3001;SaaS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是RPC？"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;"></a>&#x4EC0;&#x4E48;&#x662F;RPC&#xFF1F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#几个性能指标"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;" class="headerlink" title="&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;"></a>&#x51E0;&#x4E2A;&#x6027;&#x80FD;&#x6307;&#x6807;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续集成、持续部署、持续交付"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;" class="headerlink" title="&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;"></a>&#x6301;&#x7EED;&#x96C6;&#x6210;&#x3001;&#x6301;&#x7EED;&#x90E8;&#x7F72;&#x3001;&#x6301;&#x7EED;&#x4EA4;&#x4ED8;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URL-和-URI-的关系"><span class="nav-number">4.</span> <span class="nav-text"><a href="#URL-&#x548C;-URI-&#x7684;&#x5173;&#x7CFB;" class="headerlink" title="URL &#x548C; URI &#x7684;&#x5173;&#x7CFB;"></a>URL &#x548C; URI &#x7684;&#x5173;&#x7CFB;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#几个内核技术名词"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x51E0;&#x4E2A;&#x5185;&#x6838;&#x6280;&#x672F;&#x540D;&#x8BCD;" class="headerlink" title="&#x51E0;&#x4E2A;&#x5185;&#x6838;&#x6280;&#x672F;&#x540D;&#x8BCD;"></a>&#x51E0;&#x4E2A;&#x5185;&#x6838;&#x6280;&#x672F;&#x540D;&#x8BCD;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RBAC模型"><span class="nav-number">6.</span> <span class="nav-text"><a href="#RBAC&#x6A21;&#x578B;" class="headerlink" title="RBAC&#x6A21;&#x578B;"></a>RBAC&#x6A21;&#x578B;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IaaS、PaaS、SaaS"><span class="nav-number">7.</span> <span class="nav-text"><a href="#IaaS&#x3001;PaaS&#x3001;SaaS" class="headerlink" title="IaaS&#x3001;PaaS&#x3001;SaaS"></a>IaaS&#x3001;PaaS&#x3001;SaaS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
             
 
           </div>
