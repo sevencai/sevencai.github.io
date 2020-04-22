@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="工具/配置," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="用whisle已经差不都两年多了，真是个很棒的工具，除了配色，真的没有地方可以吐槽。下面总结下我经常用的并且好用的配置。   转发场景为：与业务联调，需要业务App内嵌我们H5，我们可以随意抓包找业务App内的一个H5链接，转发成我们的页面即可模拟到APP打开H5页面。1/^https?:\/\/isee.weishi.qq.com\/(.*)\?(.*)/ redirect://https://">
+<meta name="keywords" content="工具&#x2F;配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="whisle常用配置总结">
+<meta property="og:url" content="http://sevencai.github.io/2020/04/21/whisle常用配置总结/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="用whisle已经差不都两年多了，真是个很棒的工具，除了配色，真的没有地方可以吐槽。下面总结下我经常用的并且好用的配置。   转发场景为：与业务联调，需要业务App内嵌我们H5，我们可以随意抓包找业务App内的一个H5链接，转发成我们的页面即可模拟到APP打开H5页面。1/^https?:\/\/isee.weishi.qq.com\/(.*)\?(.*)/ redirect://https://">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2020/04/21/whisle常用配置总结/whistle.png">
+<meta property="og:updated_time" content="2020-04-22T07:42:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="whisle常用配置总结">
+<meta name="twitter:description" content="用whisle已经差不都两年多了，真是个很棒的工具，除了配色，真的没有地方可以吐槽。下面总结下我经常用的并且好用的配置。   转发场景为：与业务联调，需要业务App内嵌我们H5，我们可以随意抓包找业务App内的一个H5链接，转发成我们的页面即可模拟到APP打开H5页面。1/^https?:\/\/isee.weishi.qq.com\/(.*)\?(.*)/ redirect://https://">
+<meta name="twitter:image" content="http://sevencai.github.io/2020/04/21/whisle常用配置总结/whistle.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2020/04/21/whisle常用配置总结/"/>
+
+
+
+
+
+  <title>whisle常用配置总结 | Seven's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?157d49c9f81aaca6e7af073620a0a709";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2020/04/21/whisle常用配置总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">whisle常用配置总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-21T19:44:33+08:00">
+                2020-04-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/04/21/whisle常用配置总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/04/21/whisle常用配置总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>用<code>whisle</code>已经差不都两年多了，真是个很棒的工具，除了配色，真的没有地方可以吐槽。下面总结下我经常用的并且好用的配置。</p>
+<p><img src="whistle.png" alt="whisle"></p>
+<hr>
+<h2 id="转发"><a href="#转发" class="headerlink" title="转发"></a>转发</h2><p>场景为：与业务联调，需要业务App内嵌我们H5，我们可以随意抓包找业务App内的一个H5链接，转发成我们的页面即可模拟到APP打开H5页面。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/^https?:\/\/isee.weishi.qq.com\/(.*)\?(.*)/ redirect://https://xxxx</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="修改回包（mock数据）"><a href="#修改回包（mock数据）" class="headerlink" title="修改回包（mock数据）"></a>修改回包（mock数据）</h2><p>whisle内写如下规则：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.xxx resBody://&#123;valueName&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后再在 <code>values</code> 里面建立名为 <code>valueName</code> 的配置项并将需要的<code>json</code>数据填入即可。</p>
+<p>或者使用<code>resScript</code>如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">api.xxx resScript://&#123;valueName.js&#125;</span><br></pre></td></tr></table></figure></p>
+<p>再在<code>values</code> 里建立 <code>valueName.js</code> 的配置项，并且进行如下的配置<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rules.push(url + <span class="string">' resBody://&#123;res&#125;'</span>);</span><br><span class="line">values[<span class="string">'res'</span>] = <span class="string">'&#123;"ret" : 0,"msg" : "ok","recomm_info" : &#123;&#125;&#125;'</span></span><br></pre></td></tr></table></figure></p>
+<p>若是想模拟 <code>jsonp</code>则：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">api.xxx resScript://&#123;valueName.js&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在values里拿到<code>jsonp callback</code>的值，填入回包即可模拟<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">rules.push(url + <span class="string">' resBody://&#123;res1&#125;'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> queryStr = parseUrl(url).query</span><br><span class="line"><span class="keyword">var</span> queries = parseQuery(queryStr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> jsonpMethod = queries.format.substr(<span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> res1 = &#123;<span class="string">"ret"</span> : <span class="number">0</span>,<span class="string">"msg"</span> : <span class="string">"ok"</span>,<span class="string">"recomm_info"</span> : &#123;&#125;&#125;</span><br><span class="line">values[<span class="string">'res1'</span>] = jsonpMethod + <span class="string">'('</span> + <span class="built_in">JSON</span>.stringify(res1) + <span class="string">')'</span></span><br></pre></td></tr></table></figure></p>
+<p>意思就是其实变量什么的都能拿到，自己去想办法构造即可，再举例为：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">www.ifeng.com resScript:<span class="comment">//&#123;resScript.js&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// resScript.js:</span></span><br><span class="line"><span class="keyword">const</span> options = parseUrl(url);</span><br><span class="line">rules.push(<span class="string">`<span class="subst">$&#123;options.host&#125;</span> resCookies://&#123;cookies.json&#125;`</span>);</span><br><span class="line">values[<span class="string">'cookies.json'</span>] = &#123;</span><br><span class="line">    serverIp,</span><br><span class="line">    clientIp,</span><br><span class="line">    <span class="keyword">from</span>: <span class="string">'resScript'</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="proxy-http-proxy"><a href="#proxy-http-proxy" class="headerlink" title="proxy(http-proxy)"></a>proxy(http-proxy)</h2><p>设置 HTTP 代理，一个比较典型的场景，是想把某个域名的请求，定位到一个具体<code>ip:port</code>查问题。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pattern proxy://ip:port</span><br><span class="line">www.detail.tmall.com proxy://101.231.104.82:80</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="模拟-404、模拟慢反应"><a href="#模拟-404、模拟慢反应" class="headerlink" title="模拟 404、模拟慢反应"></a>模拟 404、模拟慢反应</h2><p>某些情况需要验证某些特殊的返回码或者延迟效果来看前端的反馈。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 模拟404 或者 500</span></span><br><span class="line">/wechat.js/ statusCode://404</span><br><span class="line">www.ifeng.com statusCode://500</span><br><span class="line"></span><br><span class="line"><span class="comment"># 延迟2s后返回结果</span></span><br><span class="line">/xxx.php/ resDelay://2000</span><br><span class="line"><span class="comment"># 延迟3s后发起请求</span></span><br><span class="line">/xxx.php/ reqDelay://3000</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="本地调试"><a href="#本地调试" class="headerlink" title="本地调试"></a>本地调试</h2><p>某些时候，现网出了问题，我们需要看下是什么情况，可以把某个有问题的文件使用本地文件从而进行定位和调试。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apixxxx.js file:///Users/seven/apixxxx.js</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="修改删除响应头、请求头"><a href="#修改删除响应头、请求头" class="headerlink" title="修改删除响应头、请求头"></a>修改删除响应头、请求头</h2><p>可以利用<code>resHeaders</code>或者<code>reqHeaders</code>修改 headers 里的内容<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">www.ifeng.com resHeaders://&#123;<span class="built_in">test</span>-resHeaders.json&#125;</span><br><span class="line"></span><br><span class="line">// <span class="built_in">test</span>-resHeaders.json 内</span><br><span class="line">x-test1: value1</span><br><span class="line">x-test2: value2</span><br><span class="line">x-testN: valueN</span><br></pre></td></tr></table></figure></p>
+<p>如下面这种：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pgv_pvi: 6973761536</span><br><span class="line">pgv_pvi: 6973761536</span><br><span class="line">x_host_key: xxx-xxx </span><br><span class="line">csrftoken: xxx</span><br></pre></td></tr></table></figure></p>
+<p>还可以通过 <code>headerReplace</code>替换字符的方式修改请求或响应。（我感觉只有你想不到，没有他做不到啊啊啊优秀!）</p>
+<p>删除指定的请求响应头字段，也可以通过reqHeaders、resHeaders把字段设置为空字符串<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pattern delete://req.headers.xxx|req.headers.x22|res.headers.yyy|headers.zzz</span><br><span class="line">/./ delete://req.headers.x-forwarded-for</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="设置不拦截"><a href="#设置不拦截" class="headerlink" title="设置不拦截"></a>设置不拦截</h2><p>禁用https拦截使用 <code>disable://intercept</code>，对iap支付或微信支付某些接口抓包会影响他的功能，因此需要取消拦截。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">*.weixin.qq.com <span class="built_in">disable</span>://intercept</span><br><span class="line">api.mch.weixin.qq.com  <span class="built_in">disable</span>://intercept</span><br><span class="line">**.apple.com <span class="built_in">disable</span>://intercept <span class="comment">#屏蔽iap支付抓包</span></span><br><span class="line">**.icloud.com <span class="built_in">disable</span>://intercept</span><br><span class="line">http://mp.weixin.qq.com https://mp.weixin.qq.com</span><br></pre></td></tr></table></figure></p>
+<p>还有其他的禁用也用的比较多的：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 禁用请求的缓存，只要经过代理且匹配到的请求都不会使用缓存</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://cache</span><br><span class="line"></span><br><span class="line"><span class="comment"># 禁用请求和响应的cookie</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://cookie </span><br><span class="line"></span><br><span class="line"><span class="comment"># 只禁用请求的cookie</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://reqCookie <span class="comment"># 也可以写成复数形式reqCookies</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除ua</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://ua</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除referer</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://referer</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除csp策略</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://csp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 禁用timeout，默认情况下whistle对每个请求如果36s内没有发生数据传输，会认为请求超时</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://timeout</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把301转成302，防止cache</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://301</span><br><span class="line"></span><br><span class="line"><span class="comment"># 禁用https拦截</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://intercept</span><br><span class="line"></span><br><span class="line"><span class="comment"># 不缓存远程的dns(通过whistle配置的host是不会缓存)，主要用于测试网页的极端情况的加载速度</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://dnsCache</span><br><span class="line"></span><br><span class="line"><span class="comment"># 禁用代理服务器请求链接复用</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://keepAlive</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除请求头 `x-requested-with`</span></span><br><span class="line">wwww.test.com <span class="built_in">disable</span>://ajax</span><br><span class="line"></span><br><span class="line"><span class="comment"># 也可以同时禁用多个</span></span><br><span class="line">www.example.com <span class="built_in">disable</span>://cache|cookie|ua|referer|csp|timeout|301|intercept|dnsCache|keepAlive</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="ignore"><a href="#ignore" class="headerlink" title="ignore"></a>ignore</h2><p><code>ignore</code>用于忽略指定协议的匹配规则，也可以忽略当前配置的匹配规则。如<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">www.example.com/<span class="built_in">test</span>-hosts 127.0.0.1:8080</span><br><span class="line">// 忽略 xxx路径的 host 规则</span><br><span class="line">www.example.com/<span class="built_in">test</span>-hosts/xxx ignore://host  </span><br><span class="line">www.example.com/<span class="built_in">test</span>-hosts/yyy ignore://host|socks</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="urlParams-修改请求参数"><a href="#urlParams-修改请求参数" class="headerlink" title="urlParams 修改请求参数"></a>urlParams 修改请求参数</h2><p>有时候我们在较长的url上修改请求参数会比较麻烦，使用这个可以清晰的修改：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 修改请求参数，配置方式：</span><br><span class="line">pattern urlParams://filepath</span><br><span class="line">// filepath为Values里面的&#123;key&#125;或者本地文件(如：e:\<span class="built_in">test</span>\xxx、e:/<span class="built_in">test</span>/xxx、/User/username/<span class="built_in">test</span>/xxx等):</span><br><span class="line"></span><br><span class="line">field1: value1</span><br><span class="line">field2: value2</span><br><span class="line">filedN: valueN</span><br><span class="line">// www.ifeng.com urlParams://(<span class="built_in">test</span>=1)</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="ua"><a href="#ua" class="headerlink" title="ua"></a>ua</h2><p>除了使用chrome模拟工具进行修改ua外，还可以使用whisle里的ua进行修改。如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pattern ua://newUA</span><br><span class="line">www.ifeng.com ua://Mozilla/5.0</span><br><span class="line">// 把完整UA存在Values里面</span><br><span class="line">www.ifeng.com ua://&#123;<span class="built_in">test</span>-ua&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="修改content-type"><a href="#修改content-type" class="headerlink" title="修改content-type"></a>修改content-type</h2><p>分为请求的<code>content-type</code>以及响应的<code>content-type</code>。如：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">www.ifeng.com reqType://text</span><br><span class="line">www.ifeng.com reqType://application/x-www-form-urlencoded</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>whisle</code>还有很多好用的地方，比如<code>compose</code>请求、插件、日志的导出、回放等真的太好用了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工具-配置/" rel="tag"># 工具/配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/04/比赛项目总结/" rel="next" title="比赛项目总结">
+                <i class="fa fa-chevron-left"></i> 比赛项目总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">130</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#转发"><span class="nav-number">1.</span> <span class="nav-text"><a href="#&#x8F6C;&#x53D1;" class="headerlink" title="&#x8F6C;&#x53D1;"></a>&#x8F6C;&#x53D1;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改回包（mock数据）"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x4FEE;&#x6539;&#x56DE;&#x5305;&#xFF08;mock&#x6570;&#x636E;&#xFF09;" class="headerlink" title="&#x4FEE;&#x6539;&#x56DE;&#x5305;&#xFF08;mock&#x6570;&#x636E;&#xFF09;"></a>&#x4FEE;&#x6539;&#x56DE;&#x5305;&#xFF08;mock&#x6570;&#x636E;&#xFF09;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proxy-http-proxy"><span class="nav-number">3.</span> <span class="nav-text"><a href="#proxy-http-proxy" class="headerlink" title="proxy(http-proxy)"></a>proxy(http-proxy)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟-404、模拟慢反应"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x6A21;&#x62DF;-404&#x3001;&#x6A21;&#x62DF;&#x6162;&#x53CD;&#x5E94;" class="headerlink" title="&#x6A21;&#x62DF; 404&#x3001;&#x6A21;&#x62DF;&#x6162;&#x53CD;&#x5E94;"></a>&#x6A21;&#x62DF; 404&#x3001;&#x6A21;&#x62DF;&#x6162;&#x53CD;&#x5E94;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地调试"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x672C;&#x5730;&#x8C03;&#x8BD5;" class="headerlink" title="&#x672C;&#x5730;&#x8C03;&#x8BD5;"></a>&#x672C;&#x5730;&#x8C03;&#x8BD5;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改删除响应头、请求头"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x4FEE;&#x6539;&#x5220;&#x9664;&#x54CD;&#x5E94;&#x5934;&#x3001;&#x8BF7;&#x6C42;&#x5934;" class="headerlink" title="&#x4FEE;&#x6539;&#x5220;&#x9664;&#x54CD;&#x5E94;&#x5934;&#x3001;&#x8BF7;&#x6C42;&#x5934;"></a>&#x4FEE;&#x6539;&#x5220;&#x9664;&#x54CD;&#x5E94;&#x5934;&#x3001;&#x8BF7;&#x6C42;&#x5934;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置不拦截"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x8BBE;&#x7F6E;&#x4E0D;&#x62E6;&#x622A;" class="headerlink" title="&#x8BBE;&#x7F6E;&#x4E0D;&#x62E6;&#x622A;"></a>&#x8BBE;&#x7F6E;&#x4E0D;&#x62E6;&#x622A;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ignore"><span class="nav-number">8.</span> <span class="nav-text"><a href="#ignore" class="headerlink" title="ignore"></a>ignore</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#urlParams-修改请求参数"><span class="nav-number">9.</span> <span class="nav-text"><a href="#urlParams-&#x4FEE;&#x6539;&#x8BF7;&#x6C42;&#x53C2;&#x6570;" class="headerlink" title="urlParams &#x4FEE;&#x6539;&#x8BF7;&#x6C42;&#x53C2;&#x6570;"></a>urlParams &#x4FEE;&#x6539;&#x8BF7;&#x6C42;&#x53C2;&#x6570;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ua"><span class="nav-number">10.</span> <span class="nav-text"><a href="#ua" class="headerlink" title="ua"></a>ua</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改content-type"><span class="nav-number">11.</span> <span class="nav-text"><a href="#&#x4FEE;&#x6539;content-type" class="headerlink" title="&#x4FEE;&#x6539;content-type"></a>&#x4FEE;&#x6539;content-type</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">12.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2020/04/21/whisle常用配置总结/';
+          this.page.identifier = '2020/04/21/whisle常用配置总结/';
+          this.page.title = 'whisle常用配置总结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
