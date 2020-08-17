@@ -101,25 +101,15 @@
     <link href="http://sevencai.github.io/2020/07/03/5%E6%9C%886%E6%9C%88%E7%AC%94%E8%AE%B0/"/>
     <id>http://sevencai.github.io/2020/07/03/5月6月笔记/</id>
     <published>2020-07-03T02:46:44.000Z</published>
-    <updated>2020-07-03T03:39:00.000Z</updated>
+    <updated>2020-08-17T02:22:24.000Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="cdn解释"><a href="#cdn解释" class="headerlink" title="cdn解释"></a>cdn解释</h2><p>DOMInteractive 可交互时间： DNS + TCP + TTFB + RESPONSE + DOMINTERACTIBE</p>
-<p>互联网”边缘”</p>
-<p>在这些地方部署服务器并缓存响应，从而可以减轻内容网站的负荷，同时提升终端用户访问的速度<br>也就是靠近终端用户的地方</p>
-<h2 id="空格的问题"><a href="#空格的问题" class="headerlink" title="空格的问题"></a>空格的问题</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">final char c1 = <span class="string">' '</span>; <span class="comment">//db里的空格</span></span><br><span class="line">final char c2 = <span class="string">' '</span>; <span class="comment">//手动输入的空格</span></span><br><span class="line">System.out.println((int)c1); <span class="comment">//160</span></span><br><span class="line">System.out.println((int)c2); <span class="comment">//32</span></span><br></pre></td></tr></table></figure>
-<p><img src="time.png" alt="时间对比时间"></p>
-<p>平时我们用键盘输入的空格的ASCII值是32，而这个ASCII值为160的空格，其实是不间断空格(non-breaking space)，是不是从来没听说过这东东？其实你平时一定也用过很多次的，就是页面上的&nbsp;所产生的空格。</p>
-<h2 id="中台能力"><a href="#中台能力" class="headerlink" title="中台能力"></a>中台能力</h2><p>1、系统能力的定义-对能力划分</p>
-<p>2、功能拆解-中台</p>
-<p>3、营销管控中台<br>      资源中台： 录入物品、发货、权限、计价    （物品的能力）-&gt;不是直接给业务的，通过资源管控中台等提供出去<br>      资源管控中台：发放规则、预算、（玩法）<br>      纯粹、明确的能力、闭环</p>
-<p>4、TDEA(规范协议、文档等)<br>5、中台的作用： 小刀和航母</p>
-<p>sevencai 6-9 下午 7:39<br> 接口层： TDEA<br>业务中台：支付中台、营销中台<br>功能中台：资源中台、渠道中台、活动中台、数据中台、风控平台、结算平台<br>基础平台（开源协同）：TDSQL/TDMQ/BAAS</p>
-<p> sevencai 6-9 下午 8:04<br> 功能中台直接相互独立，不会互相调用。业务中台去调用功能中台。业务中台之间也有可能相互调用。</p>
+    <content type="html"><![CDATA[<p>空</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h2 id=&quot;cdn解释&quot;&gt;&lt;a href=&quot;#cdn解释&quot; class=&quot;headerlink&quot; title=&quot;cdn解释&quot;&gt;&lt;/a&gt;cdn解释&lt;/h2&gt;&lt;p&gt;DOMInteractive 可交互时间： DNS + TCP + TTFB + RESPONSE + DOMINT
+      &lt;p&gt;空&lt;/p&gt;
+
     
     </summary>
     
